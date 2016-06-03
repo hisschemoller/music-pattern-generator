@@ -11,7 +11,7 @@
 
 (function (ns) {
 
-    function createInternalClock() {
+    function createInternalClock(specs) {
         var that,
             isRunning = false,
             runTimeStart = 0,
@@ -46,7 +46,7 @@
                 callback = callbackFunction;
             };
         
-        that = {};
+        that = specs.that;
         
         run();
         

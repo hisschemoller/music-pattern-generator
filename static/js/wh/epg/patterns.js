@@ -15,6 +15,9 @@
         var that,
             position = specs.position || 0,
             duration = specs.duration || 0,
+            steps = specs.steps || 8,
+            fills = specs.fills || 4,
+            rotation = specs.rotation || 0,
             
             /**
              * 
@@ -31,7 +34,7 @@
         return that;
     }
     
-    function createPatternsModel() {
+    function createPatterns() {
         var that,
             patterns = [],
             numPatterns = patterns.length,
@@ -52,9 +55,10 @@
             /**
              * Create a pattern and add it to the list.
              */
-            createPattern = function(data) {
-                patterns.push(createPattern(data));
-                // data contains euclidean settings
+            createPattern = function() {
+                var pattern = createPattern();
+                
+                patterns.push(pattern);
             },
             
             getPattern = function(index) {
@@ -68,6 +72,6 @@
         return that;
     }
 
-    ns.createPatternsModel = createPatternsModel;
+    ns.createPatterns = createPatterns;
 
 })(WH.epg);

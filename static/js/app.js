@@ -10,12 +10,27 @@
  * Application startup.
  */
 $(function() {
-    var clock = WH.core.createInternalClock(),
-        patternsModel = WH.epg.createPatternsModel();
     
-    patternsModel.createPattern({
-        duration: // 8 beats vertaald in ms
+    // Create all objects that will be the modules of the app.
+    var arrangement = {},
+        clock = {}, 
+        patterns = {}, 
+        patternCanvas = {},
+        patternSettings = {},
+        transport {};
+    
+    // Add functionality to the modules and inject dependencies.
+    WH.core.createInternalClock({
+        that: clock
     });
-    clock.setCallback(patternsModel.onClock);
+    WH.epg.createPatterns({
+        that: patterns,
+        transport: transport
+    });
+    
+    // temporary setup
+    patterns.createPattern();
+    clock.setCallback(patterns.onClock);
     clock.start();
 });
+hkccc8 
