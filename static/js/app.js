@@ -13,15 +13,16 @@ $(function() {
     
     // Create all objects that will be the modules of the app.
     var arrangement = {},
-        clock = {}, 
         patterns = {}, 
         patternCanvas = {},
         patternSettings = {},
         transport {};
     
     // Add functionality to the modules and inject dependencies.
-    WH.core.createInternalClock({
-        that: clock
+    WH.core.createTransport({
+        that: transport,
+        arrangement: arrangement,
+        patternCanvas: patternCanvas
     });
     WH.epg.createPatterns({
         that: patterns,
