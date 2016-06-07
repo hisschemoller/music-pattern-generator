@@ -1,6 +1,29 @@
 /**
- * @description Starts, stops, pauses playback.                              
- *
+ * @description Starts, stops, pauses playback.
+ * 
+ * Time
+ * There are three time measurements used in this app:
+ * 1. Real time, 
+ *      
+ * 2. Audio Context time, 
+        time since AudioContext started, used to schedule audio events.
+ * 3. Transport time, 
+ *      position of the Transport playhead, used to 
+ * 
+ * @var now {ms} Transport playhead position.
+ * @var absOrigin {ms} Transport play start in real time.
+ * 
+ * Unix epoch,                page    AudioContext   Transport        now,
+ * 01-01-1970 00:00:00 UTC    load    created        start            the present
+ *  |                          |       |              |                | 
+ *  |--------------------------|-------|-------//-----|--------//------|
+ *  
+ *  |------------------------------------------------------------------> Date.now()
+ *                             |---------------------------------------> Performance.now()
+ *                                     |-------------------------------> AudioContext.currentTime
+ *                                                    |----------------> now
+ *  |--------------------absOrigin--------------------|
+ * 
  * @namespace WH
  */
 
@@ -64,7 +87,7 @@ window.WH.core = window.WH.core || {};
              */
             setPlayheadPosition = function(position) {
                 now = position;
-                absOrigin = WH.core.getNow() - now;
+                absOrigin = Date.now() - now; // WH.core.getNow() - now;
             },
 
             /**
@@ -124,7 +147,7 @@ window.WH.core = window.WH.core || {};
             run = function () {
                 if (isRunning) {
                     // add time elapsed to now_t by checking now_ac
-                    var absNow = WH.core.getNow();
+                    var absNow = Date.now() - now; // WH.core.getNow();
                     now += (absNow - absLastNow);
                     absLastNow = absNow;
                     // scan notes in range
@@ -151,7 +174,7 @@ window.WH.core = window.WH.core || {};
              */
             start = function () {
                 // Arrange time references.
-                var absNow = WH.core.getNow();
+                var absNow = Date.now() - now; // WH.core.getNow();
                 absOrigin = absNow - now;
                 absLastNow = absNow;
                 // Reset scan range.
@@ -246,7 +269,7 @@ window.WH.core = window.WH.core || {};
                 now *= factor;
                 loopStart *= factor;
                 loopEnd *= factor;
-                absOrigin = WH.core.getNow() - now;
+                absOrigin = Date.now() - now; // WH.core.getNow() - now;
             },
 
             /**
@@ -257,11 +280,12 @@ window.WH.core = window.WH.core || {};
                 return bpm;
             };
         
-        that = spacs.that;
+        that = specs.that;
         
         setBPM(bpm);
         run();
         
+        that.start = start;
         return that;
     }
     
