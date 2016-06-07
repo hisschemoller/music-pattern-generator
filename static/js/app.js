@@ -16,9 +16,12 @@ $(function() {
         patterns = {}, 
         patternCanvas = {},
         patternSettings = {},
-        transport {};
+        transport = {};
     
     // Add functionality to the modules and inject dependencies.
+    WH.createArrangement({
+        that: arrangement
+    });
     WH.core.createTransport({
         that: transport,
         arrangement: arrangement,
@@ -30,8 +33,7 @@ $(function() {
     });
     
     // temporary setup
-    patterns.createPattern();
-    clock.setCallback(patterns.onClock);
-    clock.start();
+    // patterns.createPattern();
+    // clock.setCallback(patterns.onClock);
+    transport.start();
 });
-hkccc8 
