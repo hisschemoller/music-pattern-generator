@@ -31,9 +31,9 @@ $(function() {
         that: patterns,
         transport: transport
     });
-    
+    console.log(patterns);
     // temporary setup
-    // patterns.createPattern();
+    patterns.createPattern();
     // clock.setCallback(patterns.onClock);
-    transport.start();
+    // transport.start();
 });
