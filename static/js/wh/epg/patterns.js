@@ -29,6 +29,7 @@
     
     function createPatterns(specs) {
         var that,
+            arrangement = specs.arrangement;
             patterns = [],
             numPatterns = patterns.length,
             
@@ -36,7 +37,9 @@
              * Create a Euclidean step sequence from a pattern's steps and fills data.
              */
             updateEuclid = function(pattern) {
-                console.log(bjorklund(pattern.steps, pattern.pulses));
+                var euclidPattern = bjorklund(pattern.steps, pattern.pulses);
+                arrangement.createTrack();
+                console.log(euclidPattern);
             },
             
             /**

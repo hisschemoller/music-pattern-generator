@@ -33,16 +33,6 @@ window.WH = window.WH || {};
             },
 
             /**
-             * Change to another pattern.
-             * @param {Number} index Index of pattern in patterns array.
-             */
-            changePattern = function(index) {
-                patternIndex = index;
-                WH.View.setSelectedPattern(index);
-                WH.View.setSelectedSteps();
-            },
-
-            /**
              * Create an arrangement from a data object.
              * @param {Object} data Data object.
              */
@@ -59,7 +49,8 @@ window.WH = window.WH || {};
                 // create the patterns
                 for (i; i < patternCount; i++) {
                     patterns.push(WH.createPattern({
-                        data: data.patterns[i]
+                        tracks: data.tracks,
+                        trackCount: data.tracks.length
                     }));
                 }
 
@@ -75,7 +66,7 @@ window.WH = window.WH || {};
                     WH.View.setSong(song);
                 }
 
-                changePattern(0);
+                setSelectedPattern(0);
             },
 
             /**
@@ -157,7 +148,7 @@ window.WH = window.WH || {};
                             } else {
                                 songPartNextStart = null;
                             }
-                            changePattern(song[songPartIndex].getPatternIndex());
+                            setSelectedPattern(song[songPartIndex].getPatternIndex());
                             // scan the first bit of the new song part
                             patterns[patternIndex].scanEvents(song[songPartIndex].getStart(), end, playbackQueue);
                             // update the view
@@ -224,6 +215,18 @@ window.WH = window.WH || {};
                 patternIndex = Math.max(0, Math.min(index, WH.conf.getPatternCount()));
                 WH.View.setSelectedPattern(patternIndex);
                 WH.View.setSelectedSteps();
+            },
+            
+            /**
+             * 
+             */
+            createTrack = function() {
+                var i, 
+                    patternCount = patterns.length;
+                    
+                for (i; i < patternCount; i++) {
+                    patterns[i].createTrack();
+                }
             };
         
         that = specs.that;
@@ -233,6 +236,7 @@ window.WH = window.WH || {};
         that.toggleSongMode = toggleSongMode;
         that.getTrackSteps = getTrackSteps;
         that.setSelectedPattern = setSelectedPattern;
+        that.createTrack = createTrack;
         return that;
     }
     

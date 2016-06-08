@@ -29,9 +29,10 @@ $(function() {
     });
     WH.epg.createPatterns({
         that: patterns,
+        arrangement: arrangement,
         transport: transport
     });
-    console.log(patterns);
+    
     // temporary setup
     patterns.createPattern();
     // clock.setCallback(patterns.onClock);

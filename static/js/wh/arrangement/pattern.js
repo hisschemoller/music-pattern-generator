@@ -9,7 +9,7 @@ window.WH = window.WH || {};
     
     function createPattern(specs) {
         var that,
-            trackCount = specs.data.tracks.length,
+            trackCount = specs.trackCount || 0,
             tracks = [],
             lengthInTicks = WH.conf.getPPQN() * WH.conf.getPatternDurationInBeats(),
             
@@ -64,22 +64,31 @@ window.WH = window.WH || {};
                 }
 
                 return patternData;
+            }, 
+            
+            /**
+             * Add an new track.
+             */
+            createTrack = function(steps) {
+                data = data || {};
+                tracks.push(WH.createTrack({
+                    steps: steps, 
+                    channel: tracks.length
+                }));
             };
         
         that = {};
         
         // create track objects
         for (var i = 0; i < trackCount; i++) {
-            tracks.push(WH.createTrack({
-                data: specs.data.tracks[i], 
-                channel: i
-            }));
+            createTrack(specs.tracks[i].steps);
         }
         
         that.scanEvents = scanEvents;
         that.getTrackSteps = getTrackSteps;
         that.getDuration = getDuration;
         that.getData = getData;
+        that.createTrack = createTrack;
         return that;
     }
     

@@ -9,13 +9,13 @@ window.WH = window.WH || {};
     
     /**
      * @description Create a step sequencer track object.
-     * @param {object} specs.data Track setup data.
+     * @param {Array} specs.steps Array of step data objects.
      * @param {Number} specs.channel Channel (and instrument) on which this note is played.
      */
     function createTrack(specs) {
         var that,
             steps = [],
-            lengthInTicks = 4 * WH.conf.getPPQN(),
+            lengthInTicks = specs.steps.length * WH.conf.getPPQN(),
 
             /**
              * Find events to be played within a time span
@@ -89,9 +89,9 @@ window.WH = window.WH || {};
         
         that = {};
         
-        // create the step objects from the data
-        for (var i = 0; i < specs.data.steps.length; i++) {
-            var d = specs.data.steps[i];
+        // create the step objects from the steps data
+        for (var i = 0; i < specs.steps.length; i++) {
+            var d = specs.steps[i];
             steps.push( WH.createStep({
                 pitch: d.pitch, 
                 velocity: d.velocity, 
