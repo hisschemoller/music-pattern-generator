@@ -35,11 +35,20 @@
             
             /**
              * Create a Euclidean step sequence from a pattern's steps and fills data.
+             * @param {Array} euclidPattern Array of 0 and 1 values indicating pulses or silent steps.
+             * @return {Array} Data objects to create arrangement steps with.
              */
-            updateEuclid = function(pattern) {
-                var euclidPattern = bjorklund(pattern.steps, pattern.pulses);
-                arrangement.createTrack();
-                console.log(euclidPattern);
+            createArrangementSteps = function(euclidPattern) {
+                var i,
+                    numSteps = euclidPattern.length,
+                    steps = [];
+                for (i = 0; i < numSteps; i++) {
+                    steps.push({
+                        velocity = !!euclidPattern[i] ? 100 : 0,
+                        duration: WH.conf.getPPQN() / WH.conf.getStepsPerBeat()
+                    });
+                }
+                return [];
             },
             
             /**
@@ -47,7 +56,7 @@
              * Code from withakay/bjorklund.js
              * @see https://gist.github.com/withakay/1286731
              */
-            bjorklund = function(steps, pulses) {
+            createBjorklund = function(steps, pulses) {
                 var pattern = [],
                     counts = [],
                 	remainders = [],
@@ -112,12 +121,18 @@
              * Create a pattern and add it to the list.
              */
             createPattern = function() {
-                var pattern = createPatternData();
-                pattern.channel = patterns.length;
-                updateEuclid(pattern);
-                // rotate pattern
-                // send pattern to arrangement for playback
+                var patternData = createPatternData({
+                        channel: patterns.length
+                    }),
+                    euclidPattern = createBjorklund(patternData.steps, patternData.pulses),
+                    arrangementSteps = createArrangementSteps(euclidPattern);
                 patterns.push(pattern);
+                arrangement.createTrack();
+                // arrangement.updateTrack(arrangementSteps)
+                console.log(euclidPattern);
+                // rotate pattern
+                // create note array from da
+                // send pattern to arrangement for playback
             };
         
         that = specs.that;

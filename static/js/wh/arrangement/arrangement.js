@@ -71,7 +71,7 @@ window.WH = window.WH || {};
 
             /**
              * Get all settings that should be saved with a project.
-             * @return {Array} Array of objects with all data per channel and rack.
+             * @return {Array} Array of objects with all data per track and rack.
              */
             getData = function() {
                 var data = {

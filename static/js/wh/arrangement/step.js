@@ -14,7 +14,7 @@ window.WH = window.WH || {};
      * @param {Number} specs.velocity MIDI velocity.
      * @param {Number} specs.start Start time in tick.
      * @param {Number} specs.duration Note durtion in tick.
-     * @param {Number} specs.channel Channel (and instrument) on which this note is played.
+     * @param {Number} specs.getTrackIndex Track on which this note is played.
      * @param {Number} specs.index Index of this step within the track.
      */
     function createStep(specs) {
@@ -23,7 +23,7 @@ window.WH = window.WH || {};
             velocity = specs.velocity || 0,
             start = specs.start || 0,
             duration = specs.duration || 1,
-            channel = specs.channel || 0,
+            trackIndex = specs.trackIndex || 0,
             absStart = 0,
             absEnd = 0,
             index = specs.index,
@@ -40,7 +40,7 @@ window.WH = window.WH || {};
                     velocity: velocity, 
                     start: startTime, 
                     duration: duration, 
-                    channel: channel, 
+                    trackIndex: trackIndex, 
                     index: index
                 });
             },
@@ -61,8 +61,8 @@ window.WH = window.WH || {};
                 return duration;
             },
             
-            getChannel = function() {
-                return channel;
+            getTrackIndex = function() {
+                return trackIndex;
             },
             
             getIndex = function() {
@@ -99,7 +99,7 @@ window.WH = window.WH || {};
              */
             getData = function() {
                 return {
-                    channel: channel,
+                    trackIndex: trackIndex,
                     pitch: pitch,
                     velocity: velocity,
                     start: start,
@@ -114,7 +114,7 @@ window.WH = window.WH || {};
         that.getVelocity = getVelocity;
         that.getStart = getStart;
         that.getDuration = getDuration;
-        that.getChannel = getChannel;
+        that.getTrackIndex = getTrackIndex;
         that.getIndex = getIndex;
         that.setAbsStart = setAbsStart;
         that.getAbsStart = getAbsStart;

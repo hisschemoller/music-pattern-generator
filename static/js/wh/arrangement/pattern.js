@@ -1,5 +1,5 @@
 /**
- * Pattern contains a track for each channel.
+ * Pattern contains tracks.
  *
  * @namespace WH
  */
@@ -51,7 +51,7 @@ window.WH = window.WH || {};
 
             /**
              * Get all settings that should be saved with a project.
-             * @return {Array} Array of objects with all data per channel and rack.
+             * @return {Array} Array of objects with all data per track and rack.
              */
             getData = function() {
                 var patternData = {
@@ -73,7 +73,7 @@ window.WH = window.WH || {};
                 data = data || {};
                 tracks.push(WH.createTrack({
                     steps: steps, 
-                    channel: tracks.length
+                    trackIndex: tracks.length
                 }));
             };
         

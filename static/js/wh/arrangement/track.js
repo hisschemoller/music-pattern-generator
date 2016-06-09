@@ -10,7 +10,7 @@ window.WH = window.WH || {};
     /**
      * @description Create a step sequencer track object.
      * @param {Array} specs.steps Array of step data objects.
-     * @param {Number} specs.channel Channel (and instrument) on which this note is played.
+     * @param {Number} specs.trackIndex Track on which this note is played.
      */
     function createTrack(specs) {
         var that,
@@ -71,7 +71,7 @@ window.WH = window.WH || {};
 
             /**
              * Get all settings that should be saved with a project.
-             * @return {Array} Array of objects with all data per channel and rack.
+             * @return {Array} Array of objects with all data per track and rack.
              */
             getData = function() {
                 var i = 0,
@@ -97,7 +97,7 @@ window.WH = window.WH || {};
                 velocity: d.velocity, 
                 start: d.start, 
                 duration: d.duration, 
-                channel: specs.channel, 
+                trackIndex: specs.trackIndex, 
                 index: i
             }));
         }
