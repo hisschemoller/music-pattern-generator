@@ -49,8 +49,7 @@ window.WH = window.WH || {};
                 // create the patterns
                 for (i; i < patternCount; i++) {
                     patterns.push(WH.createPattern({
-                        tracks: data.tracks,
-                        trackCount: data.tracks.length
+                        data: data.patterns[i]
                     }));
                 }
 
@@ -213,20 +212,37 @@ window.WH = window.WH || {};
              */
             setSelectedPattern = function(index) {
                 patternIndex = Math.max(0, Math.min(index, WH.conf.getPatternCount()));
-                WH.View.setSelectedPattern(patternIndex);
-                WH.View.setSelectedSteps();
+                // WH.View.setSelectedPattern(patternIndex);
+                // WH.View.setSelectedSteps();
             },
             
             /**
-             * 
+             * Create a new track on all patterns.
+             * @return {Number} The index of the new track.
              */
             createTrack = function() {
                 var i, 
                     patternCount = patterns.length;
                     
-                for (i; i < patternCount; i++) {
+                for (i = 0; i < patternCount; i++) {
                     patterns[i].createTrack();
                 }
+                
+                return patterns[0].getTrackCount() - 1;
+            }, 
+            
+            /**
+             * Update the track at given index on the current pattern.
+             */
+            updateTrack = function(trackIndex, arrangementSteps) {
+                updateTrackAt(patternIndex, trackIndex, arrangementSteps);
+            }, 
+            
+            /**
+             * Update the track at given index on the current pattern.
+             */
+            updateTrackAt = function(patternIndex, trackIndex, arrangementSteps) {
+                patterns[patternIndex].updateTrack(trackIndex, arrangementSteps);
             };
         
         that = specs.that;
@@ -237,6 +253,7 @@ window.WH = window.WH || {};
         that.getTrackSteps = getTrackSteps;
         that.setSelectedPattern = setSelectedPattern;
         that.createTrack = createTrack;
+        that.updateTrack = updateTrack;
         return that;
     }
     

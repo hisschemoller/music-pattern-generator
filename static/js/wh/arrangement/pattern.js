@@ -64,17 +64,31 @@ window.WH = window.WH || {};
                 }
 
                 return patternData;
-            }, 
+            },
+            
+            /**
+             * Only the patterns.createPattern uses it now.
+             */
+            getTrackCount = function() {
+                return trackCount;
+            },
             
             /**
              * Add an new track.
              */
             createTrack = function(steps) {
-                data = data || {};
                 tracks.push(WH.createTrack({
                     steps: steps, 
                     trackIndex: tracks.length
                 }));
+                trackCount = tracks.length;
+            }, 
+            
+            /**
+             * Update all the steps of the track and the length of the track.
+             */
+            updateTrack = function(trackIndex, steps) {
+                tracks[trackIndex].setSteps(steps, trackIndex);
             };
         
         that = {};
@@ -88,7 +102,9 @@ window.WH = window.WH || {};
         that.getTrackSteps = getTrackSteps;
         that.getDuration = getDuration;
         that.getData = getData;
+        that.getTrackCount = getTrackCount;
         that.createTrack = createTrack;
+        that.updateTrack = updateTrack;
         return that;
     }
     

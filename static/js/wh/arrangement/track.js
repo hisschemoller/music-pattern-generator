@@ -15,7 +15,7 @@ window.WH = window.WH || {};
     function createTrack(specs) {
         var that,
             steps = [],
-            lengthInTicks = specs.steps.length * WH.conf.getPPQN(),
+            lengthInTicks = specs.steps ? (specs.steps.length * WH.conf.getPPQN()) : 0,
 
             /**
              * Find events to be played within a time span
@@ -85,25 +85,48 @@ window.WH = window.WH || {};
                 }
 
                 return trackData;
+            },
+            
+            /**
+             * Update all the steps of the track and the length of the track.
+             */
+            setSteps = function(stepData, trackIndex) {
+                steps = [];
+                lengthInTicks = stepData.length * WH.conf.getPPQN();
+                
+                for (var i = 0; i < stepData.length; i++) {
+                    var d = stepData[i];
+                    steps.push( WH.createStep({
+                        pitch: d.pitch || 60, 
+                        velocity: d.velocity || 0, 
+                        start: d.start || 0, 
+                        duration: d.duration || 1, 
+                        trackIndex: trackIndex,
+                        index: i
+                    }));
+                }
             };
         
         that = {};
         
         // create the step objects from the steps data
-        for (var i = 0; i < specs.steps.length; i++) {
-            var d = specs.steps[i];
-            steps.push( WH.createStep({
-                pitch: d.pitch, 
-                velocity: d.velocity, 
-                start: d.start, 
-                duration: d.duration, 
-                trackIndex: specs.trackIndex, 
-                index: i
-            }));
+        if (specs.steps) {
+            for (var i = 0; i < specs.steps.length; i++) {
+                var d = specs.steps[i];
+                steps.push( WH.createStep({
+                    pitch: d.pitch, 
+                    velocity: d.velocity, 
+                    start: d.start, 
+                    duration: d.duration, 
+                    trackIndex: specs.trackIndex,
+                    index: i
+                }));
+            }
         }
         
         that.scanEventsInTimeSpan = scanEventsInTimeSpan;
         that.getSteps = getSteps;
+        that.setSteps = setSteps;
         that.getData = getData;
         return that;
     }

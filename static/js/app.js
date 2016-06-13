@@ -34,7 +34,12 @@ $(function() {
     });
     
     // temporary setup
+    arrangement.setData({
+        patterns: [{
+            tracks: []
+        }],
+        song: []
+    });
     patterns.createPattern();
-    // clock.setCallback(patterns.onClock);
-    // transport.start();
+    transport.start();
 });

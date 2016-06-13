@@ -41,14 +41,17 @@
             createArrangementSteps = function(euclidPattern) {
                 var i,
                     numSteps = euclidPattern.length,
-                    steps = [];
+                    steps = [],
+                    stepDuration = Math.floor( WH.conf.getPPQN() / WH.conf.getStepsPerBeat() );
                 for (i = 0; i < numSteps; i++) {
                     steps.push({
-                        velocity = !!euclidPattern[i] ? 100 : 0,
-                        duration: WH.conf.getPPQN() / WH.conf.getStepsPerBeat()
+                        pitch: 60,
+                        velocity: !!euclidPattern[i] ? 100 : 0,
+                        start: stepDuration * i,
+                        duration: stepDuration
                     });
                 }
-                return [];
+                return steps;
             },
             
             /**
@@ -125,14 +128,15 @@
                         channel: patterns.length
                     }),
                     euclidPattern = createBjorklund(patternData.steps, patternData.pulses),
-                    arrangementSteps = createArrangementSteps(euclidPattern);
-                patterns.push(pattern);
-                arrangement.createTrack();
-                // arrangement.updateTrack(arrangementSteps)
-                console.log(euclidPattern);
+                    arrangementSteps = createArrangementSteps(euclidPattern),
+                    trackIndex = arrangement.createTrack();
+                    
                 // rotate pattern
-                // create note array from da
-                // send pattern to arrangement for playback
+                
+                patterns.push(patternData);
+                
+                arrangement.updateTrack(trackIndex, arrangementSteps);
+                console.log(euclidPattern);
             };
         
         that = specs.that;
