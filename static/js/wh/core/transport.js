@@ -38,7 +38,7 @@ window.WH.core = window.WH.core || {};
     function createTransport(specs) {
         var that,
             arrangement = specs.arrangement,
-            patternCanvas = specs.patternCanvas,
+            patterns = specs.patterns,
             isRunning = false,
             isLoop = false,
             now = 0,
@@ -116,7 +116,7 @@ window.WH.core = window.WH.core || {};
                         // WH.studio.playEvents(playbackQueue);
                         // WH.View.onSequencerEvents(playbackQueue);
                     }
-                }
+                }   
             },
 
             /**
@@ -155,7 +155,7 @@ window.WH.core = window.WH.core || {};
                     // advance when transport is running
                     advanceScanRange();
                     // update view
-                    // patternCanvas.
+                    patterns.onTransport(sec2tick(now));
                     // flush played notes
                     flushPlaybackQueue();
                     // check loop flag

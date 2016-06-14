@@ -25,7 +25,7 @@ $(function() {
     WH.core.createTransport({
         that: transport,
         arrangement: arrangement,
-        patternCanvas: patternCanvas
+        patterns: patterns
     });
     WH.epg.createPatterns({
         that: patterns,

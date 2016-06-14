@@ -19,8 +19,9 @@
         that.pulses = specs.pulses || 4;
         that.rotation = specs.rotation || 0;
         
+        // position and duration in ticks
         that.position = specs.position || 0;
-        that.duration = specs.duration || 0;
+        that.duration = (that.steps / WH.conf.getStepsPerBeat()) * WH.conf.getPPQN();
         
         that.channel = specs.channel || 0;
         
@@ -105,19 +106,6 @@
 
             	build(level);
             	return pattern.reverse();
-            },
-            
-            /**
-             * Clock pulse.
-             * @param {Object} clockData Data from clock.
-             * @param {Number} clockData.runTimeDuration
-             */
-            onClock = function(clockData) {
-                var i,
-                    pattern;
-                for (i = 0; i < numPatterns; i++) {
-                    pattern = patterns[i];
-                }
             }, 
             
             /**
@@ -136,12 +124,26 @@
                 patterns.push(patternData);
                 
                 arrangement.updateTrack(trackIndex, arrangementSteps);
+                numPatterns = patterns.length;
                 console.log(euclidPattern);
+            },
+            
+            /**
+             * Update pattern data and view while transport runs.
+             * @param {Number} transportPosition Playhead position in ticks.
+             */
+            onTransport = function(transportPosition) {
+                var i,
+                    pattern;
+                for (i = 0; i < numPatterns; i++) {
+                    pattern = patterns[i];
+                    pattern.position = transportPosition % pattern.duration;
+                }
             };
         
         that = specs.that;
         
-        that.onClock = onClock;
+        that.onTransport = onTransport;
         that.createPattern = createPattern;
         return that;
     }
