@@ -30,7 +30,8 @@
     
     function createPatterns(specs) {
         var that,
-            arrangement = specs.arrangement;
+            arrangement = specs.arrangement,
+            patternCanvas = specs.patternCanvas,
             patterns = [],
             numPatterns = patterns.length,
             
@@ -111,8 +112,11 @@
             /**
              * Create a pattern and add it to the list.
              */
-            createPattern = function() {
+            createPattern = function(specs) {
+                specs = specs || {};
                 var patternData = createPatternData({
+                        steps: specs.steps,
+                        pulses: specs.pulses,
                         channel: patterns.length
                     }),
                     euclidPattern = createBjorklund(patternData.steps, patternData.pulses),
@@ -139,6 +143,7 @@
                     pattern = patterns[i];
                     pattern.position = transportPosition % pattern.duration;
                 }
+                patternCanvas.draw(patterns);
             };
         
         that = specs.that;

@@ -30,7 +30,11 @@ $(function() {
     WH.epg.createPatterns({
         that: patterns,
         arrangement: arrangement,
-        transport: transport
+        transport: transport,
+        patternCanvas: patternCanvas
+    });
+    WH.epg.createPatternCanvas({
+        that: patternCanvas
     });
     
     // temporary setup
@@ -41,5 +45,13 @@ $(function() {
         song: []
     });
     patterns.createPattern();
+    patterns.createPattern({
+        steps: 10,
+        pulses: 3
+    });
+    patterns.createPattern({
+        steps: 13,
+        pulses: 3
+    });
     transport.start();
 });
