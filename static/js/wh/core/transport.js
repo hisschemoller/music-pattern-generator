@@ -147,7 +147,7 @@ window.WH.core = window.WH.core || {};
             run = function () {
                 if (isRunning) {
                     // add time elapsed to now_t by checking now_ac
-                    var absNow = (Date.now() / 1000) - now; // WH.core.getNow();
+                    var absNow = Date.now() / 1000; // WH.core.getNow();
                     now += (absNow - absLastNow);
                     absLastNow = absNow;
                     // scan notes in range
