@@ -87,7 +87,7 @@ window.WH.core = window.WH.core || {};
              */
             setPlayheadPosition = function(position) {
                 now = position;
-                absOrigin = Date.now() - now; // WH.core.getNow() - now;
+                absOrigin = (Date.now() / 1000) - now; // WH.core.getNow() - now;
             },
 
             /**
@@ -147,7 +147,7 @@ window.WH.core = window.WH.core || {};
             run = function () {
                 if (isRunning) {
                     // add time elapsed to now_t by checking now_ac
-                    var absNow = Date.now() - now; // WH.core.getNow();
+                    var absNow = (Date.now() / 1000) - now; // WH.core.getNow();
                     now += (absNow - absLastNow);
                     absLastNow = absNow;
                     // scan notes in range
@@ -174,7 +174,7 @@ window.WH.core = window.WH.core || {};
              */
             start = function () {
                 // Arrange time references.
-                var absNow = Date.now() - now; // WH.core.getNow();
+                var absNow = (Date.now() / 1000) - now; // WH.core.getNow();
                 absOrigin = absNow - now;
                 absLastNow = absNow;
                 // Reset scan range.
@@ -269,7 +269,7 @@ window.WH.core = window.WH.core || {};
                 now *= factor;
                 loopStart *= factor;
                 loopEnd *= factor;
-                absOrigin = Date.now() - now; // WH.core.getNow() - now;
+                absOrigin = (Date.now() / 1000) - now; // WH.core.getNow() - now;
             },
 
             /**
