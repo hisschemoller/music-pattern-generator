@@ -53,5 +53,6 @@ $(function() {
         steps: 13,
         pulses: 3
     });
+    transport.setBPM(120);
     transport.start();
 });

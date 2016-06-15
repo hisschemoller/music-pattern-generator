@@ -1,0 +1,10 @@
+
+.canvas__container {
+    position: relative;
+}
+    #canvas__static,
+    #canvas__animation {
+        left: 0;
+        position: absolute;
+        top: 0;
+    }

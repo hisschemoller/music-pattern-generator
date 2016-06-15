@@ -14,39 +14,65 @@ window.WH.epg = window.WH.epg || {};
     function createPatternCanvas(specs) {
         
         var that = specs.that,
-            canvas = document.getElementById('canvas'),
-            ctx = canvas.getContext('2d'),
+            canvasA = document.getElementById('canvas__animation'),
+            canvasB = document.getElementById('canvas__background'),
+            ctxA = canvasA.getContext('2d'),
+            ctxB = canvasB.getContext('2d'),
+            stepSize = 4,
            
             /**
              * Update while transport runs.
              * Passed on by patterns which adds pattern data.
              * @param {Array} patternData Data of all patterns.
              */
-            draw = function(patternData) {
+            drawA = function(patternData) {
                 var i, 
-                    n = patternData.length,
+                    numPatterns = patternData.length,
                     x, y,
                     data;
                     
-                ctx.fillStyle = '#ccc';
-                ctx.strokeStyle = '#999';
-                ctx.lineWidth = 2;
-                ctx.clearRect(10, 10, 300, 30);
+                ctxA.fillStyle = '#999';
+                ctxA.clearRect(0, 0, 300, 200);
                 
-                for (i = 0; i < n; i++) {
+                for (i = 0; i < numPatterns; i++) {
                     data = patternData[i];
-                    x = 10 + (data.position / 20);
-                    y = 10 + (i * 10);
-                    ctx.save();
-                    ctx.translate(x, y);
-                    ctx.fillRect(0, 0, 4, 4);
-                    ctx.restore();
+                    x = 10 + ((data.position / data.duration) * ((data.steps - 1) * stepSize));
+                    y = 10 + (i * (10 + stepSize));
+                    ctxA.save();
+                    ctxA.translate(x, y);
+                    ctxA.fillRect(0, 0, stepSize, stepSize);
+                    ctxA.restore();
+                }
+            },
+            
+            drawB = function(patternData) {
+                var i, j, 
+                    numPatterns = patternData.length,
+                    numSteps,
+                    x, y,
+                    data;
+                    
+                ctxB.clearRect(10, 10, 300, 30);
+                
+                for (i = 0; i < numPatterns; i++) {
+                    data = patternData[i];
+                    y = 10 + (i * (10 + stepSize));
+                    numSteps = data.steps;
+                    for (j = 0; j < numSteps; j++) {
+                        x = 10 + (j * stepSize);
+                        ctxB.save();
+                        ctxB.translate(x, y);
+                        ctxB.fillStyle = (data.euclidPattern[j]) ? '#ccc' : '#eee';
+                        ctxB.fillRect(0, 0, stepSize, stepSize);
+                        ctxB.restore();
+                    }
                 }
             };
            
        that = specs.that;
        
-       that.draw = draw;
+       that.drawA = drawA;
+       that.drawB = drawB;
        return that;
    }
 

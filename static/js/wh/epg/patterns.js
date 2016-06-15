@@ -19,6 +19,8 @@
         that.pulses = specs.pulses || 4;
         that.rotation = specs.rotation || 0;
         
+        that.euclidPattern = [];
+        
         // position and duration in ticks
         that.position = specs.position || 0;
         that.duration = (that.steps / WH.conf.getStepsPerBeat()) * WH.conf.getPPQN();
@@ -122,14 +124,17 @@
                     euclidPattern = createBjorklund(patternData.steps, patternData.pulses),
                     arrangementSteps = createArrangementSteps(euclidPattern),
                     trackIndex = arrangement.createTrack();
-                    
+                
+                patternData.euclidPattern = euclidPattern;
+                
                 // rotate pattern
                 
                 patterns.push(patternData);
                 
                 arrangement.updateTrack(trackIndex, arrangementSteps);
+                patternCanvas.drawB(patterns);
                 numPatterns = patterns.length;
-                console.log(euclidPattern);
+                // console.log(euclidPattern);
             },
             
             /**
@@ -143,7 +148,7 @@
                     pattern = patterns[i];
                     pattern.position = transportPosition % pattern.duration;
                 }
-                patternCanvas.draw(patterns);
+                patternCanvas.drawA(patterns);
             };
         
         that = specs.that;
