@@ -25,6 +25,11 @@
         that.position = specs.position || 0;
         that.duration = (that.steps / WH.conf.getStepsPerBeat()) * WH.conf.getPPQN();
         
+        // step data
+        that.isOn = false;
+        that.offPosition = 0;
+        that.lastPosition = 0;
+        
         that.channel = specs.channel || 0;
         
         return that;
@@ -141,19 +146,40 @@
              * Update pattern data and view while transport runs.
              * @param {Number} transportPosition Playhead position in ticks.
              */
-            onTransport = function(transportPosition) {
+            onTransportRun = function(transportPosition) {
                 var i,
                     pattern;
                 for (i = 0; i < numPatterns; i++) {
-                    pattern = patterns[i];
-                    pattern.position = transportPosition % pattern.duration;
+                    ptrn = patterns[i];
+                    ptrn.position = transportPosition % ptrn.duration;
+                    
+                    if (ptrn.isOn && ptrn.lastPosition <= ptrn.offPosition && ptrn.position >= ptrn.offPosition) {
+                        ptrn.isOn = false;
+                    }
+                    
+                    ptrn.lastPosition = ptrn.position;
                 }
                 patternCanvas.drawA(patterns);
+            },
+            
+            onTransportScan = function(playbackQueue) {
+                var i,
+                    numSteps = playbackQueue.length;
+                for (i = 0; i < numSteps; i++) {
+                    var step = playbackQueue[i],
+                        ptrn = patterns[step.getTrackIndex()];
+                    
+                    if (step.getVelocity()) {
+                        ptrn.isOn = true;
+                        ptrn.offPosition = (ptrn.position + step.getDuration()) % ptrn.duration;
+                    }
+                }
             };
         
         that = specs.that;
         
-        that.onTransport = onTransport;
+        that.onTransportRun = onTransportRun;
+        that.onTransportScan = onTransportScan;
         that.createPattern = createPattern;
         return that;
     }

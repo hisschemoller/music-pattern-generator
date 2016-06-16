@@ -31,16 +31,17 @@ window.WH.epg = window.WH.epg || {};
                     x, y,
                     data;
                     
-                ctxA.fillStyle = '#999';
                 ctxA.clearRect(0, 0, 300, 200);
                 
                 for (i = 0; i < numPatterns; i++) {
-                    data = patternData[i];
-                    x = 10 + ((data.position / data.duration) * ((data.steps - 1) * stepSize));
+                    ptrn = patternData[i];
+                    x = 10 + ((ptrn.position / ptrn.duration) * ((ptrn.steps - 1) * stepSize));
                     y = 10 + (i * (10 + stepSize));
                     ctxA.save();
                     ctxA.translate(x, y);
-                    ctxA.fillRect(0, 0, stepSize, stepSize);
+                    ctxA.fillStyle = ptrn.isOn ? '#666' : '#999';
+                    h = ptrn.isOn ? stepSize * 1.5 : stepSize;
+                    ctxA.fillRect(0, 0, stepSize, h);
                     ctxA.restore();
                 }
             },

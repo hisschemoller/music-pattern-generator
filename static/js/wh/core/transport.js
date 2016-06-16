@@ -115,6 +115,7 @@ window.WH.core = window.WH.core || {};
                         // play the events with sound generating plugin instruments
                         // WH.studio.playEvents(playbackQueue);
                         // WH.View.onSequencerEvents(playbackQueue);
+                        patterns.onTransportScan(playbackQueue);
                     }
                 }   
             },
@@ -155,7 +156,7 @@ window.WH.core = window.WH.core || {};
                     // advance when transport is running
                     advanceScanRange();
                     // update view
-                    patterns.onTransport(sec2tick(now));
+                    patterns.onTransportRun(sec2tick(now));
                     // flush played notes
                     flushPlaybackQueue();
                     // check loop flag
