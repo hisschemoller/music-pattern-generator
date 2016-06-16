@@ -92,7 +92,7 @@ window.WH = window.WH || {};
              */
             setSteps = function(stepData, trackIndex) {
                 steps = [];
-                lengthInTicks = stepData.length * WH.conf.getPPQN();
+                lengthInTicks = (stepData.length / WH.conf.getStepsPerBeat()) * WH.conf.getPPQN();
                 
                 for (var i = 0; i < stepData.length; i++) {
                     var d = stepData[i];
