@@ -11,7 +11,7 @@ window.WH = window.WH || {};
         var that,
             trackCount = specs.trackCount || 0,
             tracks = [],
-            lengthInTicks = WH.conf.getPPQN() * WH.conf.getPatternDurationInBeats(),
+            lengthInTicks = Number.MAX_SAFE_INTEGER; // WH.conf.getPPQN() * WH.conf.getPatternDurationInBeats(),
             
             /**
              * Scan events within time range.
