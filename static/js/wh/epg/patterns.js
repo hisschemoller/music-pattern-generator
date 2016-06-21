@@ -23,7 +23,7 @@
         
         // position and duration in ticks
         that.position = specs.position || 0;
-        that.duration = (that.steps / WH.conf.getStepsPerBeat()) * WH.conf.getPPQN();
+        that.duration = specs.duration || 0;
         
         // step data
         that.isOn = false;
@@ -124,7 +124,8 @@
                 var patternData = createPatternData({
                         steps: specs.steps,
                         pulses: specs.pulses,
-                        channel: patterns.length
+                        channel: patterns.length,
+                        duration: (specs.steps / WH.conf.getStepsPerBeat()) * WH.conf.getPPQN()
                     }),
                     euclidPattern = createBjorklund(patternData.steps, patternData.pulses),
                     arrangementSteps = createArrangementSteps(euclidPattern),

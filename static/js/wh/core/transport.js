@@ -47,7 +47,6 @@ window.WH.core = window.WH.core || {};
             loopStart = 0,
             loopEnd = 0,
             bpm = 120,
-            ppqn = 480,
             lastBpm = bpm,
             tickInSeconds = 0,
             playbackQueue = [],
@@ -153,10 +152,10 @@ window.WH.core = window.WH.core || {};
                     absLastNow = absNow;
                     // scan notes in range
                     scheduleNotesInScanRange();
+                    // update view
+                    patterns.onTransportRun(sec2tick(scanStart));
                     // advance when transport is running
                     advanceScanRange();
-                    // update view
-                    patterns.onTransportRun(sec2tick(now));
                     // flush played notes
                     flushPlaybackQueue();
                     // check loop flag
@@ -263,7 +262,7 @@ window.WH.core = window.WH.core || {};
                 lastBpm = bpm;
                 // recalcualte beat in seconds, tick in seconds
                 var beatInSeconds = 60.0 / bpm;
-                tickInSeconds = beatInSeconds / ppqn;
+                tickInSeconds = beatInSeconds / WH.conf.getPPQN();
                 // lookahead is 16 ticks (1/128th note)
                 lookAhead = tickInSeconds * 16;
                 // update time references based on tempo change

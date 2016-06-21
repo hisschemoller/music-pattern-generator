@@ -44,7 +44,10 @@ $(function() {
         }],
         song: []
     });
-    patterns.createPattern();
+    patterns.createPattern({
+        steps: 16,
+        pulses: 1
+    });
     patterns.createPattern({
         steps: 10,
         pulses: 3
@@ -53,6 +56,6 @@ $(function() {
         steps: 13,
         pulses: 3
     });
-    transport.setBPM(120);
+    transport.setBPM(140);
     transport.start();
 });
