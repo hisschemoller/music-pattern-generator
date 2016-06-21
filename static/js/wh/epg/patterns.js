@@ -125,22 +125,26 @@
                         steps: specs.steps,
                         pulses: specs.pulses,
                         channel: patterns.length,
+                        rotation: specs.rotation,
                         duration: (specs.steps / WH.conf.getStepsPerBeat()) * WH.conf.getPPQN()
                     }),
                     euclidPattern = createBjorklund(patternData.steps, patternData.pulses),
-                    arrangementSteps = createArrangementSteps(euclidPattern),
+                    arrangementSteps,
                     trackIndex = arrangement.createTrack();
                 
-                patternData.euclidPattern = euclidPattern;
-                
                 // rotate pattern
-                
+                var elementsToShift = euclidPattern.splice(euclidPattern.length - specs.rotation);
+                euclidPattern = elementsToShift.concat(euclidPattern);
+                patternData.euclidPattern = euclidPattern;
                 patterns.push(patternData);
-                
-                arrangement.updateTrack(trackIndex, arrangementSteps);
-                patternCanvas.drawB(patterns);
                 numPatterns = patterns.length;
-                // console.log(euclidPattern);
+                console.log(euclidPattern);
+                
+                // create arrangement steps from euclidean pattern
+                arrangementSteps = createArrangementSteps(euclidPattern)
+                arrangement.updateTrack(trackIndex, arrangementSteps);
+                
+                patternCanvas.drawB(patterns);
             },
             
             /**

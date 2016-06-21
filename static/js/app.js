@@ -46,7 +46,8 @@ $(function() {
     });
     patterns.createPattern({
         steps: 16,
-        pulses: 1
+        pulses: 1,
+        rotation: 3
     });
     patterns.createPattern({
         steps: 10,
