@@ -105,6 +105,13 @@ window.WH = window.WH || {};
                         index: i
                     }));
                 }
+            },
+            
+            setIndex = function(index) {
+                var i, n = steps.length;
+                for (i = 0; i < n; i++) {
+                    steps[i].setTrackIndex(index);
+                }
             };
         
         that = {};
@@ -128,6 +135,7 @@ window.WH = window.WH || {};
         that.getSteps = getSteps;
         that.setSteps = setSteps;
         that.getData = getData;
+        that.setIndex = setIndex;
         return that;
     }
     

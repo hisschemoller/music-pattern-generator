@@ -243,6 +243,18 @@ window.WH = window.WH || {};
              */
             updateTrackAt = function(patternIndex, trackIndex, arrangementSteps) {
                 patterns[patternIndex].updateTrack(trackIndex, arrangementSteps);
+            },
+            
+            /**
+             * Delete track with given index from all patterns.
+             */
+            deleteTrack = function(trackIndex) {
+                var i, 
+                    patternCount = patterns.length;
+                    
+                for (i = 0; i < patternCount; i++) {
+                    patterns[i].deleteTrack(trackIndex);
+                }
             };
         
         that = specs.that;
@@ -254,6 +266,7 @@ window.WH = window.WH || {};
         that.setSelectedPattern = setSelectedPattern;
         that.createTrack = createTrack;
         that.updateTrack = updateTrack;
+        that.deleteTrack = deleteTrack;
         return that;
     }
     

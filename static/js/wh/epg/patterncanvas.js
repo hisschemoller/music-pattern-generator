@@ -53,7 +53,7 @@ window.WH.epg = window.WH.epg || {};
                     x, y,
                     data;
                     
-                ctxB.clearRect(10, 10, 300, 30);
+                ctxB.clearRect(0, 0, 300, 200);
                 
                 for (i = 0; i < numPatterns; i++) {
                     data = patternData[i];

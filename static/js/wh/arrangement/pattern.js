@@ -89,6 +89,21 @@ window.WH = window.WH || {};
              */
             updateTrack = function(trackIndex, steps) {
                 tracks[trackIndex].setSteps(steps, trackIndex);
+            },
+            
+            /**
+             * Delete track with given index from all patterns.
+             */
+            deleteTrack = function(trackIndex) {
+                if (trackIndex >= 0 && trackIndex < tracks.length) {
+                    // remove the track
+                    tracks.splice(trackIndex, 1);
+                    trackCount = tracks.length;
+                    // lower index number on all following tracks
+                    for (var i = trackIndex; i < trackCount; i++) {
+                        tracks[i].setIndex(i);
+                    }
+                }
             };
         
         that = {};
@@ -105,6 +120,7 @@ window.WH = window.WH || {};
         that.getTrackCount = getTrackCount;
         that.createTrack = createTrack;
         that.updateTrack = updateTrack;
+        that.deleteTrack = deleteTrack;
         return that;
     }
     

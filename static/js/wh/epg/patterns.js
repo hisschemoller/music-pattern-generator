@@ -41,6 +41,7 @@
             patternCanvas = specs.patternCanvas,
             patterns = [],
             numPatterns = patterns.length,
+            selectedPattern,
             
             /**
              * Create a Euclidean step sequence from a pattern's steps and fills data.
@@ -147,6 +148,30 @@
                 patternCanvas.drawB(patterns);
             },
             
+            selectPatternByIndex = function(index) {
+                index = Math.max(0, Math.min(index, patterns.length - 1));
+                selectedPattern = patterns[index];
+            },
+            
+            deleteSelectedPattern = function() {
+                if (!selectedPattern) {
+                    return;
+                }
+                
+                var index = patterns.indexOf(selectedPattern);
+                
+                // remove track from arrangement
+                arrangement.deleteTrack(index);
+                
+                // find and delete patternData.
+                patterns.splice(index, 1);
+                selectedPattern = null;
+                numPatterns = patterns.length;
+                
+                // update view
+                patternCanvas.drawB(patterns);
+            },
+            
             /**
              * Update pattern data and view while transport runs.
              * @param {Number} transportPosition Playhead position in ticks.
@@ -183,9 +208,11 @@
         
         that = specs.that;
         
+        that.createPattern = createPattern;
+        that.selectPatternByIndex = selectPatternByIndex;
+        that.deleteSelectedPattern = deleteSelectedPattern;
         that.onTransportRun = onTransportRun;
         that.onTransportScan = onTransportScan;
-        that.createPattern = createPattern;
         return that;
     }
 

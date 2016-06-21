@@ -61,6 +61,10 @@ window.WH = window.WH || {};
                 return duration;
             },
             
+            setTrackIndex = function(index) {
+                trackIndex = index;
+            },
+            
             getTrackIndex = function() {
                 return trackIndex;
             },
@@ -114,6 +118,7 @@ window.WH = window.WH || {};
         that.getVelocity = getVelocity;
         that.getStart = getStart;
         that.getDuration = getDuration;
+        that.setTrackIndex = setTrackIndex;
         that.getTrackIndex = getTrackIndex;
         that.getIndex = getIndex;
         that.setAbsStart = setAbsStart;
