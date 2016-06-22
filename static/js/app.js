@@ -34,7 +34,8 @@ $(function() {
         patternCanvas: patternCanvas
     });
     WH.epg.createPatternCanvas({
-        that: patternCanvas
+        that: patternCanvas,
+        patterns: patterns
     });
     
     // temporary setup
@@ -47,15 +48,21 @@ $(function() {
     patterns.createPattern({
         steps: 16,
         pulses: 1,
-        rotation: 3
+        rotation: 3,
+        canvasX: 10,
+        canvasY: 10
     });
     patterns.createPattern({
         steps: 10,
-        pulses: 3
+        pulses: 3,
+        canvasX: 10,
+        canvasY: 20
     });
     patterns.createPattern({
         steps: 13,
-        pulses: 3
+        pulses: 3,
+        canvasX: 10,
+        canvasY: 30
     });
     transport.setBPM(140);
     transport.start();

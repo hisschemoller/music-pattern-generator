@@ -32,6 +32,9 @@
         
         that.channel = specs.channel || 0;
         
+        that.canvasX = specs.canvasX || 0;
+        that.canvasY = specs.canvasY || 0;
+        
         return that;
     }
     
@@ -125,18 +128,21 @@
                 var patternData = createPatternData({
                         steps: specs.steps,
                         pulses: specs.pulses,
-                        channel: patterns.length,
                         rotation: specs.rotation,
-                        duration: (specs.steps / WH.conf.getStepsPerBeat()) * WH.conf.getPPQN()
+                        channel: patterns.length,
+                        canvasX: specs.canvasX,
+                        canvasY: specs.canvasY
                     }),
                     euclidPattern = createBjorklund(patternData.steps, patternData.pulses),
                     arrangementSteps,
                     trackIndex = arrangement.createTrack();
                 
                 // rotate pattern
-                var elementsToShift = euclidPattern.splice(euclidPattern.length - specs.rotation);
+                var elementsToShift = euclidPattern.splice(euclidPattern.length - patternData.rotation);
                 euclidPattern = elementsToShift.concat(euclidPattern);
+                
                 patternData.euclidPattern = euclidPattern;
+                patternData.duration = (patternData.steps / WH.conf.getStepsPerBeat()) * WH.conf.getPPQN();
                 patterns.push(patternData);
                 numPatterns = patterns.length;
                 console.log(euclidPattern);

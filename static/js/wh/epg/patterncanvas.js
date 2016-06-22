@@ -14,11 +14,58 @@ window.WH.epg = window.WH.epg || {};
     function createPatternCanvas(specs) {
         
         var that = specs.that,
+            patterns = specs.patterns,
             canvasA = document.getElementById('canvas__animation'),
             canvasB = document.getElementById('canvas__background'),
             ctxA = canvasA.getContext('2d'),
             ctxB = canvasB.getContext('2d'),
             stepSize = 4,
+            doubleClickCounter = 0,
+            doubleClickDelay = 300,
+            doubleClickTimer,
+            isTouchDevice = 'ontouchstart' in document.documentElement,
+        
+            /**
+             * Type of events to use, touch or mouse
+             * @type {String}
+             */
+            eventType = {
+                start: isTouchDevice ? 'touchstart' : 'mousedown',
+                end: isTouchDevice ? 'touchend' : 'mouseup',
+                click: isTouchDevice ? 'touchend' : 'click',
+                move: isTouchDevice ? 'touchmove' : 'mousemove',
+            },
+            
+            init = function() {
+                $(canvasA).on(eventType.click, onClick);
+                // prevent system doubleclick to interfere with the custom doubleclick
+                $(canvasA).on('dblclick', function(e) {e.preventDefault();});
+            },
+            
+            /**
+             * Separate click and doubleclick.
+             * @see http://stackoverflow.com/questions/6330431/jquery-bind-double-click-and-single-click-separately
+             */
+            onClick = function(e) {
+                // separate click from doubleclick
+                doubleClickCounter ++;
+                if (doubleClickCounter == 1) {
+                    doubleClickTimer = setTimeout(function() {
+                        // single click
+                        doubleClickCounter = 0;
+                    }, doubleClickDelay);
+                } else {
+                    // doubleclick
+                    clearTimeout(doubleClickTimer);
+                    doubleClickCounter = 0;
+                    // create new pattern
+                    var rect = canvasA.getBoundingClientRect();
+                    patterns.createPattern({
+                        canvasX: e.clientX - rect.left,
+                        canvasY: e.clientY - rect.top
+                    });
+                }
+            },
            
             /**
              * Update while transport runs.
@@ -35,12 +82,12 @@ window.WH.epg = window.WH.epg || {};
                 
                 for (i = 0; i < numPatterns; i++) {
                     ptrn = patternData[i];
-                    x = 10 + ((ptrn.position / ptrn.duration) * ((ptrn.steps - 1) * stepSize));
-                    y = 10 + (i * (10 + stepSize));
+                    x = ptrn.canvasX + ((ptrn.position / ptrn.duration) * ((ptrn.steps - 1) * stepSize));
+                    y = ptrn.canvasY;
                     ctxA.save();
                     ctxA.translate(x, y);
                     ctxA.fillStyle = ptrn.isOn ? '#666' : '#999';
-                    h = ptrn.isOn ? stepSize * 1.5 : stepSize;
+                    var h = ptrn.isOn ? stepSize * 1.5 : stepSize;
                     ctxA.fillRect(0, 0, stepSize, h);
                     ctxA.restore();
                 }
@@ -51,19 +98,20 @@ window.WH.epg = window.WH.epg || {};
                     numPatterns = patternData.length,
                     numSteps,
                     x, y,
-                    data;
+                    ptrn;
                     
                 ctxB.clearRect(0, 0, 300, 200);
                 
                 for (i = 0; i < numPatterns; i++) {
-                    data = patternData[i];
-                    y = 10 + (i * (10 + stepSize));
-                    numSteps = data.steps;
+                    ptrn = patternData[i];
+                    // y = 10 + (i * (10 + stepSize));
+                    y = ptrn.canvasY;
+                    numSteps = ptrn.steps;
                     for (j = 0; j < numSteps; j++) {
-                        x = 10 + (j * stepSize);
+                        x = ptrn.canvasX + (j * stepSize);
                         ctxB.save();
                         ctxB.translate(x, y);
-                        ctxB.fillStyle = (data.euclidPattern[j]) ? '#ccc' : '#eee';
+                        ctxB.fillStyle = (ptrn.euclidPattern[j]) ? '#ccc' : '#eee';
                         ctxB.fillRect(0, 0, stepSize, stepSize);
                         ctxB.restore();
                     }
@@ -71,6 +119,8 @@ window.WH.epg = window.WH.epg || {};
             };
            
        that = specs.that;
+       
+       init();
        
        that.drawA = drawA;
        that.drawB = drawB;
