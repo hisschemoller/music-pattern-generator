@@ -176,21 +176,6 @@
                 patternCanvas.drawB(patterns);
             },
             
-            /**
-             * Select a pattern by occupying a given coordinate on the canvas.
-             */
-            selectPatternByCoordinate = function(x, y) {
-                var i, ptrn;
-                for (i = 0; i < numPatterns; i++) {
-                    ptrn = patterns[i]
-                    if (x >= ptrn.canvasX && x <= ptrn.canvasX + ptrn.canvasWidth &&
-                        y >= ptrn.canvasY && y <= ptrn.canvasY + ptrn.canvasHeight) {
-                        selectPatternByIndex(i);
-                        break;
-                    }
-                }
-            },
-            
             deleteSelectedPattern = function() {
                 if (!selectedPattern) {
                     return;
@@ -208,6 +193,32 @@
                 // selectPatternByIndex will also redraw the canvas
                 selectPatternByIndex(null);
             },
+            
+            /**
+             * Select a pattern by occupying a given coordinate on the canvas.
+             * @return {Object} Pattern data object.
+             */
+            selectPatternByCoordinate = function(x, y) {
+                var ptrn = getPatternByCoordinate(x, y);
+                if (ptrn) {
+                    selectPatternByIndex(patterns.indexOf(ptrn));
+                }
+            },
+            
+            /**
+             * Get pattern occupying a given coordinate on the canvas.
+             * @return {Object} Pattern data object.
+             */
+            getPatternByCoordinate = function(x, y) {
+                var i, ptrn;
+                for (i = 0; i < numPatterns; i++) {
+                    ptrn = patterns[i]
+                    if (x >= ptrn.canvasX && x <= ptrn.canvasX + ptrn.canvasWidth &&
+                        y >= ptrn.canvasY && y <= ptrn.canvasY + ptrn.canvasHeight) {
+                        return ptrn;
+                    }
+                }
+            }
             
             /**
              * Update pattern data and view while transport runs.
@@ -241,6 +252,14 @@
                         ptrn.offPosition = (ptrn.position + step.getDuration()) % ptrn.duration;
                     }
                 }
+            },
+            
+            /**
+             * Redraw both canvasses.
+             */
+            refreshCanvas = function() {
+                patternCanvas.drawA(patterns);
+                patternCanvas.drawB(patterns);
             };
         
         that = specs.that;
@@ -248,9 +267,11 @@
         that.createPattern = createPattern;
         that.selectPatternByIndex = selectPatternByIndex;
         that.selectPatternByCoordinate = selectPatternByCoordinate;
+        that.getPatternByCoordinate = getPatternByCoordinate;
         that.deleteSelectedPattern = deleteSelectedPattern;
         that.onTransportRun = onTransportRun;
         that.onTransportScan = onTransportScan;
+        that.refreshCanvas = refreshCanvas;
         return that;
     }
 

@@ -16,6 +16,7 @@ window.WH.epg = window.WH.epg || {};
         var that = specs.that,
             patterns = specs.patterns,
             canvasA = document.getElementById('canvas__animation'),
+            $canvasA = $(canvasA),
             canvasB = document.getElementById('canvas__background'),
             ctxA = canvasA.getContext('2d'),
             ctxB = canvasB.getContext('2d'),
@@ -38,9 +39,10 @@ window.WH.epg = window.WH.epg || {};
             },
             
             init = function() {
-                $(canvasA).on(eventType.click, onClick);
+                $canvasA.on(eventType.click, onClick);
+                $canvasA.on(eventType.start, onMoveStart);
                 // prevent system doubleclick to interfere with the custom doubleclick
-                $(canvasA).on('dblclick', function(e) {e.preventDefault();});
+                $canvasA.on('dblclick', function(e) {e.preventDefault();});
             },
             
             /**
@@ -67,6 +69,44 @@ window.WH.epg = window.WH.epg || {};
                         canvasY: e.clientY - rect.top
                     });
                 }
+            },
+            
+            /**
+             * Start dragging a pattern.
+             */
+            onMoveStart = function(e) {
+                var x = e.clientX - rect.left, 
+                    y = e.clientY - rect.top,
+                    ptrn = patterns.getPatternByCoordinate(x, y);
+                if (ptrn) {
+                    var eventData = {
+                        ptrn: ptrn,
+                        offsetX: x - ptrn.canvasX,
+                        offsetY: y - ptrn.canvasY
+                    };
+                    $canvasA.on(eventType.move, eventData, onMove);
+                    $canvasA.on(eventType.end, eventData, onMoveEnd);
+                }
+            },
+            
+            /**
+             * Drag a pattern.
+             */
+            onMove = function(e) {
+                e.data.ptrn.canvasX = e.clientX - rect.left - e.data.offsetX;
+                e.data.ptrn.canvasY = e.clientY - rect.top - e.data.offsetY;
+                patterns.refreshCanvas();
+            },
+            
+            /**
+             * End dragging a pattern.
+             */
+            onMoveEnd = function(e) {
+                e.data.ptrn.canvasX = e.clientX - rect.left - e.data.offsetX;
+                e.data.ptrn.canvasY = e.clientY - rect.top - e.data.offsetY;
+                patterns.refreshCanvas();
+                $canvasA.off(eventType.move, onMove);
+                $canvasA.off(eventType.end, onMoveEnd);
             },
            
             /**
