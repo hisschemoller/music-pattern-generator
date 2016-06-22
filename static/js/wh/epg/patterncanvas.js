@@ -19,6 +19,7 @@ window.WH.epg = window.WH.epg || {};
             canvasB = document.getElementById('canvas__background'),
             ctxA = canvasA.getContext('2d'),
             ctxB = canvasB.getContext('2d'),
+            rect = canvasA.getBoundingClientRect(),
             stepSize = 4,
             doubleClickCounter = 0,
             doubleClickDelay = 300,
@@ -53,13 +54,14 @@ window.WH.epg = window.WH.epg || {};
                     doubleClickTimer = setTimeout(function() {
                         // single click
                         doubleClickCounter = 0;
+                        // select pattern
+                        patterns.selectPatternByCoordinate(e.clientX - rect.left, e.clientY - rect.top);
                     }, doubleClickDelay);
                 } else {
                     // doubleclick
                     clearTimeout(doubleClickTimer);
                     doubleClickCounter = 0;
                     // create new pattern
-                    var rect = canvasA.getBoundingClientRect();
                     patterns.createPattern({
                         canvasX: e.clientX - rect.left,
                         canvasY: e.clientY - rect.top
@@ -104,6 +106,8 @@ window.WH.epg = window.WH.epg || {};
                 
                 for (i = 0; i < numPatterns; i++) {
                     ptrn = patternData[i];
+                    ptrn.canvasWidth = ptrn.steps * stepSize;
+                    ptrn.canvasHeight = ptrn.steps * 2;
                     y = ptrn.canvasY;
                     numSteps = ptrn.steps;
                     for (j = 0; j < numSteps; j++) {

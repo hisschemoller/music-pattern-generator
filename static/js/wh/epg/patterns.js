@@ -34,7 +34,9 @@
             lastPosition: 0,
             
             canvasX: specs.canvasX || 0,
-            canvasY: specs.canvasY || 0
+            canvasY: specs.canvasY || 0,
+            canvasWidth: 0,
+            canvasHeight: 0
         };
         
         return that;
@@ -158,8 +160,7 @@
             },
             
             selectPatternByIndex = function(index) {
-                var i,
-                    pattern;
+                var i;
                 
                 if(!isNaN(index) && index >= 0 && index < patterns.length && patterns.length) {
                     selectedPattern = patterns[index];
@@ -173,6 +174,21 @@
                 
                 // update view
                 patternCanvas.drawB(patterns);
+            },
+            
+            /**
+             * Select a pattern by occupying a given coordinate on the canvas.
+             */
+            selectPatternByCoordinate = function(x, y) {
+                var i, ptrn;
+                for (i = 0; i < numPatterns; i++) {
+                    ptrn = patterns[i]
+                    if (x >= ptrn.canvasX && x <= ptrn.canvasX + ptrn.canvasWidth &&
+                        y >= ptrn.canvasY && y <= ptrn.canvasY + ptrn.canvasHeight) {
+                        selectPatternByIndex(i);
+                        break;
+                    }
+                }
             },
             
             deleteSelectedPattern = function() {
@@ -231,6 +247,7 @@
         
         that.createPattern = createPattern;
         that.selectPatternByIndex = selectPatternByIndex;
+        that.selectPatternByCoordinate = selectPatternByCoordinate;
         that.deleteSelectedPattern = deleteSelectedPattern;
         that.onTransportRun = onTransportRun;
         that.onTransportScan = onTransportScan;
