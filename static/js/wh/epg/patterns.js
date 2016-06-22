@@ -12,28 +12,30 @@
 (function (ns) {
     
     function createPatternData(specs) {
-        var that = {};
         specs = specs || {};
         
-        that.steps = specs.steps || 16;
-        that.pulses = specs.pulses || 4;
-        that.rotation = specs.rotation || 0;
-        
-        that.euclidPattern = [];
-        
-        // position and duration in ticks
-        that.position = specs.position || 0;
-        that.duration = specs.duration || 0;
-        
-        // step data
-        that.isOn = false;
-        that.offPosition = 0;
-        that.lastPosition = 0;
-        
-        that.channel = specs.channel || 0;
-        
-        that.canvasX = specs.canvasX || 0;
-        that.canvasY = specs.canvasY || 0;
+        var that = {
+            steps: specs.steps || 16,
+            pulses: specs.pulses || 4,
+            rotation: specs.rotation || 0,
+            
+            euclidPattern: [],
+            
+            channel: specs.channel || 0,
+            
+            // position and duration in ticks
+            position: specs.position || 0,
+            duration: specs.duration || 0,
+            
+            isOn: false,
+            isSelected: false,
+            
+            offPosition: 0,
+            lastPosition: 0,
+            
+            canvasX: specs.canvasX || 0,
+            canvasY: specs.canvasY || 0
+        };
         
         return that;
     }
@@ -151,12 +153,26 @@
                 arrangementSteps = createArrangementSteps(euclidPattern)
                 arrangement.updateTrack(trackIndex, arrangementSteps);
                 
-                patternCanvas.drawB(patterns);
+                // selectPatternByIndex will also redraw the canvas
+                selectPatternByIndex(trackIndex);
             },
             
             selectPatternByIndex = function(index) {
-                index = Math.max(0, Math.min(index, patterns.length - 1));
-                selectedPattern = patterns[index];
+                var i,
+                    pattern;
+                
+                if(!isNaN(index) && index >= 0 && index < patterns.length && patterns.length) {
+                    selectedPattern = patterns[index];
+                } else {
+                    selectedPattern = null;
+                }
+                
+                for (i = 0; i < numPatterns; i++) {
+                    patterns[i].isSelected = (i === index);
+                }
+                
+                // update view
+                patternCanvas.drawB(patterns);
             },
             
             deleteSelectedPattern = function() {
@@ -171,11 +187,10 @@
                 
                 // find and delete patternData.
                 patterns.splice(index, 1);
-                selectedPattern = null;
                 numPatterns = patterns.length;
                 
-                // update view
-                patternCanvas.drawB(patterns);
+                // selectPatternByIndex will also redraw the canvas
+                selectPatternByIndex(null);
             },
             
             /**

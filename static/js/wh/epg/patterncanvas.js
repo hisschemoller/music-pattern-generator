@@ -104,7 +104,6 @@ window.WH.epg = window.WH.epg || {};
                 
                 for (i = 0; i < numPatterns; i++) {
                     ptrn = patternData[i];
-                    // y = 10 + (i * (10 + stepSize));
                     y = ptrn.canvasY;
                     numSteps = ptrn.steps;
                     for (j = 0; j < numSteps; j++) {
@@ -113,6 +112,14 @@ window.WH.epg = window.WH.epg || {};
                         ctxB.translate(x, y);
                         ctxB.fillStyle = (ptrn.euclidPattern[j]) ? '#ccc' : '#eee';
                         ctxB.fillRect(0, 0, stepSize, stepSize);
+                        ctxB.restore();
+                    }
+                    
+                    if (ptrn.isSelected) {
+                        ctxB.save();
+                        ctxB.translate(ptrn.canvasX, ptrn.canvasY + stepSize + 2);
+                        ctxB.fillStyle = '#ccc';
+                        ctxB.fillRect(0, 0, stepSize * ptrn.steps, 1);
                         ctxB.restore();
                     }
                 }
