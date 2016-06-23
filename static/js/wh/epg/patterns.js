@@ -155,22 +155,19 @@
                 arrangementSteps = createArrangementSteps(euclidPattern)
                 arrangement.updateTrack(trackIndex, arrangementSteps);
                 
-                // selectPatternByIndex will also redraw the canvas
-                selectPatternByIndex(trackIndex);
+                // selectPattern will also redraw the canvas
+                selectPattern(patternData);
             },
             
-            selectPatternByIndex = function(index) {
-                var i;
-                
-                if(!isNaN(index) && index >= 0 && index < patterns.length && patterns.length) {
-                    selectedPattern = patterns[index];
-                } else {
-                    selectedPattern = null;
-                }
+            selectPattern = function(ptrn) {
+                var i,
+                    index = patterns.indexOf(ptrn);
                 
                 for (i = 0; i < numPatterns; i++) {
                     patterns[i].isSelected = (i === index);
                 }
+                
+                selectedPattern = ptrn;
                 
                 // update view
                 patternCanvas.drawB(patterns);
@@ -190,8 +187,8 @@
                 patterns.splice(index, 1);
                 numPatterns = patterns.length;
                 
-                // selectPatternByIndex will also redraw the canvas
-                selectPatternByIndex(null);
+                // selectPattern will also redraw the canvas
+                selectPattern(null);
             },
             
             /**
@@ -201,7 +198,7 @@
             selectPatternByCoordinate = function(x, y) {
                 var ptrn = getPatternByCoordinate(x, y);
                 if (ptrn) {
-                    selectPatternByIndex(patterns.indexOf(ptrn));
+                    selectPattern(ptrn);
                 }
             },
             
@@ -265,7 +262,7 @@
         that = specs.that;
         
         that.createPattern = createPattern;
-        that.selectPatternByIndex = selectPatternByIndex;
+        that.selectPattern = selectPattern;
         that.selectPatternByCoordinate = selectPatternByCoordinate;
         that.getPatternByCoordinate = getPatternByCoordinate;
         that.deleteSelectedPattern = deleteSelectedPattern;

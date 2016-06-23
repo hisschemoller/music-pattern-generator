@@ -40,7 +40,7 @@ window.WH.epg = window.WH.epg || {};
             
             init = function() {
                 $canvasA.on(eventType.click, onClick);
-                $canvasA.on(eventType.start, onMoveStart);
+                $canvasA.on(eventType.start, onTouchStart);
                 // prevent system doubleclick to interfere with the custom doubleclick
                 $canvasA.on('dblclick', function(e) {e.preventDefault();});
             },
@@ -56,8 +56,7 @@ window.WH.epg = window.WH.epg || {};
                     doubleClickTimer = setTimeout(function() {
                         // single click
                         doubleClickCounter = 0;
-                        // select pattern
-                        patterns.selectPatternByCoordinate(e.clientX - rect.left, e.clientY - rect.top);
+                        // not used yet
                     }, doubleClickDelay);
                 } else {
                     // doubleclick
@@ -74,25 +73,28 @@ window.WH.epg = window.WH.epg || {};
             /**
              * Start dragging a pattern.
              */
-            onMoveStart = function(e) {
+            onTouchStart = function(e) {
                 var x = e.clientX - rect.left, 
                     y = e.clientY - rect.top,
                     ptrn = patterns.getPatternByCoordinate(x, y);
                 if (ptrn) {
+                    // set the pattern as selected
+                    patterns.selectPattern(ptrn);
+                    // prepare to drag the pattern
                     var eventData = {
                         ptrn: ptrn,
                         offsetX: x - ptrn.canvasX,
                         offsetY: y - ptrn.canvasY
                     };
-                    $canvasA.on(eventType.move, eventData, onMove);
-                    $canvasA.on(eventType.end, eventData, onMoveEnd);
+                    $canvasA.on(eventType.move, eventData, onTouchMove);
+                    $canvasA.on(eventType.end, eventData, onTouchEnd);
                 }
             },
             
             /**
              * Drag a pattern.
              */
-            onMove = function(e) {
+            onTouchMove = function(e) {
                 e.data.ptrn.canvasX = e.clientX - rect.left - e.data.offsetX;
                 e.data.ptrn.canvasY = e.clientY - rect.top - e.data.offsetY;
                 patterns.refreshCanvas();
@@ -101,12 +103,12 @@ window.WH.epg = window.WH.epg || {};
             /**
              * End dragging a pattern.
              */
-            onMoveEnd = function(e) {
+            onTouchEnd = function(e) {
                 e.data.ptrn.canvasX = e.clientX - rect.left - e.data.offsetX;
                 e.data.ptrn.canvasY = e.clientY - rect.top - e.data.offsetY;
                 patterns.refreshCanvas();
-                $canvasA.off(eventType.move, onMove);
-                $canvasA.off(eventType.end, onMoveEnd);
+                $canvasA.off(eventType.move, onTouchMove);
+                $canvasA.off(eventType.end, onTouchEnd);
             },
            
             /**

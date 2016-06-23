@@ -66,8 +66,4 @@ $(function() {
     });
     transport.setBPM(140);
     transport.start();
-    setTimeout(function() {
-        patterns.selectPatternByIndex(1);
-        patterns.deleteSelectedPattern();
-    }, 2000);
 });
