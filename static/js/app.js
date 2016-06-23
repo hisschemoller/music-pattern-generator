@@ -31,10 +31,15 @@ $(function() {
         that: patterns,
         arrangement: arrangement,
         transport: transport,
-        patternCanvas: patternCanvas
+        patternCanvas: patternCanvas,
+        patternSettings: patternSettings
     });
     WH.epg.createPatternCanvas({
         that: patternCanvas,
+        patterns: patterns
+    });
+    WH.epg.createPatternSettings({
+        that: patternSettings,
         patterns: patterns
     });
     

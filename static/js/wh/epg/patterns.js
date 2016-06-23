@@ -46,6 +46,7 @@
         var that,
             arrangement = specs.arrangement,
             patternCanvas = specs.patternCanvas,
+            patternSettings = specs.patternSettings,
             patterns = [],
             numPatterns = patterns.length,
             selectedPattern,
@@ -137,26 +138,34 @@
                         canvasX: specs.canvasX,
                         canvasY: specs.canvasY
                     }),
-                    euclidPattern = createBjorklund(patternData.steps, patternData.pulses),
+                    euclidPattern,
                     arrangementSteps,
                     trackIndex = arrangement.createTrack();
+                    patterns.push(patternData);
                 
-                // rotate pattern
-                var elementsToShift = euclidPattern.splice(euclidPattern.length - patternData.rotation);
-                euclidPattern = elementsToShift.concat(euclidPattern);
-                
-                patternData.euclidPattern = euclidPattern;
-                patternData.duration = (patternData.steps / WH.conf.getStepsPerBeat()) * WH.conf.getPPQN();
-                patterns.push(patternData);
-                numPatterns = patterns.length;
-                console.log(euclidPattern);
-                
-                // create arrangement steps from euclidean pattern
-                arrangementSteps = createArrangementSteps(euclidPattern)
-                arrangement.updateTrack(trackIndex, arrangementSteps);
+                updatePattern(patternData, trackIndex);
                 
                 // selectPattern will also redraw the canvas
                 selectPattern(patternData);
+            },
+            
+            updatePattern = function(ptrn) {    
+                var ptrnIndex = patterns.indexOf(ptrn),
+                    euclidPattern = createBjorklund(ptrn.steps, ptrn.pulses),
+                    elementsToShift = euclidPattern.splice(euclidPattern.length - ptrn.rotation),
+                    arrangementSteps;
+                    
+                euclidPattern = elementsToShift.concat(euclidPattern);
+                console.log(euclidPattern);
+                
+                ptrn.euclidPattern = euclidPattern;
+                ptrn.duration = (ptrn.steps / WH.conf.getStepsPerBeat()) * WH.conf.getPPQN();
+                
+                numPatterns = patterns.length;
+                
+                // create arrangement steps from euclidean pattern
+                arrangementSteps = createArrangementSteps(euclidPattern)
+                arrangement.updateTrack(ptrnIndex, arrangementSteps);
             },
             
             selectPattern = function(ptrn) {
@@ -171,6 +180,7 @@
                 
                 // update view
                 patternCanvas.drawB(patterns);
+                patternSettings.setPattern(selectedPattern);
             },
             
             deleteSelectedPattern = function() {
@@ -183,23 +193,12 @@
                 // remove track from arrangement
                 arrangement.deleteTrack(index);
                 
-                // find and delete patternData.
+                // find and delete patternData
                 patterns.splice(index, 1);
                 numPatterns = patterns.length;
                 
                 // selectPattern will also redraw the canvas
                 selectPattern(null);
-            },
-            
-            /**
-             * Select a pattern by occupying a given coordinate on the canvas.
-             * @return {Object} Pattern data object.
-             */
-            selectPatternByCoordinate = function(x, y) {
-                var ptrn = getPatternByCoordinate(x, y);
-                if (ptrn) {
-                    selectPattern(ptrn);
-                }
             },
             
             /**
@@ -215,7 +214,37 @@
                         return ptrn;
                     }
                 }
-            }
+            },
+            
+            setPatternProperty = function(name, value) {
+                console.log(name, value);
+                switch (name) {
+                    case 'steps':
+                        selectedPattern.steps = Math.min(value, 64);
+                        if (selectedPattern.pulses > value) {
+                            selectedPattern.pulses = value;
+                        }
+                        if (selectedPattern.rotation > value) {
+                            selectedPattern.rotation = value;
+                        }
+                        updatePattern(selectedPattern);
+                        patternSettings.updateSetting(name, value);
+                        patternCanvas.drawB(patterns);
+                        break;
+                    case 'pulses':
+                        selectedPattern.pulses = Math.min(value, selectedPattern.steps);
+                        updatePattern(selectedPattern);
+                        patternSettings.updateSetting(name, value);
+                        patternCanvas.drawB(patterns);
+                        break;
+                    case 'rotation':
+                        selectedPattern.rotation = Math.min(value, selectedPattern.steps);
+                        updatePattern(selectedPattern);
+                        patternSettings.updateSetting(name, value);
+                        patternCanvas.drawB(patterns);
+                        break;
+                }
+            },
             
             /**
              * Update pattern data and view while transport runs.
@@ -263,9 +292,9 @@
         
         that.createPattern = createPattern;
         that.selectPattern = selectPattern;
-        that.selectPatternByCoordinate = selectPatternByCoordinate;
         that.getPatternByCoordinate = getPatternByCoordinate;
         that.deleteSelectedPattern = deleteSelectedPattern;
+        that.setPatternProperty = setPatternProperty;
         that.onTransportRun = onTransportRun;
         that.onTransportScan = onTransportScan;
         that.refreshCanvas = refreshCanvas;

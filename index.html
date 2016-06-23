@@ -10,6 +10,23 @@
         <canvas id="canvas__background" width="300" height="200">HTML canvas not available.</canvas>
         <canvas id="canvas__animation" width="300" height="200">HTML canvas not available.</canvas>
     </div>
+    <div class="settings">
+        <div class="settings__row">
+            <span class="settings__label">steps</span>
+            <input type="range" name="steps-range" min="0" max="16" step="1" class="settings__range" />
+            <input type="number" name="steps-number" min="0" max="16" class="settings__number" />
+        </div>
+        <div class="settings__row">
+            <span class="settings__label">pulses</span>
+            <input type="range" name="pulses-range" min="0" max="16" step="1" class="settings__range" />
+            <input type="number" name="pulses-number" min="0" max="16" class="settings__number" />
+        </div>
+        <div class="settings__row">
+            <span class="settings__label">rotation</span>
+            <input type="range" name="rotation-range" min="0" max="16" step="1" class="settings__range" />
+            <input type="number" name="rotation-number" min="0" max="16" class="settings__number" />
+        </div>
+    </div>
     <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
     <script src="static/js/app.js"></script>
     <script src="static/js/wh/arrangement/arrangement.js"></script>
@@ -21,5 +38,6 @@
     <script src="static/js/wh/core/transport.js"></script>
     <script src="static/js/wh/epg/patterncanvas.js"></script>
     <script src="static/js/wh/epg/patterns.js"></script>
+    <script src="static/js/wh/epg/patternsettings.js"></script>
 </body>
 </html>
