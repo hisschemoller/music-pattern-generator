@@ -17,18 +17,18 @@ window.WH.epg = window.WH.epg || {};
             settings = {
                 steps: {
                     type: 'slider',
-                    range: document.getElementsByName('steps-range')[0],
-                    number: document.getElementsByName('steps-number')[0]
+                    range: document.getElementById('steps-range'),
+                    number: document.getElementById('steps-number')
                 },
                 pulses: {
                     type: 'slider',
-                    range: document.getElementsByName('pulses-range')[0],
-                    number: document.getElementsByName('pulses-number')[0]
+                    range: document.getElementById('pulses-range'),
+                    number: document.getElementById('pulses-number')
                 },
                 rotation: {
                     type: 'slider',
-                    range: document.getElementsByName('rotation-range')[0],
-                    number: document.getElementsByName('rotation-number')[0]
+                    range: document.getElementById('rotation-range'),
+                    number: document.getElementById('rotation-number')
                 }
             },
             
