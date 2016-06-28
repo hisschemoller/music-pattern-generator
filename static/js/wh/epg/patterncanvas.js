@@ -74,6 +74,8 @@ window.WH.epg = window.WH.epg || {};
              * Start dragging a pattern.
              */
             onTouchStart = function(e) {
+                // Prevent text cursor during drag, http://stackoverflow.com/a/9743380
+                e.originalEvent.preventDefault();
                 var x = e.clientX - rect.left, 
                     y = e.clientY - rect.top,
                     ptrn = patterns.getPatternByCoordinate(x, y);
@@ -149,7 +151,7 @@ window.WH.epg = window.WH.epg || {};
                 for (i = 0; i < numPatterns; i++) {
                     ptrn = patternData[i];
                     ptrn.canvasWidth = ptrn.steps * stepSize;
-                    ptrn.canvasHeight = ptrn.steps * 2;
+                    ptrn.canvasHeight = stepSize * 2;
                     y = ptrn.canvasY;
                     numSteps = ptrn.steps;
                     for (j = 0; j < numSteps; j++) {
