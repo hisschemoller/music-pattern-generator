@@ -10,7 +10,7 @@
         <canvas id="canvas__background" width="300" height="200">HTML canvas not available.</canvas>
         <canvas id="canvas__animation" width="300" height="200">HTML canvas not available.</canvas>
     </div>
-    <div class="settings">
+    <div id="settings">
         <div class="settings__row">
             <label for="steps-range" class="settings__label">steps</label>
             <input type="range" id="steps-range" min="0" max="16" step="1" class="settings__range" />
@@ -29,6 +29,9 @@
         <div class="settings__row">
             <label for="name-text" class="settings__label">name</label>
             <input type="text" id="name-text" class="settings__text" />
+        </div>
+        <div class="settings__row">
+            <input type="button" id="delete-button" class="settings__button" value="delete pattern" />
         </div>
     </div>
     <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>

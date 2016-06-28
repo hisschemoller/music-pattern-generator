@@ -14,6 +14,7 @@ window.WH.epg = window.WH.epg || {};
     function createPatternSettings(specs) {
         var that,
             patterns = specs.patterns,
+            settingsEl = document.getElementById('settings')
             settings = {
                 steps: {
                     type: 'slider',
@@ -42,6 +43,10 @@ window.WH.epg = window.WH.epg || {};
                 initSetting('rotation', 64);
                 settings.name.input.dataset.prop = 'name';
                 settings.name.input.addEventListener('change', onChange);
+                document.getElementById('delete-button').addEventListener('click', function(e) {
+                    // show a confirmation dialog first
+                    patterns.deleteSelectedPattern();
+                });
             },
             
             initSetting = function(name, max) {
@@ -58,10 +63,25 @@ window.WH.epg = window.WH.epg || {};
              * 
              */
             setPattern = function(ptrn) {
-                updateSetting('steps', ptrn.steps);
-                updateSetting('pulses', ptrn.pulses);
-                updateSetting('rotation', ptrn.rotation);
-                updateSetting('name', ptrn.name);
+                if (ptrn) {
+                    updateSetting('steps', ptrn.steps);
+                    updateSetting('pulses', ptrn.pulses);
+                    updateSetting('rotation', ptrn.rotation);
+                    updateSetting('name', ptrn.name);
+                }
+                setEnabled(ptrn !== null);
+            },
+            
+            /**
+             * Enable or disable all the settings panel inputs.
+             * @param {Boolean} isEnabled True to enable the inputs.
+             */
+            setEnabled = function(isEnabled) {
+                var inputs = settingsEl.getElementsByTagName('input'),
+                    i;
+                for (i = 0; i < inputs.length; i++) {
+                    inputs[i].disabled = !isEnabled;
+                }
             },
             
             updateSetting = function(name, value) {
