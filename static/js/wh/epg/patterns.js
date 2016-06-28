@@ -141,7 +141,9 @@
                     euclidPattern,
                     arrangementSteps,
                     trackIndex = arrangement.createTrack();
-                    patterns.push(patternData);
+                
+                patterns.push(patternData);
+                numPatterns = patterns.length;
                 
                 updatePattern(patternData, trackIndex);
                 
@@ -149,6 +151,10 @@
                 selectPattern(patternData);
             },
             
+            /**
+             * Update the pattern if one of the Euclidean settings have changed.
+             * @param {Object} ptrn Pattern data object.
+             */
             updatePattern = function(ptrn) {    
                 var ptrnIndex = patterns.indexOf(ptrn),
                     euclidPattern = createBjorklund(ptrn.steps, ptrn.pulses),
@@ -160,8 +166,6 @@
                 
                 ptrn.euclidPattern = euclidPattern;
                 ptrn.duration = (ptrn.steps / WH.conf.getStepsPerBeat()) * WH.conf.getPPQN();
-                
-                numPatterns = patterns.length;
                 
                 // create arrangement steps from euclidean pattern
                 arrangementSteps = createArrangementSteps(euclidPattern)
