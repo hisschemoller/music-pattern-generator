@@ -29,6 +29,10 @@ window.WH.epg = window.WH.epg || {};
                     type: 'slider',
                     range: document.getElementById('rotation-range'),
                     number: document.getElementById('rotation-number')
+                },
+                name: {
+                    type: 'text',
+                    input: document.getElementById('name-text')
                 }
             },
             
@@ -55,6 +59,7 @@ window.WH.epg = window.WH.epg || {};
                 updateSetting('steps', ptrn.steps);
                 updateSetting('pulses', ptrn.pulses);
                 updateSetting('rotation', ptrn.rotation);
+                updateSetting('name', ptrn.name);
             },
             
             updateSetting = function(name, value) {
@@ -64,6 +69,8 @@ window.WH.epg = window.WH.epg || {};
                         setting.range.value = value;
                         setting.number.value = value;
                         break;
+                    case 'text':
+                        setting.input.value = value;
                 };
             },
             

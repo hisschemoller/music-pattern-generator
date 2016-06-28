@@ -15,13 +15,17 @@
         specs = specs || {};
         
         var that = {
+            // euclidean settings
             steps: specs.steps || 16,
             pulses: specs.pulses || 4,
             rotation: specs.rotation || 0,
-            
             euclidPattern: [],
             
+            // midi settings
             channel: specs.channel || 0,
+            
+            // misc settings
+            name: specs.name || '',
             
             // position and duration in ticks
             position: specs.position || 0,
@@ -33,6 +37,7 @@
             offPosition: 0,
             lastPosition: 0,
             
+            // canvas position and size
             canvasX: specs.canvasX || 0,
             canvasY: specs.canvasY || 0,
             canvasWidth: 0,
@@ -130,14 +135,8 @@
              */
             createPattern = function(specs) {
                 specs = specs || {};
-                var patternData = createPatternData({
-                        steps: specs.steps,
-                        pulses: specs.pulses,
-                        rotation: specs.rotation,
-                        channel: patterns.length,
-                        canvasX: specs.canvasX,
-                        canvasY: specs.canvasY
-                    }),
+                specs.channel = patterns.length;
+                var patternData = createPatternData(specs),
                     euclidPattern,
                     arrangementSteps,
                     trackIndex = arrangement.createTrack();

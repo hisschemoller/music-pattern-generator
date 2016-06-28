@@ -67,7 +67,8 @@ $(function() {
         steps: 13,
         pulses: 3,
         canvasX: 10,
-        canvasY: 30
+        canvasY: 30,
+        name: 'test'
     });
     transport.setBPM(140);
     transport.start();

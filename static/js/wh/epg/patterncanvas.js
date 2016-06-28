@@ -152,6 +152,7 @@ window.WH.epg = window.WH.epg || {};
                     ptrn = patternData[i];
                     ptrn.canvasWidth = ptrn.steps * stepSize;
                     ptrn.canvasHeight = stepSize * 2;
+                    
                     y = ptrn.canvasY;
                     numSteps = ptrn.steps;
                     for (j = 0; j < numSteps; j++) {
@@ -168,6 +169,19 @@ window.WH.epg = window.WH.epg || {};
                         ctxB.translate(ptrn.canvasX, ptrn.canvasY + stepSize + 2);
                         ctxB.fillStyle = '#ccc';
                         ctxB.fillRect(0, 0, stepSize * ptrn.steps, 1);
+                        ctxB.restore();
+                    }
+                    
+                    if (ptrn.name && ptrn.name.length > 0) {
+                        x = ptrn.canvasX + (stepSize * (numSteps / 2));
+                        y = ptrn.canvasY + (stepSize * 2)
+                        ctxB.save();
+                        ctxB.translate(x, y);
+                        ctxB.font = '10px sans-serif';
+                        ctxB.textAlign = 'center';
+                        ctxB.textBaseline = 'top';
+                        ctxB.fillStyle = '#ccc';
+                        ctxB.fillText(ptrn.name, 0, 0);
                         ctxB.restore();
                     }
                 }
