@@ -216,29 +216,32 @@
                 }
             },
             
+            /**
+             * Update the value of a single property of the selected pattern.
+             * @param {String} name Property name.
+             * @param {Number} value Property value.
+             */
             setPatternProperty = function(name, value) {
-                console.log(name, value);
                 switch (name) {
                     case 'steps':
-                        selectedPattern.steps = Math.min(value, 64);
+                        value = Math.min(value, 64);
+                        selectedPattern.steps = value;
                         if (selectedPattern.pulses > value) {
                             selectedPattern.pulses = value;
+                            patternSettings.updateSetting('pulses', value);
                         }
                         if (selectedPattern.rotation > value) {
                             selectedPattern.rotation = value;
+                            patternSettings.updateSetting('rotation', value);
                         }
                         updatePattern(selectedPattern);
                         patternSettings.updateSetting(name, value);
                         patternCanvas.drawB(patterns);
                         break;
                     case 'pulses':
-                        selectedPattern.pulses = Math.min(value, selectedPattern.steps);
-                        updatePattern(selectedPattern);
-                        patternSettings.updateSetting(name, value);
-                        patternCanvas.drawB(patterns);
-                        break;
                     case 'rotation':
-                        selectedPattern.rotation = Math.min(value, selectedPattern.steps);
+                        value = Math.min(value, selectedPattern.steps);
+                        selectedPattern[name] = value;
                         updatePattern(selectedPattern);
                         patternSettings.updateSetting(name, value);
                         patternCanvas.drawB(patterns);
