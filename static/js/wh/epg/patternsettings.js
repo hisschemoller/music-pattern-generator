@@ -40,6 +40,8 @@ window.WH.epg = window.WH.epg || {};
                 initSetting('steps', 64);
                 initSetting('pulses', 64);
                 initSetting('rotation', 64);
+                settings.name.input.dataset.prop = 'name';
+                settings.name.input.addEventListener('change', onChange);
             },
             
             initSetting = function(name, max) {

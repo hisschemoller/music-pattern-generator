@@ -228,7 +228,7 @@
                 switch (name) {
                     case 'steps':
                         value = Math.min(value, 64);
-                        selectedPattern.steps = value;
+                        selectedPattern[name] = value;
                         if (selectedPattern.pulses > value) {
                             selectedPattern.pulses = value;
                             patternSettings.updateSetting('pulses', value);
@@ -246,6 +246,11 @@
                         value = Math.min(value, selectedPattern.steps);
                         selectedPattern[name] = value;
                         updatePattern(selectedPattern);
+                        patternSettings.updateSetting(name, value);
+                        patternCanvas.drawB(patterns);
+                        break;
+                    case 'name':
+                        selectedPattern[name] = value;
                         patternSettings.updateSetting(name, value);
                         patternCanvas.drawB(patterns);
                         break;
