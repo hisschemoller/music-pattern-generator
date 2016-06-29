@@ -16,7 +16,6 @@ window.WH.epg = window.WH.epg || {};
         var that = specs.that,
             patterns = specs.patterns,
             canvasA = document.getElementById('canvas__animation'),
-            $canvasA = $(canvasA),
             canvasB = document.getElementById('canvas__background'),
             ctxA = canvasA.getContext('2d'),
             ctxB = canvasB.getContext('2d'),
@@ -25,6 +24,9 @@ window.WH.epg = window.WH.epg || {};
             doubleClickCounter = 0,
             doubleClickDelay = 300,
             doubleClickTimer,
+            dragPattern,
+            dragOffsetX,
+            dragOffsetY,
             isTouchDevice = 'ontouchstart' in document.documentElement,
         
             /**
@@ -39,10 +41,10 @@ window.WH.epg = window.WH.epg || {};
             },
             
             init = function() {
-                $canvasA.on(eventType.click, onClick);
-                $canvasA.on(eventType.start, onTouchStart);
+                canvasA.addEventListener(eventType.click, onClick);
+                canvasA.addEventListener(eventType.start, onTouchStart);
                 // prevent system doubleclick to interfere with the custom doubleclick
-                $canvasA.on('dblclick', function(e) {e.preventDefault();});
+                canvasA.addEventListener('dblclick', function(e) {e.preventDefault();});
             },
             
             /**
@@ -75,7 +77,7 @@ window.WH.epg = window.WH.epg || {};
              */
             onTouchStart = function(e) {
                 // Prevent text cursor during drag, http://stackoverflow.com/a/9743380
-                e.originalEvent.preventDefault();
+                e.preventDefault();
                 var x = e.clientX - rect.left, 
                     y = e.clientY - rect.top,
                     ptrn = patterns.getPatternByCoordinate(x, y);
@@ -83,13 +85,11 @@ window.WH.epg = window.WH.epg || {};
                     // set the pattern as selected
                     patterns.selectPattern(ptrn);
                     // prepare to drag the pattern
-                    var eventData = {
-                        ptrn: ptrn,
-                        offsetX: x - ptrn.canvasX,
-                        offsetY: y - ptrn.canvasY
-                    };
-                    $canvasA.on(eventType.move, eventData, onTouchMove);
-                    $canvasA.on(eventType.end, eventData, onTouchEnd);
+                    dragPattern = ptrn;
+                    dragOffsetX = x - ptrn.canvasX;
+                    dragOffsetY = y - ptrn.canvasY;
+                    canvasA.addEventListener(eventType.move, onTouchMove);
+                    canvasA.addEventListener(eventType.end, onTouchEnd);
                 }
             },
             
@@ -97,8 +97,8 @@ window.WH.epg = window.WH.epg || {};
              * Drag a pattern.
              */
             onTouchMove = function(e) {
-                e.data.ptrn.canvasX = e.clientX - rect.left - e.data.offsetX;
-                e.data.ptrn.canvasY = e.clientY - rect.top - e.data.offsetY;
+                dragPattern.canvasX = e.clientX - rect.left - dragOffsetX;
+                dragPattern.canvasY = e.clientY - rect.top - dragOffsetY;
                 patterns.refreshCanvas();
             },
             
@@ -106,11 +106,11 @@ window.WH.epg = window.WH.epg || {};
              * End dragging a pattern.
              */
             onTouchEnd = function(e) {
-                e.data.ptrn.canvasX = e.clientX - rect.left - e.data.offsetX;
-                e.data.ptrn.canvasY = e.clientY - rect.top - e.data.offsetY;
+                dragPattern.canvasX = e.clientX - rect.left - dragOffsetX;
+                dragPattern.canvasY = e.clientY - rect.top - dragOffsetY;
                 patterns.refreshCanvas();
-                $canvasA.off(eventType.move, onTouchMove);
-                $canvasA.off(eventType.end, onTouchEnd);
+                canvasA.removeEventListener(eventType.move, onTouchMove);
+                canvasA.removeEventListener(eventType.end, onTouchEnd);
             },
            
             /**
