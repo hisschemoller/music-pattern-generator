@@ -9,9 +9,17 @@ window.WH = window.WH || {};
     
     function createPattern(specs) {
         var that,
-            trackCount = specs.trackCount || 0,
+            trackCount,
             tracks = [],
             lengthInTicks = Number.MAX_SAFE_INTEGER; // WH.conf.getPPQN() * WH.conf.getPatternDurationInBeats(),
+            
+            init = function() {
+                // create track objects
+                var i, n = specs.tracks ? specs.tracks.length : 0;
+                for (i = 0; i < n; i++) {
+                    createTrack(specs.tracks[i].steps);
+                }
+            },
             
             /**
              * Scan events within time range.
@@ -100,7 +108,7 @@ window.WH = window.WH || {};
                     tracks.splice(trackIndex, 1);
                     trackCount = tracks.length;
                     // lower index number on all following tracks
-                    for (var i = trackIndex; i < trackCount; i++) {
+                    for (var i = 0; i < trackCount; i++) {
                         tracks[i].setIndex(i);
                     }
                 }
@@ -108,10 +116,7 @@ window.WH = window.WH || {};
         
         that = {};
         
-        // create track objects
-        for (var i = 0; i < trackCount; i++) {
-            createTrack(specs.tracks[i].steps);
-        }
+        init();
         
         that.scanEvents = scanEvents;
         that.getTrackSteps = getTrackSteps;

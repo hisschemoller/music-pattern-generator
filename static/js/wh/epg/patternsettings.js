@@ -69,7 +69,7 @@ window.WH.epg = window.WH.epg || {};
                     updateSetting('rotation', ptrn.rotation);
                     updateSetting('name', ptrn.name);
                 }
-                setEnabled(ptrn !== null);
+                setEnabled(ptrn !== null && ptrn !== undefined);
             },
             
             /**

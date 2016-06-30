@@ -52,6 +52,7 @@
             arrangement = specs.arrangement,
             patternCanvas = specs.patternCanvas,
             patternSettings = specs.patternSettings,
+            file = specs.file,
             patterns = [],
             numPatterns = patterns.length,
             selectedPattern,
@@ -138,16 +139,17 @@
                 specs.channel = patterns.length;
                 var patternData = createPatternData(specs),
                     euclidPattern,
-                    arrangementSteps,
-                    trackIndex = arrangement.createTrack();
+                    arrangementSteps;
                 
                 patterns.push(patternData);
                 numPatterns = patterns.length;
                 
-                updatePattern(patternData, trackIndex);
+                arrangement.createTrack()
+                updatePattern(patternData);
                 
                 // selectPattern will also redraw the canvas
                 selectPattern(patternData);
+                file.autoSave();
             },
             
             /**
@@ -159,7 +161,7 @@
                     euclidPattern = createBjorklund(ptrn.steps, ptrn.pulses),
                     elementsToShift = euclidPattern.splice(euclidPattern.length - ptrn.rotation),
                     arrangementSteps;
-                    
+                
                 euclidPattern = elementsToShift.concat(euclidPattern);
                 console.log(euclidPattern);
                 
@@ -167,8 +169,10 @@
                 ptrn.duration = (ptrn.steps / WH.conf.getStepsPerBeat()) * WH.conf.getPPQN();
                 
                 // create arrangement steps from euclidean pattern
-                arrangementSteps = createArrangementSteps(euclidPattern)
+                arrangementSteps = createArrangementSteps(euclidPattern);
+                console.log('updatePattern, patterns: ', patterns, ', ptrnIndex: ', ptrnIndex);
                 arrangement.updateTrack(ptrnIndex, arrangementSteps);
+                file.autoSave();
             },
             
             selectPattern = function(ptrn) {
@@ -199,9 +203,10 @@
                 // find and delete patternData
                 patterns.splice(index, 1);
                 numPatterns = patterns.length;
-                
+                console.log('deleteSelectedPattern, patterns: ', patterns, ', index: ', index);
                 // selectPattern will also redraw the canvas
                 selectPattern(null);
+                file.autoSave();
             },
             
             /**
@@ -249,12 +254,43 @@
                         patternSettings.updateSetting(name, value);
                         patternCanvas.drawB(patterns);
                         break;
+                    case 'canvasX':
+                    case 'canvasY':
+                        selectedPattern[name] = value;
+                        patternCanvas.drawB(patterns);
+                        break;
                     case 'name':
                         selectedPattern[name] = value;
                         patternSettings.updateSetting(name, value);
                         patternCanvas.drawB(patterns);
                         break;
                 }
+                
+                file.autoSave();
+            },
+
+            /**§
+             * Create an pattern data from data object.
+             * @param {Object} data Data object.
+             */
+            setData = function(data) {
+                patterns = data.patterns;
+                numPatterns = patterns.length;
+                selectedPattern = patterns.filter(function(ptrn){
+                    return ptrn.isSelected;
+                })[0];
+                
+                patternSettings.setPattern(selectedPattern);
+                refreshCanvas();
+            },
+
+            /**
+             * Collect all project data and save it in localStorage.
+             */
+            getData = function() {
+                return {
+                    patterns: patterns
+                };
             },
             
             /**
@@ -306,6 +342,8 @@
         that.getPatternByCoordinate = getPatternByCoordinate;
         that.deleteSelectedPattern = deleteSelectedPattern;
         that.setPatternProperty = setPatternProperty;
+        that.setData = setData;
+        that.getData = getData;
         that.onTransportRun = onTransportRun;
         that.onTransportScan = onTransportScan;
         that.refreshCanvas = refreshCanvas;

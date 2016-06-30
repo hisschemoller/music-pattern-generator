@@ -37,9 +37,13 @@ window.WH = window.WH || {};
              * @param {Object} data Data object.
              */
             setData = function(data) {
+                if (!data) {
+                    return;
+                }
+                
                 var i = 0,
                     patternCount = WH.conf.getPatternCount(),
-                    songLength = data.song.length,
+                    songLength = data.song ? data.song.length : 0,
                     songPartData,
                     songPartDuration = 0,
                     songPartEnd = 0;
@@ -48,9 +52,7 @@ window.WH = window.WH || {};
 
                 // create the patterns
                 for (i; i < patternCount; i++) {
-                    patterns.push(WH.createPattern({
-                        data: data.patterns[i]
-                    }));
+                    patterns.push(WH.createPattern(data.patterns[i]));
                 }
 
                 // create the song
@@ -223,7 +225,6 @@ window.WH = window.WH || {};
             createTrack = function() {
                 var i, 
                     patternCount = patterns.length;
-                    
                 for (i = 0; i < patternCount; i++) {
                     patterns[i].createTrack();
                 }

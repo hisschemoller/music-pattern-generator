@@ -285,8 +285,9 @@ window.WH.core = window.WH.core || {};
         setBPM(bpm);
         run();
         
-        that.setBPM = setBPM;
         that.start = start;
+        that.setBPM = setBPM;
+        that.getBPM = getBPM;
         return that;
     }
     
