@@ -144,7 +144,7 @@
                 patterns.push(patternData);
                 numPatterns = patterns.length;
                 
-                arrangement.createTrack()
+                arrangement.createTrack();
                 updatePattern(patternData);
                 
                 // selectPattern will also redraw the canvas
@@ -170,7 +170,6 @@
                 
                 // create arrangement steps from euclidean pattern
                 arrangementSteps = createArrangementSteps(euclidPattern);
-                console.log('updatePattern, patterns: ', patterns, ', ptrnIndex: ', ptrnIndex);
                 arrangement.updateTrack(ptrnIndex, arrangementSteps);
                 file.autoSave();
             },
@@ -274,7 +273,7 @@
              * @param {Object} data Data object.
              */
             setData = function(data) {
-                patterns = data.patterns;
+                patterns = data;
                 numPatterns = patterns.length;
                 selectedPattern = patterns.filter(function(ptrn){
                     return ptrn.isSelected;
@@ -288,9 +287,7 @@
              * Collect all project data and save it in localStorage.
              */
             getData = function() {
-                return {
-                    patterns: patterns
-                };
+                return patterns;
             },
             
             /**

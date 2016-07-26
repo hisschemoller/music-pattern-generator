@@ -31,8 +31,7 @@ window.WH = window.WH || {};
             loadFromStorage = function() {
                 var data = localStorage.getItem(projectName);
                 if (data) {
-                    data = JSON.parse(data);
-                    console.log('loadFromStorage', data);
+                    data = JSON.parse(data);    
                     transport.setBPM(data.bpm);
                     patterns.setData(data.patterns);
                     arrangement.setData(data.arrangement);

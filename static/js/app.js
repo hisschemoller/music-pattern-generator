@@ -56,10 +56,12 @@ document.addEventListener('DOMContentLoaded', function(e) {
         
     } else {
         // temporary setup
+        var ptrns = [];
+        for (var i = 0; i < WH.conf.getPatternCount(); i++) {
+            ptrns.push({tracks: []});
+        }
         arrangement.setData({
-            patterns: [{
-                tracks: []
-            }],
+            patterns: ptrns,
             song: []
         });
         patterns.createPattern({
