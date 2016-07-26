@@ -6,6 +6,10 @@ body {
     font-family: sans-serif;
     font-size: 14px;
 }
+#container-webgl {
+    height: 400px;
+    width: 550px;
+}
 .canvas__container {
     position: relative;
 }

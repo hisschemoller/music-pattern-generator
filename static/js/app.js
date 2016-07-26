@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     var arrangement = {},
         patterns = {}, 
         patternCanvas = {},
+        patternCanvas3d = {},
         patternSettings = {},
         transport = {},
         file = {};
@@ -39,6 +40,9 @@ document.addEventListener('DOMContentLoaded', function(e) {
     WH.epg.createPatternCanvas({
         that: patternCanvas,
         patterns: patterns
+    });
+    WH.epg.createPatternCanvas3d({
+        that: patternCanvas3d,
     });
     WH.epg.createPatternSettings({
         that: patternSettings,
