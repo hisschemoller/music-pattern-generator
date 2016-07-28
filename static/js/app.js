@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         arrangement: arrangement,
         transport: transport,
         patternCanvas: patternCanvas,
+        patternCanvas3d: patternCanvas3d,
         patternSettings: patternSettings,
         file: file
     });
