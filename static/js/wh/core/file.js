@@ -60,7 +60,7 @@ window.WH = window.WH || {};
                     patterns: patterns.getData(),
                     arrangement: arrangement.getData()
                 }
-                console.log(data);
+                
                 localStorage.setItem(projectName, JSON.stringify(data));
             };
         

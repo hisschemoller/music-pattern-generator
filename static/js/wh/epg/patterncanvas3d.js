@@ -15,18 +15,33 @@ window.WH.epg = window.WH.epg || {};
         
         var that = specs.that,
             containerEl = document.getElementById('container-webgl'),
+            renderer,
+            scene,
+            camera,
+            circle,
+            doubleClickCounter = 0,
+            doubleClickDelay = 300,
+            doubleClickTimer,
+            isTouchDevice = 'ontouchstart' in document.documentElement,
+        
+            /**
+             * Type of events to use, touch or mouse
+             * @type {String}
+             */
+            eventType = {
+                start: isTouchDevice ? 'touchstart' : 'mousedown',
+                end: isTouchDevice ? 'touchend' : 'mouseup',
+                click: isTouchDevice ? 'touchend' : 'click',
+                move: isTouchDevice ? 'touchmove' : 'mousemove',
+            },
         
             init = function() {
-                var renderer,
-                    scene,
-                    camera,
-                    light,
-                    circle;
+                var light;
                 
                 renderer = new THREE.WebGLRenderer({
                     antialias: true
                 });
-                renderer.setClearColor(0xffffff);
+                renderer.setClearColor(0xf9f9f9);
                 renderer.setSize(containerEl.offsetWidth, containerEl.offsetHeight);
                 containerEl.appendChild(renderer.domElement);
                 
@@ -40,24 +55,64 @@ window.WH.epg = window.WH.epg || {};
                 light.position.set(0, 0, 1);
                 scene.add(light);
                 
-                // Now, create a rectangle and add it to the scene
-                // var geometry = new THREE.PlaneGeometry(1, 1);
-                // var mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial());
-                // scene.add(mesh);
-                
-                circle = createCircle(scene);
+                circle = createCircle();
                 
                 var c1 = circle.clone();
+                var c2 = circle.clone();
+                c2.scale.y = 0.5;
                 scene.add(c1);
+                scene.add(c2);
                 
                 // render it
                 renderer.render(scene, camera);
-            }
+            },
+            
+            initDOMEvents = function() {
+                renderer.domElement.addEventListener(eventType.click, onClick);
+                renderer.domElement.addEventListener(eventType.start, onTouchStart);
+                // prevent system doubleclick to interfere with the custom doubleclick
+                renderer.domElement.addEventListener('dblclick', function(e) {e.preventDefault();});
+            },
+            
+            /**
+             * Separate click and doubleclick.
+             * @see http://stackoverflow.com/questions/6330431/jquery-bind-double-click-and-single-click-separately
+             */
+            onClick = function(e) {
+                // separate click from doubleclick
+                doubleClickCounter ++;
+                if (doubleClickCounter == 1) {
+                    doubleClickTimer = setTimeout(function() {
+                        // single click
+                        doubleClickCounter = 0;
+                        // not used yet
+                    }, doubleClickDelay);
+                } else {
+                    // doubleclick
+                    clearTimeout(doubleClickTimer);
+                    doubleClickCounter = 0;
+                    // create new pattern
+                    console.log('double click');
+                    // translate from mouse position to 3D world position at z == 0
+                    // @see http://stackoverflow.com/questions/13055214/mouse-canvas-x-y-to-three-js-world-x-y-z
+                    // patterns.createPattern({
+                    //     canvasX: e.clientX - rect.left,
+                    //     canvasY: e.clientY - rect.top
+                    // });
+                }
+            },
+            
+            /**
+             * Start dragging a pattern.
+             */
+            onTouchStart = function(e) {
+                
+            },
             
             /**
              * Create a line circle
              */
-            createCircle = function(scene) {
+            createCircle = function() {
                 var geometry,
                     vector,
                     material,
@@ -93,12 +148,16 @@ window.WH.epg = window.WH.epg || {};
             },
             
             draw = function(patternData) {
-                
+                // circle.rotation.x += 0.017;
+                // circle.rotation.y += 0.01;
+                // circle.rotation.y += 0.023;
+                // renderer.render(scene, camera);
             };
        
    that = specs.that;
    
    init();
+   initDOMEvents();
    
    that.draw = draw;
    return that;

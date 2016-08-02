@@ -51,6 +51,7 @@
         var that,
             arrangement = specs.arrangement,
             patternCanvas = specs.patternCanvas,
+            patternCanvas3d = specs.patternCanvas3d,
             patternSettings = specs.patternSettings,
             file = specs.file,
             patterns = [],
@@ -273,6 +274,10 @@
              * @param {Object} data Data object.
              */
             setData = function(data) {
+                if (data === undefined) {
+                    return;
+                }
+                
                 patterns = data;
                 numPatterns = patterns.length;
                 selectedPattern = patterns.filter(function(ptrn){
@@ -308,6 +313,7 @@
                     ptrn.lastPosition = ptrn.position;
                 }
                 patternCanvas.drawA(patterns);
+                patternCanvas3d.draw(patterns);
             },
             
             onTransportScan = function(playbackQueue) {

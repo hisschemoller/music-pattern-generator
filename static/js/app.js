@@ -57,39 +57,39 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     
     // initialise
-    if (file.loadFromStorage()) {
+    if (false /*file.loadFromStorage()*/) {
         
     } else {
         // temporary setup
-        var ptrns = [];
-        for (var i = 0; i < WH.conf.getPatternCount(); i++) {
-            ptrns.push({tracks: []});
-        }
-        arrangement.setData({
-            patterns: ptrns,
-            song: []
-        });
-        patterns.createPattern({
-            steps: 16,
-            pulses: 1,
-            rotation: 3,
-            canvasX: 10,
-            canvasY: 10
-        });
-        patterns.createPattern({
-            steps: 10,
-            pulses: 3,
-            canvasX: 10,
-            canvasY: 20
-        });
-        patterns.createPattern({
-            steps: 13,
-            pulses: 3,
-            canvasX: 10,
-            canvasY: 30,
-            name: 'test'
-        });
-        transport.setBPM(140);
+        // var ptrns = [];
+        // for (var i = 0; i < WH.conf.getPatternCount(); i++) {
+        //     ptrns.push({tracks: []});
+        // }
+        // arrangement.setData({
+        //     patterns: ptrns,
+        //     song: []
+        // });
+        // patterns.createPattern({
+        //     steps: 16,
+        //     pulses: 1,
+        //     rotation: 3,
+        //     canvasX: 10,
+        //     canvasY: 10
+        // });
+        // patterns.createPattern({
+        //     steps: 10,
+        //     pulses: 3,
+        //     canvasX: 10,
+        //     canvasY: 20
+        // });
+        // patterns.createPattern({
+        //     steps: 13,
+        //     pulses: 3,
+        //     canvasX: 10,
+        //     canvasY: 30,
+        //     name: 'test'
+        // });
+        // transport.setBPM(140);
     }
     
     transport.start();
