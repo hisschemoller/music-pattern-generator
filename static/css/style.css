@@ -3,6 +3,7 @@
     box-sizing: border-box;;
 }
 body {
+    background-color: #eee;
     font-family: sans-serif;
     font-size: 14px;
 }
@@ -11,7 +12,10 @@ body {
     width: 550px;
 }
 .canvas__container {
+    background-color: #fff;
+    height: 100px;
     position: relative;
+    width: 550px;
 }
     #canvas__static,
     #canvas__animation {
