@@ -57,8 +57,8 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     
     // initialise
-    if (false /*file.loadFromStorage()*/) {
-        
+    if (true /*file.loadFromStorage()*/) {
+        file.createNew();
     } else {
         // temporary setup
         // var ptrns = [];

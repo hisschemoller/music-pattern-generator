@@ -23,6 +23,29 @@ window.WH = window.WH || {};
              * @type {Boolean}
              */
             autoSaveEnabled = true,
+            
+            /**
+             * Create data to setup a new empty project.
+             */
+            createNew = function() {
+                var patternCount = WH.conf.getPatternCount(),
+                    data = {
+                        bpm: 120,
+                        racks: [],
+                        arrangement: {
+                            patterns: [],
+                            song: {}
+                        }
+                    },
+                    i;
+                
+                for (i = 0; i < patternCount; i++) {
+                    data.arrangement.patterns.push({tracks: []});
+                }
+                
+                arrangement.setData(data.arrangement);
+                transport.setBPM(data.bpm);
+            },
 
             /**
              * Load project from localStorage.
@@ -66,6 +89,7 @@ window.WH = window.WH || {};
         
         that = specs.that;
         
+        that.createNew = createNew;
         that.loadFromStorage = loadFromStorage;
         that.autoSave = autoSave;
         that.save = save;
