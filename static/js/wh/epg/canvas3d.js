@@ -6,7 +6,7 @@ window.WH = window.WH || {};
     function createCanvas3d(specs) {
         
         var that = specs.that,
-            model = specs.model,
+            epgModel = specs.epgModel,
             containerEl = document.getElementById('container-webgl'),
             canvasRect,
             renderer,
@@ -97,8 +97,8 @@ window.WH = window.WH || {};
                 if (intersects.length) {
                     // get topmost parent of closest object
                     outerObject = getOuterParentObject(intersects[0]);
-                    ptrn = model.getPatternByProperty('object3d', outerObject);
-                    model.selectPattern(ptrn);
+                    ptrn = epgModel.getPatternByProperty('object3d', outerObject);
+                    epgModel.selectPattern(ptrn);
                     dragStart(outerObject, mouse);
                 }
             },
@@ -113,12 +113,12 @@ window.WH = window.WH || {};
                 // if ray intersects plane, store point in vector 'intersection'
                 if (raycaster.ray.intersectPlane(plane, intersection)) {
                     // create a new wheel 3D object
-                    var ptrn = model.createPattern({
+                    var ptrn = epgModel.createPattern({
                         canvasX: e.clientX - canvasRect.left,
                         canvasY: e.clientY - canvasRect.top,
                         position3d: intersection
                     });
-                    model.selectPattern(ptrn);
+                    epgModel.selectPattern(ptrn);
                     createPattern3D(ptrn);
                     isDirty = true;
                 }
@@ -183,7 +183,7 @@ window.WH = window.WH || {};
             
             /**
              * Create a new wheel mesh in the 3D world and  
-             * tell the model to create a pattern.
+             * tell the epgModel to create a pattern.
              * @param {object} ptrn Pattern data object.
              */
             createPattern3D = function(ptrn) {
@@ -526,7 +526,7 @@ window.WH = window.WH || {};
              * Run clock and watch for redraw requests.
              */
             run = function() {
-                model.update(Date.now());
+                epgModel.update(Date.now());
                 // if (isDirty) {
                     // isDirty = false;
                     draw();

@@ -38,7 +38,7 @@ window.WH.core = window.WH.core || {};
     function createTransport(specs) {
         var that,
             arrangement = specs.arrangement,
-            patterns = specs.patterns,
+            epgModel = specs.epgModel,
             isRunning = false,
             isLoop = false,
             now = 0,
@@ -114,7 +114,7 @@ window.WH.core = window.WH.core || {};
                         // play the events with sound generating plugin instruments
                         // WH.studio.playEvents(playbackQueue);
                         // WH.View.onSequencerEvents(playbackQueue);
-                        patterns.onTransportScan(playbackQueue);
+                        epgModel.onTransportScan(playbackQueue);
                     }
                 }   
             },
@@ -153,7 +153,7 @@ window.WH.core = window.WH.core || {};
                     // scan notes in range
                     scheduleNotesInScanRange();
                     // update view
-                    patterns.onTransportRun(sec2tick(scanStart));
+                    epgModel.onTransportRun(sec2tick(scanStart));
                     // advance when transport is running
                     advanceScanRange();
                     // flush played notes

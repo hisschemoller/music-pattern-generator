@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     
     // Create all objects that will be the modules of the app.
     var arrangement = {},
-        patterns = {}, 
+        epgModel = {}, 
         canvas3d = {},
         patternSettings = {},
         transport = {},
@@ -26,10 +26,10 @@ document.addEventListener('DOMContentLoaded', function(e) {
     WH.core.createTransport({
         that: transport,
         arrangement: arrangement,
-        patterns: patterns
+        epgModel: epgModel
     });
-    WH.epg.createPatterns({
-        that: patterns,
+    WH.createEPGModel({
+        that: epgModel,
         arrangement: arrangement,
         transport: transport,
         canvas3d: canvas3d,
@@ -38,54 +38,20 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     WH.createCanvas3d({
         that: canvas3d,
-        model: patterns
+        epgModel: epgModel
     });
     WH.epg.createPatternSettings({
         that: patternSettings,
-        patterns: patterns
+        epgModel: epgModel
     });
     WH.createFile({
         that: file,
         arrangement: arrangement,
-        patterns: patterns,
+        epgModel: epgModel,
         transport: transport
     });
-    
+    console.log(epgModel);
     // initialise
-    if (true /*file.loadFromStorage()*/) {
-        file.createNew();
-    } else {
-        // temporary setup
-        // var ptrns = [];
-        // for (var i = 0; i < WH.conf.getPatternCount(); i++) {
-        //     ptrns.push({tracks: []});
-        // }
-        // arrangement.setData({
-        //     patterns: ptrns,
-        //     song: []
-        // });
-        // patterns.createPattern({
-        //     steps: 16,
-        //     pulses: 1,
-        //     rotation: 3,
-        //     canvasX: 10,
-        //     canvasY: 10
-        // });
-        // patterns.createPattern({
-        //     steps: 10,
-        //     pulses: 3,
-        //     canvasX: 10,
-        //     canvasY: 20
-        // });
-        // patterns.createPattern({
-        //     steps: 13,
-        //     pulses: 3,
-        //     canvasX: 10,
-        //     canvasY: 30,
-        //     name: 'test'
-        // });
-        // transport.setBPM(140);
-    }
-    
+    file.createNew();
     transport.start();
 });

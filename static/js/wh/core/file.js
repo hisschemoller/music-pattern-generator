@@ -14,7 +14,7 @@ window.WH = window.WH || {};
     function createFile(specs) {
         var that,
             arrangement = specs.arrangement,
-            patterns = specs.patterns,
+            epgModel = specs.epgModel,
             transport = specs.transport,
             projectName = 'project',
 
@@ -56,7 +56,7 @@ window.WH = window.WH || {};
                 if (data) {
                     data = JSON.parse(data);    
                     transport.setBPM(data.bpm);
-                    patterns.setData(data.patterns);
+                    epgModel.setData(data.epgmodel);
                     arrangement.setData(data.arrangement);
                 } else {
                     console.error('No data in LocalStorage with name "' + projectName + '"."');
@@ -80,7 +80,7 @@ window.WH = window.WH || {};
             save = function() {
                 var data = {
                     bpm: transport.getBPM(),
-                    patterns: patterns.getData(),
+                    epgmodel: epgModel.getData(),
                     arrangement: arrangement.getData()
                 }
                 

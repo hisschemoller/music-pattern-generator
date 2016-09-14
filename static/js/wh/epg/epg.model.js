@@ -1,5 +1,5 @@
 /**
- * @description Patterns modele.
+ * @description EPG patterns model.
  * @author Wouter Hisschemöller
  * @version 0.0.0
  * 
@@ -7,11 +7,10 @@
  */
  
  window.WH = window.WH || {};
- window.WH.epg = window.WH.epg || {};
 
 (function (ns) {
     
-    function createPatternData(specs) {
+    function createEPGPatternData(specs) {
         specs = specs || {};
         
         var that = {
@@ -56,7 +55,7 @@
         return that;
     }
     
-    function createPatterns(specs) {
+    function createEPGModel(specs) {
         var that,
             arrangement = specs.arrangement,
             canvas3d = specs.canvas3d,
@@ -151,7 +150,7 @@
                 specs = specs || {};
                 specs.channel = patterns.length;
                 
-                patternData = createPatternData(specs);
+                patternData = createEPGPatternData(specs);
                 patterns.push(patternData);
                 numPatterns = patterns.length;
                 
@@ -358,6 +357,6 @@
         return that;
     }
 
-    ns.createPatterns = createPatterns;
+    ns.createEPGModel = createEPGModel;
 
-})(WH.epg);
+})(WH);

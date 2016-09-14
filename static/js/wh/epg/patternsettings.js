@@ -13,7 +13,7 @@ window.WH.epg = window.WH.epg || {};
     
     function createPatternSettings(specs) {
         var that,
-            patterns = specs.patterns,
+            epgModel = specs.epgModel,
             settingsEl = document.getElementById('settings')
             settings = {
                 steps: {
@@ -45,7 +45,7 @@ window.WH.epg = window.WH.epg || {};
                 settings.name.input.addEventListener('change', onChange);
                 document.getElementById('delete-button').addEventListener('click', function(e) {
                     // show a confirmation dialog first
-                    patterns.deleteSelectedPattern();
+                    epgModel.deleteSelectedPattern();
                 });
             },
             
@@ -97,7 +97,7 @@ window.WH.epg = window.WH.epg || {};
             },
             
             onChange = function(e) {
-                patterns.setPatternProperty(e.target.dataset.prop, e.target.value);
+                epgModel.setPatternProperty(e.target.dataset.prop, e.target.value);
             };
             
         that = specs.that;
