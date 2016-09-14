@@ -58,10 +58,10 @@ window.WH = window.WH || {};
             },
             
             onWindowResize = function() {
-                camera.aspect = window.innerWidth / window.innerHeight;
-				camera.updateProjectionMatrix();
-				renderer.setSize(window.innerWidth, window.innerHeight);
-                canvasRect = renderer.domElement.getBoundingClientRect();
+                // camera.aspect = window.innerWidth / window.innerHeight;
+				// camera.updateProjectionMatrix();
+				// renderer.setSize(window.innerWidth, window.innerHeight);
+                // canvasRect = renderer.domElement.getBoundingClientRect();
             },
             
             /**
@@ -178,7 +178,7 @@ window.WH = window.WH || {};
                 e.preventDefault();
                 dragObject = null;
                 containerEl.style.cursor = 'auto';
-                controls.enabled = true;
+                controls.enabled = false;
             },
             
             /**
@@ -202,7 +202,6 @@ window.WH = window.WH || {};
                 ptrn.select3d = object3d.getObjectByName('select');
                 ptrn.centreDot3d = object3d.getObjectByName('centreDot');
                 
-                // model.setSelectedPatternByProperty('object3d', object3d);
                 updateDots(ptrn);
                 
                 new TWEEN.Tween({scale: 0.01})
@@ -221,6 +220,15 @@ window.WH = window.WH || {};
                     dot = ptrn.dots3d.children[i];
                     startupAnimateDot(dot, i * 20);
                 }
+            },
+            
+            /**
+             * A pattern has changed and the 3D wheel must be updated.
+             * Properties that cause a redraw are steps, pulses and rotation.
+             * @param {object} ptrn Pattern data object.
+             */
+            updatePattern3D = function(ptrn) {
+                updateDots(ptrn);
             },
             
             /**
@@ -295,7 +303,7 @@ window.WH = window.WH || {};
                 scene = new THREE.Scene();
                 
                 camera = new THREE.PerspectiveCamera(45, containerEl.offsetWidth / containerEl.offsetHeight, 1, 500);
-                camera.position.set(0, 0, 160);
+                camera.position.set(0, 0, 80);
                 scene.add(camera);
                 
                 light = new THREE.DirectionalLight(0xffffff, 1.5);
@@ -310,6 +318,7 @@ window.WH = window.WH || {};
 				controls.noPan = false;
 				controls.staticMoving = true;
 				controls.dynamicDampingFactor = 0.3;
+                controls.enabled = false;
                 
                 plane = new THREE.Plane();
                 plane.setFromNormalAndCoplanarPoint(
@@ -535,6 +544,7 @@ window.WH = window.WH || {};
         onWindowResize();
         // run();
         
+        that.updatePattern3D = updatePattern3D;
         that.draw = draw;
         return that;
     }

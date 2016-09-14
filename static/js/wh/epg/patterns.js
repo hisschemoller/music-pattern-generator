@@ -203,7 +203,7 @@
                 
                 // update view
                 // patternCanvas.drawB(patterns);
-                // patternSettings.setPattern(selectedPattern);
+                patternSettings.setPattern(selectedPattern);
             },
             
             /**
@@ -280,6 +280,7 @@
                         updatePattern(selectedPattern);
                         patternSettings.updateSetting(name, value);
                         patternCanvas.drawB(patterns);
+                        canvas3d.updatePattern3D(selectedPattern);
                         break;
                     case 'pulses':
                     case 'rotation':
@@ -301,7 +302,7 @@
                         break;
                 }
                 
-                file.autoSave();
+                // file.autoSave();
             },
 
             /**§
