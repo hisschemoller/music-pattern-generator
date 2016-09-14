@@ -58,7 +58,7 @@
     function createEPGModel(specs) {
         var that,
             arrangement = specs.arrangement,
-            canvas3d = specs.canvas3d,
+            epgCanvas = specs.epgCanvas,
             epgSettings = specs.epgSettings,
             file = specs.file,
             patterns = [],
@@ -261,7 +261,7 @@
                         }
                         updatePattern(selectedPattern);
                         epgSettings.updateSetting(name, value);
-                        canvas3d.updatePattern3D(selectedPattern);
+                        epgCanvas.updatePattern3D(selectedPattern);
                         break;
                     case 'pulses':
                     case 'rotation':
@@ -326,7 +326,7 @@
                     ptrn.lastPosition = ptrn.position;
                 }
                 
-                canvas3d.draw(patterns);
+                epgCanvas.draw(patterns);
             },
             
             onTransportScan = function(playbackQueue) {

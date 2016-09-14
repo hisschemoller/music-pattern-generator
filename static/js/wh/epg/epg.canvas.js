@@ -3,7 +3,7 @@ window.WH = window.WH || {};
 
 (function (ns) {
     
-    function createCanvas3d(specs) {
+    function createEPGCanvas(specs) {
         
         var that = specs.that,
             epgModel = specs.epgModel,
@@ -549,6 +549,6 @@ window.WH = window.WH || {};
         return that;
     }
 
-    ns.createCanvas3d = createCanvas3d;
+    ns.createEPGCanvas = createEPGCanvas;
 
 })(WH);
