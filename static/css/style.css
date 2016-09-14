@@ -8,12 +8,12 @@ body {
     font-size: 14px;
 }
 #container-webgl {
-    height: 400px;
+    height: 300px;
     width: 550px;
 }
 .canvas__container {
     background-color: #fff;
-    height: 100px;
+    height: 300px;
     position: relative;
     width: 550px;
 }

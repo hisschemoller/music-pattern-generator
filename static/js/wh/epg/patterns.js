@@ -41,7 +41,16 @@
             canvasX: specs.canvasX || 0,
             canvasY: specs.canvasY || 0,
             canvasWidth: 0,
-            canvasHeight: 0
+            canvasHeight: 0,
+            
+            // 3D object properties
+            object3d: specs.object3d || null,
+            centreCircle3d: specs.centreCircle3d || null,
+            select3d: specs.select3d || null,
+            centreDot3d: specs.centreDot3d || null,
+            pointer3d: specs.pointer3d || null,
+            dots3d: specs.dots3d || null,
+            position3d: specs.position3d || null
         };
         
         return that;
@@ -51,7 +60,7 @@
         var that,
             arrangement = specs.arrangement,
             patternCanvas = specs.patternCanvas,
-            patternCanvas3d = specs.patternCanvas3d,
+            canvas3d = specs.canvas3d,
             patternSettings = specs.patternSettings,
             file = specs.file,
             patterns = [],
@@ -134,23 +143,27 @@
             
             /**
              * Create a pattern and add it to the list.
+             * @param {object} specs Optional properties for the pattern.
+             * @return {object} The pattern data object that was just created.
              */
             createPattern = function(specs) {
+                var patternData, euclidPattern, arrangementSteps;
+                
                 specs = specs || {};
                 specs.channel = patterns.length;
-                var patternData = createPatternData(specs),
-                    euclidPattern,
-                    arrangementSteps;
                 
+                patternData = createPatternData(specs);
                 patterns.push(patternData);
                 numPatterns = patterns.length;
                 
                 arrangement.createTrack();
                 updatePattern(patternData);
                 
+                return patternData;
+                
                 // selectPattern will also redraw the canvas
-                selectPattern(patternData);
-                file.autoSave();
+                // selectPattern(patternData);
+                // file.autoSave();
             },
             
             /**
@@ -164,7 +177,6 @@
                     arrangementSteps;
                 
                 euclidPattern = elementsToShift.concat(euclidPattern);
-                console.log(euclidPattern);
                 
                 ptrn.euclidPattern = euclidPattern;
                 ptrn.duration = (ptrn.steps / WH.conf.getStepsPerBeat()) * WH.conf.getPPQN();
@@ -172,9 +184,13 @@
                 // create arrangement steps from euclidean pattern
                 arrangementSteps = createArrangementSteps(euclidPattern);
                 arrangement.updateTrack(ptrnIndex, arrangementSteps);
-                file.autoSave();
+                // file.autoSave();
             },
             
+            /**
+             * Set a pattern as selected.
+             * @param {Object} ptrn Pattern data object.
+             */
             selectPattern = function(ptrn) {
                 var i,
                     index = patterns.indexOf(ptrn);
@@ -186,10 +202,13 @@
                 selectedPattern = ptrn;
                 
                 // update view
-                patternCanvas.drawB(patterns);
-                patternSettings.setPattern(selectedPattern);
+                // patternCanvas.drawB(patterns);
+                // patternSettings.setPattern(selectedPattern);
             },
             
+            /**
+             * Delete the selected pattern.
+             */
             deleteSelectedPattern = function() {
                 if (!selectedPattern) {
                     return;
@@ -223,6 +242,22 @@
                     }
                 }
             },
+            
+            /**
+             * Find the pattern that has the property with the value.
+             * @param {string} propKey Property key.
+             * @param {string} propValue Property value.
+             * @return {object} Pattern data object if found.
+             */
+            getPatternByProperty = function(propKey, propValue) {
+                var i, ptrn, n = patterns.length;
+                for (i = 0; i < n; i++) {
+                    ptrn = patterns[i];
+                    if (ptrn[propKey] === propValue) {
+                        return ptrn;
+                    }
+                }
+            }
             
             /**
              * Update the value of a single property of the selected pattern.
@@ -313,7 +348,7 @@
                     ptrn.lastPosition = ptrn.position;
                 }
                 patternCanvas.drawA(patterns);
-                patternCanvas3d.draw(patterns);
+                canvas3d.draw(patterns);
             },
             
             onTransportScan = function(playbackQueue) {
@@ -343,6 +378,7 @@
         that.createPattern = createPattern;
         that.selectPattern = selectPattern;
         that.getPatternByCoordinate = getPatternByCoordinate;
+        that.getPatternByProperty = getPatternByProperty;
         that.deleteSelectedPattern = deleteSelectedPattern;
         that.setPatternProperty = setPatternProperty;
         that.setData = setData;
