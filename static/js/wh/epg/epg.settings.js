@@ -11,7 +11,7 @@ window.WH.epg = window.WH.epg || {};
 
 (function (ns) {
     
-    function createPatternSettings(specs) {
+    function createEPGSettings(specs) {
         var that,
             epgModel = specs.epgModel,
             settingsEl = document.getElementById('settings')
@@ -109,6 +109,6 @@ window.WH.epg = window.WH.epg || {};
         return that;
     }
 
-    ns.createPatternSettings = createPatternSettings;
+    ns.createEPGSettings = createEPGSettings;
 
 })(WH.epg);

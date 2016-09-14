@@ -59,7 +59,7 @@
         var that,
             arrangement = specs.arrangement,
             canvas3d = specs.canvas3d,
-            patternSettings = specs.patternSettings,
+            epgSettings = specs.epgSettings,
             file = specs.file,
             patterns = [],
             numPatterns = patterns.length,
@@ -200,7 +200,7 @@
                 selectedPattern = ptrn;
                 
                 // update view
-                patternSettings.setPattern(selectedPattern);
+                epgSettings.setPattern(selectedPattern);
             },
             
             /**
@@ -253,14 +253,14 @@
                         selectedPattern[name] = value;
                         if (selectedPattern.pulses > value) {
                             selectedPattern.pulses = value;
-                            patternSettings.updateSetting('pulses', value);
+                            epgSettings.updateSetting('pulses', value);
                         }
                         if (selectedPattern.rotation > value) {
                             selectedPattern.rotation = value;
-                            patternSettings.updateSetting('rotation', value);
+                            epgSettings.updateSetting('rotation', value);
                         }
                         updatePattern(selectedPattern);
-                        patternSettings.updateSetting(name, value);
+                        epgSettings.updateSetting(name, value);
                         canvas3d.updatePattern3D(selectedPattern);
                         break;
                     case 'pulses':
@@ -268,7 +268,7 @@
                         value = Math.min(value, selectedPattern.steps);
                         selectedPattern[name] = value;
                         updatePattern(selectedPattern);
-                        patternSettings.updateSetting(name, value);
+                        epgSettings.updateSetting(name, value);
                         break;
                     case 'canvasX':
                     case 'canvasY':
@@ -276,7 +276,7 @@
                         break;
                     case 'name':
                         selectedPattern[name] = value;
-                        patternSettings.updateSetting(name, value);
+                        epgSettings.updateSetting(name, value);
                         break;
                 }
                 
@@ -298,7 +298,7 @@
                     return ptrn.isSelected;
                 })[0];
                 
-                patternSettings.setPattern(selectedPattern);
+                epgSettings.setPattern(selectedPattern);
             },
 
             /**
