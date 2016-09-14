@@ -59,7 +59,6 @@
     function createPatterns(specs) {
         var that,
             arrangement = specs.arrangement,
-            patternCanvas = specs.patternCanvas,
             canvas3d = specs.canvas3d,
             patternSettings = specs.patternSettings,
             file = specs.file,
@@ -202,7 +201,6 @@
                 selectedPattern = ptrn;
                 
                 // update view
-                // patternCanvas.drawB(patterns);
                 patternSettings.setPattern(selectedPattern);
             },
             
@@ -226,21 +224,6 @@
                 // selectPattern will also redraw the canvas
                 selectPattern(null);
                 file.autoSave();
-            },
-            
-            /**
-             * Get pattern occupying a given coordinate on the canvas.
-             * @return {Object} Pattern data object.
-             */
-            getPatternByCoordinate = function(x, y) {
-                var i, ptrn;
-                for (i = 0; i < numPatterns; i++) {
-                    ptrn = patterns[i]
-                    if (x >= ptrn.canvasX && x <= ptrn.canvasX + ptrn.canvasWidth &&
-                        y >= ptrn.canvasY && y <= ptrn.canvasY + ptrn.canvasHeight) {
-                        return ptrn;
-                    }
-                }
             },
             
             /**
@@ -279,7 +262,6 @@
                         }
                         updatePattern(selectedPattern);
                         patternSettings.updateSetting(name, value);
-                        patternCanvas.drawB(patterns);
                         canvas3d.updatePattern3D(selectedPattern);
                         break;
                     case 'pulses':
@@ -288,17 +270,14 @@
                         selectedPattern[name] = value;
                         updatePattern(selectedPattern);
                         patternSettings.updateSetting(name, value);
-                        patternCanvas.drawB(patterns);
                         break;
                     case 'canvasX':
                     case 'canvasY':
                         selectedPattern[name] = value;
-                        patternCanvas.drawB(patterns);
                         break;
                     case 'name':
                         selectedPattern[name] = value;
                         patternSettings.updateSetting(name, value);
-                        patternCanvas.drawB(patterns);
                         break;
                 }
                 
@@ -321,7 +300,6 @@
                 })[0];
                 
                 patternSettings.setPattern(selectedPattern);
-                refreshCanvas();
             },
 
             /**
@@ -348,7 +326,7 @@
                     
                     ptrn.lastPosition = ptrn.position;
                 }
-                patternCanvas.drawA(patterns);
+                
                 canvas3d.draw(patterns);
             },
             
@@ -364,21 +342,12 @@
                         ptrn.offPosition = (ptrn.position + step.getDuration()) % ptrn.duration;
                     }
                 }
-            },
-            
-            /**
-             * Redraw both canvasses.
-             */
-            refreshCanvas = function() {
-                patternCanvas.drawA(patterns);
-                patternCanvas.drawB(patterns);
             };
         
         that = specs.that;
         
         that.createPattern = createPattern;
         that.selectPattern = selectPattern;
-        that.getPatternByCoordinate = getPatternByCoordinate;
         that.getPatternByProperty = getPatternByProperty;
         that.deleteSelectedPattern = deleteSelectedPattern;
         that.setPatternProperty = setPatternProperty;
@@ -386,7 +355,6 @@
         that.getData = getData;
         that.onTransportRun = onTransportRun;
         that.onTransportScan = onTransportScan;
-        that.refreshCanvas = refreshCanvas;
         return that;
     }
 

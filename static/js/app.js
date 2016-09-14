@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
     // Create all objects that will be the modules of the app.
     var arrangement = {},
         patterns = {}, 
-        patternCanvas = {},
         canvas3d = {},
         patternSettings = {},
         transport = {},
@@ -33,14 +32,9 @@ document.addEventListener('DOMContentLoaded', function(e) {
         that: patterns,
         arrangement: arrangement,
         transport: transport,
-        patternCanvas: patternCanvas,
         canvas3d: canvas3d,
         patternSettings: patternSettings,
         file: file
-    });
-    WH.epg.createPatternCanvas({
-        that: patternCanvas,
-        patterns: patterns
     });
     WH.createCanvas3d({
         that: canvas3d,
