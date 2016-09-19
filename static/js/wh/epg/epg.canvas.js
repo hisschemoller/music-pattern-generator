@@ -188,15 +188,6 @@ window.WH = window.WH || {};
             },
             
             /**
-             * A pattern has changed and the 3D wheel must be updated.
-             * Properties that cause a redraw are steps, pulses and rotation.
-             * @param {object} ptrn Pattern data object.
-             */
-            updatePattern3D = function(ptrn) {
-                worldObjects.updateDots(ptrn);
-            },
-            
-            /**
              * Initialise the WebGL 3D world.
              */
             initWorld = function() {
@@ -228,6 +219,25 @@ window.WH = window.WH || {};
                 plane.setFromNormalAndCoplanarPoint(
                     camera.getWorldDirection(plane.normal), 
                     new THREE.Vector3(0,0,0));
+            },
+            
+            /**
+             * Delete the 3D object associated with the pattern data.
+             * @param {object} ptrn Pattern data object.
+             */
+            deletePattern3D = function(ptrn) {
+                var index = objects.indexOf(ptrn.object3d);
+                objects.splice(index, 1);
+                scene.remove(ptrn.object3d);
+            },
+            
+            /**
+             * A pattern has changed and the 3D wheel must be updated.
+             * Properties that cause a redraw are steps, pulses and rotation.
+             * @param {object} ptrn Pattern data object.
+             */
+            updatePattern3D = function(ptrn) {
+                worldObjects.updateDots(ptrn);
             },
             
             /**
@@ -326,6 +336,7 @@ window.WH = window.WH || {};
         that = specs.that;
         
         that.setup = setup;
+        that.deletePattern3D = deletePattern3D;
         that.updatePattern3D = updatePattern3D;
         that.draw = draw;
         return that;

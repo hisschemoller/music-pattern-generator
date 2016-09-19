@@ -220,13 +220,17 @@
                 // remove track from arrangement
                 arrangement.deleteTrack(index);
                 
+                // remove object from the 3D world
+                epgCanvas.deletePattern3D(selectedPattern);
+                
                 // find and delete patternData
                 patterns.splice(index, 1);
                 numPatterns = patterns.length;
-                console.log('deleteSelectedPattern, patterns: ', patterns, ', index: ', index);
-                // selectPattern will also redraw the canvas
+                
+                // unselect pattern
                 selectPattern(null);
-                file.autoSave();
+                
+                // file.autoSave();
             },
             
             /**

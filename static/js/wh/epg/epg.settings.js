@@ -63,12 +63,10 @@ window.WH.epg = window.WH.epg || {};
              * 
              */
             setPattern = function(ptrn) {
-                if (ptrn) {
-                    updateSetting('steps', ptrn.steps);
-                    updateSetting('pulses', ptrn.pulses);
-                    updateSetting('rotation', ptrn.rotation);
-                    updateSetting('name', ptrn.name);
-                }
+                updateSetting('steps', ptrn ? ptrn.steps : '');
+                updateSetting('pulses', ptrn ? ptrn.pulses : '');
+                updateSetting('rotation', ptrn ? ptrn.rotation : '');
+                updateSetting('name', ptrn ? ptrn.name : '');
                 setEnabled(ptrn !== null && ptrn !== undefined);
             },
             
