@@ -273,8 +273,10 @@ window.WH = window.WH || {};
                     
                     // if a pulse starts, start the dot animation.
                     if (ptrn.isNoteOn) {
-                        pulseData = ptrn.pulseStartTimes[ptrn.pulseIndex];
-                        dot = ptrn.dots3d.children[pulseData.index];
+                        ptrn.isNoteOn = false;
+                        // pulseData = ptrn.pulseStartTimes[ptrn.pulseIndex];
+                        // dot = ptrn.dots3d.children[pulseData.index];
+                        dot = ptrn.dots3d.children[ptrn.pulseIndex];
                         drawPatternDotAnimation(ptrn, dot);
                     }
                 }

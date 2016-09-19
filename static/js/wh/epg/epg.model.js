@@ -31,10 +31,14 @@
             duration: specs.duration || 0,
             
             isOn: false,
+            isNoteOn: false,
             isSelected: false,
             
             offPosition: 0,
             lastPosition: 0,
+            
+            // 
+            pulseIndex: 0,
             
             // canvas position and size
             canvasX: specs.canvasX || 0,
@@ -168,7 +172,7 @@
              * Update the pattern if one of the Euclidean settings have changed.
              * @param {Object} ptrn Pattern data object.
              */
-            updatePattern = function(ptrn) {    
+            updatePattern = function(ptrn) {
                 var ptrnIndex = patterns.indexOf(ptrn),
                     euclidPattern = createBjorklund(ptrn.steps, ptrn.pulses),
                     elementsToShift = euclidPattern.splice(euclidPattern.length - ptrn.rotation),
@@ -338,6 +342,8 @@
                     
                     if (step.getVelocity()) {
                         ptrn.isOn = true;
+                        ptrn.isNoteOn = true;
+                        ptrn.pulseIndex = step.getIndex();
                         ptrn.offPosition = (ptrn.position + step.getDuration()) % ptrn.duration;
                     }
                 }

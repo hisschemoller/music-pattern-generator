@@ -55,6 +55,7 @@ window.WH = window.WH || {};
                         transparent: true
                     }),
                     geometry = new THREE.CircleGeometry(radius, numSegments);              
+                
                 material.opacity = 1.0;
                 return new THREE.Mesh(geometry, material);
             },
