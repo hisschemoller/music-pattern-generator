@@ -118,7 +118,7 @@ window.WH = window.WH || {};
                 dots = new THREE.Object3D();
                 dots.name = 'dots';
                 
-                hitarea = circleFilled.clone();
+                hitarea = createCircleFilled(defaultColor);
                 hitarea.name = 'hitarea';
                 hitarea.material.opacity = 0.0;
                 hitarea.add(centreCircle);
