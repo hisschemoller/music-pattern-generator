@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     
     // initialise
+    epgCanvas.setup();
     file.createNew();
     transport.start();
 });
