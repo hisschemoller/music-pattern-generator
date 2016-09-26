@@ -10,6 +10,7 @@ window.WH = window.WH || {};
             circleOutline,
             circleFilled,
             circleLineAndFill,
+            polygon,
             wheel,
             TWO_PI = Math.PI * 2,
             
@@ -27,6 +28,7 @@ window.WH = window.WH || {};
                 circleOutline = createCircleOutline(lineMaterial);
                 circleFilled = createCircleFilled(defaultColor);
                 circleLineAndFill = createCircleLineAndFill(circleOutline, circleFilled);
+                polygon = createPolygon(lineMaterial, defaultColor);
                 wheel = createWheel(lineMaterial);
             },
             
@@ -91,12 +93,45 @@ window.WH = window.WH || {};
             },
             
             /**
+             * Create polygon 3D object, the shape that connects the dots. 
+             * @param {object} lineMaterial Default line drawing material.
+             * @param {number} color Fill color.
+             */
+            createPolygon = function(lineMaterial, color) {
+                var line, lineGeom, fill, fillShape, fillMesh, polygon;
+
+                fillShape = new THREE.Shape();
+                fillShape.lineTo(0, 0);
+                fillShape.lineTo(1, 0);
+                fillShape.lineTo(1, 1);
+                fillShape.lineTo(0, 0);
+                fillGeom = new THREE.ShapeGeometry(fillShape);
+                fillMaterial = new THREE.MeshBasicMaterial({
+                    color: color,
+                    transparent: true
+                });
+                fillMaterial.opacity = 0.4;
+                fillMesh = new THREE.Mesh(fillGeom, fillMaterial);
+                fillMesh.name = 'polygonFill';
+                
+                lineGeom = new THREE.Geometry();
+                line = new THREE.Line(lineGeom, lineMaterial);
+                line.name = 'polygonLine';
+                
+                polygon = new THREE.Object3D();
+                polygon.add(line);
+                polygon.add(fillMesh);
+                
+                return polygon;
+            },
+            
+            /**
              * Create combined Object3D of wheel.
              * @param {object} lineMaterial Default line drawing material.
              * @return {object} Object3D of drag plane.
              */
             createWheel = function(lineMaterial) {
-                var hitarea, centreCircle, selectCircle, centreDot, pointer, dots;
+                var hitarea, centreCircle, selectCircle, centreDot, pointer, poly, dots;
                 
                 centreCircle = circleOutline.clone();
                 centreCircle.name = 'centreCircle';
@@ -115,6 +150,9 @@ window.WH = window.WH || {};
                 pointer = createPointer(lineMaterial);
                 pointer.name = 'pointer';
                 
+                poly = polygon.clone();
+                poly.name = 'polygon';
+                
                 dots = new THREE.Object3D();
                 dots.name = 'dots';
                 
@@ -125,6 +163,7 @@ window.WH = window.WH || {};
                 hitarea.add(selectCircle);
                 hitarea.add(centreDot);
                 hitarea.add(pointer);
+                hitarea.add(poly);
                 hitarea.add(dots);
                 
                 return hitarea;
@@ -149,6 +188,7 @@ window.WH = window.WH || {};
                 ptrn.object3d = object3d;
                 ptrn.centreCircle3d = object3d.getObjectByName('centreCircle');
                 ptrn.pointer3d = object3d.getObjectByName('pointer');
+                ptrn.polygon3d = object3d.getObjectByName('polygon');
                 ptrn.dots3d = object3d.getObjectByName('dots');
                 ptrn.select3d = object3d.getObjectByName('select');
                 ptrn.centreDot3d = object3d.getObjectByName('centreDot');
@@ -223,7 +263,7 @@ window.WH = window.WH || {};
              * @param {object} patternData Pattern data object.
              */
             updateDots = function(patternData) {
-                var dots, i, n, dot, rad, radius;
+                var dots, i, n, dot, rad, radius, polygonPoints;
                 
                 dots = patternData.dots3d;
                 
@@ -232,6 +272,8 @@ window.WH = window.WH || {};
                 for (i = 0; i < n; i++) {
                     dots.remove(dots.children[0]);
                 }
+                
+                polygonPoints = [];
                 
                 // add new dots
                 radius = 8;
@@ -247,7 +289,44 @@ window.WH = window.WH || {};
                     dot.translateX(Math.sin(rad) * radius);
                     dot.translateY(Math.cos(rad) * radius);
                     dots.add(dot);
+                    
+                    // add coordinate of filled dot to polygon points
+                    if (patternData.euclidPattern[i]) {
+                        polygonPoints.push(dot.position.clone());
+                    }
                 }
+                
+                // draw polygon if there's at least two points
+                if (polygonPoints.length > 1) {
+                    polygonPoints.push(polygonPoints[0].clone());
+                    updatePolygon(patternData, polygonPoints);
+                }
+            },
+            
+            /**
+             * Update the polygon shape that connects the dots.
+             * @param {object} patternData Pattern data object.
+             * @param {array} points Coordinates of the shape points.
+             */
+            updatePolygon = function(patternData, points) {
+                var i, n, polygon, line, lineGeom, fillShape, fillGeom;
+                
+                polygon = patternData.polygon3d;
+                
+                fillShape = new THREE.Shape();
+                fillShape.moveTo(points[0].x, points[0].y);
+                n = points.length;
+                for (i = 1; i < n; i++) {
+                    fillShape.lineTo(points[i].x, points[i].y);
+                }
+                fillShape.lineTo(points[0].x, points[0].y);
+                fillGeom = new THREE.ShapeGeometry(fillShape);
+                fill = polygon.getObjectByName('polygonFill');
+                fill.geometry = fillGeom;
+                
+                line = polygon.getObjectByName('polygonLine');
+                line.geometry.vertices = points;
+                line.geometry.verticesNeedUpdate = true;
             };
         
         that = {};
