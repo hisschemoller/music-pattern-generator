@@ -6,7 +6,7 @@
  * 1. Real time, 
  *      
  * 2. Audio Context time, 
-        time since AudioContext started, used to schedule audio events.
+ *      time since AudioContext started, used to schedule audio events.
  * 3. Transport time, 
  *      position of the Transport playhead, used to 
  * 
@@ -19,10 +19,11 @@
  *  |--------------------------|-------|-------//-----|--------//------|
  *  
  *  |------------------------------------------------------------------> Date.now()
- *                             |---------------------------------------> Performance.now()
+ *  |------------------------------------------------------------------> absNow
+ *                             |---------------------------------------> performance.now()
  *                                     |-------------------------------> AudioContext.currentTime
  *                                                    |----------------> now
- *  |--------------------absOrigin--------------------|
+ *                             |-------absOrigin------|
  * 
  * @namespace WH
  */
@@ -86,7 +87,7 @@ window.WH.core = window.WH.core || {};
              */
             setPlayheadPosition = function(position) {
                 now = position;
-                absOrigin = (Date.now() / 1000) - now; // WH.core.getNow() - now;
+                absOrigin = (performance.now() / 1000) - now; // WH.core.getNow() - now;
             },
 
             /**
@@ -107,8 +108,8 @@ window.WH.core = window.WH.core || {};
                         for (i; i < playbackQueue.length; i++) {
                             step = playbackQueue[i];
                             start = absOrigin + tick2sec(step.getStart());
-                            step.setAbsStart( start );
-                            step.setAbsEnd( start + tick2sec(step.getDuration()));
+                            step.setAbsStart(start);
+                            step.setAbsEnd(start + tick2sec(step.getDuration()));
                         }
 
                         // play the events with sound generating plugin instruments
@@ -147,7 +148,7 @@ window.WH.core = window.WH.core || {};
             run = function () {
                 if (isRunning) {
                     // add time elapsed to now_t by checking now_ac
-                    var absNow = Date.now() / 1000; // WH.core.getNow();
+                    var absNow = performance.now() / 1000; // WH.core.getNow();
                     now += (absNow - absLastNow);
                     absLastNow = absNow;
                     // scan notes in range
@@ -174,7 +175,7 @@ window.WH.core = window.WH.core || {};
              */
             start = function () {
                 // Arrange time references.
-                var absNow = (Date.now() / 1000) - now; // WH.core.getNow();
+                var absNow = (performance.now() / 1000) - now; // WH.core.getNow();
                 absOrigin = absNow - now;
                 absLastNow = absNow;
                 // Reset scan range.
@@ -269,7 +270,7 @@ window.WH.core = window.WH.core || {};
                 now *= factor;
                 loopStart *= factor;
                 loopEnd *= factor;
-                absOrigin = (Date.now() / 1000) - now; // WH.core.getNow() - now;
+                absOrigin = (performance.now() / 1000) - now; // WH.core.getNow() - now;
             },
 
             /**
