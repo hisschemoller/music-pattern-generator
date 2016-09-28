@@ -276,8 +276,8 @@ window.WH = window.WH || {};
                 polygonPoints = [];
                 
                 // add new dots
-                radius = 8;
                 n = patternData.steps;
+                radius = 8 + (n > 16 ? (n - 16) * 0.5 : 0);
                 for (i = 0; i < n; i++) {
                     rad = TWO_PI * (i / n);
                     if (patternData.euclidPattern[i]) {
