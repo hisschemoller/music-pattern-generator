@@ -300,6 +300,7 @@ window.WH = window.WH || {};
                 if (polygonPoints.length > 1) {
                     polygonPoints.push(polygonPoints[0].clone());
                     updatePolygon(patternData, polygonPoints);
+                    updatePointer(patternData, radius);
                 }
             },
             
@@ -327,6 +328,16 @@ window.WH = window.WH || {};
                 line = polygon.getObjectByName('polygonLine');
                 line.geometry.vertices = points;
                 line.geometry.verticesNeedUpdate = true;
+            },
+            
+            /**
+             * Update the pointer that connects the dots.
+             * @param {object} patternData Pattern data object.
+             * @param {number} radius Radius of the dots circle.
+             */
+            updatePointer = function(patternData, radius) {
+                patternData.pointer3d.geometry.vertices[1].y = radius;
+                patternData.pointer3d.geometry.verticesNeedUpdate = true;
             };
         
         that = {};
