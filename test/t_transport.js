@@ -17,7 +17,7 @@ window.WH = window.WH || {};
                 }
             },
             
-            updateScanRange = function (start) {
+            setScanRange = function (start) {
                 scanStart = start;
                 scanEnd =  scanStart + lookAhead;
                 needsScan = true;
@@ -25,11 +25,11 @@ window.WH = window.WH || {};
             
             run = function() {
                 if (isRunning) {
+                    scheduleNotesInScanRange();
                     var now = performance.now() / 1000;
                     if (scanEnd - now < 0.0167) {
-                        updateScanRange(scanEnd);
+                        setScanRange(scanEnd);
                     }
-                    scheduleNotesInScanRange();
                 }
                 requestAnimationFrame(run);
             },
@@ -43,7 +43,7 @@ window.WH = window.WH || {};
             },
             
             rewind = function () {
-                updateScanRange(0);
+                setScanRange(0);
             },
             
             initDOMEvents = function() {
