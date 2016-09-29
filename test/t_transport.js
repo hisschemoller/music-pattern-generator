@@ -2,7 +2,22 @@ window.WH = window.WH || {};
 
 (function (ns) {
     
-    function createTransport(specs) {
+    function createSequencer (specs, my) {
+        var that,
+            
+            scanEvents = function(scanStart, scanEnd) {
+                console.log(scanStart.toFixed(2), scanEnd.toFixed(2));
+            };
+        
+        my = my || {};
+        my.scanEvents = scanEvents;
+        
+        that = specs.that || {};
+        
+        return that;
+    }
+    
+    function createTransport(specs, my) {
         var that,
             scanStart = 0,
             scanEnd = 0;
@@ -16,7 +31,7 @@ window.WH = window.WH || {};
             scheduleNotesInScanRange = function () {
                 if (needsScan) {
                     needsScan = false;
-                    console.log(scanStart.toFixed(2), scanEnd.toFixed(2));
+                    my.scanEvents(scanStart, scanEnd);
                 }
             },
             
@@ -89,8 +104,10 @@ window.WH = window.WH || {};
                     }
                 });
             };
+            
+        my = my || {};
         
-        that = specs.that;
+        that = createSequencer(specs, my);
         
         initDOMEvents();
         run();
