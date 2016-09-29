@@ -4,7 +4,6 @@ window.WH = window.WH || {};
     
     function createTransport(specs) {
         var that,
-            playheadPosition = 0,
             scanStart = 0,
             scanEnd = 0;
             lookAhead = 0.2,
@@ -18,13 +17,17 @@ window.WH = window.WH || {};
                 }
             },
             
+            updateScanRange = function (start) {
+                scanStart = start;
+                scanEnd =  scanStart + lookAhead;
+                needsScan = true;
+            },
+            
             run = function() {
                 if (isRunning) {
                     var now = performance.now() / 1000;
                     if (scanEnd - now < 0.0167) {
-                        scanStart = scanEnd;
-                        scanEnd = scanStart + lookAhead;
-                        needsScan = true;
+                        updateScanRange(scanEnd);
                     }
                     scheduleNotesInScanRange();
                 }
@@ -39,6 +42,10 @@ window.WH = window.WH || {};
                 isRunning = false;
             },
             
+            rewind = function () {
+                updateScanRange(0);
+            },
+            
             initDOMEvents = function() {
                 document.addEventListener('keydown', function(e) {
                     switch (e.keyCode) {
@@ -47,6 +54,10 @@ window.WH = window.WH || {};
                             break;
                         case 50: // 2
                             pause();
+                            break;
+                        case 51: // 3
+                            pause();
+                            rewind();
                             break;
                     }
                 });
