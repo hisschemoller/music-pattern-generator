@@ -7,7 +7,10 @@ window.WH = window.WH || {};
             scanStart = 0,
             scanEnd = 0;
             lookAhead = 0.2,
+            loopStart = 0,
+            loopEnd = 0;
             isRunning = false,
+            isLooping = false,
             needsScan = false,
             
             scheduleNotesInScanRange = function () {
@@ -27,8 +30,15 @@ window.WH = window.WH || {};
                 if (isRunning) {
                     scheduleNotesInScanRange();
                     var now = performance.now() / 1000;
-                    if (scanEnd - now < 0.0167) {
-                        setScanRange(scanEnd);
+                    if (isLooping && loopEnd < scanEnd + lookAhead) {
+                        // Inaccurate: playback jumps 
+                        // from just before loopEnd to just before loopStart, 
+                        // but that shouldn't be a problem if lookAhead is small
+                        setScanRange(loopStart + loopEnd - scanEnd - lookAhead);
+                    } else {
+                        if (scanEnd - now < 0.0167) {
+                            setScanRange(scanEnd);
+                        }
                     }
                 }
                 requestAnimationFrame(run);
@@ -46,6 +56,18 @@ window.WH = window.WH || {};
                 setScanRange(0);
             },
             
+            setLoopStart = function (position) {
+                loopStart = position;
+            },
+            
+            setLoopEnd = function (position) {
+                loopEnd = position;
+            },
+            
+            setLoop = function (isEnabled, startPosition, endPosition) {
+                isLooping = isEnabled;
+            },
+            
             initDOMEvents = function() {
                 document.addEventListener('keydown', function(e) {
                     switch (e.keyCode) {
@@ -59,6 +81,11 @@ window.WH = window.WH || {};
                             pause();
                             rewind();
                             break;
+                        case 52: // 4
+                            setLoopStart(1.5);
+                            setLoopEnd(2.5);
+                            setLoop(true);
+                            break;
                     }
                 });
             };
@@ -69,6 +96,11 @@ window.WH = window.WH || {};
         run();
         
         that.start = start;
+        that.pause = pause;
+        that.rewind = rewind;
+        that.setLoopStart = setLoopStart;
+        that.setLoopEnd = setLoopEnd;
+        that.setLoop = setLoop;
         return that;
     };
     
