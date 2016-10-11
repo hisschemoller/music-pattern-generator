@@ -12,7 +12,7 @@ window.WH = window.WH || {};
      * @description Create a step sequencer step object.
      * @param {Number} specs.pitch MIDI pitch.
      * @param {Number} specs.velocity MIDI velocity.
-     * @param {Number} specs.start Start time in tick.
+     * @param {Number} specs.start Local start time within the track, in ticks.
      * @param {Number} specs.duration Note durtion in tick.
      * @param {Number} specs.getTrackIndex Track on which this note is played.
      * @param {Number} specs.index Index of this step within the track.

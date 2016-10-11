@@ -63,7 +63,7 @@ window.WH.core = window.WH.core || {};
              */
             tick2sec = function (tick) {
                 return tick * tickInSeconds;
-            }
+            },
 
             /**
              * Converts second to tick based on transport tempo.
