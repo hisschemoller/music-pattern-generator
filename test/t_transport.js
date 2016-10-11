@@ -4,9 +4,39 @@ window.WH = window.WH || {};
     
     function createSequencer (specs, my) {
         var that,
+            arrangement = specs.arrangement,
+            ppqn = 480,
+            bpm = 120,
+            lastBpm = bpm,
+            tickInSeconds,
+            playbackQueue = [],
             
             scanEvents = function(scanStart, scanEnd) {
+                var i, n;
+                // arrangement.scanEvents(sec2tick(scanStart), sec2tick(scanEnd), playbackQueue);
+                if (playbackQueue.length) {
+                    n = playbackQueue.length;
+                    for (i = 0; i < n; i++) {
+                        step = playbackQueue[i];
+                        
+                    }
+                }
+                
                 console.log(scanStart.toFixed(2), scanEnd.toFixed(2));
+                    // , sec2tick(scanStart).toFixed(2), sec2tick(scanEnd).toFixed(2));
+            },
+            
+            setBPM = function(newBpm) {
+                bpm = (newBpm || 120);
+                var beatInSeconds = 60.0 / bpm;
+                tickInSeconds = beatInSeconds / ppqn;
+                // calculate change factor
+                var factor = lastBpm / bpm;
+                my.setLoopByFactor(factor);
+            },
+            
+            sec2tick = function (sec) {
+                return sec / tickInSeconds;
             };
         
         my = my || {};
@@ -14,6 +44,9 @@ window.WH = window.WH || {};
         
         that = specs.that || {};
         
+        setBPM(bpm);
+        
+        that.setBPM = setBPM;
         return that;
     }
     
@@ -60,6 +93,7 @@ window.WH = window.WH || {};
             },
             
             start = function() {
+                
                 isRunning = true;
             },
             
@@ -81,6 +115,11 @@ window.WH = window.WH || {};
             
             setLoop = function (isEnabled, startPosition, endPosition) {
                 isLooping = isEnabled;
+            },
+            
+            setLoopByFactor = function(factor) {
+                setLoopStart(loopStart * factor);
+                setLoopEnd(loopEnd * factor);
             },
             
             initDOMEvents = function() {
@@ -106,6 +145,7 @@ window.WH = window.WH || {};
             };
             
         my = my || {};
+        my.setLoopByFactor = setLoopByFactor;
         
         that = createSequencer(specs, my);
         
