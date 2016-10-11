@@ -33,6 +33,7 @@
             isOn: false,
             isNoteOn: false,
             isSelected: false,
+            isMute: false,
             
             offPosition: 0,
             lastPosition: 0,
@@ -52,8 +53,10 @@
             select3d: specs.select3d || null,
             centreDot3d: specs.centreDot3d || null,
             pointer3d: specs.pointer3d || null,
+            polygon3d: specs.polygon3d || null,
             dots3d: specs.dots3d || null,
-            position3d: specs.position3d || null
+            position3d: specs.position3d || null,
+            radius3d: specs.radius3d || 1,
         };
         
         return that;
@@ -68,6 +71,7 @@
             patterns = [],
             numPatterns = patterns.length,
             selectedPattern,
+            unixToMidiTimeConvert = (Date.now() - performance.now()) / 1000,
             
             /**
              * Create a Euclidean step sequence from a pattern's steps and fills data.
@@ -282,6 +286,10 @@
                     case 'canvasY':
                         selectedPattern[name] = value;
                         break;
+                    case 'isMute':
+                        selectedPattern[name] = value;
+                        epgCanvas.updatePattern3D(selectedPattern);
+                        break;
                     case 'name':
                         selectedPattern[name] = value;
                         epgSettings.updateSetting(name, value);
@@ -289,6 +297,10 @@
                 }
                 
                 // file.autoSave();
+            },
+            
+            setMute = function(isMute) {
+                selectedPattern.isMute = isMute;
             },
 
             /**§
@@ -338,7 +350,7 @@
             },
             
             onTransportScan = function(playbackQueue) {
-                var i,
+                var i, now, start, stop,
                     numSteps = playbackQueue.length;
                 for (i = 0; i < numSteps; i++) {
                     var step = playbackQueue[i],
@@ -349,6 +361,12 @@
                         ptrn.isNoteOn = true;
                         ptrn.pulseIndex = step.getIndex();
                         ptrn.offPosition = (ptrn.position + step.getDuration()) % ptrn.duration;
+                        
+                        // now for the MIDI...
+                        now = performance.now() / 1000;
+                        start = step.getAbsStart() - now;
+                        end = step.getAbsEnd() - now;
+                        console.log(start, end, end - start, step.getAbsEnd() - step.getAbsStart());
                     }
                 }
             };

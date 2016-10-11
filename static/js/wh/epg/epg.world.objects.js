@@ -263,7 +263,7 @@ window.WH = window.WH || {};
              * @param {object} patternData Pattern data object.
              */
             updateDots = function(patternData) {
-                var dots, i, n, dot, rad, radius, polygonPoints;
+                var dots, i, n, dot, rad, polygonPoints;
                 
                 dots = patternData.dots3d;
                 
@@ -277,7 +277,7 @@ window.WH = window.WH || {};
                 
                 // add new dots
                 n = patternData.steps;
-                radius = 8 + (n > 16 ? (n - 16) * 0.5 : 0);
+                patternData.radius3d = 8 + (n > 16 ? (n - 16) * 0.5 : 0);
                 for (i = 0; i < n; i++) {
                     rad = TWO_PI * (i / n);
                     if (patternData.euclidPattern[i]) {
@@ -286,8 +286,8 @@ window.WH = window.WH || {};
                         dot = circleOutline.clone();
                     }
                     dot.scale.set(0.1, 0.1, 1);
-                    dot.translateX(Math.sin(rad) * radius);
-                    dot.translateY(Math.cos(rad) * radius);
+                    dot.translateX(Math.sin(rad) * patternData.radius3d);
+                    dot.translateY(Math.cos(rad) * patternData.radius3d);
                     dots.add(dot);
                     
                     // add coordinate of filled dot to polygon points
@@ -300,8 +300,8 @@ window.WH = window.WH || {};
                 if (polygonPoints.length > 1) {
                     polygonPoints.push(polygonPoints[0].clone());
                     updatePolygon(patternData, polygonPoints);
-                    updatePointer(patternData, radius);
                 }
+                updatePointer(patternData);
             },
             
             /**
@@ -333,9 +333,10 @@ window.WH = window.WH || {};
             /**
              * Update the pointer that connects the dots.
              * @param {object} patternData Pattern data object.
-             * @param {number} radius Radius of the dots circle.
              */
-            updatePointer = function(patternData, radius) {
+            updatePointer = function(patternData) {
+                var mutedRadius = 4.5,
+                    radius = patternData.isMute ? mutedRadius : patternData.radius3d;
                 patternData.pointer3d.geometry.vertices[1].y = radius;
                 patternData.pointer3d.geometry.verticesNeedUpdate = true;
             };
@@ -347,6 +348,7 @@ window.WH = window.WH || {};
         that.createPattern3D = createPattern3D;
         that.createControls = createControls;
         that.updateDots = updateDots;
+        that.updatePointer = updatePointer;
         return that;
     }
 

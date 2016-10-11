@@ -31,6 +31,10 @@ window.WH.epg = window.WH.epg || {};
                     range: document.getElementById('rotation-range'),
                     number: document.getElementById('rotation-number')
                 },
+                mute: {
+                    type: 'checkbox',
+                    input: document.getElementById('mute-check')
+                },
                 name: {
                     type: 'text',
                     input: document.getElementById('name-text')
@@ -47,8 +51,11 @@ window.WH.epg = window.WH.epg || {};
                 initSetting('rotation', 64);
                 settings.name.input.dataset.prop = 'name';
                 settings.name.input.addEventListener('change', onChange);
-                document.getElementById('delete-button').addEventListener('click', function(e) {
-                    // show a confirmation dialog first
+                settings.mute.input.addEventListener('change', function(e) {
+                    epgModel.setPatternProperty('isMute', e.target.checked);
+                });
+                settings.delete.input.addEventListener('click', function(e) {
+                    // TODO: show a confirmation dialog first
                     epgModel.deleteSelectedPattern();
                 });
             },
