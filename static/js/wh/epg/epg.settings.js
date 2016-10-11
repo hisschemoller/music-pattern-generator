@@ -34,6 +34,10 @@ window.WH.epg = window.WH.epg || {};
                 name: {
                     type: 'text',
                     input: document.getElementById('name-text')
+                },
+                delete: {
+                    type: 'button',
+                    input: document.getElementById('delete-button')
                 }
             },
             
