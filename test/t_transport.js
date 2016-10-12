@@ -54,9 +54,11 @@ window.WH = window.WH || {};
     
     function createTransport(specs, my) {
         var that,
+            position = 0,
+            origin = 0,
             scanStart = 0,
             scanEnd = 0;
-            lookAhead = 0.2,
+            lookAhead = 200,
             loopStart = 0,
             loopEnd = 0,
             playheadOrigin = 0,
@@ -68,10 +70,9 @@ window.WH = window.WH || {};
             scheduleNotesInScanRange = function () {
                 if (needsScan) {
                     needsScan = false;
-                    var now = performance.now() / 1000;
-                    var playheadOffset = now - playheadOrigin;
-                    my.scanEvents(scanStart - playheadOffset, scanEnd - playheadOffset);
-                    console.log(scanStart, scanEnd, playheadOrigin);
+                    // console.log((scanStart).toFixed(2), (scanEnd).toFixed(2), origin);
+                    console.log((scanStart - origin).toFixed(2), (scanEnd - origin).toFixed(2), origin);
+                    my.scanEvents(scanStart - origin, scanEnd - origin);
                 }
             },
             
@@ -84,14 +85,14 @@ window.WH = window.WH || {};
             run = function() {
                 if (isRunning) {
                     scheduleNotesInScanRange();
-                    var now = performance.now() / 1000;
+                    position = performance.now();
                     if (isLooping && loopEnd < scanEnd + lookAhead) {
                         // Inaccurate: playback jumps 
                         // from just before loopEnd to just before loopStart, 
                         // but that shouldn't be a problem if lookAhead is small
                         setScanRange(loopStart + loopEnd - scanEnd - lookAhead);
                     } else {
-                        if (scanEnd - now < 0.0167) {
+                        if (scanEnd - position < 16.7) {
                             setScanRange(scanEnd);
                         }
                     }
@@ -100,25 +101,21 @@ window.WH = window.WH || {};
             },
             
             start = function() {
-                console.log('start');
-                var now = performance.now() / 1000,
-                    playheadOffset = playheadPosition - playheadOrigin;
-                playheadOrigin = now - playheadOffset;
-                playheadPosition = now;
-                setScanRange(playheadPosition);
+                var offset = position - origin;
+                position = performance.now();
+                origin = position - offset;
+                setScanRange(position);
                 isRunning = true;
             },
             
             pause = function () {
-                console.log('pause');
                 isRunning = false;
             },
             
             rewind = function () {
-                var now = performance.now() / 1000;
-                playheadOrigin = now;
-                playheadPosition = now;
-                setScanRange(playheadPosition);
+                position = performance.now();
+                origin = position;
+                setScanRange(position);
             },
             
             setLoopStart = function (position) {
@@ -142,16 +139,20 @@ window.WH = window.WH || {};
                 document.addEventListener('keydown', function(e) {
                     switch (e.keyCode) {
                         case 49: // 1
+                            console.log('start');
                             start();
                             break;
                         case 50: // 2
+                            console.log('pause');
                             pause();
                             break;
                         case 51: // 3
+                            console.log('stop');
                             pause();
                             rewind();
                             break;
                         case 52: // 4
+                            console.log('loop');
                             setLoopStart(1.5);
                             setLoopEnd(2.5);
                             setLoop(true);
