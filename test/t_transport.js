@@ -22,7 +22,9 @@ window.WH = window.WH || {};
                     }
                 }
                 
-                console.log(scanStart.toFixed(2), scanEnd.toFixed(2));
+                // var now = performance.now() / 1000;
+                // console.log(scanStart - now, scanEnd - now);
+                // console.log(scanStart.toFixed(2), scanEnd.toFixed(2));
                     // , sec2tick(scanStart).toFixed(2), sec2tick(scanEnd).toFixed(2));
             },
             
@@ -56,7 +58,9 @@ window.WH = window.WH || {};
             scanEnd = 0;
             lookAhead = 0.2,
             loopStart = 0,
-            loopEnd = 0;
+            loopEnd = 0,
+            playheadOrigin = 0,
+            playheadPosition = 0,
             isRunning = false,
             isLooping = false,
             needsScan = false,
@@ -64,7 +68,10 @@ window.WH = window.WH || {};
             scheduleNotesInScanRange = function () {
                 if (needsScan) {
                     needsScan = false;
-                    my.scanEvents(scanStart, scanEnd);
+                    var now = performance.now() / 1000;
+                    var playheadOffset = now - playheadOrigin;
+                    my.scanEvents(scanStart - playheadOffset, scanEnd - playheadOffset);
+                    console.log(scanStart, scanEnd, playheadOrigin);
                 }
             },
             
@@ -93,16 +100,25 @@ window.WH = window.WH || {};
             },
             
             start = function() {
-                
+                console.log('start');
+                var now = performance.now() / 1000,
+                    playheadOffset = playheadPosition - playheadOrigin;
+                playheadOrigin = now - playheadOffset;
+                playheadPosition = now;
+                setScanRange(playheadPosition);
                 isRunning = true;
             },
             
             pause = function () {
+                console.log('pause');
                 isRunning = false;
             },
             
             rewind = function () {
-                setScanRange(0);
+                var now = performance.now() / 1000;
+                playheadOrigin = now;
+                playheadPosition = now;
+                setScanRange(playheadPosition);
             },
             
             setLoopStart = function (position) {
