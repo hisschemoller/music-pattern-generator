@@ -13,19 +13,19 @@ window.WH = window.WH || {};
             
             scanEvents = function(scanStart, scanEnd) {
                 var i, n;
-                // arrangement.scanEvents(sec2tick(scanStart), sec2tick(scanEnd), playbackQueue);
+                console.log(scanStart, scanEnd);
+                // arrangement.scanEvents(sec2tick(scanStart / 1000), sec2tick(scanEnd / 1000), playbackQueue);
                 if (playbackQueue.length) {
                     n = playbackQueue.length;
                     for (i = 0; i < n; i++) {
                         step = playbackQueue[i];
+                        // scanStart and scanEnd are in time since page load,
+                        // for web audio (sperformance.now() - audioContext.currentTime) should be added
+                        // and milliseconds converted to seconds
                         
+                        // for web MIDI, time is milliseconds since document loaded
                     }
                 }
-                
-                // var now = performance.now() / 1000;
-                // console.log(scanStart - now, scanEnd - now);
-                // console.log(scanStart.toFixed(2), scanEnd.toFixed(2));
-                    // , sec2tick(scanStart).toFixed(2), sec2tick(scanEnd).toFixed(2));
             },
             
             setBPM = function(newBpm) {
@@ -61,8 +61,6 @@ window.WH = window.WH || {};
             lookAhead = 200,
             loopStart = 0,
             loopEnd = 0,
-            playheadOrigin = 0,
-            playheadPosition = 0,
             isRunning = false,
             isLooping = false,
             needsScan = false,
@@ -70,9 +68,7 @@ window.WH = window.WH || {};
             scheduleNotesInScanRange = function () {
                 if (needsScan) {
                     needsScan = false;
-                    // console.log((scanStart).toFixed(2), (scanEnd).toFixed(2), origin);
-                    console.log((scanStart - origin).toFixed(2), (scanEnd - origin).toFixed(2), origin);
-                    my.scanEvents(scanStart - origin, scanEnd - origin);
+                    my.scanEvents(scanStart, scanEnd);
                 }
             },
             
@@ -84,7 +80,6 @@ window.WH = window.WH || {};
             
             run = function() {
                 if (isRunning) {
-                    scheduleNotesInScanRange();
                     position = performance.now();
                     if (isLooping && loopEnd < scanEnd + lookAhead) {
                         // Inaccurate: playback jumps 
@@ -96,6 +91,7 @@ window.WH = window.WH || {};
                             setScanRange(scanEnd);
                         }
                     }
+                    scheduleNotesInScanRange();
                 }
                 requestAnimationFrame(run);
             },
