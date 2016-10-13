@@ -19,19 +19,20 @@ window.WH = window.WH || {};
             tickInSeconds,
             audioContextOffset = 0,
             timelineOffset = 0,
+            transportOrigin = 0,
             playbackQueue = [],
             
             scanEvents = function(scanStart, scanEnd) {
-                var scanStartTimeline = sec2tick((scanStart - timelineOffset) / 1000);
-                var scanEndTimeline = sec2tick((scanEnd - timelineOffset) / 1000);
-                console.log(scanStartTimeline.toFixed(2), scanEndTimeline.toFixed(2), timelineOffset);
+                var scanStartTimeline = sec2tick((scanStart - transportOrigin) / 1000);
+                var scanEndTimeline = sec2tick((scanEnd - transportOrigin) / 1000);
+                console.log(scanStartTimeline.toFixed(2), scanEndTimeline.toFixed(2), transportOrigin);
                 // arrangement.scanEvents(scanStartTimeline, scanEndTimeline, playbackQueue);
                 if (playbackQueue.length) {
                     var n = playbackQueue.length;
                     for (var i = 0; i < n; i++) {
                         var step = playbackQueue[i];
-                        step.setStartMidi(tick2sec(step.getStart() * 1000) + timelineOffset);
-                        step.setDurationMidi(tick2sec(step.getDuration() * 1000) + timelineOffset);
+                        step.setStartMidi(tick2sec(step.getStart() * 1000) + transportOrigin);
+                        step.setDurationMidi(tick2sec(step.getDuration() * 1000) + transportOrigin);
                     }
                 }
             },
@@ -53,8 +54,8 @@ window.WH = window.WH || {};
                 my.setLoopByFactor(factor);
             },
             
-            setTimelineOffset = function(timelineOrigin) {
-                timelineOffset = performance.now() - timelineOrigin;
+            setTransportOrigin = function(origin) {
+                transportOrigin = origin;
             },
             
             setAudioContextOffset = function(acCurrentTime) {
@@ -63,7 +64,7 @@ window.WH = window.WH || {};
         
         my = my || {};
         my.scanEvents = scanEvents;
-        my.setTimelineOffset = setTimelineOffset;
+        my.setTransportOrigin = setTransportOrigin;
         
         that = specs.that || {};
         
@@ -102,7 +103,7 @@ window.WH = window.WH || {};
             
             setOrigin = function(newOrigin) {
                 origin = newOrigin;
-                my.setTimelineOffset(origin);
+                my.setTransportOrigin(origin);
             },
             
             run = function() {
