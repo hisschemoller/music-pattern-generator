@@ -1,3 +1,11 @@
+/*
+Transport is in milliseconde sinds document load.
+Arrangement is in ticks vanaf tijdlijn start.
+Web MIDI verwacht een timestamp in milliseconde sinds document load.
+Web Audio verwacht een timestamp in seconde sinds AudioContext creation.
+Sequencer moet alles voor iedereen vertalen.
+*/
+
 window.WH = window.WH || {};
 
 (function (ns) {
@@ -9,24 +17,32 @@ window.WH = window.WH || {};
             bpm = 120,
             lastBpm = bpm,
             tickInSeconds,
+            audioContextOffset = 0,
+            timelineOffset = 0,
             playbackQueue = [],
             
             scanEvents = function(scanStart, scanEnd) {
-                var i, n;
-                console.log(scanStart, scanEnd);
-                // arrangement.scanEvents(sec2tick(scanStart / 1000), sec2tick(scanEnd / 1000), playbackQueue);
+                var scanStartTimeline = sec2tick((scanStart - timelineOffset) / 1000);
+                var scanEndTimeline = sec2tick((scanEnd - timelineOffset) / 1000);
+                console.log(scanStartTimeline.toFixed(2), scanEndTimeline.toFixed(2), timelineOffset);
+                // arrangement.scanEvents(scanStartTimeline, scanEndTimeline, playbackQueue);
                 if (playbackQueue.length) {
-                    n = playbackQueue.length;
-                    for (i = 0; i < n; i++) {
-                        step = playbackQueue[i];
-                        // scanStart and scanEnd are in time since page load,
-                        // for web audio (sperformance.now() - audioContext.currentTime) should be added
-                        // and milliseconds converted to seconds
-                        
-                        // for web MIDI, time is milliseconds since document loaded
+                    var n = playbackQueue.length;
+                    for (var i = 0; i < n; i++) {
+                        var step = playbackQueue[i];
+                        step.setStartMidi(tick2sec(step.getStart() * 1000) + timelineOffset);
+                        step.setDurationMidi(tick2sec(step.getDuration() * 1000) + timelineOffset);
                     }
                 }
             },
+            
+            sec2tick = function (sec) {
+                return sec / tickInSeconds;
+            },
+            
+            tick2sec = function (tick) {
+                return tick * tickInSeconds;
+            }
             
             setBPM = function(newBpm) {
                 bpm = (newBpm || 120);
@@ -37,18 +53,24 @@ window.WH = window.WH || {};
                 my.setLoopByFactor(factor);
             },
             
-            sec2tick = function (sec) {
-                return sec / tickInSeconds;
+            setTimelineOffset = function(timelineOrigin) {
+                timelineOffset = performance.now() - timelineOrigin;
+            },
+            
+            setAudioContextOffset = function(acCurrentTime) {
+                audioContextOffset = performance.now() - (acCurrentTime * 1000);
             };
         
         my = my || {};
         my.scanEvents = scanEvents;
+        my.setTimelineOffset = setTimelineOffset;
         
         that = specs.that || {};
         
         setBPM(bpm);
         
         that.setBPM = setBPM;
+        that.setAudioContextOffset = setAudioContextOffset;
         return that;
     }
     
@@ -78,6 +100,11 @@ window.WH = window.WH || {};
                 needsScan = true;
             },
             
+            setOrigin = function(newOrigin) {
+                origin = newOrigin;
+                my.setTimelineOffset(origin);
+            },
+            
             run = function() {
                 if (isRunning) {
                     position = performance.now();
@@ -85,7 +112,9 @@ window.WH = window.WH || {};
                         // Inaccurate: playback jumps 
                         // from just before loopEnd to just before loopStart, 
                         // but that shouldn't be a problem if lookAhead is small
-                        setScanRange(loopStart + loopEnd - scanEnd - lookAhead);
+                        var newScanStart = loopStart + loopEnd - scanEnd - lookAhead;
+                        setOrigin(newScanStart);
+                        setScanRange(newScanStart);
                     } else {
                         if (scanEnd - position < 16.7) {
                             setScanRange(scanEnd);
@@ -99,7 +128,7 @@ window.WH = window.WH || {};
             start = function() {
                 var offset = position - origin;
                 position = performance.now();
-                origin = position - offset;
+                setOrigin(position - offset);
                 setScanRange(position);
                 isRunning = true;
             },
@@ -110,7 +139,7 @@ window.WH = window.WH || {};
             
             rewind = function () {
                 position = performance.now();
-                origin = position;
+                setOrigin(position);
                 setScanRange(position);
             },
             
