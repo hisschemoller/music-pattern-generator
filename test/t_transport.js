@@ -25,12 +25,12 @@ window.WH = window.WH || {};
             scanEvents = function(scanStart, scanEnd) {
                 var scanStartTimeline = sec2tick((scanStart - transportOrigin) / 1000);
                 var scanEndTimeline = sec2tick((scanEnd - transportOrigin) / 1000);
-                console.log(scanStartTimeline.toFixed(2), scanEndTimeline.toFixed(2), transportOrigin);
+                // console.log(scanStartTimeline.toFixed(2), scanEndTimeline.toFixed(2), transportOrigin);
                 // arrangement.scanEvents(scanStartTimeline, scanEndTimeline, playbackQueue);
                 if (playbackQueue.length) {
                     var n = playbackQueue.length;
                     for (var i = 0; i < n; i++) {
-                        var step = playbackQueue[i];
+                        var step = playbackQueue[i];2
                         step.setStartMidi(tick2sec(step.getStart() * 1000) + transportOrigin);
                         step.setDurationMidi(tick2sec(step.getDuration() * 1000) + transportOrigin);
                     }
@@ -91,6 +91,7 @@ window.WH = window.WH || {};
             scheduleNotesInScanRange = function () {
                 if (needsScan) {
                     needsScan = false;
+                    // console.log(scanStart.toFixed(2), scanEnd.toFixed(2), origin);
                     my.scanEvents(scanStart, scanEnd);
                 }
             },
@@ -102,20 +103,17 @@ window.WH = window.WH || {};
             },
             
             setOrigin = function(newOrigin) {
+                loopStart = loopStart - origin + newOrigin;
+                loopEnd = loopEnd - origin + newOrigin;
                 origin = newOrigin;
-                my.setTransportOrigin(origin);
+                my.setTransportOrigin(newOrigin);
             },
             
             run = function() {
                 if (isRunning) {
                     position = performance.now();
-                    if (isLooping && loopEnd < scanEnd + lookAhead) {
-                        // Inaccurate: playback jumps 
-                        // from just before loopEnd to just before loopStart, 
-                        // but that shouldn't be a problem if lookAhead is small
-                        var newScanStart = loopStart + loopEnd - scanEnd - lookAhead;
-                        setOrigin(newScanStart);
-                        setScanRange(newScanStart);
+                    if (isLooping && position < loopEnd && scanStart < loopEnd && scanEnd > loopEnd) {
+                        setOrigin(origin + (loopEnd - loopStart));
                     } else {
                         if (scanEnd - position < 16.7) {
                             setScanRange(scanEnd);
@@ -145,11 +143,11 @@ window.WH = window.WH || {};
             },
             
             setLoopStart = function (position) {
-                loopStart = position;
+                loopStart = origin + position;
             },
             
             setLoopEnd = function (position) {
-                loopEnd = position;
+                loopEnd = origin + position;
             },
             
             setLoop = function (isEnabled, startPosition, endPosition) {
@@ -179,8 +177,8 @@ window.WH = window.WH || {};
                             break;
                         case 52: // 4
                             console.log('loop');
-                            setLoopStart(1.5);
-                            setLoopEnd(2.5);
+                            setLoopStart(1500);
+                            setLoopEnd(2500);
                             setLoop(true);
                             break;
                     }
