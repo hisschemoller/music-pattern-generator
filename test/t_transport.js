@@ -25,14 +25,16 @@ window.WH = window.WH || {};
             scanEvents = function(scanStart, scanEnd) {
                 var scanStartTimeline = msec2tick((scanStart - transportOrigin));
                 var scanEndTimeline = msec2tick((scanEnd - transportOrigin));
-                // console.log(scanStartTimeline.toFixed(2), scanEndTimeline.toFixed(2), transportOrigin);
+                playbackQueue.length = 0;
                 // arrangement.scanEvents(scanStartTimeline, scanEndTimeline, playbackQueue);
                 if (playbackQueue.length) {
                     var n = playbackQueue.length;
                     for (var i = 0; i < n; i++) {
                         var step = playbackQueue[i];
                         step.setStartMidi(tick2msec(step.getStart()) + transportOrigin);
-                        step.setDurationMidi(tick2msec(step.getDuration()) + transportOrigin);
+                        step.setDurationMidi(tick2msec(step.getDuration()));
+                        step.setStartAudioContext((tick2msec(step.getStart()) / 1000) + audioContextOffset);
+                        step.setDurationAudioContext(tick2msec(step.getDuration()) / 1000);
                     }
                 }
             },
