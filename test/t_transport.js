@@ -16,39 +16,39 @@ window.WH = window.WH || {};
             ppqn = 480,
             bpm = 120,
             lastBpm = bpm,
-            tickInSeconds,
+            tickInMilliseconds,
             audioContextOffset = 0,
             timelineOffset = 0,
             transportOrigin = 0,
             playbackQueue = [],
             
             scanEvents = function(scanStart, scanEnd) {
-                var scanStartTimeline = sec2tick((scanStart - transportOrigin) / 1000);
-                var scanEndTimeline = sec2tick((scanEnd - transportOrigin) / 1000);
+                var scanStartTimeline = msec2tick((scanStart - transportOrigin));
+                var scanEndTimeline = msec2tick((scanEnd - transportOrigin));
                 // console.log(scanStartTimeline.toFixed(2), scanEndTimeline.toFixed(2), transportOrigin);
                 // arrangement.scanEvents(scanStartTimeline, scanEndTimeline, playbackQueue);
                 if (playbackQueue.length) {
                     var n = playbackQueue.length;
                     for (var i = 0; i < n; i++) {
-                        var step = playbackQueue[i];2
-                        step.setStartMidi(tick2sec(step.getStart() * 1000) + transportOrigin);
-                        step.setDurationMidi(tick2sec(step.getDuration() * 1000) + transportOrigin);
+                        var step = playbackQueue[i];
+                        step.setStartMidi(tick2msec(step.getStart()) + transportOrigin);
+                        step.setDurationMidi(tick2msec(step.getDuration()) + transportOrigin);
                     }
                 }
             },
             
-            sec2tick = function (sec) {
-                return sec / tickInSeconds;
+            msec2tick = function (sec) {
+                return sec / tickInMilliseconds;
             },
             
-            tick2sec = function (tick) {
-                return tick * tickInSeconds;
+            tick2msec = function (tick) {
+                return tick * tickInMilliseconds;
             }
             
             setBPM = function(newBpm) {
                 bpm = (newBpm || 120);
-                var beatInSeconds = 60.0 / bpm;
-                tickInSeconds = beatInSeconds / ppqn;
+                var beatInMilliseconds = 60000.0 / bpm;
+                tickInMilliseconds = beatInMilliseconds / ppqn;
                 // calculate change factor
                 var factor = lastBpm / bpm;
                 my.setLoopByFactor(factor);
