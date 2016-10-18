@@ -78,18 +78,6 @@ window.WH = window.WH || {};
     }
     
     
-    
-    function createMetronome(specs, my) {
-         var that;
-         
-         my = my || {};
-         
-         that = specs.that || {};
-         
-         return that;
-    }
-    
-    
     function createTransport(specs, my) {
         var that,
             position = 0,
@@ -204,7 +192,6 @@ window.WH = window.WH || {};
         my.setLoopByFactor = setLoopByFactor;
         
         that = createSequencer(specs, my);
-        that = createMetronome(specs, my);
         
         initDOMEvents();
         run();
