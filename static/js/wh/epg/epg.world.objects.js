@@ -81,15 +81,25 @@ window.WH = window.WH || {};
              * @return {object} Line 3D object.
              */
             createPointer = function(lineMaterial) {
-                var line, 
-                    geometry = new THREE.Geometry();
+                var geometry = createPointerGeometry(8);
+                var line = new THREE.Line(geometry, lineMaterial);
+                return line;
+            },
+            
+            /**
+             * Create geometry for the pointer.
+             * Also used by the pointer update function.
+             * @param {Number} radius Pointer radius.
+             * @return {Object} Three.js Geometry object.
+             */
+            createPointerGeometry = function(radius) {
+                var geometry = new THREE.Geometry();
                 geometry.vertices.push(
                 	new THREE.Vector3(-2.9, 0.7, 0),
-                	new THREE.Vector3(0, 8, 0),
+                	new THREE.Vector3(0, radius, 0),
                 	new THREE.Vector3(2.9, 0.7, 0)
                 );
-                line = new THREE.Line(geometry, lineMaterial);
-                return line;
+                return geometry;
             },
             
             /**
@@ -339,8 +349,8 @@ window.WH = window.WH || {};
             updatePointer = function(patternData) {
                 var mutedRadius = 4.5,
                     radius = patternData.isMute ? mutedRadius : patternData.radius3d;
-                patternData.pointer3d.geometry.vertices[1].y = radius;
-                patternData.pointer3d.geometry.verticesNeedUpdate = true;
+                patternData.pointer3d.geometry.dispose();
+                patternData.pointer3d.geometry = createPointerGeometry(radius);
             };
         
         that = {};
