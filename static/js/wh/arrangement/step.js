@@ -24,9 +24,11 @@ window.WH = window.WH || {};
             start = specs.start || 0,
             duration = specs.duration || 1,
             trackIndex = specs.trackIndex || 0,
-            absStart = 0,
-            absEnd = 0,
             index = specs.index,
+            startMidi = 0,
+            durationMidi = 0,
+            startAudioContext = 0,
+            durationAudioContext = 0,
             
             /**
              * Create clone of this step with optional changed start time.
@@ -74,27 +76,51 @@ window.WH = window.WH || {};
             },
 
             /**
-             * Set absolute play start time in seconds since audio stream started.
-             * @param {number} newAbsStart Start time in seconds.
+             * Set start time in MIDI timestamp.
+             * @param {Number} start Start time in milliseconds since document load.
              */
-            setAbsStart = function(newAbsStart) {
-                absStart = newAbsStart;
+            setStartMidi = function(start) {
+                startMidi = start;
             },
             
-            getAbsStart = function() {
-                return absStart;
+            getStartMidi = function() {
+                return startMidi;
             },
 
             /**
-             * Set absolute play end time in seconds since audio stream started.
-             * @param {number} newAbsEnd End time in seconds.
+             * Set duration in milliseconds.
+             * @param {Number} duration Duration in milliseconds.
              */
-            setAbsEnd = function(newAbsEnd) {
-                absEnd = newAbsEnd;
+            setDurationMidi = function(duration) {
+                durationMidi = start;
             },
             
-            getAbsEnd = function() {
-                return absEnd;
+            getDurationMidi = function() {
+                return durationMidi;
+            },
+
+            /**
+             * Set start time in AudioContext timestamp.
+             * @param {Number} start Start time in seconds since AudioContext creation.
+             */
+            setStartAudioContext = function(start) {
+                startAudioContext = start;
+            },
+            
+            getStartAudioContext = function() {
+                return startAudioContext;
+            },
+
+            /**
+             * Set duration in seconds.
+             * @param {Number} duration Duration in seconds.
+             */
+            setDurationAudioContext = function(duration) {
+                durationAudioContext = duration;
+            },
+            
+            getDurationAudioContext = function() {
+                return durationAudioContext;
             },
 
             /**
@@ -121,10 +147,14 @@ window.WH = window.WH || {};
         that.setTrackIndex = setTrackIndex;
         that.getTrackIndex = getTrackIndex;
         that.getIndex = getIndex;
-        that.setAbsStart = setAbsStart;
-        that.getAbsStart = getAbsStart;
-        that.setAbsEnd = setAbsEnd;
-        that.getAbsEnd = getAbsEnd;
+        that.setStartMidi = setStartMidi;
+        that.getStartMidi = getStartMidi;
+        that.setDurationMidi = setDurationMidi;
+        that.getDurationMidi = getDurationMidi;
+        that.setStartAudioContext = setStartAudioContext;
+        that.getStartAudioContext = getStartAudioContext;
+        that.setDurationAudioContext = setDurationAudioContext;
+        that.getDurationAudioContext = getDurationAudioContext;
         that.getData = getData;
         return that;
     }

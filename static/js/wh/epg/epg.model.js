@@ -351,7 +351,7 @@
             },
             
             onTransportScan = function(playbackQueue) {
-                var i, now, start, stop,
+                var i, now, start, duration,
                     numSteps = playbackQueue.length;
                 for (i = 0; i < numSteps; i++) {
                     var step = playbackQueue[i],
@@ -364,10 +364,8 @@
                         ptrn.offPosition = (ptrn.position + step.getDuration()) % ptrn.duration;
                         
                         // now for the MIDI...
-                        now = performance.now() / 1000;
-                        start = step.getAbsStart() - now;
-                        end = step.getAbsEnd() - now;
-                        console.log(start, end, end - start, step.getAbsEnd() - step.getAbsStart());
+                        start = step.getStartMidi();
+                        duration = step.getDurationMidi();
                     }
                 }
             };

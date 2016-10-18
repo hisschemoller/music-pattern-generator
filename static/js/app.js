@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     WH.createArrangement({
         that: arrangement
     });
-    WH.core.createTransport({
+    WH.createTransport({
         that: transport,
         arrangement: arrangement,
         epgModel: epgModel

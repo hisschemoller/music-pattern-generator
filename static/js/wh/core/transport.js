@@ -1,297 +1,182 @@
-/**
- * @description Starts, stops, pauses playback.
- * 
- * Time
- * There are three time measurements used in this app:
- * 1. Real time, 
- *      
- * 2. Audio Context time, 
- *      time since AudioContext started, used to schedule audio events.
- * 3. Transport time, 
- *      position of the Transport playhead, used to 
- * 
- * @var now {ms} Transport playhead position.
- * @var absOrigin {ms} Transport play start in real time.
- * 
- * Unix epoch,                page    AudioContext   Transport        now,
- * 01-01-1970 00:00:00 UTC    load    created        start            the present
- *  |                          |       |              |                | 
- *  |--------------------------|-------|-------//-----|--------//------|
- *  
- *  |------------------------------------------------------------------> Date.now()
- *  |------------------------------------------------------------------> absNow
- *                             |---------------------------------------> performance.now()
- *                                     |-------------------------------> AudioContext.currentTime
- *                                                    |----------------> now
- *                             |-------absOrigin------|
- * 
- * @namespace WH
- */
-
 window.WH = window.WH || {};
-window.WH.core = window.WH.core || {};
 
 (function (ns) {
     
-    /**
-     * @description Creates a transport object.
-     */
-    function createTransport(specs) {
+    function createSequencer (specs, my) {
         var that,
             arrangement = specs.arrangement,
-            epgModel = specs.epgModel,
-            isRunning = false,
-            isLoop = false,
-            now = 0,
-            absLastNow = now,
-            absOrigin = 0,
-            loopStart = 0,
-            loopEnd = 0,
+            epgModel = specs.epgModel, 
+            ppqn = 480,
             bpm = 120,
             lastBpm = bpm,
-            tickInSeconds = 0,
+            tickInMilliseconds,
+            audioContextOffset = 0,
+            timelineOffset = 0,
+            transportOrigin = 0,
             playbackQueue = [],
-            needsScan = true,
-            lookAhead = 0,
-            scanStart = 0,
-            scanEnd = lookAhead,
             
-            /**
-             * Converts tick to second based on transport tempo.
-             * @param  {Number} tick Tick (atomic musical time unit)
-             * @return {Number} Time in seconds.
-             */
-            tick2sec = function (tick) {
-                return tick * tickInSeconds;
-            },
-
-            /**
-             * Converts second to tick based on transport tempo.
-             * @param  {Number} sec Time in seconds.
-             * @return {Number} Time in ticks.
-             */
-            sec2tick = function (sec) {
-                return sec / tickInSeconds;
-            },
-            
-            /**
-             * 
-             */
-            flushPlaybackQueue = function() {
+            scanEvents = function(scanStart, scanEnd) {
+                var scanStartTimeline = msec2tick((scanStart - transportOrigin));
+                var scanEndTimeline = msec2tick((scanEnd - transportOrigin));
                 playbackQueue.length = 0;
-            },
-            
-            /**
-             * Sets current playhead position by seconds (audioContext).
-             * @param {number} position Position in seconds 
-             */
-            setPlayheadPosition = function(position) {
-                now = position;
-                absOrigin = (performance.now() / 1000) - now; // WH.core.getNow() - now;
-            },
-
-            /**
-             * Scan events in time range and advance playhead in each pattern.
-             */
-            scheduleNotesInScanRange = function () {
-                if (needsScan) {
-                    needsScan = false;
-
-                    // fill playbackQueue with arrangement events 
-                    arrangement.scanEvents(sec2tick(scanStart), sec2tick(scanEnd), playbackQueue);
-
-                    if (playbackQueue.length) {
-                        // adjust event timing
-                        var start, 
-                            step,
-                            i = 0;
-                        for (i; i < playbackQueue.length; i++) {
-                            step = playbackQueue[i];
-                            start = absOrigin + tick2sec(step.getStart());
-                            step.setAbsStart(start);
-                            step.setAbsEnd(start + tick2sec(step.getDuration()));
-                        }
-
-                        // play the events with sound generating plugin instruments
-                        // WH.studio.playEvents(playbackQueue);
-                        // WH.View.onSequencerEvents(playbackQueue);
-                        epgModel.onTransportScan(playbackQueue);
+                arrangement.scanEvents(scanStartTimeline, scanEndTimeline, playbackQueue);
+                if (playbackQueue.length) {
+                    var n = playbackQueue.length;
+                    for (var i = 0; i < n; i++) {
+                        var step = playbackQueue[i];
+                        step.setStartMidi(tick2msec(step.getStart()) + transportOrigin);
+                        step.setDurationMidi(tick2msec(step.getDuration()));
+                        step.setStartAudioContext((tick2msec(step.getStart()) / 1000) + audioContextOffset);
+                        step.setDurationAudioContext(tick2msec(step.getDuration()) / 1000);
                     }
-                }   
-            },
-
-            /**
-             * Move the scan range of scan forward by runner.
-             */
-            advanceScanRange = function () {
-                // Advances the scan range to the next block, if the scan end point is
-                // close enough (< 16.7ms) to playhead.
-                if (scanEnd - now < 0.0167) {
-                    scanStart = scanEnd;
-                    scanEnd = scanStart + lookAhead;
-                    needsScan = true;
+                    epgModel.onTransportScan(playbackQueue);
                 }
             },
             
-            /**
-             * Reset the scan range based on current playhead position.
-             */
-            resetScanRange = function () {
-                scanStart = now;
+            updateView = function(position) {
+                epgModel.onTransportRun(msec2tick(position - transportOrigin));
+            },
+            
+            msec2tick = function (sec) {
+                return sec / tickInMilliseconds;
+            },
+            
+            tick2msec = function (tick) {
+                return tick * tickInMilliseconds;
+            }
+            
+            setBPM = function(newBpm) {
+                bpm = (newBpm || 120);
+                var beatInMilliseconds = 60000.0 / bpm;
+                tickInMilliseconds = beatInMilliseconds / ppqn;
+                // calculate change factor
+                var factor = lastBpm / bpm;
+                my.setLoopByFactor(factor);
+            },
+            
+            setTransportOrigin = function(origin) {
+                transportOrigin = origin;
+            },
+            
+            setAudioContextOffset = function(acCurrentTime) {
+                audioContextOffset = performance.now() - (acCurrentTime * 1000);
+            };
+        
+        my = my || {};
+        my.scanEvents = scanEvents;
+        my.updateView = updateView;
+        my.setTransportOrigin = setTransportOrigin;
+        
+        that = specs.that || {};
+        
+        setBPM(bpm);
+        
+        that.setBPM = setBPM;
+        that.setAudioContextOffset = setAudioContextOffset;
+        return that;
+    }
+    
+    function createTransport(specs, my) {
+        var that,
+            position = 0,
+            origin = 0,
+            scanStart = 0,
+            scanEnd = 0;
+            lookAhead = 200,
+            loopStart = 0,
+            loopEnd = 0,
+            isRunning = false,
+            isLooping = false,
+            needsScan = false,
+            
+            scheduleNotesInScanRange = function () {
+                if (needsScan) {
+                    needsScan = false;
+                    // console.log(scanStart.toFixed(2), scanEnd.toFixed(2), origin);
+                    my.scanEvents(scanStart, scanEnd);
+                }
+            },
+            
+            setScanRange = function (start) {
+                scanStart = start;
                 scanEnd =  scanStart + lookAhead;
                 needsScan = true;
             },
             
-            /**
-             * Runs the transport (update every 16.7ms).
-             */
-            run = function () {
+            setOrigin = function(newOrigin) {
+                loopStart = loopStart - origin + newOrigin;
+                loopEnd = loopEnd - origin + newOrigin;
+                origin = newOrigin;
+                my.setTransportOrigin(newOrigin);
+            },
+            
+            run = function() {
                 if (isRunning) {
-                    // add time elapsed to now_t by checking now_ac
-                    var absNow = performance.now() / 1000; // WH.core.getNow();
-                    now += (absNow - absLastNow);
-                    absLastNow = absNow;
-                    // scan notes in range
-                    scheduleNotesInScanRange();
-                    // update view
-                    epgModel.onTransportRun(sec2tick(scanStart));
-                    // advance when transport is running
-                    advanceScanRange();
-                    // flush played notes
-                    flushPlaybackQueue();
-                    // check loop flag
-                    if (isLoop) {
-                        if (loopEnd - (now + lookAhead) < 0) {
-                            setPlayheadPosition(loopStart - (loopEnd - now));
+                    position = performance.now();
+                    if (isLooping && position < loopEnd && scanStart < loopEnd && scanEnd > loopEnd) {
+                        setOrigin(origin + (loopEnd - loopStart));
+                    } else {
+                        if (scanEnd - position < 16.7) {
+                            setScanRange(scanEnd);
                         }
                     }
+                    scheduleNotesInScanRange();
+                    my.updateView(position);
                 }
-                // schedule next step
-                requestAnimationFrame(run.bind(this));
+                requestAnimationFrame(run);
             },
-
-            /**
-             * Starts playback.
-             */
-            start = function () {
-                // Arrange time references.
-                var absNow = (performance.now() / 1000) - now; // WH.core.getNow();
-                absOrigin = absNow - now;
-                absLastNow = absNow;
-                // Reset scan range.
-                resetScanRange();
-                // Transport is running.
+            
+            start = function() {
+                var offset = position - origin;
+                position = performance.now();
+                setOrigin(position - offset);
+                setScanRange(position);
                 isRunning = true;
             },
-
-            /**
-             * Pauses current playback.
-             */
+            
             pause = function () {
                 isRunning = false;
-                flushPlaybackQueue();
             },
-
-            /**
-             * Sets playhead position by tick.
-             * @param {Number} tick Playhead position in ticks.
-             */
-            setNow = function (tick) {
-                setPlayheadPosition(tick2sec(tick));
-                resetScanRange();
-            },
-
-            /**
-             * Rewinds playhead to the beginning.
-             */
+            
             rewind = function () {
-                setPlayheadPosition(0.0);
+                position = performance.now();
+                setOrigin(position);
+                setScanRange(position);
             },
-
-            /**
-             * Sets loop start position by tick.
-             * @param {Number} tick Loop start in tick.
-             */
-            setLoopStart = function (tick) {
-                loopStart = tick2sec(tick);
+            
+            setLoopStart = function (position) {
+                loopStart = origin + position;
             },
-
-            /**
-             * Sets loop end position by tick.
-             * @param {Number} tick Loop end in tick.
-             */
-            setLoopEnd = function (tick) {
-                loopEnd = tick2sec(tick);
+            
+            setLoopEnd = function (position) {
+                loopEnd = origin + position;
             },
-
-            /**
-             * Returns loop start by tick.
-             * @return {Number}
-             */
-            getLoopStart = function () {
-                return sec2tick(loopStart);
+            
+            setLoop = function (isEnabled, startPosition, endPosition) {
+                isLooping = isEnabled;
             },
-
-            /**
-             * Returns loop end by tick.
-             * @return {Number}
-             */
-            getLoopEnd = function () {
-                return sec2tick(loopEnd);
-            },
-
-            /**
-             * Toggles or sets loop status.
-             * @param  {Boolean|undefined} bool Loop state. If undefined, it toggles the current state.
-             */
-            toggleLoop = function (bool) {
-                if (bool === undefined) {
-                    isLoop = !isLoop;
-                } else {
-                    isLoop = !!bool;
-                }
-            },
-
-            /**
-             * Sets transport BPM.
-             * @param {Number} BPM Beat per minute.
-             */
-            setBPM = function (newBpm) {
-                // calculates change factor
-                bpm = (newBpm || 120);
-                var factor = lastBpm / bpm;
-                lastBpm = bpm;
-                // recalcualte beat in seconds, tick in seconds
-                var beatInSeconds = 60.0 / bpm;
-                tickInSeconds = beatInSeconds / WH.conf.getPPQN();
-                // lookahead is 16 ticks (1/128th note)
-                lookAhead = tickInSeconds * 16;
-                // update time references based on tempo change
-                now *= factor;
-                loopStart *= factor;
-                loopEnd *= factor;
-                absOrigin = (performance.now() / 1000) - now; // WH.core.getNow() - now;
-            },
-
-            /**
-             * Returns current BPM.
-             * @return {Number}
-             */
-            getBPM = function () {
-                return bpm;
+            
+            setLoopByFactor = function(factor) {
+                setLoopStart(loopStart * factor);
+                setLoopEnd(loopEnd * factor);
             };
+            
+        my = my || {};
+        my.setLoopByFactor = setLoopByFactor;
         
-        that = specs.that;
+        that = createSequencer(specs, my);
         
-        setBPM(bpm);
         run();
         
         that.start = start;
-        that.setBPM = setBPM;
-        that.getBPM = getBPM;
+        that.pause = pause;
+        that.rewind = rewind;
+        that.setLoopStart = setLoopStart;
+        that.setLoopEnd = setLoopEnd;
+        that.setLoop = setLoop;
         return that;
-    }
+    };
     
     ns.createTransport = createTransport;
 
-})(WH.core);
+})(WH);
