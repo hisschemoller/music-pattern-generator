@@ -326,6 +326,8 @@ window.WH = window.WH || {};
                 fill.geometry = fillGeom;
                 
                 line = polygon.getObjectByName('polygonLine');
+                line.geometry.dispose();
+                line.geometry = new THREE.Geometry();
                 line.geometry.vertices = points;
                 line.geometry.verticesNeedUpdate = true;
             },
