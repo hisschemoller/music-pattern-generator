@@ -56,6 +56,7 @@
             polygon3d: specs.polygon3d || null,
             dots3d: specs.dots3d || null,
             position3d: specs.position3d || null,
+            hitarea3d: specs.hitarea3d || null,
             radius3d: specs.radius3d || 1,
         };
         

@@ -141,7 +141,7 @@ window.WH = window.WH || {};
              * @return {object} Object3D of drag plane.
              */
             createWheel = function(lineMaterial) {
-                var hitarea, centreCircle, selectCircle, centreDot, pointer, poly, dots;
+                var wheel, hitarea, centreCircle, selectCircle, centreDot, pointer, poly, dots;
                 
                 centreCircle = circleOutline.clone();
                 centreCircle.name = 'centreCircle';
@@ -169,14 +169,18 @@ window.WH = window.WH || {};
                 hitarea = createCircleFilled(defaultColor);
                 hitarea.name = 'hitarea';
                 hitarea.material.opacity = 0.0;
-                hitarea.add(centreCircle);
-                hitarea.add(selectCircle);
-                hitarea.add(centreDot);
-                hitarea.add(pointer);
-                hitarea.add(poly);
-                hitarea.add(dots);
                 
-                return hitarea;
+                wheel = new THREE.Object3D();
+                wheel.name = 'wheel';
+                wheel.add(hitarea);
+                wheel.add(centreCircle);
+                wheel.add(selectCircle);
+                wheel.add(centreDot);
+                wheel.add(pointer);
+                wheel.add(poly);
+                wheel.add(dots);
+                
+                return wheel;
             },
             
             /**
@@ -202,6 +206,7 @@ window.WH = window.WH || {};
                 ptrn.dots3d = object3d.getObjectByName('dots');
                 ptrn.select3d = object3d.getObjectByName('select');
                 ptrn.centreDot3d = object3d.getObjectByName('centreDot');
+                ptrn.hitarea3d = object3d.getObjectByName('hitarea');
                 
                 // set the dots around the wheel
                 updateDots(ptrn);
@@ -312,6 +317,7 @@ window.WH = window.WH || {};
                     updatePolygon(patternData, polygonPoints);
                 }
                 updatePointer(patternData);
+                updateHitarea(patternData);
             },
             
             /**
@@ -351,6 +357,15 @@ window.WH = window.WH || {};
                     radius = patternData.isMute ? mutedRadius : patternData.radius3d;
                 patternData.pointer3d.geometry.dispose();
                 patternData.pointer3d.geometry = createPointerGeometry(radius);
+            },
+            
+            /**
+             * Update the hitarea used for mouse detection.
+             * @param {object} patternData Pattern data object.
+             */
+            updateHitarea = function(patternData) {
+                var scale = (patternData.radius3d + 3) * 0.1;
+                patternData.hitarea3d.scale.set(scale, scale, 1);
             };
         
         that = {};
