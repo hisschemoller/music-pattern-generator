@@ -66,6 +66,7 @@ window.WH.epg = window.WH.epg || {};
                 setting.number.setAttribute('max', 64);
                 setting.range.dataset.prop = name;
                 setting.number.dataset.prop = name;
+                setting.range.addEventListener('input', onChange);
                 setting.range.addEventListener('change', onChange);
                 setting.number.addEventListener('change', onChange);
             },
