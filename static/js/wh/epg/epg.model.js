@@ -178,17 +178,18 @@
              * @param {Object} ptrn Pattern data object.
              */
             updatePattern = function(ptrn) {
-                var ptrnIndex = patterns.indexOf(ptrn),
-                    euclidPattern = createBjorklund(ptrn.steps, ptrn.pulses),
-                    elementsToShift = euclidPattern.splice(euclidPattern.length - ptrn.rotation),
-                    arrangementSteps;
+                var ptrnIndex, elementsToShift, arrangementSteps,
+                    euclidPattern = createBjorklund(ptrn.steps, ptrn.pulses);
                 
+                // rotation
+                elementsToShift = euclidPattern.splice(ptrn.rotation),
                 euclidPattern = elementsToShift.concat(euclidPattern);
                 
                 ptrn.euclidPattern = euclidPattern;
                 ptrn.duration = (ptrn.steps / WH.conf.getStepsPerBeat()) * WH.conf.getPPQN();
                 
                 // create arrangement steps from euclidean pattern
+                ptrnIndex = patterns.indexOf(ptrn);
                 arrangementSteps = createArrangementSteps(euclidPattern);
                 arrangement.updateTrack(ptrnIndex, arrangementSteps);
                 // file.autoSave();
