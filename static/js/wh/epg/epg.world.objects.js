@@ -141,7 +141,11 @@ window.WH = window.WH || {};
              * @return {object} Object3D of drag plane.
              */
             createWheel = function(lineMaterial) {
-                var wheel, hitarea, centreCircle, selectCircle, centreDot, pointer, poly, dots;
+                var wheel, hitarea, centreCircle, selectCircle, centreDot, pointer, poly, dots, zeroMarker;
+                
+                hitarea = createCircleFilled(defaultColor);
+                hitarea.name = 'hitarea';
+                hitarea.material.opacity = 0.0;
                 
                 centreCircle = circleOutline.clone();
                 centreCircle.name = 'centreCircle';
@@ -165,10 +169,10 @@ window.WH = window.WH || {};
                 
                 dots = new THREE.Object3D();
                 dots.name = 'dots';
-                
-                hitarea = createCircleFilled(defaultColor);
-                hitarea.name = 'hitarea';
-                hitarea.material.opacity = 0.0;
+
+                zeroMarker = circleOutline.clone();
+                zeroMarker.name = 'zeroMarker';
+                zeroMarker.scale.set(0.05, 0.05, 1);
                 
                 wheel = new THREE.Object3D();
                 wheel.name = 'wheel';
@@ -179,6 +183,7 @@ window.WH = window.WH || {};
                 wheel.add(pointer);
                 wheel.add(poly);
                 wheel.add(dots);
+                wheel.add(zeroMarker);
                 
                 return wheel;
             },
@@ -200,13 +205,14 @@ window.WH = window.WH || {};
                 
                 // fill properties of the pattern data.
                 ptrn.object3d = object3d;
+                ptrn.hitarea3d = object3d.getObjectByName('hitarea');
                 ptrn.centreCircle3d = object3d.getObjectByName('centreCircle');
                 ptrn.pointer3d = object3d.getObjectByName('pointer');
                 ptrn.polygon3d = object3d.getObjectByName('polygon');
                 ptrn.dots3d = object3d.getObjectByName('dots');
                 ptrn.select3d = object3d.getObjectByName('select');
                 ptrn.centreDot3d = object3d.getObjectByName('centreDot');
-                ptrn.hitarea3d = object3d.getObjectByName('hitarea');
+                ptrn.zeroMarker3d = object3d.getObjectByName('zeroMarker');
                 
                 // set the dots around the wheel
                 updateDots(ptrn);
@@ -316,8 +322,9 @@ window.WH = window.WH || {};
                     polygonPoints.push(polygonPoints[0].clone());
                     updatePolygon(patternData, polygonPoints);
                 }
-                updatePointer(patternData);
                 updateHitarea(patternData);
+                updatePointer(patternData);
+                updateZeroPointer(patternData);
             },
             
             /**
@@ -349,6 +356,15 @@ window.WH = window.WH || {};
             },
             
             /**
+             * Update the hitarea used for mouse detection.
+             * @param {object} patternData Pattern data object.
+             */
+            updateHitarea = function(patternData) {
+                var scale = (patternData.radius3d + 3) * 0.1;
+                patternData.hitarea3d.scale.set(scale, scale, 1);
+            },
+            
+            /**
              * Update the pointer that connects the dots.
              * @param {object} patternData Pattern data object.
              */
@@ -360,12 +376,14 @@ window.WH = window.WH || {};
             },
             
             /**
-             * Update the hitarea used for mouse detection.
+             * Update the zero pointer.
              * @param {object} patternData Pattern data object.
              */
-            updateHitarea = function(patternData) {
-                var scale = (patternData.radius3d + 3) * 0.1;
-                patternData.hitarea3d.scale.set(scale, scale, 1);
+            updateZeroPointer = function(patternData) {
+                var rad = TWO_PI * (-patternData.rotation / patternData.steps),
+                    radius = patternData.radius3d + 3;
+                patternData.zeroMarker3d.position.x = Math.sin(rad) * radius;
+                patternData.zeroMarker3d.position.y = Math.cos(rad) * radius;
             };
         
         that = {};
