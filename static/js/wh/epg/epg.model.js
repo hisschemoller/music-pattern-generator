@@ -58,6 +58,7 @@
             position3d: specs.position3d || null,
             hitarea3d: specs.hitarea3d || null,
             zeroMarker3d: specs.zeroMarker3d || null,
+            zeroMarker3d: specs.rotatedMarker3d || null,
             radius3d: specs.radius3d || 1,
         };
         
