@@ -144,7 +144,7 @@ window.WH = window.WH || {};
                     // so distance from object to mouse
                     offset.copy(intersection).sub(object3d.position);
                     containerEl.style.cursor = 'move';
-                    controls.enabled = false;
+                    // controls.enabled = false;
                 }
             },
             
@@ -184,7 +184,7 @@ window.WH = window.WH || {};
                 e.preventDefault();
                 dragObject = null;
                 containerEl.style.cursor = 'auto';
-                controls.enabled = false;
+                // controls.enabled = false;
             },
             
             /**
@@ -213,7 +213,7 @@ window.WH = window.WH || {};
                 light.position.set(0, 0, 1);
                 scene.add(light);
                 
-				controls = worldObjects.createControls(camera);
+				// controls = worldObjects.createControls(camera);
                 
                 plane = new THREE.Plane();
                 plane.setFromNormalAndCoplanarPoint(
@@ -329,7 +329,7 @@ window.WH = window.WH || {};
             draw = function(patternData) {
                 updateWorld(patternData);
                 TWEEN.update();
-                controls.update();
+                // controls.update();
                 renderer.render(scene, camera);
             };
         
