@@ -268,7 +268,7 @@
                         value = Math.min(value, 64);
                         selectedPattern[name] = value;
                         epgSettings.updateSetting('pulses', value, 'max');
-                        epgSettings.updateSetting('rotation', value, 'max');
+                        epgSettings.updateSetting('rotation', value - 1, 'max');
                         if (selectedPattern.pulses > value) {
                             selectedPattern.pulses = value;
                             epgSettings.updateSetting('pulses', value);

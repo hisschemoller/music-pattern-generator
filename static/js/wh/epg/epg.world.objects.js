@@ -339,12 +339,9 @@ window.WH = window.WH || {};
                         polygonPoints.push(dot.position.clone());
                     }
                 }
+                polygonPoints.push(polygonPoints[0].clone());
                 
-                // draw polygon if there's at least two points
-                if (polygonPoints.length > 1) {
-                    polygonPoints.push(polygonPoints[0].clone());
-                    updatePolygon(patternData, polygonPoints);
-                }
+                updatePolygon(patternData, polygonPoints);
                 updateHitarea(patternData);
                 updatePointer(patternData);
                 updateZeroMarker(patternData);
@@ -361,16 +358,27 @@ window.WH = window.WH || {};
                 
                 polygon = patternData.polygon3d;
                 
-                fillShape = new THREE.Shape();
-                fillShape.moveTo(points[0].x, points[0].y);
-                n = points.length;
-                for (i = 1; i < n; i++) {
-                    fillShape.lineTo(points[i].x, points[i].y);
+                if (points.length > 2) {
+                    polygon.visible = true;
+                } else {
+                    polygon.visible = false;
+                    return;
                 }
-                fillShape.lineTo(points[0].x, points[0].y);
-                fillGeom = new THREE.ShapeGeometry(fillShape);
-                fill = polygon.getObjectByName('polygonFill');
-                fill.geometry = fillGeom;
+                
+                if (points.length > 3) {
+                    fillShape = new THREE.Shape();
+                    fillShape.moveTo(points[0].x, points[0].y);
+                    n = points.length;
+                    for (i = 1; i < n; i++) {
+                        fillShape.lineTo(points[i].x, points[i].y);
+                    }
+                    fillShape.lineTo(points[0].x, points[0].y);
+                    fillGeom = new THREE.ShapeGeometry(fillShape);
+                    fill = polygon.getObjectByName('polygonFill');
+                    fill.geometry = fillGeom;
+                } else {
+                    fill = null;
+                }
                 
                 line = polygon.getObjectByName('polygonLine');
                 line.geometry.dispose();
