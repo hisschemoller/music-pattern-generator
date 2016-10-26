@@ -94,16 +94,22 @@ window.WH.epg = window.WH.epg || {};
                 }
             },
             
-            updateSetting = function(name, value) {
-                var setting = settings[name];
-                switch (setting.type) {
-                    case 'slider':
-                        setting.range.value = value;
-                        setting.number.value = value;
-                        break;
-                    case 'text':
-                        setting.input.value = value;
-                };
+            updateSetting = function(name, value, attr) {
+                // if attr is set, just update that attribute with the value,
+                // without bothering what type the element is
+                if (typeof attr !== 'undefined' && !!settingsEl.elements[name]) {
+                    settingsEl.elements[name].setAttribute(attr, value);
+                } else {
+                    var setting = settings[name];
+                    switch (setting.type) {
+                        case 'slider':
+                            setting.range.value = value;
+                            setting.number.value = value;
+                            break;
+                        case 'text':
+                            setting.input.value = value;
+                    };
+                }
             },
             
             onChange = function(e) {
@@ -113,6 +119,7 @@ window.WH.epg = window.WH.epg || {};
         that = specs.that;
         
         init();
+        setEnabled(false);
         
         that.setPattern = setPattern;
         that.updateSetting = updateSetting;

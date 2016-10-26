@@ -136,12 +136,30 @@ window.WH = window.WH || {};
             },
             
             /**
+             *  Create icon to indicate that the pattern is rotated.
+             * @param {object} lineMaterial Default line drawing material.
+             * @return {object} Object3D of rotated icon.
+             */
+            createRotatedMarker = function(lineMaterial) {
+                var geometry = new THREE.Geometry();
+                geometry.vertices.push(
+                	new THREE.Vector3(0, -1, 0),
+                	new THREE.Vector3(0, 1, 0),
+                	new THREE.Vector3(1, 0.5, 0),
+                	new THREE.Vector3(0, 0, 0)
+                );
+                var line = new THREE.Line(geometry, lineMaterial);
+                return line;
+            },
+            
+            /**
              * Create combined Object3D of wheel.
              * @param {object} lineMaterial Default line drawing material.
              * @return {object} Object3D of drag plane.
              */
             createWheel = function(lineMaterial) {
-                var wheel, hitarea, centreCircle, selectCircle, centreDot, pointer, poly, dots, zeroMarker;
+                var wheel, hitarea, centreCircle, selectCircle, centreDot, pointer, 
+                    poly, dots, zeroMarker, rotatedMarker;
                 
                 hitarea = createCircleFilled(defaultColor);
                 hitarea.name = 'hitarea';
@@ -174,6 +192,9 @@ window.WH = window.WH || {};
                 zeroMarker.name = 'zeroMarker';
                 zeroMarker.scale.set(0.05, 0.05, 1);
                 
+                rotatedMarker = createRotatedMarker(lineMaterial);
+                rotatedMarker.name = 'rotatedMarker';
+                
                 wheel = new THREE.Object3D();
                 wheel.name = 'wheel';
                 wheel.add(hitarea);
@@ -184,6 +205,7 @@ window.WH = window.WH || {};
                 wheel.add(poly);
                 wheel.add(dots);
                 wheel.add(zeroMarker);
+                wheel.add(rotatedMarker);
                 
                 return wheel;
             },
@@ -213,6 +235,7 @@ window.WH = window.WH || {};
                 ptrn.select3d = object3d.getObjectByName('select');
                 ptrn.centreDot3d = object3d.getObjectByName('centreDot');
                 ptrn.zeroMarker3d = object3d.getObjectByName('zeroMarker');
+                ptrn.rotatedMarker3d = object3d.getObjectByName('rotatedMarker');
                 
                 // set the dots around the wheel
                 updateDots(ptrn);
@@ -316,15 +339,13 @@ window.WH = window.WH || {};
                         polygonPoints.push(dot.position.clone());
                     }
                 }
+                polygonPoints.push(polygonPoints[0].clone());
                 
-                // draw polygon if there's at least two points
-                if (polygonPoints.length > 1) {
-                    polygonPoints.push(polygonPoints[0].clone());
-                    updatePolygon(patternData, polygonPoints);
-                }
+                updatePolygon(patternData, polygonPoints);
                 updateHitarea(patternData);
                 updatePointer(patternData);
-                updateZeroPointer(patternData);
+                updateZeroMarker(patternData);
+                updateRotatedMarker(patternData);
             },
             
             /**
@@ -337,16 +358,27 @@ window.WH = window.WH || {};
                 
                 polygon = patternData.polygon3d;
                 
-                fillShape = new THREE.Shape();
-                fillShape.moveTo(points[0].x, points[0].y);
-                n = points.length;
-                for (i = 1; i < n; i++) {
-                    fillShape.lineTo(points[i].x, points[i].y);
+                if (points.length > 2) {
+                    polygon.visible = true;
+                } else {
+                    polygon.visible = false;
+                    return;
                 }
-                fillShape.lineTo(points[0].x, points[0].y);
-                fillGeom = new THREE.ShapeGeometry(fillShape);
-                fill = polygon.getObjectByName('polygonFill');
-                fill.geometry = fillGeom;
+                
+                if (points.length > 3) {
+                    fillShape = new THREE.Shape();
+                    fillShape.moveTo(points[0].x, points[0].y);
+                    n = points.length;
+                    for (i = 1; i < n; i++) {
+                        fillShape.lineTo(points[i].x, points[i].y);
+                    }
+                    fillShape.lineTo(points[0].x, points[0].y);
+                    fillGeom = new THREE.ShapeGeometry(fillShape);
+                    fill = polygon.getObjectByName('polygonFill');
+                    fill.geometry = fillGeom;
+                } else {
+                    fill = null;
+                }
                 
                 line = polygon.getObjectByName('polygonLine');
                 line.geometry.dispose();
@@ -376,14 +408,23 @@ window.WH = window.WH || {};
             },
             
             /**
-             * Update the zero pointer.
+             * Update the zero marker.
              * @param {object} patternData Pattern data object.
              */
-            updateZeroPointer = function(patternData) {
+            updateZeroMarker = function(patternData) {
                 var rad = TWO_PI * (-patternData.rotation / patternData.steps),
                     radius = patternData.radius3d + 3;
                 patternData.zeroMarker3d.position.x = Math.sin(rad) * radius;
                 patternData.zeroMarker3d.position.y = Math.cos(rad) * radius;
+            },
+            
+            /**
+             * Update the marker that indicates if the pattern is rotated.
+             * @param {object} patternData Pattern data object.
+             */
+            updateRotatedMarker = function(patternData) {
+                patternData.rotatedMarker3d.position.y = patternData.radius3d + 3;
+                patternData.rotatedMarker3d.visible = patternData.rotation !== 0;
             };
         
         that = {};
