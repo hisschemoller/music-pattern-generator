@@ -119,6 +119,7 @@ window.WH.epg = window.WH.epg || {};
         that = specs.that;
         
         init();
+        setEnabled(false);
         
         that.setPattern = setPattern;
         that.updateSetting = updateSetting;
