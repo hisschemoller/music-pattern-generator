@@ -7,6 +7,9 @@ body {
     font-family: sans-serif;
     font-size: 14px;
 }
+legend {
+    padding: 0;
+}
 #container-webgl {
     height: 300px;
     width: 550px;
@@ -32,7 +35,7 @@ body {
         .settings__label {
             display: inline-block;
             vertical-align: middle;
-            width: 60px;
+            width: 80px;
         }
         .settings__range {
             vertical-align: middle;
