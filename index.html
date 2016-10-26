@@ -7,7 +7,7 @@
 </head>
 <body>
     <div id="container-webgl"></div>
-    <div id="settings">
+    <form id="settings">
         <div class="settings__row">
             <label for="steps-range" class="settings__label">steps</label>
             <input type="range" id="steps-range" min="0" max="16" step="1" class="settings__range" />
@@ -15,12 +15,12 @@
         </div>
         <div class="settings__row">
             <label for="pulses-range" class="settings__label">pulses</label>
-            <input type="range" id="pulses-range" min="0" max="16" step="1" class="settings__range" />
+            <input type="range" id="pulses-range" min="0" max="16" step="1" class="settings__range" name="pulses" />
             <input type="number" id="pulses-number" min="0" max="16" class="settings__number" />
         </div>
         <div class="settings__row">
             <label for="rotation-range" class="settings__label">rotation</label>
-            <input type="range" id="rotation-range" min="0" max="16" step="1" class="settings__range" />
+            <input type="range" id="rotation-range" min="0" max="16" step="1" class="settings__range" name="rotation" />
             <input type="number" id="rotation-number" min="0" max="16" class="settings__number" />
         </div>
         <div class="settings__row">
@@ -34,7 +34,7 @@
         <div class="settings__row">
             <input type="button" id="delete-button" class="settings__button" value="delete pattern" />
         </div>
-    </div>
+    </form>
     <script src="static/js/app.js"></script>
     <script src="static/js/lib/three.js"></script>
     <script src="static/js/lib/trackballcontrols.js"></script>
