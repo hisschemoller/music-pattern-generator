@@ -81,13 +81,13 @@
             /**
              * Create a Euclidean step sequence from a pattern's steps and fills data.
              * @param {Array} euclidPattern Array of 0 and 1 values indicating pulses or silent steps.
+             * @param {Number} stepDuration Duration in ticks of 1 step.
              * @return {Array} Data objects to create arrangement steps with.
              */
-            createArrangementSteps = function(euclidPattern) {
+            createArrangementSteps = function(euclidPattern, stepDuration) {
                 var i,
                     numSteps = euclidPattern.length,
-                    steps = [],
-                    stepDuration = Math.floor( WH.conf.getPPQN() / WH.conf.getStepsPerBeat() );
+                    steps = [];
                 for (i = 0; i < numSteps; i++) {
                     steps.push({
                         pitch: 60,
@@ -182,19 +182,21 @@
              * @param {Object} ptrn Pattern data object.
              */
             updatePattern = function(ptrn) {
-                var ptrnIndex, elementsToShift, arrangementSteps,
+                var ptrnIndex, elementsToShift, arrangementSteps, stepDuration,
                     euclidPattern = createBjorklund(ptrn.steps, ptrn.pulses);
                 
                 // rotation
                 elementsToShift = euclidPattern.splice(ptrn.rotation),
                 euclidPattern = elementsToShift.concat(euclidPattern);
                 
+                stepDuration = ptrn.rate * WH.conf.getPPQN();
                 ptrn.euclidPattern = euclidPattern;
-                ptrn.duration = (ptrn.steps / WH.conf.getStepsPerBeat()) * WH.conf.getPPQN();
+                ptrn.duration = ptrn.steps * stepDuration;
+                ptrn.position = ptrn.position % ptrn.duration;
                 
                 // create arrangement steps from euclidean pattern
                 ptrnIndex = patterns.indexOf(ptrn);
-                arrangementSteps = createArrangementSteps(euclidPattern);
+                arrangementSteps = createArrangementSteps(euclidPattern, stepDuration);
                 arrangement.updateTrack(ptrnIndex, arrangementSteps);
                 // file.autoSave();
             },
