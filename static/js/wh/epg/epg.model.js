@@ -24,6 +24,8 @@
             channel: specs.channel || 0,
             
             // misc settings
+            // rate in beats, quarter note multiplier
+            rate: specs.rate || 0.25,
             name: specs.name || '',
             
             // position and duration in ticks
@@ -292,6 +294,11 @@
                     case 'canvasX':
                     case 'canvasY':
                         selectedPattern[name] = value;
+                        break;
+                    case 'rate':
+                        value = parseFloat(value);
+                        selectedPattern[name] = value;
+                        updatePattern(selectedPattern);
                         break;
                     case 'isMute':
                         selectedPattern[name] = value;

@@ -31,6 +31,10 @@ window.WH.epg = window.WH.epg || {};
                     range: document.getElementById('rotation-range'),
                     number: document.getElementById('rotation-number')
                 },
+                rate: {
+                    type: 'radio',
+                    inputs: settingsEl.elements['rate']
+                },
                 mute: {
                     type: 'checkbox',
                     input: document.getElementById('mute-check')
@@ -58,6 +62,12 @@ window.WH.epg = window.WH.epg || {};
                     // TODO: show a confirmation dialog first
                     epgModel.deleteSelectedPattern();
                 });
+                
+                for (var i = 0; i < settings.rate.inputs.length; i++) {
+                    settings.rate.inputs[i].addEventListener('click', function(e) {
+                        epgModel.setPatternProperty('rate', e.target.value);
+                    });
+                }
             },
             
             initSetting = function(name, max) {
@@ -78,6 +88,7 @@ window.WH.epg = window.WH.epg || {};
                 updateSetting('steps', ptrn ? ptrn.steps : '');
                 updateSetting('pulses', ptrn ? ptrn.pulses : '');
                 updateSetting('rotation', ptrn ? ptrn.rotation : '');
+                updateSetting('rate', ptrn ? ptrn.rate : '');
                 updateSetting('name', ptrn ? ptrn.name : '');
                 setEnabled(ptrn !== null && ptrn !== undefined);
             },
@@ -108,6 +119,14 @@ window.WH.epg = window.WH.epg || {};
                             break;
                         case 'text':
                             setting.input.value = value;
+                            break;
+                        case 'radio':
+                            for (i = 0; i < setting.inputs.length; i++) {
+                                if (setting.inputs[i].value == value) {
+                                    setting.inputs[i].checked = true;
+                                }
+                            }
+                            break;
                     };
                 }
             },
