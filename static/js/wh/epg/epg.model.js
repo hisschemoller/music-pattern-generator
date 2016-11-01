@@ -197,7 +197,7 @@
                 // create arrangement steps from euclidean pattern
                 ptrnIndex = patterns.indexOf(ptrn);
                 arrangementSteps = createArrangementSteps(euclidPattern, stepDuration);
-                arrangement.updateTrack(ptrnIndex, arrangementSteps);
+                arrangement.updateTrack(ptrnIndex, arrangementSteps, ptrn.duration);
                 // file.autoSave();
             },
             

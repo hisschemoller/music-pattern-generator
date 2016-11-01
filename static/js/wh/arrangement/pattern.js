@@ -95,8 +95,8 @@ window.WH = window.WH || {};
             /**
              * Update all the steps of the track and the length of the track.
              */
-            updateTrack = function(trackIndex, steps) {
-                tracks[trackIndex].setSteps(steps, trackIndex);
+            updateTrack = function(trackIndex, steps, trackDuration) {
+                tracks[trackIndex].setSteps(steps, trackIndex, trackDuration);
             },
             
             /**

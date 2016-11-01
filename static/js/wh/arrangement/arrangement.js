@@ -235,15 +235,15 @@ window.WH = window.WH || {};
             /**
              * Update the track at given index on the current pattern.
              */
-            updateTrack = function(trackIndex, arrangementSteps) {
-                updateTrackAt(patternIndex, trackIndex, arrangementSteps);
+            updateTrack = function(trackIndex, arrangementSteps, trackDuration) {
+                updateTrackAt(patternIndex, trackIndex, arrangementSteps, trackDuration);
             }, 
             
             /**
              * Update the track at given index on the current pattern.
              */
-            updateTrackAt = function(patternIndex, trackIndex, arrangementSteps) {
-                patterns[patternIndex].updateTrack(trackIndex, arrangementSteps);
+            updateTrackAt = function(patternIndex, trackIndex, arrangementSteps, trackDuration) {
+                patterns[patternIndex].updateTrack(trackIndex, arrangementSteps, trackDuration);
             },
             
             /**

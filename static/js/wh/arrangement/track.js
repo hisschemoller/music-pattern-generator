@@ -11,11 +11,12 @@ window.WH = window.WH || {};
      * @description Create a step sequencer track object.
      * @param {Array} specs.steps Array of step data objects.
      * @param {Number} specs.trackIndex Track on which this note is played.
+     * @param {Number} specs.duration Duration of the track in ticks.
      */
     function createTrack(specs) {
         var that,
             steps = [],
-            lengthInTicks = specs.steps ? ((specs.steps.length / WH.conf.getStepsPerBeat()) * WH.conf.getPPQN()) : 0,
+            duration = 0,
 
             /**
              * Find events to be played within a time span
@@ -29,7 +30,7 @@ window.WH = window.WH || {};
             scanEventsInTimeSpan = function (absoluteStart, start, end, playbackQueue) {
 
                 // convert pattern time to track time
-                var localStart = start % lengthInTicks,
+                var localStart = start % duration,
                     localEnd = localStart + (end - start),
                     i = 0,
                     n = steps.length,
@@ -39,9 +40,9 @@ window.WH = window.WH || {};
                 // if the track restarts within the current time span, 
                 // scan the bit at the start of the next loop as well
                 var secondEnd = 0;
-                if (localEnd > lengthInTicks) {
+                if (localEnd > duration) {
                     var secondStart = 0;
-                    secondEnd = localEnd - lengthInTicks;
+                    secondEnd = localEnd - duration;
                 }
 
                 // get the events
@@ -90,20 +91,22 @@ window.WH = window.WH || {};
             /**
              * Update all the steps of the track and the length of the track.
              */
-            setSteps = function(stepData, trackIndex) {
-                steps = [];
-                lengthInTicks = (stepData.length / WH.conf.getStepsPerBeat()) * WH.conf.getPPQN();
+            setSteps = function(stepData, trackIndex, trackDuration) {
+                duration = trackDuration ? trackDuration : 0;
                 
-                for (var i = 0; i < stepData.length; i++) {
-                    var d = stepData[i];
-                    steps.push( WH.createStep({
-                        pitch: d.pitch || 60, 
-                        velocity: d.velocity || 0, 
-                        start: d.start || 0, 
-                        duration: d.duration || 1, 
-                        trackIndex: trackIndex,
-                        index: i
-                    }));
+                steps = [];
+                if (stepData) {
+                    for (var i = 0; i < stepData.length; i++) {
+                        var d = stepData[i];
+                        steps.push( WH.createStep({
+                            pitch: d.pitch || 60, 
+                            velocity: d.velocity || 0, 
+                            start: d.start || 0, 
+                            duration: d.duration || 1, 
+                            trackIndex: trackIndex ? trackIndex : 0,
+                            index: i
+                        }));
+                    }
                 }
             },
             
@@ -116,20 +119,7 @@ window.WH = window.WH || {};
         
         that = {};
         
-        // create the step objects from the steps data
-        if (specs.steps) {
-            for (var i = 0; i < specs.steps.length; i++) {
-                var d = specs.steps[i];
-                steps.push( WH.createStep({
-                    pitch: d.pitch, 
-                    velocity: d.velocity, 
-                    start: d.start, 
-                    duration: d.duration, 
-                    trackIndex: specs.trackIndex,
-                    index: i
-                }));
-            }
-        }
+        setSteps(specs.steps, specs.trackIndex);
         
         that.scanEventsInTimeSpan = scanEventsInTimeSpan;
         that.getSteps = getSteps;
