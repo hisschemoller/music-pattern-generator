@@ -371,7 +371,7 @@
                     var step = playbackQueue[i],
                         ptrn = patterns[step.getTrackIndex()];
                     
-                    if (step.getVelocity()) {
+                    if (step.getVelocity() && !ptrn.isMute) {
                         ptrn.isOn = true;
                         ptrn.isNoteOn = true;
                         ptrn.pulseIndex = step.getIndex();

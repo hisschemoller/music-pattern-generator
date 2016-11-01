@@ -90,6 +90,7 @@ window.WH.epg = window.WH.epg || {};
                 updateSetting('rotation', ptrn ? ptrn.rotation : '');
                 updateSetting('rate', ptrn ? ptrn.rate : '');
                 updateSetting('name', ptrn ? ptrn.name : '');
+                updateSetting('mute', ptrn ? ptrn.isMute : false);
                 setEnabled(ptrn !== null && ptrn !== undefined);
             },
             
@@ -119,6 +120,9 @@ window.WH.epg = window.WH.epg || {};
                             break;
                         case 'text':
                             setting.input.value = value;
+                            break;
+                        case 'checkbox':
+                            setting.input.checked = value;
                             break;
                         case 'radio':
                             for (i = 0; i < setting.inputs.length; i++) {
