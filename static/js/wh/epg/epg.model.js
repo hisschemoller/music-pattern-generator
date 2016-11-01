@@ -76,7 +76,6 @@
             patterns = [],
             numPatterns = patterns.length,
             selectedPattern,
-            unixToMidiTimeConvert = (Date.now() - performance.now()) / 1000,
             
             /**
              * Create a Euclidean step sequence from a pattern's steps and fills data.
@@ -314,10 +313,6 @@
                 
                 // file.autoSave();
             },
-            
-            setMute = function(isMute) {
-                selectedPattern.isMute = isMute;
-            },
 
             /**§
              * Create an pattern data from data object.
@@ -365,6 +360,10 @@
                 epgCanvas.draw(patterns);
             },
             
+            /**
+             * Update note activity.
+             * @param {Array} playbackQueue Note data.
+             */
             onTransportScan = function(playbackQueue) {
                 var i, now, start, duration,
                     numSteps = playbackQueue.length;
