@@ -25,6 +25,7 @@ window.WH = window.WH || {};
             duration = specs.duration || 1,
             trackIndex = specs.trackIndex || 0,
             index = specs.index,
+            startAbs = 0,
             startMidi = 0,
             durationMidi = 0,
             startAudioContext = 0,
@@ -35,12 +36,13 @@ window.WH = window.WH || {};
              * @param {Number} startTime Start time in tick.
              * @return {Step} Clone of this Step.
              */
-            cloneWithChangedStart = function(startTime) {
+            cloneWithAbsStart = function(startTime) {
                 startTime = startTime || start;
                 return WH.createStep({
                     pitch: pitch, 
                     velocity: velocity, 
-                    start: startTime, 
+                    start: start, 
+                    startAbs: startTime,
                     duration: duration, 
                     trackIndex: trackIndex, 
                     index: index
@@ -57,6 +59,10 @@ window.WH = window.WH || {};
             
             getStart = function() {
                 return start;
+            },
+            
+            getStartAbs = function() {
+                return startAbs;
             },
             
             getDuration = function() {
@@ -139,7 +145,7 @@ window.WH = window.WH || {};
         
         var that = {};
         
-        that.cloneWithChangedStart = cloneWithChangedStart;
+        that.cloneWithAbsStart = cloneWithAbsStart;
         that.getPitch = getPitch;
         that.getVelocity = getVelocity;
         that.getStart = getStart;
@@ -147,6 +153,7 @@ window.WH = window.WH || {};
         that.setTrackIndex = setTrackIndex;
         that.getTrackIndex = getTrackIndex;
         that.getIndex = getIndex;
+        that.getStartAbs = getStartAbs;
         that.setStartMidi = setStartMidi;
         that.getStartMidi = getStartMidi;
         that.setDurationMidi = setDurationMidi;

@@ -52,11 +52,11 @@ window.WH = window.WH || {};
                         stepStart = step.getStart();
                         if (localStart <= stepStart && stepStart <= localEnd) {
                             // add new step with time relative to time span
-                            playbackQueue.push(step.cloneWithChangedStart(absoluteStart + (stepStart - localStart)));
+                            playbackQueue.push(step.cloneWithAbsStart(absoluteStart + (stepStart - localStart)));
                         }
                         if (secondEnd && secondStart <= stepStart && stepStart <= secondEnd) {
                             // add new event with time relative to time span
-                            playbackQueue.push(step.cloneWithChangedStart(absoluteStart + (stepStart - secondStart)));
+                            playbackQueue.push(step.cloneWithAbsStart(absoluteStart + (stepStart - secondStart)));
                         }
                     }
                 }
