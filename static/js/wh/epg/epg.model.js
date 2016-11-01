@@ -88,12 +88,14 @@
                     numSteps = euclidPattern.length,
                     steps = [];
                 for (i = 0; i < numSteps; i++) {
-                    steps.push({
-                        pitch: 60,
-                        velocity: !!euclidPattern[i] ? 100 : 0,
-                        start: stepDuration * i,
-                        duration: stepDuration
-                    });
+                    if (!!euclidPattern[i]) {
+                        steps.push({
+                            pitch: 60,
+                            velocity: 100,
+                            start: stepDuration * i,
+                            duration: stepDuration
+                        });
+                    }
                 }
                 return steps;
             },
@@ -374,7 +376,7 @@
                     if (step.getVelocity() && !ptrn.isMute) {
                         ptrn.isOn = true;
                         ptrn.isNoteOn = true;
-                        ptrn.pulseIndex = step.getIndex();
+                        ptrn.pulseIndex = Math.round(((step.getStart() / ptrn.duration) % 1) * ptrn.steps) % ptrn.steps;
                         ptrn.offPosition = (ptrn.position + step.getDuration()) % ptrn.duration;
                         
                         // now for the MIDI...
