@@ -30,6 +30,8 @@
             isTriplets: false,
             name: specs.name || '',
             isMute: false,
+            isSolo: false,
+            isNotSolo: false,
             
             // position and duration in ticks
             position: specs.position || 0,
@@ -316,6 +318,9 @@
                         selectedPattern[name] = value;
                         epgCanvas.updatePattern3D(selectedPattern);
                         break;
+                    case 'isSolo':
+                        setSolo(selectedPattern, value;)
+                        break;
                     case 'name':
                         selectedPattern[name] = value;
                         epgSettings.updateSetting(name, value);
@@ -323,6 +328,27 @@
                 }
                 
                 // file.autoSave();
+            },
+            
+            /**
+             * Set soloed pattern.
+             * If a pattern goes solo, all other patterns go 'not solo', 
+             * as an indicator that they should be muted.
+             * @param {Object} ptrn Pattern data object.
+             * @param {Boolean} isSolo True if the pattern is soloed.
+             */
+            setSolo = function(pattern, isSolo) {
+                for (var i = 0; i < patterns.length; i++) {
+                    var ptrn = patterns[i];
+                    if (isSolo) {
+                        ptrn.isSolo = (ptrn === selectedPattern);
+                        ptrn.isNotSolo = !ptrn.isSolo;
+                    } else {
+                        ptrn.isSolo = false;
+                        ptrn.isNotSolo = false;
+                    }
+                    epgCanvas.updatePattern3D(ptrn);
+                }
             },
 
             /**§

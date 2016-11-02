@@ -43,6 +43,10 @@ window.WH.epg = window.WH.epg || {};
                     type: 'checkbox',
                     input: document.getElementById('mute-check')
                 },
+                solo: {
+                    type: 'checkbox',
+                    input: document.getElementById('solo-check')
+                },
                 name: {
                     type: 'text',
                     input: document.getElementById('name-text')
@@ -61,6 +65,9 @@ window.WH.epg = window.WH.epg || {};
                 settings.name.input.addEventListener('change', onChange);
                 settings.mute.input.addEventListener('change', function(e) {
                     epgModel.setPatternProperty('isMute', e.target.checked);
+                });
+                settings.solo.input.addEventListener('change', function(e) {
+                    epgModel.setPatternProperty('isSolo', e.target.checked);
                 });
                 settings.triplets.input.addEventListener('change', function(e) {
                     epgModel.setPatternProperty('isTriplets', e.target.checked);
@@ -99,6 +106,7 @@ window.WH.epg = window.WH.epg || {};
                 updateSetting('triplets', ptrn ? ptrn.isTriplets : false);
                 updateSetting('name', ptrn ? ptrn.name : '');
                 updateSetting('mute', ptrn ? ptrn.isMute : false);
+                updateSetting('solo', ptrn ? ptrn.isSolo : false);
                 setEnabled(ptrn !== null && ptrn !== undefined);
             },
             
