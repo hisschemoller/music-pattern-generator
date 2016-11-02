@@ -26,7 +26,10 @@
             // misc settings
             // rate in beats, quarter note multiplier
             rate: specs.rate || 0.25,
+            // convert to triplets by multiplying rate with 2/3
+            isTriplets: false,
             name: specs.name || '',
+            isMute: false,
             
             // position and duration in ticks
             position: specs.position || 0,
@@ -35,7 +38,6 @@
             isOn: false,
             isNoteOn: false,
             isSelected: false,
-            isMute: false,
             
             offPosition: 0,
             lastPosition: 0,
@@ -186,14 +188,15 @@
              * @param {Object} ptrn Pattern data object.
              */
             updatePattern = function(ptrn) {
-                var ptrnIndex, elementsToShift, arrangementSteps, stepDuration,
+                var ptrnIndex, elementsToShift, arrangementSteps, stepDuration, rate,
                     euclidPattern = createBjorklund(ptrn.steps, ptrn.pulses);
                 
                 // rotation
                 elementsToShift = euclidPattern.splice(ptrn.rotation),
                 euclidPattern = elementsToShift.concat(euclidPattern);
                 
-                stepDuration = ptrn.rate * WH.conf.getPPQN();
+                rate = ptrn.isTriplets ? ptrn.rate * (2 / 3) : ptrn.rate;
+                stepDuration = rate * WH.conf.getPPQN();
                 ptrn.euclidPattern = euclidPattern;
                 ptrn.duration = ptrn.steps * stepDuration;
                 ptrn.position = ptrn.position % ptrn.duration;
@@ -305,7 +308,10 @@
                         value = parseFloat(value);
                         selectedPattern[name] = value;
                         updatePattern(selectedPattern);
-                        break;
+                        break
+                    case 'isTriplets':
+                        selectedPattern[name] = value;
+                        updatePattern(selectedPattern);
                     case 'isMute':
                         selectedPattern[name] = value;
                         epgCanvas.updatePattern3D(selectedPattern);

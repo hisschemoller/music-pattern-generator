@@ -35,6 +35,10 @@ window.WH.epg = window.WH.epg || {};
                     type: 'radio',
                     inputs: settingsEl.elements['rate']
                 },
+                triplets: {
+                    type: 'checkbox',
+                    input: document.getElementById('triplets-check')
+                },
                 mute: {
                     type: 'checkbox',
                     input: document.getElementById('mute-check')
@@ -57,6 +61,9 @@ window.WH.epg = window.WH.epg || {};
                 settings.name.input.addEventListener('change', onChange);
                 settings.mute.input.addEventListener('change', function(e) {
                     epgModel.setPatternProperty('isMute', e.target.checked);
+                });
+                settings.triplets.input.addEventListener('change', function(e) {
+                    epgModel.setPatternProperty('isTriplets', e.target.checked);
                 });
                 settings.delete.input.addEventListener('click', function(e) {
                     // TODO: show a confirmation dialog first
@@ -89,6 +96,7 @@ window.WH.epg = window.WH.epg || {};
                 updateSetting('pulses', ptrn ? ptrn.pulses : '');
                 updateSetting('rotation', ptrn ? ptrn.rotation : '');
                 updateSetting('rate', ptrn ? ptrn.rate : '');
+                updateSetting('triplets', ptrn ? ptrn.isTriplets : false);
                 updateSetting('name', ptrn ? ptrn.name : '');
                 updateSetting('mute', ptrn ? ptrn.isMute : false);
                 setEnabled(ptrn !== null && ptrn !== undefined);
