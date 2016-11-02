@@ -40,6 +40,9 @@
             offPosition: 0,
             lastPosition: 0,
             
+            // delay in milliseconds before note start
+            startDelay: 0,
+            
             // 
             pulseIndex: 0,
             
@@ -378,6 +381,7 @@
                         ptrn.isNoteOn = true;
                         ptrn.pulseIndex = Math.round(((step.getStart() / ptrn.duration) % 1) * ptrn.steps) % ptrn.steps;
                         ptrn.offPosition = (ptrn.position + step.getDuration()) % ptrn.duration;
+                        ptrn.startDelay = step.getStartDelay();
                         
                         // now for the MIDI...
                         start = step.getStartMidi();

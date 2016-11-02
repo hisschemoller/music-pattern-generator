@@ -305,6 +305,7 @@ window.WH = window.WH || {};
                     .onUpdate(function() {
                             dot.scale.set(this.scale, this.scale, 1);
                         })
+                    .delay(ptrn.startDelay)
                     .start();
                 
                 // animate centre dot
@@ -319,6 +320,7 @@ window.WH = window.WH || {};
                     .onComplete(function() {
                             ptrn.centreDot3d.visible = false;
                         })
+                    .delay(ptrn.startDelay)
                     .start();    
             },
             

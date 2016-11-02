@@ -28,6 +28,7 @@ window.WH = window.WH || {};
                         step.setDurationMidi(tick2msec(step.getDuration()));
                         step.setStartAudioContext((tick2msec(step.getStartAbs()) / 1000) + audioContextOffset);
                         step.setDurationAudioContext(tick2msec(step.getDuration()) / 1000);
+                        step.setStartDelay(step.getStartMidi() - performance.now());
                     }
                     epgModel.onTransportScan(playbackQueue);
                 }

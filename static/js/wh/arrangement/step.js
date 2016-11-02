@@ -30,6 +30,7 @@ window.WH = window.WH || {};
             durationMidi = 0,
             startAudioContext = 0,
             durationAudioContext = 0,
+            startDelay = 0,
             
             /**
              * Create clone of this step with optional changed start time.
@@ -130,6 +131,18 @@ window.WH = window.WH || {};
             },
 
             /**
+             * Set delay before note start in milliseconds.
+             * @param {Number} duration Delay in milliseconds.
+             */
+            setStartDelay = function(delay) {
+                startDelay = delay;
+            },
+            
+            getStartDelay = function() {
+                return startDelay;
+            },
+
+            /**
              * Get all settings that should be saved with a project.
              * @return {Object} All Step properties to save.
              */
@@ -162,6 +175,8 @@ window.WH = window.WH || {};
         that.getStartAudioContext = getStartAudioContext;
         that.setDurationAudioContext = setDurationAudioContext;
         that.getDurationAudioContext = getDurationAudioContext;
+        that.setStartDelay = setStartDelay;
+        that.getStartDelay = getStartDelay;
         that.getData = getData;
         return that;
     }
