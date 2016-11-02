@@ -319,7 +319,7 @@
                         epgCanvas.updatePattern3D(selectedPattern);
                         break;
                     case 'isSolo':
-                        setSolo(selectedPattern, value;)
+                        setSolo(selectedPattern, value);
                         break;
                     case 'name':
                         selectedPattern[name] = value;
@@ -341,7 +341,7 @@
                 for (var i = 0; i < patterns.length; i++) {
                     var ptrn = patterns[i];
                     if (isSolo) {
-                        ptrn.isSolo = (ptrn === selectedPattern);
+                        ptrn.isSolo = (ptrn === pattern);
                         ptrn.isNotSolo = !ptrn.isSolo;
                     } else {
                         ptrn.isSolo = false;
