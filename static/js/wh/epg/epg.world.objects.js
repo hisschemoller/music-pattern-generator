@@ -94,7 +94,6 @@ window.WH = window.WH || {};
              * @return {Object} Three.js Geometry object.
              */
             createPointerGeometry = function(radius, isSolo) {
-                console.log(isSolo);
                 var geometry = new THREE.Geometry();
                 geometry.vertices.push(
                 	new THREE.Vector3(-2.9, 0.7, 0.0),

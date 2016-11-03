@@ -31,7 +31,7 @@
             name: specs.name || '',
             isMute: false,
             isSolo: false,
-            isNotSolo: false,
+            isNotSolo: specs.isNotSolo || false,
             
             // position and duration in ticks
             position: specs.position || 0,
@@ -170,6 +170,12 @@
                 
                 specs = specs || {};
                 specs.channel = patterns.length;
+                
+                // check if there's a soloed pattern
+                if (patterns.length && (patterns[0].isSolo || patterns[0].isNotSolo)) {
+                    console.log('not');
+                    specs.isNotSolo = true;
+                }
                 
                 patternData = createEPGPatternData(specs);
                 patterns.push(patternData);
