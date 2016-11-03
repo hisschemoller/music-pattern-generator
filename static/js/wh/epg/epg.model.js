@@ -28,6 +28,8 @@
             rate: specs.rate || 0.25,
             // convert to triplets by multiplying rate with 2/3
             isTriplets: false,
+            // note length in beats, quarter note multiplier
+            noteLength: specs.noteLength || 0.25,
             name: specs.name || '',
             isMute: false,
             isSolo: false,
@@ -88,9 +90,10 @@
              * Create a Euclidean step sequence from a pattern's steps and fills data.
              * @param {Array} euclidPattern Array of 0 and 1 values indicating pulses or silent steps.
              * @param {Number} stepDuration Duration in ticks of 1 step.
+             * @return {Number} noteDuration Duration in ticks of the note that an active step plays.
              * @return {Array} Data objects to create arrangement steps with.
              */
-            createArrangementSteps = function(euclidPattern, stepDuration) {
+            createArrangementSteps = function(euclidPattern, stepDuration, noteDuration) {
                 var i,
                     numSteps = euclidPattern.length,
                     steps = [];
@@ -100,7 +103,7 @@
                             pitch: 60,
                             velocity: 100,
                             start: stepDuration * i,
-                            duration: stepDuration
+                            duration: noteDuration
                         });
                     }
                 }
@@ -196,7 +199,8 @@
              * @param {Object} ptrn Pattern data object.
              */
             updatePattern = function(ptrn) {
-                var ptrnIndex, elementsToShift, arrangementSteps, stepDuration, rate,
+                var ptrnIndex, elementsToShift, arrangementSteps, stepDuration, 
+                    rate, noteDuration,
                     euclidPattern = createBjorklund(ptrn.steps, ptrn.pulses);
                 
                 // rotation
@@ -205,13 +209,14 @@
                 
                 rate = ptrn.isTriplets ? ptrn.rate * (2 / 3) : ptrn.rate;
                 stepDuration = rate * WH.conf.getPPQN();
+                noteDuration = ptrn.noteLength * WH.conf.getPPQN();
                 ptrn.euclidPattern = euclidPattern;
                 ptrn.duration = ptrn.steps * stepDuration;
                 ptrn.position = ptrn.position % ptrn.duration;
                 
                 // create arrangement steps from euclidean pattern
                 ptrnIndex = patterns.indexOf(ptrn);
-                arrangementSteps = createArrangementSteps(euclidPattern, stepDuration);
+                arrangementSteps = createArrangementSteps(euclidPattern, stepDuration, noteDuration);
                 arrangement.updateTrack(ptrnIndex, arrangementSteps, ptrn.duration);
                 // file.autoSave();
             },
@@ -320,6 +325,9 @@
                     case 'isTriplets':
                         selectedPattern[name] = value;
                         updatePattern(selectedPattern);
+                    case 'noteLength':
+                        selectedPattern[name] = value;
+                        break;
                     case 'isMute':
                         selectedPattern[name] = value;
                         epgCanvas.updatePattern3D(selectedPattern);

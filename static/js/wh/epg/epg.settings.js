@@ -39,6 +39,10 @@ window.WH.epg = window.WH.epg || {};
                     type: 'checkbox',
                     input: document.getElementById('triplets-check')
                 },
+                notelength: {
+                    type: 'radio',
+                    inputs: settingsEl.elements['note-length']
+                },
                 mute: {
                     type: 'checkbox',
                     input: document.getElementById('mute-check')
@@ -82,6 +86,12 @@ window.WH.epg = window.WH.epg || {};
                         epgModel.setPatternProperty('rate', e.target.value);
                     });
                 }
+                
+                for (var i = 0; i < settings.notelength.inputs.length; i++) {
+                    settings.notelength.inputs[i].addEventListener('click', function(e) {
+                        epgModel.setPatternProperty('noteLength', e.target.value);
+                    });
+                }
             },
             
             initSetting = function(name, max) {
@@ -104,6 +114,7 @@ window.WH.epg = window.WH.epg || {};
                 updateSetting('rotation', ptrn ? ptrn.rotation : '');
                 updateSetting('rate', ptrn ? ptrn.rate : '');
                 updateSetting('triplets', ptrn ? ptrn.isTriplets : false);
+                updateSetting('notelength', ptrn ? ptrn.noteLength : '');
                 updateSetting('name', ptrn ? ptrn.name : '');
                 updateSetting('mute', ptrn ? ptrn.isMute : false);
                 updateSetting('solo', ptrn ? ptrn.isSolo : false);
