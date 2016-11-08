@@ -1,6 +1,15 @@
 /**
  * Timing, transport and sequencing functionality.
  * Divided in two sets of functionality, Transport and Sequencer.
+ * 
+ * Unix epoch,                page    AudioContext   Transport        now,
+ * 01-01-1970 00:00:00 UTC    load    created        start            the present
+ *  |                          |       |              |                | 
+ *  |--------------------------|-------|-------//-----|--------//------|
+ *  
+ *  |------------------------------------------------------------------> Date.now()
+ *                             |---------------------------------------> performance.now()
+ *                                     |-------------------------------> AudioContext.currentTime
  */
 
 window.WH = window.WH || {};
