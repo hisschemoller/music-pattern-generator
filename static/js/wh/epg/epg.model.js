@@ -46,8 +46,11 @@
             offPosition: 0,
             lastPosition: 0,
             
-            // delay in milliseconds before note start
-            startDelay: 0,
+            // delay in milliseconds before note start and stop
+            noteStartDelay: 0,
+            noteStopDelay: 0,
+            // tween that indicates the ending of a note
+            centreDotEndTween: null,
             
             // 
             pulseIndex: 0,
@@ -327,6 +330,7 @@
                         updatePattern(selectedPattern);
                     case 'noteLength':
                         selectedPattern[name] = value;
+                        updatePattern(selectedPattern);
                         break;
                     case 'isMute':
                         selectedPattern[name] = value;
@@ -427,7 +431,8 @@
                         ptrn.isNoteOn = true;
                         ptrn.pulseIndex = Math.round(((step.getStart() / ptrn.duration) % 1) * ptrn.steps) % ptrn.steps;
                         ptrn.offPosition = (ptrn.position + step.getDuration()) % ptrn.duration;
-                        ptrn.startDelay = step.getStartDelay();
+                        ptrn.noteStartDelay = step.getStartDelay();
+                        ptrn.noteStopDelay = step.getStartDelay() + step.getDuration();
                         
                         // now for the MIDI...
                         start = step.getStartMidi();

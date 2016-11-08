@@ -305,23 +305,39 @@ window.WH = window.WH || {};
                     .onUpdate(function() {
                             dot.scale.set(this.scale, this.scale, 1);
                         })
-                    .delay(ptrn.startDelay)
+                    .delay(ptrn.noteStartDelay)
                     .start();
+                    
+                // stop centre dot animation, if any
+                if (ptrn.centreDotEndTween) {
+                    ptrn.centreDotEndTween.stop();
+                }
                 
-                // animate centre dot
-                new TWEEN.Tween({scale: 0.1})
-                    .to({scale: 0.01}, 150)
+                // animate centre dot, tween in and tween out
+                var startTween = new TWEEN.Tween({scale: 0.01})
+                    .to({scale: 0.10}, 10)
                     .onStart(function() {
                             ptrn.centreDot3d.visible = true;
                         })
                     .onUpdate(function() {
                             ptrn.centreDot3d.scale.set(this.scale, this.scale, 1);
                         })
+                    .delay(ptrn.noteStartDelay);
+                    
+                var stopTween = new TWEEN.Tween({scale: 0.10})
+                    .to({scale: 0.01}, 150)
+                    .onUpdate(function() {
+                            ptrn.centreDot3d.scale.set(this.scale, this.scale, 1);
+                        })
                     .onComplete(function() {
                             ptrn.centreDot3d.visible = false;
                         })
-                    .delay(ptrn.startDelay)
-                    .start();    
+                    .delay(ptrn.noteStopDelay - ptrn.noteStartDelay);
+                
+                startTween.chain(stopTween);
+                startTween.start();
+                
+                ptrn.centreDotEndTween = stopTween;
             },
             
             /**
