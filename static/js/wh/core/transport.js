@@ -185,8 +185,8 @@ window.WH = window.WH || {};
                         needsScan = false;
                         my.scanEvents(scanStart, scanEnd);
                     }
-                    my.updateView(position);
                 }
+                my.updateView(position);
                 requestAnimationFrame(run);
             },
             
@@ -257,12 +257,10 @@ window.WH = window.WH || {};
         
         that = createSequencer(specs, my);
         
-        run();
-        start();
-        
         that.start = start;
         that.pause = pause;
         that.rewind = rewind;
+        that.run = run;
         that.setLoopStart = setLoopStart;
         that.setLoopEnd = setLoopEnd;
         that.setLoop = setLoop;
