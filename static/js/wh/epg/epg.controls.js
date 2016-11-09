@@ -41,6 +41,13 @@
                 WH.pubSub.on('transport.bpm', function(data) {
                     controls.bpm.input.value = data;
                 });
+                document.addEventListener('keyup', function(e) {
+                    switch (e.keyCode) {
+                        case 32:
+                            transport.toggleStartStop();
+                            break;
+                    }
+                })
             };
         
         that = {};
