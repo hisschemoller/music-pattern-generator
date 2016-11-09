@@ -93,6 +93,7 @@ window.WH = window.WH || {};
                 // calculate change factor
                 var factor = lastBpm / bpm;
                 my.setLoopByFactor(factor);
+                WH.pubSub.fire('transport.bpm', bpm);
             },
             
             /**
@@ -199,6 +200,7 @@ window.WH = window.WH || {};
                 setOrigin(position - offset);
                 setScanRange(position);
                 isRunning = true;
+                WH.pubSub.fire('transport.start');
             },
             
             /**
@@ -206,6 +208,7 @@ window.WH = window.WH || {};
              */
             pause = function () {
                 isRunning = false;
+                WH.pubSub.fire('transport.pause');
             },
             
             /**
@@ -215,6 +218,18 @@ window.WH = window.WH || {};
                 position = performance.now();
                 setOrigin(position);
                 setScanRange(position);
+            },
+            
+            /**
+             * Toggle between stop and play.
+             */
+            toggleStartStop = function() {
+                if (isRunning) {
+                    pause();
+                    rewind();
+                } else {
+                    start();
+                }
             },
             
             /**
@@ -260,6 +275,7 @@ window.WH = window.WH || {};
         that.start = start;
         that.pause = pause;
         that.rewind = rewind;
+        that.toggleStartStop = toggleStartStop
         that.run = run;
         that.setLoopStart = setLoopStart;
         that.setLoopEnd = setLoopEnd;

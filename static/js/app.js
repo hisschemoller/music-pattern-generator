@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     // Create all objects that will be the modules of the app.
     var arrangement = {},
         epgCanvas = {},
+        epgControls = {},
         epgModel = {}, 
         epgSettings = {},
         file = {},
@@ -28,6 +29,10 @@ document.addEventListener('DOMContentLoaded', function(e) {
     WH.createEPGCanvas({
         that: epgCanvas,
         epgModel: epgModel
+    });
+    WH.createEPGControls({
+        that: epgControls,
+        transport: transport
     });
     WH.createEPGModel({
         that: epgModel,
