@@ -14,7 +14,7 @@ window.WH.epg = window.WH.epg || {};
     function createEPGSettings(specs) {
         var that,
             epgModel = specs.epgModel,
-            settingsEl = document.getElementById('settings')
+            settingsEl = document.getElementById('settings'),
             settings = {
                 steps: {
                     type: 'slider',

@@ -179,7 +179,6 @@
                 
                 // check if there's a soloed pattern
                 if (patterns.length && (patterns[0].isSolo || patterns[0].isNotSolo)) {
-                    console.log('not');
                     specs.isNotSolo = true;
                 }
                 

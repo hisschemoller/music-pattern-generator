@@ -16,16 +16,15 @@ document.addEventListener('DOMContentLoaded', function(e) {
         epgCanvas = {},
         epgModel = {}, 
         epgSettings = {},
-        transport = {},
-        file = {};
+        file = {},
+        transport = {};
     
     // Add functionality to the modules and inject dependencies.
     WH.createArrangement({
         that: arrangement
     });
-    WH.createTransport({
-        that: transport,
-        arrangement: arrangement,
+    WH.createEPGCanvas({
+        that: epgCanvas,
         epgModel: epgModel
     });
     WH.createEPGModel({
@@ -36,10 +35,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
         epgSettings: epgSettings,
         file: file
     });
-    WH.createEPGCanvas({
-        that: epgCanvas,
-        epgModel: epgModel
-    });
     WH.epg.createEPGSettings({
         that: epgSettings,
         epgModel: epgModel
@@ -49,6 +44,11 @@ document.addEventListener('DOMContentLoaded', function(e) {
         arrangement: arrangement,
         epgModel: epgModel,
         transport: transport
+    });
+    WH.createTransport({
+        that: transport,
+        arrangement: arrangement,
+        epgModel: epgModel
     });
     
     // initialise
