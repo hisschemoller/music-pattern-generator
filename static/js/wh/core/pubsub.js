@@ -5,7 +5,7 @@
  */
 window.WH = window.WH || {};
 
-(function (WH) {
+(function (ns) {
 
     function createPubSub() {
         
@@ -98,8 +98,6 @@ window.WH = window.WH || {};
         return that;
     }
     
-    /** 
-     * Singleton
-     */
-    WH.pubSub = createPubSub();
+    ns.createPubSub = createPubSub;
+    
 })(WH);

@@ -18,6 +18,8 @@ document.addEventListener('DOMContentLoaded', function(e) {
         epgSettings = {},
         file = {},
         transport = {};
+        
+    WH.pubSub = WH.createPubSub();
     
     // Add functionality to the modules and inject dependencies.
     WH.createArrangement({
