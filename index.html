@@ -7,58 +7,68 @@
 </head>
 <body>
     <div id="container-webgl"></div>
-    <form id="settings">
-        <div class="settings__row">
-            <label for="steps-range" class="settings__label">steps</label>
-            <input type="range" id="steps-range" min="1" max="16" step="1" class="settings__range" />
-            <input type="number" id="steps-number" min="1" max="16" class="settings__number" />
+    <form id="settings" class="form">
+        <div class="form__row">
+            <label for="steps-range" class="form__label">steps</label>
+            <input type="range" id="steps-range" min="1" max="16" step="1" class="form__range" />
+            <input type="number" id="steps-number" min="1" max="16" class="form__number" />
         </div>
-        <div class="settings__row">
-            <label for="pulses-range" class="settings__label">pulses</label>
-            <input type="range" id="pulses-range" min="1" max="16" step="1" class="settings__range" name="pulses" />
-            <input type="number" id="pulses-number" min="1" max="16" class="settings__number" />
+        <div class="form__row">
+            <label for="pulses-range" class="form__label">pulses</label>
+            <input type="range" id="pulses-range" min="1" max="16" step="1" class="form__range" name="pulses" />
+            <input type="number" id="pulses-number" min="1" max="16" class="form__number" />
         </div>
-        <div class="settings__row">
-            <label for="rotation-range" class="settings__label">rotation</label>
-            <input type="range" id="rotation-range" min="0" max="16" step="1" class="settings__range" name="rotation" />
-            <input type="number" id="rotation-number" min="0" max="16" class="settings__number" />
+        <div class="form__row">
+            <label for="rotation-range" class="form__label">rotation</label>
+            <input type="range" id="rotation-range" min="0" max="16" step="1" class="form__range" name="rotation" />
+            <input type="number" id="rotation-number" min="0" max="16" class="form__number" />
         </div>
-        <div class="settings__row">
-            <legend class="settings__label">rate</legend>
-            <label><input type="radio" name="rate" value="4" class="settings__radio" />1</label>
-            <label><input type="radio" name="rate" value="2" class="settings__radio" />1/2</label>
-            <label><input type="radio" name="rate" value="1" class="settings__radio" />1/4</label>
-            <label><input type="radio" name="rate" value="0.5" class="settings__radio" />1/8</label>
-            <label><input type="radio" name="rate" value="0.25" class="settings__radio" />1/16</label>
-            <label><input type="radio" name="rate" value="0.125" class="settings__radio" />1/32</label>
+        <div class="form__row">
+            <legend class="form__label">rate</legend>
+            <label><input type="radio" name="rate" value="4" class="form__radio" />1</label>
+            <label><input type="radio" name="rate" value="2" class="form__radio" />1/2</label>
+            <label><input type="radio" name="rate" value="1" class="form__radio" />1/4</label>
+            <label><input type="radio" name="rate" value="0.5" class="form__radio" />1/8</label>
+            <label><input type="radio" name="rate" value="0.25" class="form__radio" />1/16</label>
+            <label><input type="radio" name="rate" value="0.125" class="form__radio" />1/32</label>
         </div>
-        <div class="settings__row">
-            <label for="triplets-check" class="settings__label">triplets</label>
-            <input type="checkbox" id="triplets-check" class="settings__check" />
+        <div class="form__row">
+            <label for="triplets-check" class="form__label">triplets</label>
+            <input type="checkbox" id="triplets-check" class="form__check" />
         </div>
-        <div class="settings__row">
-            <legend class="settings__label">note length</legend>
-            <label><input type="radio" name="note-length" value="4" class="settings__radio" />1</label>
-            <label><input type="radio" name="note-length" value="2" class="settings__radio" />1/2</label>
-            <label><input type="radio" name="note-length" value="1" class="settings__radio" />1/4</label>
-            <label><input type="radio" name="note-length" value="0.5" class="settings__radio" />1/8</label>
-            <label><input type="radio" name="note-length" value="0.25" class="settings__radio" />1/16</label>
-            <label><input type="radio" name="note-length" value="0.125" class="settings__radio" />1/32</label>
+        <div class="form__row">
+            <legend class="form__label">note length</legend>
+            <label><input type="radio" name="note-length" value="4" class="form__radio" />1</label>
+            <label><input type="radio" name="note-length" value="2" class="form__radio" />1/2</label>
+            <label><input type="radio" name="note-length" value="1" class="form__radio" />1/4</label>
+            <label><input type="radio" name="note-length" value="0.5" class="form__radio" />1/8</label>
+            <label><input type="radio" name="note-length" value="0.25" class="form__radio" />1/16</label>
+            <label><input type="radio" name="note-length" value="0.125" class="form__radio" />1/32</label>
         </div>
-        <div class="settings__row">
-            <label for="mute-check" class="settings__label">mute</label>
-            <input type="checkbox" id="mute-check" class="settings__check" />
+        <div class="form__row">
+            <label for="mute-check" class="form__label">mute</label>
+            <input type="checkbox" id="mute-check" class="form__check" />
         </div>
-        <div class="settings__row">
-            <label for="solo-check" class="settings__label">solo</label>
-            <input type="checkbox" id="solo-check" class="settings__check" />
+        <div class="form__row">
+            <label for="solo-check" class="form__label">solo</label>
+            <input type="checkbox" id="solo-check" class="form__check" />
         </div>
-        <div class="settings__row">
-            <label for="name-text" class="settings__label">name</label>
-            <input type="text" id="name-text" class="settings__text" />
+        <div class="form__row">
+            <label for="name-text" class="form__label">name</label>
+            <input type="text" id="name-text" class="form__text" />
         </div>
-        <div class="settings__row">
-            <input type="button" id="delete-button" class="settings__button" value="delete pattern" />
+        <div class="form__row">
+            <input type="button" id="delete-button" class="form__button" value="delete pattern" />
+        </div>
+    </form>
+    <form id="controls" class="form">
+        <div class="form__row">
+            <label for="play-check" class="form__label">play</label>
+            <input type="checkbox" id="play-check" class="form__check" />
+        </div>
+        <div class="form__row">
+            <label for="bpm-number" class="form__label">bpm</label>
+            <input type="number" id="bpm-number" class="form__number" min="1" max="1000" value="" />
         </div>
     </form>
     <script src="static/js/app.js"></script>

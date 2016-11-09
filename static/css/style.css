@@ -1,6 +1,6 @@
 
 * {
-    box-sizing: border-box;;
+    box-sizing: border-box;
 }
 body {
     background-color: #eee;
@@ -10,37 +10,35 @@ body {
 legend {
     padding: 0;
 }
-#container-webgl {
-    height: 300px;
-    width: 550px;
+.form {
+    border: 1px solid #ddd;
+    display: inline-block;
+    margin: 10px 10px 0 0;
+    padding: 10px;
+    vertical-align: top;
 }
-.canvas__container {
-    background-color: #fff;
-    height: 300px;
-    position: relative;
-    width: 550px;
-}
-    #canvas__static,
-    #canvas__animation {
-        left: 0;
-        position: absolute;
-        top: 0;
-    }
-.settings {
-    
-}
-    .settings__row {
+    .form__row {
         line-height: 24px;
     }
-        .settings__label {
+        .form__label {
             display: inline-block;
             vertical-align: middle;
             width: 80px;
         }
-        .settings__range {
+        .form__range {
             vertical-align: middle;
         }
-        .settings__number {
+        .form__number {
             vertical-align: middle;
             width: 40px;
         }
+#container-webgl {
+    height: 300px;
+    width: 550px;
+}
+#settings {
+    width: 380px;
+}
+#controls {
+    width: 150px;
+}
