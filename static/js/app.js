@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         epgModel = {}, 
         epgSettings = {},
         file = {},
+        midi = {},
         transport = {};
         
     WH.pubSub = WH.createPubSub();
@@ -52,6 +53,9 @@ document.addEventListener('DOMContentLoaded', function(e) {
         epgModel: epgModel,
         transport: transport
     });
+    WH.createMidi({
+        that: midi
+    });
     WH.createTransport({
         that: transport,
         arrangement: arrangement,
@@ -61,5 +65,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
     // initialise
     epgCanvas.setup();
     file.createNew();
+    midi.enable();
     transport.run();
 });

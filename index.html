@@ -71,6 +71,14 @@
             <input type="number" id="bpm-number" class="form__number" min="1" max="1000" value="" />
         </div>
     </form>
+    <form id="config" class="form">
+        <div class="form__row">
+            <label for="outputs-select" class="form__label">midi out</label>
+            <select id="outputs-select" class="form__select">
+                <option value="">Select a MIDI output</option>
+            </select>
+        </div>
+    </form>
     <script src="static/js/app.js"></script>
     <script src="static/js/lib/three.js"></script>
     <script src="static/js/lib/trackballcontrols.js"></script>
@@ -83,6 +91,7 @@
     <script src="static/js/wh/arrangement/track.js"></script>
     <script src="static/js/wh/core/conf.js"></script>
     <script src="static/js/wh/core/file.js"></script>
+    <script src="static/js/wh/core/midi.js"></script>
     <script src="static/js/wh/core/pubsub.js"></script>
     <script src="static/js/wh/core/transport.js"></script>
     <script src="static/js/wh/epg/epg.canvas.js"></script>
