@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         epgCanvas = {},
         epgControls = {},
         epgModel = {}, 
+        epgPreferences = {},
         epgSettings = {},
         file = {},
         midi = {},
@@ -42,6 +43,10 @@ document.addEventListener('DOMContentLoaded', function(e) {
         epgCanvas: epgCanvas,
         epgSettings: epgSettings,
         file: file
+    });
+    WH.createEPGPreferences({
+        that: epgPreferences,
+        midi: midi
     });
     WH.epg.createEPGSettings({
         that: epgSettings,
