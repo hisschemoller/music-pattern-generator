@@ -16,6 +16,7 @@ window.WH = window.WH || {};
             epgCanvas = specs.epgCanvas,
             epgSettings = specs.epgSettings,
             file = specs.file,
+            midi = specs.midi,
             patterns = [],
             numPatterns = patterns.length,
             selectedPattern,
@@ -365,13 +366,17 @@ window.WH = window.WH || {};
                         ptrn.offPosition = (ptrn.position + step.getDuration()) % ptrn.duration;
                         ptrn.noteStartDelay = step.getStartDelay();
                         ptrn.noteStopDelay = step.getStartDelay() + step.getDuration();
+                        
+                        // now for the MIDI
+                        
+                        // if a note is playing, stop it first...
                         if (isAlreadyOn) {
                             
                         }
-                        
-                        // now for the MIDI...
+                        // ... and then the new note On
                         start = step.getStartMidi();
                         duration = step.getDurationMidi();
+                        midi.playNote(ptrn.pitch, ptrn.velocity, ptrn.channel, start, duration);
                     }
                 }
             };

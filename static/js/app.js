@@ -39,10 +39,11 @@ document.addEventListener('DOMContentLoaded', function(e) {
     WH.createEPGModel({
         that: epgModel,
         arrangement: arrangement,
-        transport: transport,
         epgCanvas: epgCanvas,
         epgSettings: epgSettings,
-        file: file
+        file: file,
+        midi: midi,
+        transport: transport
     });
     WH.createEPGPreferences({
         that: epgPreferences,

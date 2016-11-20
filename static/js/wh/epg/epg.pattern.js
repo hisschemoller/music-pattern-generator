@@ -22,6 +22,8 @@
             
             // midi settings
             channel: specs.channel || 0,
+            pitch: specs.pitch || 60,
+            velocity: specs.velocity || 10,
             
             // misc settings
             // rate in beats, quarter note multiplier

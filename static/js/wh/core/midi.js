@@ -33,12 +33,25 @@ window.WH = window.WH || {};
             selectOutputByID = function(id) {
                 selectedOutput = WebMidi.getOutputById(id);
                 WH.pubSub.fire('midi.output', selectedOutput);
+            },
+            
+            playNote = function(pitch, velocity, channelIndex, startTimeStamp, duration) {
+                if (selectedOutput) {
+                    // selectedOutput.clear();
+                    selectedOutput.playNote(pitch, channelIndex + 1, {
+                        velocity: velocity,
+                        rawVelocity: true,
+                        time: startTimeStamp,
+                        duration: duration
+                    });
+                }
             };
         
         that = specs.that;
         
         that.enable = enable;
         that.selectOutputByID = selectOutputByID;
+        that.playNote = playNote;
         return that;
     }
 
