@@ -99,7 +99,7 @@ window.WH = window.WH || {};
              * @param {Number} duration Duration in milliseconds.
              */
             setDurationMidi = function(duration) {
-                durationMidi = start;
+                durationMidi = duration;
             },
             
             getDurationMidi = function() {
