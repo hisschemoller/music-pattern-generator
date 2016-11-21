@@ -11,7 +11,9 @@ JS-EPG outputs the rhythms as MIDI messages, so to actually hear any sounds you 
 JS-EPG uses the Javascript [Web MIDI API](https://www.w3.org/TR/webmidi/) to send MIDI messages. Only a few browsers support Web MIDI at the moment. [Check CanIUse.com](http://caniuse.com/#search=web%20midi%20api) for the current browser support.
 
 ## Usage
-To run the app simply open index.html in a web browser. There are no dependencies to external online files and it doesn't need a server, so it can be used offline.
+To run the app simply open index.html in a web browser. There are no dependencies on external online files and it doesn't need a server, so it can be used offline.
+
+To add a rhythm pattern doubleclick anywhere on the canvas area and a pattern graphic will appear. A default new pattern has 16 steps and plays four notes, effectively a note on each beat as in a standard house or techno four-to-the-floor kick drum pattern.
 
 ## Note
 This app is a project in progress, so all of the above might not yet work at all.
