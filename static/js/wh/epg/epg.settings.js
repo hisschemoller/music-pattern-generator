@@ -55,6 +55,21 @@ window.WH.epg = window.WH.epg || {};
                     type: 'text',
                     input: document.getElementById('name-text')
                 },
+                channelout: {
+                    type: 'slider',
+                    range: document.getElementById('channel-out-range'),
+                    number: document.getElementById('channel-out-number')
+                },
+                pitchout: {
+                    type: 'slider',
+                    range: document.getElementById('pitch-out-range'),
+                    number: document.getElementById('pitch-out-number')
+                },
+                velocityout: {
+                    type: 'slider',
+                    range: document.getElementById('velocity-out-range'),
+                    number: document.getElementById('velocity-out-number')
+                },
                 delete: {
                     type: 'button',
                     input: document.getElementById('delete-button')
@@ -62,9 +77,12 @@ window.WH.epg = window.WH.epg || {};
             },
             
             init = function() {
-                initSetting('steps', 64);
-                initSetting('pulses', 64);
-                initSetting('rotation', 64);
+                initRangeSetting('steps', 64);
+                initRangeSetting('pulses', 64);
+                initRangeSetting('rotation', 64);
+                initRangeSetting('channelout');
+                initRangeSetting('pitchout');
+                initRangeSetting('velocityout');
                 settings.name.input.dataset.prop = 'name';
                 settings.name.input.addEventListener('change', onChange);
                 settings.mute.input.addEventListener('change', function(e) {
@@ -94,10 +112,12 @@ window.WH.epg = window.WH.epg || {};
                 }
             },
             
-            initSetting = function(name, max) {
+            initRangeSetting = function(name, max) {
                 var setting = settings[name];
-                setting.range.setAttribute('max', 64);
-                setting.number.setAttribute('max', 64);
+                if (typeof max !== 'undefined') {
+                    setting.range.setAttribute('max', 64);
+                    setting.number.setAttribute('max', 64);
+                }
                 setting.range.dataset.prop = name;
                 setting.number.dataset.prop = name;
                 setting.range.addEventListener('input', onChange);
@@ -118,6 +138,9 @@ window.WH.epg = window.WH.epg || {};
                 updateSetting('name', ptrn ? ptrn.name : '');
                 updateSetting('mute', ptrn ? ptrn.isMute : false);
                 updateSetting('solo', ptrn ? ptrn.isSolo : false);
+                updateSetting('channelout', ptrn ? ptrn.out.channel : 10);
+                updateSetting('pitchout', ptrn ? ptrn.out.pitch : 60);
+                updateSetting('velocityout', ptrn ? ptrn.out.velocity : 10);
                 setEnabled(ptrn !== null && ptrn !== undefined);
             },
             

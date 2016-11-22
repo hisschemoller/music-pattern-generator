@@ -271,6 +271,9 @@ window.WH = window.WH || {};
                         setSolo(selectedPattern, value);
                         break;
                     case 'name':
+                    case 'channelout':
+                    case 'pitchout':
+                    case 'velocityout':
                         selectedPattern[name] = value;
                         epgSettings.updateSetting(name, value);
                         break;
@@ -376,7 +379,7 @@ window.WH = window.WH || {};
                         // ... and then the new note On
                         start = step.getStartMidi();
                         duration = step.getDurationMidi();
-                        midi.playNote(ptrn.pitch, ptrn.velocity, ptrn.channel, start, duration);
+                        midi.playNote(ptrn.out.pitch, ptrn.out.velocity, ptrn.out.channel, start, duration);
                     }
                 }
             };

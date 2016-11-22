@@ -58,6 +58,21 @@
             <input type="text" id="name-text" class="form__text" />
         </div>
         <div class="form__row">
+            <label for="channel-out-range" class="form__label">channel</label>
+            <input type="range" id="channel-out-range" min="1" max="16" step="1" class="form__range" name="channel" />
+            <input type="number" id="channel-out-number" min="1" max="16" class="form__number" />
+        </div>
+        <div class="form__row">
+            <label for="pitch-out-range" class="form__label">pitch</label>
+            <input type="range" id="pitch-out-range" min="0" max="127" step="1" class="form__range" name="pitch" />
+            <input type="number" id="pitch-out-number" min="0" max="127" class="form__number" />
+        </div>
+        <div class="form__row">
+            <label for="velocity-out-range" class="form__label">velocity</label>
+            <input type="range" id="velocity-out-range" min="0" max="127" step="1" class="form__range" name="velocity" />
+            <input type="number" id="velocity-out-number" min="0" max="127" class="form__number" />
+        </div>
+        <div class="form__row">
             <input type="button" id="delete-button" class="form__button" value="delete pattern" />
         </div>
     </form>
