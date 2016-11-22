@@ -12,6 +12,10 @@ window.WH = window.WH || {};
             selectedOutput,
             selectedOutputID,
             
+            init = function() {
+                WH.pubSub.on('set.preferences', setPreferences);
+            },
+            
             /**
              * Retrieve access to the MIDI devices.
              */

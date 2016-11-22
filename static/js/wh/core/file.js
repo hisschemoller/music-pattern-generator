@@ -45,7 +45,7 @@ window.WH = window.WH || {};
             loadPreferences = function() {
                 var data = localStorage.getItem(preferencesName);
                 if (data) {
-                    data = JSON.parse(data);    
+                    data = JSON.parse(data);
                     WH.pubSub.fire('set.preferences', data);
                 } else {
                     console.log('No data in LocalStorage with name "' + preferencesName + '".');
