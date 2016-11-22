@@ -21,8 +21,20 @@ window.WH = window.WH || {};
                 inputs.midiout.select.addEventListener('change', function(e) {
                     midi.selectOutputByID(e.target.value);
                 });
+                window.addEventListener('beforeunload', onBeforeUnload);
                 WH.pubSub.on('midi.outputs', setMidiOutputs);
                 WH.pubSub.on('midi.output', setSelectedMidiOutput);
+                WH.pubSub.on('set.preferences', setPreferences);
+            }, 
+            
+            /**
+             * Save the preferences when the page unloads.
+             */
+            onBeforeUnload = function(e) {
+                var data = {
+                    'midiout': inputs.midiout.select.options[inputs.midiout.select.selectedIndex].value
+                };
+                WH.pubSub.fire('save.preferences', data);
             },
             
             /**
@@ -44,10 +56,17 @@ window.WH = window.WH || {};
             
             /**
              * Show the selected output in the dropdown.
-             * @param {Array} output WebMidi output
+             * @param {String} output WebMidi output ID.
              */
-            setSelectedMidiOutput = function(output) {
-                inputs.midiout.select.value = output.id;
+            setSelectedMidiOutput = function(id) {
+                inputs.midiout.select.value = id;
+            },
+            
+            /**
+             * Set all preferences from a data object.
+             */
+            setPreferences = function(data) {
+                midi.selectOutputByID(data.midiout);
             };
         
         that = specs.that;

@@ -10,6 +10,7 @@ window.WH = window.WH || {};
     function createMidi(specs) {
         var that,
             selectedOutput,
+            selectedOutputID,
             
             /**
              * Retrieve access to the MIDI devices.
@@ -22,6 +23,9 @@ window.WH = window.WH || {};
                         console.log('WebMidi enabled');
                         WH.pubSub.fire('midi.inputs', WebMidi.inputs);
                         WH.pubSub.fire('midi.outputs', WebMidi.outputs);
+                        if (typeof selectedOutputID === 'string') {
+                            selectOutputByID(selectedOutputID);
+                        }
                     }
                 });
             },
@@ -31,8 +35,11 @@ window.WH = window.WH || {};
              * @param {String} id ID of the output.
              */
             selectOutputByID = function(id) {
-                selectedOutput = WebMidi.getOutputById(id);
-                WH.pubSub.fire('midi.output', selectedOutput);
+                selectedOutputID = id;
+                if (WebMidi.enabled) {
+                    selectedOutput = WebMidi.getOutputById(selectedOutputID);
+                    WH.pubSub.fire('midi.output', selectedOutputID);
+                }
             },
             
             playNote = function(pitch, velocity, channelIndex, startTimeStamp, duration) {

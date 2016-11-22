@@ -69,8 +69,8 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     
     // initialise
-    epgCanvas.setup();
-    file.createNew();
     midi.enable();
+    epgCanvas.setup();
+    file.setup();
     transport.run();
 });

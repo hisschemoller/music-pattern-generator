@@ -17,12 +17,42 @@ window.WH = window.WH || {};
             epgModel = specs.epgModel,
             transport = specs.transport,
             projectName = 'project',
+            preferencesName = 'preferences',
 
             /**
              * Autosave file if true.
              * @type {Boolean}
              */
             autoSaveEnabled = true,
+            
+            init = function() {
+                WH.pubSub.on('save.preferences', savePreferences);
+            },
+            
+            /**
+             * Setup on application start.
+             */
+            setup = function() {
+                loadPreferences();
+                if (!loadProjectFromStorage()) {
+                    createNew();
+                }
+            },
+            
+            /**
+             * Get the stored preferences, if any.
+             */
+            loadPreferences = function() {
+                var data = localStorage.getItem(preferencesName);
+                if (data) {
+                    data = JSON.parse(data);    
+                    WH.pubSub.fire('set.preferences', data);
+                } else {
+                    console.log('No data in LocalStorage with name "' + preferencesName + '".');
+                    return false;
+                }
+                return true;
+            },
             
             /**
              * Create data to setup a new empty project.
@@ -51,7 +81,7 @@ window.WH = window.WH || {};
              * Load project from localStorage.
              * @return {Boolean} True if a project was found in localstorage.
              */
-            loadFromStorage = function() {
+            loadProjectFromStorage = function() {
                 var data = localStorage.getItem(projectName);
                 if (data) {
                     data = JSON.parse(data);    
@@ -59,7 +89,7 @@ window.WH = window.WH || {};
                     epgModel.setData(data.epgmodel);
                     arrangement.setData(data.arrangement);
                 } else {
-                    console.error('No data in LocalStorage with name "' + projectName + '"."');
+                    console.log('No data in LocalStorage with name "' + projectName + '".');
                     return false;
                 }
                 return true;
@@ -85,12 +115,22 @@ window.WH = window.WH || {};
                 }
                 
                 localStorage.setItem(projectName, JSON.stringify(data));
+            },
+            
+            /**
+             * Save application preferences to localStorage.
+             * @param {Object} data Object with preferences data to save.
+             */
+            savePreferences = function(data) {
+                localStorage.setItem(preferencesName, JSON.stringify(data));
             };
         
         that = specs.that;
         
+        init();
+        
+        that.setup = setup;
         that.createNew = createNew;
-        that.loadFromStorage = loadFromStorage;
         that.autoSave = autoSave;
         that.save = save;
         return that;
