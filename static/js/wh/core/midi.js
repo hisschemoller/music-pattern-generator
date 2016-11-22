@@ -56,9 +56,19 @@ window.WH = window.WH || {};
                         duration: duration
                     });
                 }
+            },
+            
+            /**
+             * Set all preferences from a data object.
+             * @param {Object} data Preferences data object.
+             */
+            setPreferences = function(data) {
+                selectOutputByID(data.midiout);
             };
         
         that = specs.that;
+        
+        init();
         
         that.enable = enable;
         that.selectOutputByID = selectOutputByID;
