@@ -78,6 +78,28 @@
             zeroMarker3d: specs.zeroMarker3d || null,
             zeroMarker3d: specs.rotatedMarker3d || null,
             radius3d: specs.radius3d || 1,
+            
+            getData: function() {
+                return {
+                    steps: that.steps,
+                    pulses: that.pulses,
+                    rotation: that.rotation,
+                    euclidPattern: that.euclidPattern,
+                    out: that.out,
+                    rate: that.rate,
+                    isTriplets: that.isTriplets,
+                    noteLength: that.noteLength,
+                    name: that.name,
+                    isMute: that.isMute,
+                    isSolo: that.isSolo,
+                    isNotSolo: that.isNotSolo,
+                    duration: that.duration,
+                    canvasX: that.canvasX,
+                    canvasY: that.canvasY,
+                    canvasWidth: that.canvasWidth,
+                    canvasHeight: that.canvasHeight,
+                }
+            }
         };
         
         return that;

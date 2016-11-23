@@ -96,6 +96,10 @@ window.WH = window.WH || {};
                 WH.pubSub.fire('transport.bpm', bpm);
             },
             
+            getBPM = function() {
+                return bpm;
+            },
+            
             /**
              * Set timestamp of transport start point in ms.
              * @param {Number} origin Timestamp in milliseconds.
@@ -123,6 +127,7 @@ window.WH = window.WH || {};
         setBPM(bpm);
         
         that.setBPM = setBPM;
+        that.getBPM = getBPM;
         that.setAudioContextOffset = setAudioContextOffset;
         return that;
     }

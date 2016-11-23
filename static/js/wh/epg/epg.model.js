@@ -303,7 +303,7 @@ window.WH = window.WH || {};
                 }
             },
 
-            /**§
+            /**
              * Create an pattern data from data object.
              * @param {Object} data Data object.
              */
@@ -325,7 +325,11 @@ window.WH = window.WH || {};
              * Collect all project data and save it in localStorage.
              */
             getData = function() {
-                return patterns;
+                var data = [];
+                for (var i = 0; i < patterns.length; i++) {
+                    data.push(patterns[i].getData());
+                }
+                return data;
             },
             
             /**
