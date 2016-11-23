@@ -15,6 +15,7 @@ window.WH = window.WH || {};
         var that,
             arrangement = specs.arrangement,
             epgModel = specs.epgModel,
+            midi = specs.midi,
             transport = specs.transport,
             projectName = 'project',
             preferencesName = 'preferences',
@@ -26,7 +27,7 @@ window.WH = window.WH || {};
             autoSaveEnabled = true,
             
             init = function() {
-                WH.pubSub.on('save.preferences', savePreferences);
+                window.addEventListener('beforeunload', onBeforeUnload);
             },
             
             /**
@@ -46,12 +47,21 @@ window.WH = window.WH || {};
                 var data = localStorage.getItem(preferencesName);
                 if (data) {
                     data = JSON.parse(data);
-                    WH.pubSub.fire('set.preferences', data);
+                    midi.setData(data.midi);
                 } else {
                     console.log('No data in LocalStorage with name "' + preferencesName + '".');
-                    return false;
                 }
-                return true;
+            },
+            
+            /**
+             * Save application preferences to localStorage.
+             * @param {Object} data Object with preferences data to save.
+             */
+            savePreferences = function() {
+                var data = {
+                    midi: midi.getData()
+                };
+                localStorage.setItem(preferencesName, JSON.stringify(data));
             },
             
             /**
@@ -115,14 +125,14 @@ window.WH = window.WH || {};
                 }
                 
                 localStorage.setItem(projectName, JSON.stringify(data));
-            },
+            }, 
             
             /**
-             * Save application preferences to localStorage.
-             * @param {Object} data Object with preferences data to save.
+             * Save the preferences when the page unloads.
              */
-            savePreferences = function(data) {
-                localStorage.setItem(preferencesName, JSON.stringify(data));
+            onBeforeUnload = function(e) {
+                savePreferences();
+                autoSave();
             };
         
         that = specs.that;

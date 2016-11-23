@@ -12,9 +12,7 @@ window.WH = window.WH || {};
             selectedOutput,
             selectedOutputID,
             
-            init = function() {
-                WH.pubSub.on('set.preferences', setPreferences);
-            },
+            init = function() {},
             
             /**
              * Retrieve access to the MIDI devices.
@@ -62,8 +60,17 @@ window.WH = window.WH || {};
              * Set all preferences from a data object.
              * @param {Object} data Preferences data object.
              */
-            setPreferences = function(data) {
+            setData = function(data) {
                 selectOutputByID(data.midiout);
+            }, 
+            
+            /**
+             * Save the preferences when the page unloads.
+             */
+            getData = function() {
+                return {
+                    'midiout': selectedOutput ? selectedOutput.id : ''
+                };
             };
         
         that = specs.that;
@@ -73,6 +80,8 @@ window.WH = window.WH || {};
         that.enable = enable;
         that.selectOutputByID = selectOutputByID;
         that.playNote = playNote;
+        that.setData = setData;
+        that.getData = getData;
         return that;
     }
 

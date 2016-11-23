@@ -57,6 +57,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         that: file,
         arrangement: arrangement,
         epgModel: epgModel,
+        midi: midi,
         transport: transport
     });
     WH.createMidi({

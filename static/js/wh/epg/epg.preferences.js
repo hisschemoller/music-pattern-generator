@@ -21,20 +21,8 @@ window.WH = window.WH || {};
                 inputs.midiout.select.addEventListener('change', function(e) {
                     midi.selectOutputByID(e.target.value);
                 });
-                window.addEventListener('beforeunload', onBeforeUnload);
                 WH.pubSub.on('midi.outputs', setMidiOutputs);
                 WH.pubSub.on('midi.output', setSelectedMidiOutput);
-            }, 
-            
-            /**
-             * Save the preferences when the page unloads.
-             */
-            onBeforeUnload = function(e) {
-                var midiOutEl = inputs.midiout.select,
-                    data = {
-                        'midiout': midiOutEl.options[midiOutEl.selectedIndex].value
-                    };
-                WH.pubSub.fire('save.preferences', data);
             },
             
             /**
