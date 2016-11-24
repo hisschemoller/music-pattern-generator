@@ -21,11 +21,9 @@
             euclidPattern: [],
             
             // midi settings
-            out: {
-                channel: specs.channel || 10,
-                pitch: specs.pitch || 60,
-                velocity: specs.velocity || 10
-            },
+            outChannel: specs.outChannel || 10,
+            outPitch: specs.outPitch || 60,
+            outVelocity: specs.outVelocity || 10,
             
             // misc settings
             // rate in beats, quarter note multiplier
@@ -62,8 +60,6 @@
             // canvas position and size
             canvasX: specs.canvasX || 0,
             canvasY: specs.canvasY || 0,
-            canvasWidth: 0,
-            canvasHeight: 0,
             
             // 3D object properties
             object3d: specs.object3d || null,
@@ -84,8 +80,9 @@
                     steps: that.steps,
                     pulses: that.pulses,
                     rotation: that.rotation,
-                    euclidPattern: that.euclidPattern,
-                    out: that.out,
+                    outChannel: that.outChannel,
+                    outPitch: that.outPitch,
+                    outVelocity: that.outVelocity,
                     rate: that.rate,
                     isTriplets: that.isTriplets,
                     noteLength: that.noteLength,
@@ -96,8 +93,7 @@
                     duration: that.duration,
                     canvasX: that.canvasX,
                     canvasY: that.canvasY,
-                    canvasWidth: that.canvasWidth,
-                    canvasHeight: that.canvasHeight,
+                    position3d: that.position3d
                 }
             }
         };

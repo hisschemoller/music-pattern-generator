@@ -138,9 +138,9 @@ window.WH.epg = window.WH.epg || {};
                 updateSetting('name', ptrn ? ptrn.name : '');
                 updateSetting('mute', ptrn ? ptrn.isMute : false);
                 updateSetting('solo', ptrn ? ptrn.isSolo : false);
-                updateSetting('channelout', ptrn ? ptrn.out.channel : 10);
-                updateSetting('pitchout', ptrn ? ptrn.out.pitch : 60);
-                updateSetting('velocityout', ptrn ? ptrn.out.velocity : 10);
+                updateSetting('channelout', ptrn ? ptrn.outChannel : 10);
+                updateSetting('pitchout', ptrn ? ptrn.outPitch : 60);
+                updateSetting('velocityout', ptrn ? ptrn.outVelocity : 10);
                 setEnabled(ptrn !== null && ptrn !== undefined);
             },
             

@@ -94,10 +94,10 @@ window.WH = window.WH || {};
             loadProjectFromStorage = function() {
                 var data = localStorage.getItem(projectName);
                 if (data) {
-                    data = JSON.parse(data);    
+                    data = JSON.parse(data);
+                    arrangement.setData(data.arrangement);
                     transport.setBPM(data.bpm);
                     epgModel.setData(data.epgmodel);
-                    arrangement.setData(data.arrangement);
                 } else {
                     console.log('No data in LocalStorage with name "' + projectName + '".');
                     return false;

@@ -101,31 +101,32 @@ window.WH = window.WH || {};
             /**
              * Create a pattern and add it to the list.
              * @param {object} specs Optional properties for the pattern.
+             * @param {Boolean} isRestore True if the pattern is created during restore or loading project.
              * @return {object} The pattern data object that was just created.
              */
-            createPattern = function(specs) {
+            createPattern = function(specs, isRestore) {
                 var patternData, euclidPattern, arrangementSteps;
                 
                 specs = specs || {};
-                specs.channel = patterns.length;
+                specs.outChannel = specs.outChannel || patterns.length;
                 
                 // check if there's a soloed pattern
-                if (patterns.length && (patterns[0].isSolo || patterns[0].isNotSolo)) {
-                    specs.isNotSolo = true;
+                if (!isRestore) {
+                    if (patterns.length && (patterns[0].isSolo || patterns[0].isNotSolo)) {
+                        specs.isNotSolo = true;
+                    }
                 }
                 
+                // create the new pattern's data object
                 patternData = WH.createEPGPatternData(specs);
                 patterns.push(patternData);
                 numPatterns = patterns.length;
                 
                 arrangement.createTrack();
                 updatePattern(patternData);
+                epgCanvas.createPattern3D(patternData);
                 
                 return patternData;
-                
-                // selectPattern will also redraw the canvas
-                // selectPattern(patternData);
-                // file.autoSave();
             },
             
             /**
@@ -152,7 +153,6 @@ window.WH = window.WH || {};
                 ptrnIndex = patterns.indexOf(ptrn);
                 arrangementSteps = createArrangementSteps(euclidPattern, stepDuration, noteDuration);
                 arrangement.updateTrack(ptrnIndex, arrangementSteps, ptrn.duration);
-                // file.autoSave();
             },
             
             /**
@@ -312,12 +312,18 @@ window.WH = window.WH || {};
                     return;
                 }
                 
-                patterns = data;
+                // create patterns
+                patterns.length = 0;
+                for (var i = 0; i < data.length; i++) {
+                    var ptrn = createPattern(data[i], true);
+                    patterns.push(ptrn);
+                }
                 numPatterns = patterns.length;
+                
+                // restore selected pattern
                 selectedPattern = patterns.filter(function(ptrn){
                     return ptrn.isSelected;
                 })[0];
-                
                 epgSettings.setPattern(selectedPattern);
             },
 
@@ -383,7 +389,7 @@ window.WH = window.WH || {};
                         // ... and then the new note On
                         start = step.getStartMidi();
                         duration = step.getDurationMidi();
-                        midi.playNote(ptrn.out.pitch, ptrn.out.velocity, ptrn.out.channel, start, duration);
+                        midi.playNote(ptrn.outPitch, ptrn.outVelocity, ptrn.outChannel, start, duration);
                     }
                 }
             };

@@ -223,16 +223,14 @@ window.WH = window.WH || {};
              * Create a new wheel mesh in the 3D world and  
              * tell the epgModel to create a pattern.
              * @param {object} ptrn Pattern data object.
-             * @param {object} scene 3D scene.
              * @return {object} 3D pattern object created.
              */
-            createPattern3D = function(ptrn, scene) {
+            createPatternWheel = function(ptrn) {
                 var centreScale, selectScale, object3d, i, n, dot, position;
                 
                 // create the wheel 3D object
                 object3d = wheel.clone();
                 object3d.position.copy(ptrn.position3d);
-                scene.add(object3d);
                 
                 // fill properties of the pattern data.
                 ptrn.object3d = object3d;
@@ -348,6 +346,7 @@ window.WH = window.WH || {};
                         polygonPoints.push(dot.position.clone());
                     }
                 }
+                
                 polygonPoints.push(polygonPoints[0].clone());
                 
                 updatePolygon(patternData, polygonPoints);
@@ -440,7 +439,7 @@ window.WH = window.WH || {};
         
         init();
         
-        that.createPattern3D = createPattern3D;
+        that.createPatternWheel = createPatternWheel;
         that.createControls = createControls;
         that.updateDots = updateDots;
         that.updatePointer = updatePointer;

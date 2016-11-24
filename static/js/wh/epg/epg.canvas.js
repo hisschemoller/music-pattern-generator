@@ -124,9 +124,6 @@ window.WH = window.WH || {};
                         position3d: intersection
                     });
                     epgModel.selectPattern(ptrn);
-                    var object3d = worldObjects.createPattern3D(ptrn, scene);
-                    objects.push(object3d);
-                    isDirty = true;
                 }
             },
             
@@ -219,6 +216,16 @@ window.WH = window.WH || {};
                 plane.setFromNormalAndCoplanarPoint(
                     camera.getWorldDirection(plane.normal), 
                     new THREE.Vector3(0,0,0));
+            },
+            
+            /**
+             * Create a 3D object with the provided data.
+             * @param {object} ptrn Pattern data object.
+             */
+            createPattern3D = function(ptrn) {
+                var object3d = worldObjects.createPatternWheel(ptrn);
+                objects.push(object3d);
+                scene.add(object3d);
             },
             
             /**
@@ -354,6 +361,7 @@ window.WH = window.WH || {};
         that = specs.that;
         
         that.setup = setup;
+        that.createPattern3D = createPattern3D;
         that.deletePattern3D = deletePattern3D;
         that.updatePattern3D = updatePattern3D;
         that.draw = draw;
