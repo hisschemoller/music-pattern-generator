@@ -14,6 +14,10 @@ window.WH = window.WH || {};
                 midiout: {
                     type: 'select',
                     select: document.getElementById('outputs-select')
+                },
+                midiin: {
+                    type: 'select',
+                    select: document.getElementById('inputs-select')
                 }
             },
             
@@ -21,23 +25,26 @@ window.WH = window.WH || {};
                 inputs.midiout.select.addEventListener('change', function(e) {
                     midi.selectOutputByID(e.target.value);
                 });
-                WH.pubSub.on('midi.outputs', setMidiOutputs);
+                inputs.midiin.select.addEventListener('change', function(e) {
+                    midi.selectInputByID(e.target.value);
+                });
                 WH.pubSub.on('midi.output', setSelectedMidiOutput);
             },
             
             /**
-             * Set the MIDI outputs.
-             * @param {Array} outputs WebMidi.outputs
+             * Populate the MIDI inputs dropdown.
+             * @param {Array} midiPorts WebMidi.inputs or WebMidi.outputs
+             * @param {Boolean} isInputs True if inputs, else outputs.
              */
-            setMidiOutputs = function(outputs) {
-                var output, optionEl, 
-                    selectEl = inputs.midiout.select,
-                    n = outputs.length;
+            setMidiPorts = function(midiPorts, isInputs) {
+                var port, optionEl, 
+                    selectEl = isInputs ? inputs.midiin.select : inputs.midiout.select,
+                    n = midiPorts.length;
                 for (var i = 0; i < n; i++) {
-                    output = outputs[i];
+                    port = midiPorts[i];
                     optionEl = document.createElement('option');
-                    optionEl.text = output.name;
-                    optionEl.value = output.id;
+                    optionEl.text = port.name;
+                    optionEl.value = port.id;
                     selectEl.add(optionEl);
                 }
             },
@@ -53,7 +60,8 @@ window.WH = window.WH || {};
         that = specs.that;
         
         init();
-    
+        
+        that.setMidiPorts = setMidiPorts;
         return that;
     }
 

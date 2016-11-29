@@ -9,6 +9,7 @@ window.WH = window.WH || {};
     
     function createMidi(specs) {
         var that,
+            epgPreferences = specs.epgPreferences,
             selectedOutput,
             selectedOutputID,
             
@@ -23,8 +24,8 @@ window.WH = window.WH || {};
                         console.log('WebMidi could not be enabled.', err);
                     } else {
                         console.log('WebMidi enabled');
-                        WH.pubSub.fire('midi.inputs', WebMidi.inputs);
-                        WH.pubSub.fire('midi.outputs', WebMidi.outputs);
+                        epgPreferences.setMidiPorts(WebMidi.inputs, true);
+                        epgPreferences.setMidiPorts(WebMidi.outputs, false);
                         if (typeof selectedOutputID === 'string') {
                             selectOutputByID(selectedOutputID);
                         }
