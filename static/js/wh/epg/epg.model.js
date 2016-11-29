@@ -104,21 +104,17 @@ window.WH = window.WH || {};
              * @param {Boolean} isRestore True if the pattern is created during restore or loading project.
              * @return {object} The pattern data object that was just created.
              */
-            createPattern = function(specs, isRestore) {
-                var patternData, euclidPattern, arrangementSteps;
-                
+            createPattern = function(specs) {
                 specs = specs || {};
                 specs.outChannel = specs.outChannel || patterns.length;
                 
                 // check if there's a soloed pattern
-                if (!isRestore) {
-                    if (patterns.length && (patterns[0].isSolo || patterns[0].isNotSolo)) {
-                        specs.isNotSolo = true;
-                    }
+                if (patterns.length && (patterns[0].isSolo || patterns[0].isNotSolo)) {
+                    specs.isNotSolo = true;
                 }
                 
                 // create the new pattern's data object
-                patternData = WH.createEPGPatternData(specs);
+                var patternData = WH.createEPGPatternData(specs);
                 patterns.push(patternData);
                 numPatterns = patterns.length;
                 
@@ -134,24 +130,22 @@ window.WH = window.WH || {};
              * @param {Object} ptrn Pattern data object.
              */
             updatePattern = function(ptrn) {
-                var ptrnIndex, elementsToShift, arrangementSteps, stepDuration, 
-                    rate, noteDuration,
-                    euclidPattern = createBjorklund(ptrn.steps, ptrn.pulses);
+                var euclidPattern = createBjorklund(ptrn.steps, ptrn.pulses);
                 
                 // rotation
-                elementsToShift = euclidPattern.splice(ptrn.rotation),
+                var elementsToShift = euclidPattern.splice(ptrn.rotation),
                 euclidPattern = elementsToShift.concat(euclidPattern);
                 
-                rate = ptrn.isTriplets ? ptrn.rate * (2 / 3) : ptrn.rate;
-                stepDuration = rate * WH.conf.getPPQN();
-                noteDuration = ptrn.noteLength * WH.conf.getPPQN();
+                var rate = ptrn.isTriplets ? ptrn.rate * (2 / 3) : ptrn.rate;
+                var stepDuration = rate * WH.conf.getPPQN();
+                var noteDuration = ptrn.noteLength * WH.conf.getPPQN();
                 ptrn.euclidPattern = euclidPattern;
                 ptrn.duration = ptrn.steps * stepDuration;
                 ptrn.position = ptrn.position % ptrn.duration;
                 
                 // create arrangement steps from euclidean pattern
-                ptrnIndex = patterns.indexOf(ptrn);
-                arrangementSteps = createArrangementSteps(euclidPattern, stepDuration, noteDuration);
+                var ptrnIndex = patterns.indexOf(ptrn);
+                var arrangementSteps = createArrangementSteps(euclidPattern, stepDuration, noteDuration);
                 arrangement.updateTrack(ptrnIndex, arrangementSteps, ptrn.duration);
             },
             
@@ -315,8 +309,10 @@ window.WH = window.WH || {};
                 // create patterns
                 patterns.length = 0;
                 for (var i = 0; i < data.length; i++) {
-                    var ptrn = createPattern(data[i], true);
-                    patterns.push(ptrn);
+                    // var ptrn = createPattern(data[i], true);
+                    var patternData = WH.createEPGPatternData(data[i]);
+                    epgCanvas.createPattern3D(patternData);
+                    patterns.push(patternData);
                 }
                 numPatterns = patterns.length;
                 

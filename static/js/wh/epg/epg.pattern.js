@@ -18,7 +18,7 @@
             steps: specs.steps || 16,
             pulses: specs.pulses || 4,
             rotation: specs.rotation || 0,
-            euclidPattern: [],
+            euclidPattern: specs.euclidPattern || [],
             
             // midi settings
             outChannel: specs.outChannel || 10,
@@ -29,12 +29,12 @@
             // rate in beats, quarter note multiplier
             rate: specs.rate || 0.25,
             // convert to triplets by multiplying rate with 2/3
-            isTriplets: false,
+            isTriplets: specs.isTriplets || false,
             // note length in beats, quarter note multiplier
             noteLength: specs.noteLength || 0.25,
             name: specs.name || '',
-            isMute: false,
-            isSolo: false,
+            isMute: specs.isMute || false,
+            isSolo: specs.isSolo || false,
             isNotSolo: specs.isNotSolo || false,
             
             // position and duration in ticks
@@ -80,6 +80,7 @@
                     steps: that.steps,
                     pulses: that.pulses,
                     rotation: that.rotation,
+                    euclidPattern: that.euclidPattern,
                     outChannel: that.outChannel,
                     outPitch: that.outPitch,
                     outVelocity: that.outVelocity,
