@@ -18,6 +18,10 @@ window.WH = window.WH || {};
                 midiin: {
                     type: 'select',
                     select: document.getElementById('inputs-select')
+                },
+                clockin: {
+                    type: 'checkbox',
+                    input: document.getElementById('clockin-check')
                 }
             },
             
@@ -27,6 +31,9 @@ window.WH = window.WH || {};
                 });
                 inputs.midiin.select.addEventListener('change', function(e) {
                     midi.selectInputByID(e.target.value);
+                });
+                inputs.clockin.input.addEventListener('change', function(e) {
+                    midi.setClockInEnabled(e.target.checked);
                 });
             },
             

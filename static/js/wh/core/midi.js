@@ -14,6 +14,7 @@ window.WH = window.WH || {};
             selectedInputID,
             selectedOutput,
             selectedOutputID,
+            isClockInEnabled,
             
             init = function() {},
             
@@ -62,6 +63,14 @@ window.WH = window.WH || {};
                 }
             },
             
+            /**
+             * Toggle between internal clock and external MIDI clock sync.
+             * @param {Boolean} isEnabled Sync to MIDI clock when true.
+             */
+            setClockInEnabled = function(isEnabled) {
+                isClockInEnabled = isEnabled;
+            },
+            
             playNote = function(pitch, velocity, channelIndex, startTimeStamp, duration) {
                 if (selectedOutput) {
                     // selectedOutput.clear();
@@ -100,6 +109,7 @@ window.WH = window.WH || {};
         that.enable = enable;
         that.selectInputByID = selectInputByID;
         that.selectOutputByID = selectOutputByID;
+        that.setClockInEnabled = setClockInEnabled;
         that.playNote = playNote;
         that.setData = setData;
         that.getData = getData;
