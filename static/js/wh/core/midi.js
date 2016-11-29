@@ -46,7 +46,7 @@ window.WH = window.WH || {};
                 selectedInputID = id;
                 if (WebMidi.enabled) {
                     selectedInput = WebMidi.getInputById(selectedInputID);
-                    epgPreferences.setSelectedMidiPort(selectedOutputID, false);
+                    epgPreferences.setSelectedMidiPort(selectedInputID, true);
                 }
             },
             
@@ -79,6 +79,7 @@ window.WH = window.WH || {};
              * @param {Object} data Preferences data object.
              */
             setData = function(data) {
+                selectInputByID(data.midiin);
                 selectOutputByID(data.midiout);
             }, 
             
@@ -87,6 +88,7 @@ window.WH = window.WH || {};
              */
             getData = function() {
                 return {
+                    'midiin': selectedInput ? selectedInput.id : '',
                     'midiout': selectedOutput ? selectedOutput.id : ''
                 };
             };
