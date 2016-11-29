@@ -28,7 +28,6 @@ window.WH = window.WH || {};
                 inputs.midiin.select.addEventListener('change', function(e) {
                     midi.selectInputByID(e.target.value);
                 });
-                WH.pubSub.on('midi.output', setSelectedMidiOutput);
             },
             
             /**
@@ -52,9 +51,11 @@ window.WH = window.WH || {};
             /**
              * Show the selected output in the dropdown.
              * @param {String} output WebMidi output ID.
+             * @param {Boolean} isInput True if input, else output.
              */
-            setSelectedMidiOutput = function(id) {
-                inputs.midiout.select.value = id;
+            setSelectedMidiPort = function(id, isInput) {
+                var selectEl = isInput ? inputs.midiin.select : inputs.midiout.select;
+                selectEl.value = id;
             };
         
         that = specs.that;
@@ -62,6 +63,7 @@ window.WH = window.WH || {};
         init();
         
         that.setMidiPorts = setMidiPorts;
+        that.setSelectedMidiPort = setSelectedMidiPort;
         return that;
     }
 

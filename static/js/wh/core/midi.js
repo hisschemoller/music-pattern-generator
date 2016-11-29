@@ -10,6 +10,8 @@ window.WH = window.WH || {};
     function createMidi(specs) {
         var that,
             epgPreferences = specs.epgPreferences,
+            selectedInput,
+            selectedInputID,
             selectedOutput,
             selectedOutputID,
             
@@ -26,11 +28,26 @@ window.WH = window.WH || {};
                         console.log('WebMidi enabled');
                         epgPreferences.setMidiPorts(WebMidi.inputs, true);
                         epgPreferences.setMidiPorts(WebMidi.outputs, false);
+                        if (typeof selectedInputID === 'string') {
+                            selectInputByID(selectedInputID);
+                        }
                         if (typeof selectedOutputID === 'string') {
                             selectOutputByID(selectedOutputID);
                         }
                     }
                 });
+            },
+            
+            /**
+             * Select an input.
+             * @param {String} id ID of the input.
+             */
+            selectInputByID = function(id) {
+                selectedInputID = id;
+                if (WebMidi.enabled) {
+                    selectedInput = WebMidi.getInputById(selectedInputID);
+                    epgPreferences.setSelectedMidiPort(selectedOutputID, false);
+                }
             },
             
             /**
@@ -41,7 +58,7 @@ window.WH = window.WH || {};
                 selectedOutputID = id;
                 if (WebMidi.enabled) {
                     selectedOutput = WebMidi.getOutputById(selectedOutputID);
-                    WH.pubSub.fire('midi.output', selectedOutputID);
+                    epgPreferences.setSelectedMidiPort(selectedOutputID, false);
                 }
             },
             
@@ -79,6 +96,7 @@ window.WH = window.WH || {};
         init();
         
         that.enable = enable;
+        that.selectInputByID = selectInputByID;
         that.selectOutputByID = selectOutputByID;
         that.playNote = playNote;
         that.setData = setData;
