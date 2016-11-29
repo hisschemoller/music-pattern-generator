@@ -48,12 +48,22 @@
                             break;
                     }
                 })
+            },
+            
+            /**
+             * Toggle controls disabled state. When external clock sync is used.
+             * @param {Boolean} isEnabled Disable controls when false.
+             */
+            setControlsEnabled = function(isEnabled) {
+                controls.play.input.disabled = !isEnabled;
+                controls.bpm.input.disabled = !isEnabled;
             };
         
-        that = {};
+        that = specs.that;
         
         init();
         
+        that.setControlsEnabled = setControlsEnabled;
         return that;
     }
 

@@ -9,6 +9,7 @@ window.WH = window.WH || {};
     
     function createMidi(specs) {
         var that,
+            epgControls = specs.epgControls,
             epgPreferences = specs.epgPreferences,
             selectedInput,
             selectedInputID,
@@ -69,6 +70,7 @@ window.WH = window.WH || {};
              */
             setClockInEnabled = function(isEnabled) {
                 isClockInEnabled = isEnabled;
+                epgControls.setControlsEnabled(!isClockInEnabled);
             },
             
             playNote = function(pitch, velocity, channelIndex, startTimeStamp, duration) {
