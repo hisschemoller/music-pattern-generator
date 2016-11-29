@@ -121,7 +121,7 @@ window.WH = window.WH || {};
                     var ptrn = epgModel.createPattern({
                         canvasX: e.clientX - canvasRect.left,
                         canvasY: e.clientY - canvasRect.top,
-                        position3d: intersection
+                        position3d: intersection.clone()
                     });
                     epgModel.selectPattern(ptrn);
                 }
