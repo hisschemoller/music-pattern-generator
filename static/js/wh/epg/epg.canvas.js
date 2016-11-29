@@ -220,10 +220,11 @@ window.WH = window.WH || {};
             
             /**
              * Create a 3D object with the provided data.
-             * @param {object} ptrn Pattern data object.
+             * @param {Object} ptrn Pattern data object.
+             * @param {Boolean} isNew True if this is newly added, no restore.
              */
-            createPattern3D = function(ptrn) {
-                var object3d = worldObjects.createPatternWheel(ptrn);
+            createPattern3D = function(ptrn, isNew) {
+                var object3d = worldObjects.createPatternWheel(ptrn, isNew);
                 objects.push(object3d);
                 scene.add(object3d);
             },

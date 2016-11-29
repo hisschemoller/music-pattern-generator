@@ -223,9 +223,10 @@ window.WH = window.WH || {};
              * Create a new wheel mesh in the 3D world and  
              * tell the epgModel to create a pattern.
              * @param {object} ptrn Pattern data object.
+             * @param {Boolean} isNew True if this is newly added, no restore.
              * @return {object} 3D pattern object created.
              */
-            createPatternWheel = function(ptrn) {
+            createPatternWheel = function(ptrn, isNew) {
                 var centreScale, selectScale, object3d, i, n, dot, position;
                 
                 // create the wheel 3D object
@@ -247,23 +248,25 @@ window.WH = window.WH || {};
                 // set the dots around the wheel
                 updateDots(ptrn);
                 
-                // create the startup animation
-                new TWEEN.Tween({scale: 0.01})
-                    .to({scale: 1.0}, 400)
-                    .onUpdate(function() {
-                            centreScale = this.scale * 0.3;
-                            selectScale = this.scale * 0.2;
-                            ptrn.centreCircle3d.scale.set(centreScale, centreScale, 1);
-                            ptrn.pointer3d.scale.set(this.scale, this.scale, 1);
-                            ptrn.select3d.scale.set(selectScale, selectScale, 1);
-                        })
-                    .start();
-                
-                // and the startup animation for the dots
-                n = ptrn.dots3d.children.length;
-                for (i = 0; i < n; i++) {
-                    dot = ptrn.dots3d.children[i];
-                    startupAnimateDot(dot, i * 20);
+                if (isNew) {
+                    // create the startup animation
+                    new TWEEN.Tween({scale: 0.01})
+                        .to({scale: 1.0}, 400)
+                        .onUpdate(function() {
+                                centreScale = this.scale * 0.3;
+                                selectScale = this.scale * 0.2;
+                                ptrn.centreCircle3d.scale.set(centreScale, centreScale, 1);
+                                ptrn.pointer3d.scale.set(this.scale, this.scale, 1);
+                                ptrn.select3d.scale.set(selectScale, selectScale, 1);
+                            })
+                        .start();
+                    
+                    // and the startup animation for the dots
+                    n = ptrn.dots3d.children.length;
+                    for (i = 0; i < n; i++) {
+                        dot = ptrn.dots3d.children[i];
+                        startupAnimateDot(dot, i * 20);
+                    }
                 }
                 
                 return object3d;

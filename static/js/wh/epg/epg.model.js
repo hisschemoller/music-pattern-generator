@@ -120,7 +120,7 @@ window.WH = window.WH || {};
                 
                 arrangement.createTrack();
                 updatePattern(patternData);
-                epgCanvas.createPattern3D(patternData);
+                epgCanvas.createPattern3D(patternData, true);
                 
                 return patternData;
             },
