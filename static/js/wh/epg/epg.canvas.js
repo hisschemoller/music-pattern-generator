@@ -22,7 +22,7 @@ window.WH = window.WH || {};
             dragObject,
             controls,
             intersected,
-            isTouchDevice = 'ontouchstart' in document.documentElement,
+            isTouchDevice = 'ontouchstart' in window || window.DocumentTouch && document instanceof DocumentTouch,
             isDirty = false,
             doubleClickCounter = 0,
             doubleClickDelay = 300,
