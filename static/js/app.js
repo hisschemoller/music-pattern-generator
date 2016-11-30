@@ -63,7 +63,8 @@ document.addEventListener('DOMContentLoaded', function(e) {
     WH.createMidi({
         that: midi,
         epgControls: epgControls,
-        epgPreferences: epgPreferences
+        epgPreferences: epgPreferences,
+        transport: transport
     });
     WH.createTransport({
         that: transport,

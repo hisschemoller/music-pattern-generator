@@ -11,6 +11,7 @@ window.WH = window.WH || {};
         var that,
             epgControls = specs.epgControls,
             epgPreferences = specs.epgPreferences,
+            transport = specs.transport,
             selectedInput,
             selectedInputID,
             selectedOutput,
@@ -49,6 +50,9 @@ window.WH = window.WH || {};
                 if (WebMidi.enabled) {
                     selectedInput = WebMidi.getInputById(selectedInputID);
                     epgPreferences.setSelectedMidiPort(selectedInputID, true);
+                    if (isClockInEnabled && selectedInput) {
+                        transport.setExternalClockEnabled(isClockInEnabled, selectedInput);
+                    }
                 }
             },
             
@@ -72,6 +76,9 @@ window.WH = window.WH || {};
                 isClockInEnabled = isEnabled;
                 epgControls.setControlsEnabled(!isClockInEnabled);
                 epgPreferences.setMidiClockInEnabled(isClockInEnabled);
+                if (selectedInput) {
+                    transport.setExternalClockEnabled(isEnabled, selectedInput);
+                }
             },
             
             playNote = function(pitch, velocity, channelIndex, startTimeStamp, duration) {

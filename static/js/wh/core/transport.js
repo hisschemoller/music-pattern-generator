@@ -133,6 +133,88 @@ window.WH = window.WH || {};
     }
     
     /**
+     * Functionality to add synchronisation to external MIDI clock.
+     * MIDI clock sends clock events at 24 ppqn.
+     * @see https://en.wikipedia.org/wiki/MIDI_beat_clock
+     * 
+     * The MIDI 'start' and 'stop' events just start and stop the transport.
+     * The MIDI 'clock' event adjusts the BPM tempo.
+     * 
+     * BPM is calculated with the time difference between clock event timestamps.
+     */
+    function createExternalClock (specs, my) {
+        var that,
+            isEnabled = false,
+            midiInput,
+            prevBPM = 0,
+            prevTimestamp = 0,
+            updateTimeout,
+            
+            /**
+             * Enable synchronisation to external MIDI clock.
+             */
+            setExternalClockEnabled = function(isEnabled, midiInputPort) {
+                if (isEnabled) {
+                    midiInput = midiInputPort;
+                    midiInput.addListener('start', 1, onStart);
+                    midiInput.addListener('stop', 1, onStop);
+                    midiInput.addListener('clock', 1, onClock);
+                } else {
+                    if (midiInput) {
+                        midiInput.removeListener('start', onStart);
+                        midiInput.removeListener('stop', onStop);
+                        midiInput.removeListener('clock', onClock);
+                    }
+                    midiInput = null;
+                }
+            },
+            
+            onStart = function(e) {
+                that.start();
+            },
+            
+            onStop = function(e) {
+                that.pause();
+                that.rewind();
+            },
+            
+            /**
+             * Convert events at 24 ppqn to BPM, suppress jitter from unstable clocks.
+             * @param {Object} e Event from WebMIDI.js.
+             */
+            onClock = function(e) {
+                if (prevTimestamp > 0) {
+                    var newBPM = 60000 / ((e.timestamp - prevTimestamp) * 24);
+                    var bpm = prevBPM ? ((prevBPM * 23) + newBPM) / 24 : newBPM;
+                    prevBPM = bpm;
+                    bpm = bpm.toFixed(1);
+                    if (bpm != that.getBPM()) {
+                        updateTempo(bpm);
+                    }
+                }
+                prevTimestamp = e.timestamp;
+            },
+            
+            /**
+             * Update tempo no more than once every 500ms.
+             * @param {Number} bpm The new changed BPM.
+             */
+            updateTempo = function(bpm) {
+                if (!updateTimeout) {
+                    that.setBPM(bpm);
+                    updateTimeout = setTimeout(function() {
+                        updateTimeout = 0;
+                    }, 500);
+                }
+            };
+        
+        that = specs.that || {};
+        
+        that.setExternalClockEnabled = setExternalClockEnabled;
+        return that;
+    }
+    
+    /**
      * @description Creates transport timing functionality.
      * Time is always measured in milliseconds since document load.
      * The timer can be started, stopped, rewound to zero and looped.
@@ -276,6 +358,7 @@ window.WH = window.WH || {};
         my.setLoopByFactor = setLoopByFactor;
         
         that = createSequencer(specs, my);
+        that = createExternalClock(specs, my);
         
         that.start = start;
         that.pause = pause;
