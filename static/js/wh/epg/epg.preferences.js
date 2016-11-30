@@ -63,6 +63,14 @@ window.WH = window.WH || {};
             setSelectedMidiPort = function(id, isInput) {
                 var selectEl = isInput ? inputs.midiin.select : inputs.midiout.select;
                 selectEl.value = id;
+            },
+            
+            /**
+             * Show if external MIDI clock sync is selected.
+             * @param {Boolean} isEnabled True if external clock is selected.
+             */
+            setMidiClockInEnabled = function(isEnabled) {
+                inputs.clockin.input.checked = isEnabled;
             };
         
         that = specs.that;
@@ -71,6 +79,7 @@ window.WH = window.WH || {};
         
         that.setMidiPorts = setMidiPorts;
         that.setSelectedMidiPort = setSelectedMidiPort;
+        that.setMidiClockInEnabled = setMidiClockInEnabled;
         return that;
     }
 

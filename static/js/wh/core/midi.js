@@ -71,6 +71,7 @@ window.WH = window.WH || {};
             setClockInEnabled = function(isEnabled) {
                 isClockInEnabled = isEnabled;
                 epgControls.setControlsEnabled(!isClockInEnabled);
+                epgPreferences.setMidiClockInEnabled(isClockInEnabled);
             },
             
             playNote = function(pitch, velocity, channelIndex, startTimeStamp, duration) {
@@ -92,6 +93,7 @@ window.WH = window.WH || {};
             setData = function(data) {
                 selectInputByID(data.midiin);
                 selectOutputByID(data.midiout);
+                setClockInEnabled(data.clockin);
             }, 
             
             /**
@@ -100,7 +102,8 @@ window.WH = window.WH || {};
             getData = function() {
                 return {
                     'midiin': selectedInput ? selectedInput.id : '',
-                    'midiout': selectedOutput ? selectedOutput.id : ''
+                    'midiout': selectedOutput ? selectedOutput.id : '',
+                    'clockin': isClockInEnabled
                 };
             };
         
