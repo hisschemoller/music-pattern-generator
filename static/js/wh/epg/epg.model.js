@@ -268,6 +268,8 @@ window.WH = window.WH || {};
                     case 'channelout':
                     case 'pitchout':
                     case 'velocityout':
+                    case 'channelin':
+                    case 'pitchin':
                         selectedPattern[name] = value;
                         epgSettings.updateSetting(name, value);
                         break;

@@ -24,6 +24,8 @@
             outChannel: specs.outChannel || 10,
             outPitch: specs.outPitch || 60,
             outVelocity: specs.outVelocity || 10,
+            inChannel: specs.inChannel || 1,
+            inPitch: specs.inPitch || 60,
             
             // misc settings
             // rate in beats, quarter note multiplier
@@ -84,6 +86,8 @@
                     outChannel: that.outChannel,
                     outPitch: that.outPitch,
                     outVelocity: that.outVelocity,
+                    inChannel: that.outChannel,
+                    inPitch: that.outPitch,
                     rate: that.rate,
                     isTriplets: that.isTriplets,
                     noteLength: that.noteLength,

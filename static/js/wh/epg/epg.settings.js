@@ -70,6 +70,16 @@ window.WH.epg = window.WH.epg || {};
                     range: document.getElementById('velocity-out-range'),
                     number: document.getElementById('velocity-out-number')
                 },
+                channelin: {
+                    type: 'slider',
+                    range: document.getElementById('channel-in-range'),
+                    number: document.getElementById('channel-in-number')
+                },
+                pitchin: {
+                    type: 'slider',
+                    range: document.getElementById('pitch-in-range'),
+                    number: document.getElementById('pitch-in-number')
+                },
                 delete: {
                     type: 'button',
                     input: document.getElementById('delete-button')
@@ -83,6 +93,8 @@ window.WH.epg = window.WH.epg || {};
                 initRangeSetting('channelout');
                 initRangeSetting('pitchout');
                 initRangeSetting('velocityout');
+                initRangeSetting('channelin');
+                initRangeSetting('pitchin');
                 settings.name.input.dataset.prop = 'name';
                 settings.name.input.addEventListener('change', onChange);
                 settings.mute.input.addEventListener('change', function(e) {
@@ -138,9 +150,11 @@ window.WH.epg = window.WH.epg || {};
                 updateSetting('name', ptrn ? ptrn.name : '');
                 updateSetting('mute', ptrn ? ptrn.isMute : false);
                 updateSetting('solo', ptrn ? ptrn.isSolo : false);
-                updateSetting('channelout', ptrn ? ptrn.outChannel : 10);
-                updateSetting('pitchout', ptrn ? ptrn.outPitch : 60);
-                updateSetting('velocityout', ptrn ? ptrn.outVelocity : 10);
+                updateSetting('channelout', ptrn ? ptrn.outChannel : '');
+                updateSetting('pitchout', ptrn ? ptrn.outPitch : '');
+                updateSetting('velocityout', ptrn ? ptrn.outVelocity : '');
+                updateSetting('channelin', ptrn ? ptrn.outChannel : '');
+                updateSetting('pitchin', ptrn ? ptrn.outPitch : '');
                 setEnabled(ptrn !== null && ptrn !== undefined);
             },
             
