@@ -22,6 +22,10 @@ window.WH = window.WH || {};
                 clockin: {
                     type: 'checkbox',
                     input: document.getElementById('clockin-check')
+                },
+                notein: {
+                    type: 'checkbox',
+                    input: document.getElementById('notein-check')
                 }
             },
             
@@ -34,6 +38,9 @@ window.WH = window.WH || {};
                 });
                 inputs.clockin.input.addEventListener('change', function(e) {
                     midi.setClockInEnabled(e.target.checked);
+                });
+                inputs.notein.input.addEventListener('change', function(e) {
+                    midi.setNoteInEnabled(e.target.checked);
                 });
             },
             
@@ -71,6 +78,14 @@ window.WH = window.WH || {};
              */
             setMidiClockInEnabled = function(isEnabled) {
                 inputs.clockin.input.checked = isEnabled;
+            },
+            
+            /**
+             * Show if pattern control by MIDI note is selected.
+             * @param {Boolean} isEnabled True if pattern control is selected.
+             */
+            setMidiNoteInEnabled = function(isEnabled) {
+                inputs.notein.input.checked = isEnabled;
             };
         
         that = specs.that;
@@ -80,6 +95,7 @@ window.WH = window.WH || {};
         that.setMidiPorts = setMidiPorts;
         that.setSelectedMidiPort = setSelectedMidiPort;
         that.setMidiClockInEnabled = setMidiClockInEnabled;
+        that.setMidiNoteInEnabled = setMidiNoteInEnabled;
         return that;
     }
 

@@ -17,6 +17,7 @@ window.WH = window.WH || {};
             selectedOutput,
             selectedOutputID,
             isClockInEnabled,
+            isNoteInEnabled,
             
             init = function() {},
             
@@ -81,6 +82,18 @@ window.WH = window.WH || {};
                 }
             },
             
+            /**
+             * Enable pattern play control by MIDI note on and off.
+             * @param {Boolean} isEnabled Pattern play control enabled when true.
+             */
+            setNoteInEnabled = function(isEnabled) {
+                isNoteInEnabled = isEnabled;
+                epgPreferences.setMidiNoteInEnabled(isNoteInEnabled);
+                if (selectedInput) {
+                    
+                }
+            },
+            
             playNote = function(pitch, velocity, channelIndex, startTimeStamp, duration) {
                 if (selectedOutput) {
                     // selectedOutput.clear();
@@ -101,6 +114,7 @@ window.WH = window.WH || {};
                 selectInputByID(data.midiin);
                 selectOutputByID(data.midiout);
                 setClockInEnabled(data.clockin);
+                setNoteInEnabled(data.notein);
             }, 
             
             /**
@@ -110,7 +124,8 @@ window.WH = window.WH || {};
                 return {
                     'midiin': selectedInput ? selectedInput.id : '',
                     'midiout': selectedOutput ? selectedOutput.id : '',
-                    'clockin': isClockInEnabled
+                    'clockin': isClockInEnabled,
+                    'notein': isNoteInEnabled
                 };
             };
         
@@ -122,6 +137,7 @@ window.WH = window.WH || {};
         that.selectInputByID = selectInputByID;
         that.selectOutputByID = selectOutputByID;
         that.setClockInEnabled = setClockInEnabled;
+        that.setNoteInEnabled = setNoteInEnabled;
         that.playNote = playNote;
         that.setData = setData;
         that.getData = getData;
