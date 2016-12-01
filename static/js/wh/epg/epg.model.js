@@ -154,10 +154,9 @@ window.WH = window.WH || {};
              * @param {Object} ptrn Pattern data object.
              */
             selectPattern = function(ptrn) {
-                var i,
-                    index = patterns.indexOf(ptrn);
+                var index = patterns.indexOf(ptrn);
                 
-                for (i = 0; i < numPatterns; i++) {
+                for (var i = 0; i < numPatterns; i++) {
                     patterns[i].isSelected = (i === index);
                 }
                 
@@ -187,8 +186,9 @@ window.WH = window.WH || {};
                 patterns.splice(index, 1);
                 numPatterns = patterns.length;
                 
-                // unselect pattern
-                selectPattern(null);
+                // select previous pattern in array
+                var newIndex = index > 0 ? index - 1 : (numPatterns ? numPatterns - 1 : null);
+                selectPattern(patterns[newIndex]);
             },
             
             /**
