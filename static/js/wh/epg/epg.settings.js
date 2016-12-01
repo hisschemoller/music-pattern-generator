@@ -122,6 +122,14 @@ window.WH.epg = window.WH.epg || {};
                         epgModel.setPatternProperty('noteLength', e.target.value);
                     });
                 }
+                
+                document.addEventListener('keyup', function(e) {
+                    switch (e.keyCode) {
+                        case 8: // backspace
+                            epgModel.deleteSelectedPattern();
+                            break;
+                    }
+                });
             },
             
             initRangeSetting = function(name, max) {

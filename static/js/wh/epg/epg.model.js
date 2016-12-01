@@ -189,8 +189,6 @@ window.WH = window.WH || {};
                 
                 // unselect pattern
                 selectPattern(null);
-                
-                // file.autoSave();
             },
             
             /**
@@ -274,8 +272,6 @@ window.WH = window.WH || {};
                         epgSettings.updateSetting(name, value);
                         break;
                 }
-                
-                // file.autoSave();
             },
             
             /**

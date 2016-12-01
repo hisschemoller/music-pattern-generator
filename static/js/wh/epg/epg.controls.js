@@ -47,7 +47,7 @@
                             transport.toggleStartStop();
                             break;
                     }
-                })
+                });
             },
             
             /**
