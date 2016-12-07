@@ -250,14 +250,10 @@ window.WH = window.WH || {};
                 
                 if (isNew) {
                     // create the startup animation
-                    new TWEEN.Tween({scale: 0.01})
+                    new TWEEN.Tween({scale: 0.001})
                         .to({scale: 1.0}, 400)
                         .onUpdate(function() {
-                                centreScale = this.scale * 0.3;
-                                selectScale = this.scale * 0.2;
-                                ptrn.centreCircle3d.scale.set(centreScale, centreScale, 1);
-                                ptrn.pointer3d.scale.set(this.scale, this.scale, 1);
-                                ptrn.select3d.scale.set(selectScale, selectScale, 1);
+                                ptrn.object3d.scale.set(this.scale, this.scale, 1);
                             })
                         .start();
                     
