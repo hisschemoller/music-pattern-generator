@@ -60,6 +60,7 @@ window.WH = window.WH || {};
                 // prevent system doubleclick to interfere with the custom doubleclick
                 renderer.domElement.addEventListener('dblclick', function(e) {e.preventDefault();});
                 window.addEventListener('resize', onWindowResize, false);
+                window.addEventListener('scroll', onWindowScroll, false);
             },
             
             onWindowResize = function() {
@@ -67,6 +68,10 @@ window.WH = window.WH || {};
 				// camera.updateProjectionMatrix();
 				// renderer.setSize(window.innerWidth, window.innerHeight);
                 // canvasRect = renderer.domElement.getBoundingClientRect();
+            },
+            
+            onWindowScroll = function() {
+                canvasRect = renderer.domElement.getBoundingClientRect();
             },
             
             /**
