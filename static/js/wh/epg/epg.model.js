@@ -241,6 +241,7 @@ window.WH = window.WH || {};
                         break;
                     case 'canvasX':
                     case 'canvasY':
+                    case 'position3d':
                         selectedPattern[name] = value;
                         break;
                     case 'rate':

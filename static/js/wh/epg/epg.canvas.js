@@ -184,6 +184,9 @@ window.WH = window.WH || {};
             
             dragEnd = function(e) {
                 e.preventDefault();
+                if (dragObject) {
+                    epgModel.setPatternProperty('position3d', dragObject.position.clone());
+                }
                 dragObject = null;
                 containerEl.style.cursor = 'auto';
                 // controls.enabled = false;
