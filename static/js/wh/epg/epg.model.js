@@ -381,7 +381,7 @@ window.WH = window.WH || {};
                         // ... and then the new note On
                         start = step.getStartMidi();
                         duration = step.getDurationMidi();
-                        midi.playNote(ptrn.outPitch, ptrn.outVelocity, ptrn.outChannel, start, duration);
+                        midi.playNote(ptrn.outpitch, ptrn.outvelocity, ptrn.outchannel, start, duration);
                     }
                 }
             };
