@@ -21,11 +21,11 @@
             euclidPattern: specs.euclidPattern || [],
             
             // midi settings
-            outChannel: specs.outChannel || 10,
-            outPitch: specs.outPitch || 60,
-            outVelocity: specs.outVelocity || 10,
-            inChannel: specs.inChannel || 1,
-            inPitch: specs.inPitch || 60,
+            outchannel: specs.outchannel || 10,
+            outpitch: specs.outpitch || 60,
+            outvelocity: specs.outvelocity || 10,
+            inchannel: specs.inchannel || 1,
+            inpitch: specs.inpitch || 60,
             
             // misc settings
             // rate in beats, quarter note multiplier
@@ -79,11 +79,11 @@
                     pulses: that.pulses,
                     rotation: that.rotation,
                     euclidPattern: that.euclidPattern,
-                    outChannel: that.outChannel,
-                    outPitch: that.outPitch,
-                    outVelocity: that.outVelocity,
-                    inChannel: that.outChannel,
-                    inPitch: that.outPitch,
+                    outchannel: that.outchannel,
+                    outpitch: that.outpitch,
+                    outvelocity: that.outvelocity,
+                    inchannel: that.inchannel,
+                    inpitch: that.inpitch,
                     rate: that.rate,
                     isTriplets: that.isTriplets,
                     noteLength: that.noteLength,

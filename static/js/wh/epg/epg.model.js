@@ -106,7 +106,7 @@ window.WH = window.WH || {};
              */
             createPattern = function(specs) {
                 specs = specs || {};
-                specs.outChannel = specs.outChannel || patterns.length;
+                specs.outchannel = specs.outchannel || patterns.length;
                 
                 // check if there's a soloed pattern
                 if (patterns.length && (patterns[0].isSolo || patterns[0].isNotSolo)) {
@@ -262,11 +262,11 @@ window.WH = window.WH || {};
                         setSolo(selectedPattern, value);
                         break;
                     case 'name':
-                    case 'channelout':
-                    case 'pitchout':
-                    case 'velocityout':
-                    case 'channelin':
-                    case 'pitchin':
+                    case 'outchannel':
+                    case 'outpitch':
+                    case 'outvelocity':
+                    case 'inchannel':
+                    case 'inpitch':
                         selectedPattern[name] = value;
                         epgSettings.updateSetting(name, value);
                         break;
@@ -306,7 +306,6 @@ window.WH = window.WH || {};
                 // create patterns
                 patterns.length = 0;
                 for (var i = 0; i < data.length; i++) {
-                    // var ptrn = createPattern(data[i], true);
                     var patternData = WH.createEPGPatternData(data[i]);
                     epgCanvas.createPattern3D(patternData);
                     patterns.push(patternData);

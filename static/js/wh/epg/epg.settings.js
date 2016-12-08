@@ -55,27 +55,27 @@ window.WH.epg = window.WH.epg || {};
                     type: 'text',
                     input: document.getElementById('name-text')
                 },
-                channelout: {
+                outchannel: {
                     type: 'slider',
                     range: document.getElementById('channel-out-range'),
                     number: document.getElementById('channel-out-number')
                 },
-                pitchout: {
+                outpitch: {
                     type: 'slider',
                     range: document.getElementById('pitch-out-range'),
                     number: document.getElementById('pitch-out-number')
                 },
-                velocityout: {
+                outvelocity: {
                     type: 'slider',
                     range: document.getElementById('velocity-out-range'),
                     number: document.getElementById('velocity-out-number')
                 },
-                channelin: {
+                inchannel: {
                     type: 'slider',
                     range: document.getElementById('channel-in-range'),
                     number: document.getElementById('channel-in-number')
                 },
-                pitchin: {
+                inpitch: {
                     type: 'slider',
                     range: document.getElementById('pitch-in-range'),
                     number: document.getElementById('pitch-in-number')
@@ -90,11 +90,11 @@ window.WH.epg = window.WH.epg || {};
                 initRangeSetting('steps', 64);
                 initRangeSetting('pulses', 64);
                 initRangeSetting('rotation', 64);
-                initRangeSetting('channelout');
-                initRangeSetting('pitchout');
-                initRangeSetting('velocityout');
-                initRangeSetting('channelin');
-                initRangeSetting('pitchin');
+                initRangeSetting('outchannel');
+                initRangeSetting('outpitch');
+                initRangeSetting('outvelocity');
+                initRangeSetting('inchannel');
+                initRangeSetting('inpitch');
                 settings.name.input.dataset.prop = 'name';
                 settings.name.input.addEventListener('change', onChange);
                 settings.mute.input.addEventListener('change', function(e) {
@@ -158,11 +158,11 @@ window.WH.epg = window.WH.epg || {};
                 updateSetting('name', ptrn ? ptrn.name : '');
                 updateSetting('mute', ptrn ? ptrn.isMute : false);
                 updateSetting('solo', ptrn ? ptrn.isSolo : false);
-                updateSetting('channelout', ptrn ? ptrn.outChannel : '');
-                updateSetting('pitchout', ptrn ? ptrn.outPitch : '');
-                updateSetting('velocityout', ptrn ? ptrn.outVelocity : '');
-                updateSetting('channelin', ptrn ? ptrn.outChannel : '');
-                updateSetting('pitchin', ptrn ? ptrn.outPitch : '');
+                updateSetting('outchannel', ptrn ? ptrn.outchannel : '');
+                updateSetting('outpitch', ptrn ? ptrn.outpitch : '');
+                updateSetting('outvelocity', ptrn ? ptrn.outvelocity : '');
+                updateSetting('inchannel', ptrn ? ptrn.inchannel : '');
+                updateSetting('inpitch', ptrn ? ptrn.inpitch : '');
                 setEnabled(ptrn !== null && ptrn !== undefined);
             },
             
