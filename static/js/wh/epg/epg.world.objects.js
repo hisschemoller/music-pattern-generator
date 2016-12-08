@@ -6,7 +6,7 @@ window.WH = window.WH || {};
     function createEPGWorldObjects(specs) {
         
         var that,
-            defaultColor = 0xeeeeee,
+            defaultColor = 0x999999,
             circleOutline,
             circleFilled,
             circleLineAndFill,
