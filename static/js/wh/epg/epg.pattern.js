@@ -59,10 +59,6 @@
             // 
             pulseIndex: 0,
             
-            // canvas position and size
-            canvasX: specs.canvasX || 0,
-            canvasY: specs.canvasY || 0,
-            
             // 3D object properties
             object3d: specs.object3d || null,
             centreCircle3d: specs.centreCircle3d || null,
@@ -96,8 +92,6 @@
                     isSolo: that.isSolo,
                     isNotSolo: that.isNotSolo,
                     duration: that.duration,
-                    canvasX: that.canvasX,
-                    canvasY: that.canvasY,
                     position3d: that.position3d
                 }
             }

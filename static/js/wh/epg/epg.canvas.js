@@ -124,8 +124,6 @@ window.WH = window.WH || {};
                 if (raycaster.ray.intersectPlane(plane, intersection)) {
                     // create a new wheel 3D object
                     var ptrn = epgModel.createPattern({
-                        canvasX: e.clientX - canvasRect.left,
-                        canvasY: e.clientY - canvasRect.top,
                         position3d: intersection.clone()
                     });
                     epgModel.selectPattern(ptrn);

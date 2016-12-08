@@ -239,8 +239,6 @@ window.WH = window.WH || {};
                         epgSettings.updateSetting(name, value);
                         epgCanvas.updatePattern3D(selectedPattern);
                         break;
-                    case 'canvasX':
-                    case 'canvasY':
                     case 'position3d':
                         selectedPattern[name] = value;
                         break;
