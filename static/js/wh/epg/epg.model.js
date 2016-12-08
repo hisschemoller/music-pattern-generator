@@ -314,7 +314,7 @@ window.WH = window.WH || {};
                 numPatterns = patterns.length;
                 
                 // restore selected pattern
-                selectedPattern = patterns.filter(function(ptrn){
+                selectedPattern = patterns.filter(function(ptrn) {
                     return ptrn.isSelected;
                 })[0];
                 epgSettings.setPattern(selectedPattern);

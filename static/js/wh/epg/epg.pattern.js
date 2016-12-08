@@ -45,7 +45,7 @@
             
             isOn: false,
             isNoteOn: false,
-            isSelected: false,
+            isSelected: specs.isSelected || false,
             
             offPosition: 0,
             lastPosition: 0,
@@ -92,7 +92,8 @@
                     isSolo: that.isSolo,
                     isNotSolo: that.isNotSolo,
                     duration: that.duration,
-                    position3d: that.position3d
+                    position3d: that.position3d,
+                    isSelected: that.isSelected
                 }
             }
         };
