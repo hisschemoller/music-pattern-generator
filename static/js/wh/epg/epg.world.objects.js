@@ -382,7 +382,6 @@ window.WH = window.WH || {};
                     }
                     fillShape.lineTo(points[0].x, points[0].y);
                     fillGeom = new THREE.ShapeGeometry(fillShape);
-                    // fill = polygon.getObjectByName('polygonFill');
                     fill.geometry = fillGeom;
                     fill.visible = true;
                 } else {
