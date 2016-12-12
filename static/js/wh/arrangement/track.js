@@ -16,7 +16,12 @@ window.WH = window.WH || {};
     function createTrack(specs) {
         var that,
             steps = [],
+            index = 0,
             duration = 0,
+            
+            init = function() {
+                setSteps(specs.steps, specs.index, specs.duration);
+            },
 
             /**
              * Find events to be played within a time span
@@ -28,7 +33,7 @@ window.WH = window.WH || {};
              * @param {Array} playbackQueue Events that happen within the time range.
              */
             scanEventsInTimeSpan = function (absoluteStart, start, end, playbackQueue) {
-
+                
                 // convert pattern time to track time
                 var localStart = start % duration,
                     localEnd = localStart + (end - start),
@@ -36,7 +41,7 @@ window.WH = window.WH || {};
                     n = steps.length,
                     step,
                     stepStart;
-
+                    
                 // if the track restarts within the current time span, 
                 // scan the bit at the start of the next loop as well
                 var secondEnd = 0;
@@ -78,7 +83,9 @@ window.WH = window.WH || {};
                 var i = 0,
                     n = steps.length,
                     trackData = {
-                        steps: []
+                        steps: [],
+                        index: index,
+                        duration: duration
                     };
 
                 for (i; i < n; i++) {
@@ -92,8 +99,8 @@ window.WH = window.WH || {};
              * Update all the steps of the track and the length of the track.
              */
             setSteps = function(stepData, trackIndex, trackDuration) {
+                index = trackIndex ? trackIndex : 0;
                 duration = trackDuration ? trackDuration : 0;
-                
                 steps = [];
                 if (stepData) {
                     for (var i = 0; i < stepData.length; i++) {
@@ -119,7 +126,7 @@ window.WH = window.WH || {};
         
         that = {};
         
-        setSteps(specs.steps, specs.trackIndex);
+        init();
         
         that.scanEventsInTimeSpan = scanEventsInTimeSpan;
         that.getSteps = getSteps;

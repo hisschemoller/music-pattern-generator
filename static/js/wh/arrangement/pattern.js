@@ -17,7 +17,9 @@ window.WH = window.WH || {};
                 // create track objects
                 var i, n = specs.tracks ? specs.tracks.length : 0;
                 for (i = 0; i < n; i++) {
-                    createTrack(specs.tracks[i].steps);
+                    var data = specs.tracks[i];
+                    createTrack();
+                    updateTrack(data.index, data.steps, data.duration);
                 }
             },
             
@@ -87,7 +89,7 @@ window.WH = window.WH || {};
             createTrack = function(steps) {
                 tracks.push(WH.createTrack({
                     steps: steps, 
-                    trackIndex: tracks.length
+                    index: tracks.length
                 }));
                 trackCount = tracks.length;
             }, 
