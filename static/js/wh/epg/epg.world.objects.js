@@ -6,7 +6,7 @@ window.WH = window.WH || {};
     function createEPGWorldObjects(specs) {
         
         var that,
-            defaultColor = 0x999999,
+            defaultColor = 0xeeeeee,
             circleOutline,
             circleFilled,
             circleLineAndFill,
@@ -361,9 +361,10 @@ window.WH = window.WH || {};
              * @param {array} points Coordinates of the shape points.
              */
             updatePolygon = function(patternData, points) {
-                var i, n, polygon, line, lineGeom, fillShape, fillGeom;
+                var i, n, polygon, fill, line, lineGeom, fillShape, fillGeom;
                 
                 polygon = patternData.polygon3d;
+                fill = polygon.getObjectByName('polygonFill');
                 
                 if (points.length > 2) {
                     polygon.visible = true;
@@ -381,10 +382,11 @@ window.WH = window.WH || {};
                     }
                     fillShape.lineTo(points[0].x, points[0].y);
                     fillGeom = new THREE.ShapeGeometry(fillShape);
-                    fill = polygon.getObjectByName('polygonFill');
+                    // fill = polygon.getObjectByName('polygonFill');
                     fill.geometry = fillGeom;
+                    fill.visible = true;
                 } else {
-                    fill = null;
+                    fill.visible = false;
                 }
                 
                 line = polygon.getObjectByName('polygonLine');
