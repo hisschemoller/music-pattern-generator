@@ -295,12 +295,28 @@ window.WH = window.WH || {};
             },
             
             /**
-             * [setExternalNoteInEnabled description]
-             * @param {Boolean} isEnabled [description]
-             * @param {[type]}  midiInput [description]
+             * Set listening to external note messages to control pattern playback.
+             * @param {Boolean} isEnabled External control enabled.
+             * @param {Object}  midiInput MIDI input object.
              */
             setExternalNoteInEnabled = function(isEnabled, midiInput) {
                 console.log('setExternalNoteInEnabled', isEnabled);
+                if (midiInput && midiInput.hasListener('noteon', 'all', onExternalNoteControl)) {
+                    midiInput.removeListener('noteon', 'all', onExternalNoteControl);
+                    midiInput.removeListener('noteoff', 'all', onExternalNoteControl);
+                }
+                if (midiInput && isEnabled) {
+                    midiInput.addListener('noteon', 'all', onExternalNoteControl);
+                    midiInput.addListener('noteoff', 'all', onExternalNoteControl);
+                }
+            },
+            
+            /**
+             * External MIDI Note message received on any channel.
+             * @param  {Object} e WebMIDI event.
+             */
+            onExternalNoteControl = function(e) {
+                console.log('onExternalNoteControl', e);
             },
 
             /**
