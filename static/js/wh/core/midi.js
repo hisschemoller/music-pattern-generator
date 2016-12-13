@@ -10,6 +10,7 @@ window.WH = window.WH || {};
     function createMidi(specs) {
         var that,
             epgControls = specs.epgControls,
+            epgModel = specs.epgModel,
             epgPreferences = specs.epgPreferences,
             transport = specs.transport,
             selectedInput,
@@ -51,9 +52,8 @@ window.WH = window.WH || {};
                 if (WebMidi.enabled) {
                     selectedInput = WebMidi.getInputById(selectedInputID);
                     epgPreferences.setSelectedMidiPort(selectedInputID, true);
-                    if (isClockInEnabled && selectedInput) {
-                        transport.setExternalClockEnabled(isClockInEnabled, selectedInput);
-                    }
+                    setClockInEnabled(isClockInEnabled);
+                    setNoteInEnabled(isNoteInEnabled);
                 }
             },
             
@@ -77,8 +77,9 @@ window.WH = window.WH || {};
                 isClockInEnabled = isEnabled;
                 epgControls.setControlsEnabled(!isClockInEnabled);
                 epgPreferences.setMidiClockInEnabled(isClockInEnabled);
-                if (selectedInput) {
-                    transport.setExternalClockEnabled(isEnabled, selectedInput);
+                // only enable if there is a MIDI input port
+                if ((isClockInEnabled && selectedInput) || !isClockInEnabled) {
+                    transport.setExternalClockEnabled(isClockInEnabled, selectedInput);
                 }
             },
             
@@ -89,11 +90,20 @@ window.WH = window.WH || {};
             setNoteInEnabled = function(isEnabled) {
                 isNoteInEnabled = isEnabled;
                 epgPreferences.setMidiNoteInEnabled(isNoteInEnabled);
-                if (selectedInput) {
-                    
+                // only enable if there is a MIDI input port
+                if ((isNoteInEnabled && selectedInput) || !isNoteInEnabled) {
+                    epgModel.setExternalNoteInEnabled(isNoteInEnabled, selectedInput);
                 }
             },
             
+            /**
+             * Send a MIDI note On and Off message.
+             * @param  {Number} pitch          Note pitch 0 - 127
+             * @param  {Number} velocity       Note velocity 0 - 127
+             * @param  {Number} channelIndex   Channel 0 - 15
+             * @param  {Number} startTimeStamp Note start time in ms.
+             * @param  {Number} duration       Note duration in ms.
+             */
             playNote = function(pitch, velocity, channelIndex, startTimeStamp, duration) {
                 if (selectedOutput) {
                     // selectedOutput.clear();

@@ -293,6 +293,15 @@ window.WH = window.WH || {};
                     epgCanvas.updatePattern3D(ptrn);
                 }
             },
+            
+            /**
+             * [setExternalNoteInEnabled description]
+             * @param {Boolean} isEnabled [description]
+             * @param {[type]}  midiInput [description]
+             */
+            setExternalNoteInEnabled = function(isEnabled, midiInput) {
+                console.log('setExternalNoteInEnabled', isEnabled);
+            },
 
             /**
              * Create an pattern data from data object.
@@ -393,6 +402,7 @@ window.WH = window.WH || {};
         that.getPatternByProperty = getPatternByProperty;
         that.deleteSelectedPattern = deleteSelectedPattern;
         that.setPatternProperty = setPatternProperty;
+        that.setExternalNoteInEnabled = setExternalNoteInEnabled;
         that.setData = setData;
         that.getData = getData;
         that.onTransportRun = onTransportRun;
