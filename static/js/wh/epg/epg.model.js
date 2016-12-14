@@ -309,6 +309,11 @@ window.WH = window.WH || {};
                     midiInput.addListener('noteon', 'all', onExternalNoteControl);
                     midiInput.addListener('noteoff', 'all', onExternalNoteControl);
                 }
+                // reset all patterns
+                var n = patterns.length;
+                for (var i = 0; i < n; i++) {
+                    patterns[i].isMutedByNoteInControl = false;
+                }
             },
             
             /**
@@ -317,6 +322,29 @@ window.WH = window.WH || {};
              */
             onExternalNoteControl = function(e) {
                 console.log('onExternalNoteControl', e);
+                // find patterns that are controlled by the incoming note
+                var targetPatterns = [],
+                    n = patterns.length;
+                for (var i = 0; i < n; i++) {
+                    var ptrn = patterns[i];
+                    if (ptrn.inchannel === e.channel && ptrn.inpitch === e.note.number) {
+                        targetPatterns.push(ptrn);
+                    }
+                }
+                // update the found patterns
+                if (targetPatterns.length) {
+                    var isNoteOn = e.type === 'noteon';
+                    n = targetPatterns.length;
+                    for (var i = 0; i < n; i++) {
+                        targetPatterns[i].isMutedByNoteInControl = isNoteOn;
+                    }
+                }
+                switch (e.type) {
+                    case 'noteon':
+                        break;
+                    case 'noteoff':
+                        break;
+                }
             },
 
             /**
@@ -387,7 +415,7 @@ window.WH = window.WH || {};
                     var step = playbackQueue[i],
                         ptrn = patterns[step.getTrackIndex()];
                     
-                    if (step.getVelocity() && !ptrn.isMute && !ptrn.isNotSolo) {
+                    if (step.getVelocity() && !ptrn.isMute && !ptrn.isNotSolo && !ptrn.isMutedByNoteInControl) {
                         isAlreadyOn = ptrn.isOn;
                         
                         ptrn.isOn = true;
