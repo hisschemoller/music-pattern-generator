@@ -81,7 +81,7 @@ window.WH = window.WH || {};
              * @return {object} Line 3D object.
              */
             createPointer = function(lineMaterial) {
-                var geometry = createPointerGeometry(8, false);
+                var geometry = createPointerGeometry(8, false, false);
                 var line = new THREE.Line(geometry, lineMaterial);
                 return line;
             },
@@ -91,21 +91,33 @@ window.WH = window.WH || {};
              * Also used by the pointer update function.
              * @param {Number} radius Pointer radius.
              * @param {Boolean} isSolo Pointer shows solo state.
+             * @param {Boolean} isNoteInControlled Pointer shows external control state.
              * @return {Object} Three.js Geometry object.
              */
-            createPointerGeometry = function(radius, isSolo) {
+            createPointerGeometry = function(radius, isSolo, isNoteInControlled) {
                 var geometry = new THREE.Geometry();
-                geometry.vertices.push(
-                	new THREE.Vector3(-2.9, 0.7, 0.0),
-                	new THREE.Vector3(0.0, radius, 0.0),
-                	new THREE.Vector3(2.9, 0.7, 0.0)
-                );
-                
-                if (isSolo) {
+                if (isNoteInControlled) {
+                    var halfRadius = 1 + (radius / 2);
                     geometry.vertices.push(
-                        new THREE.Vector3(0.0, radius, 0.0),
+                        new THREE.Vector3(0.0, 1.0, 0.0),
+                        new THREE.Vector3(-0.9, halfRadius, 0.0),
+                    	new THREE.Vector3(0.0, radius, 0.0),
+                        new THREE.Vector3(0.9, halfRadius, 0.0),
                         new THREE.Vector3(0.0, 1.0, 0.0)
                     );
+                } else {
+                    geometry.vertices.push(
+                    	new THREE.Vector3(-2.9, 0.7, 0.0),
+                    	new THREE.Vector3(0.0, radius, 0.0),
+                    	new THREE.Vector3(2.9, 0.7, 0.0)
+                    );
+                    
+                    if (isSolo) {
+                        geometry.vertices.push(
+                            new THREE.Vector3(0.0, radius, 0.0),
+                            new THREE.Vector3(0.0, 1.0, 0.0)
+                        );
+                    }
                 }
                 
                 return geometry;
@@ -408,11 +420,12 @@ window.WH = window.WH || {};
              * Update the pointer that connects the dots.
              * @param {object} patternData Pattern data object.
              */
-            updatePointer = function(patternData) {
+            updatePointer = function(ptrn) {
+                console.log(ptrn.isMutedByNoteInControl);
                 var mutedRadius = 4.5,
-                    radius = (patternData.isMute || patternData.isNotSolo) ? mutedRadius : patternData.radius3d;
-                patternData.pointer3d.geometry.dispose();
-                patternData.pointer3d.geometry = createPointerGeometry(radius, patternData.isSolo);
+                    radius = (ptrn.isMute || ptrn.isNotSolo || ptrn.isMutedByNoteInControl) ? mutedRadius : ptrn.radius3d;
+                ptrn.pointer3d.geometry.dispose();
+                ptrn.pointer3d.geometry = createPointerGeometry(radius, ptrn.isSolo, ptrn.isNoteInControlled);
             },
             
             /**

@@ -38,6 +38,7 @@
             isMute: specs.isMute || false,
             isSolo: specs.isSolo || false,
             isNotSolo: specs.isNotSolo || false,
+            isNoteInControlled: false,
             isMutedByNoteInControl: false,
             
             // position and duration in ticks

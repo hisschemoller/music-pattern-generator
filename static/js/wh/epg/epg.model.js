@@ -312,7 +312,10 @@ window.WH = window.WH || {};
                 // reset all patterns
                 var n = patterns.length;
                 for (var i = 0; i < n; i++) {
-                    patterns[i].isMutedByNoteInControl = false;
+                    var ptrn = patterns[i];
+                    ptrn.isNoteInControlled = isEnabled;
+                    ptrn.isMutedByNoteInControl = isEnabled;
+                    epgCanvas.updatePattern3D(ptrn);
                 }
             },
             
@@ -338,12 +341,6 @@ window.WH = window.WH || {};
                     for (var i = 0; i < n; i++) {
                         targetPatterns[i].isMutedByNoteInControl = isNoteOn;
                     }
-                }
-                switch (e.type) {
-                    case 'noteon':
-                        break;
-                    case 'noteoff':
-                        break;
                 }
             },
 
