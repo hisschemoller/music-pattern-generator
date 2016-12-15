@@ -13,6 +13,7 @@ window.WH = window.WH || {};
             polygon,
             wheel,
             TWO_PI = Math.PI * 2,
+            centreRadius = 3,
             
             /**
              * Initialization.
@@ -97,13 +98,13 @@ window.WH = window.WH || {};
             createPointerGeometry = function(radius, isSolo, isNoteInControlled) {
                 var geometry = new THREE.Geometry();
                 if (isNoteInControlled) {
-                    var halfRadius = 1 + (radius / 2);
+                    var halfRadius = centreRadius + ((radius - centreRadius) / 2);
                     geometry.vertices.push(
-                        new THREE.Vector3(0.0, 1.0, 0.0),
+                        new THREE.Vector3(0.0, centreRadius, 0.0),
                         new THREE.Vector3(-0.9, halfRadius, 0.0),
                     	new THREE.Vector3(0.0, radius, 0.0),
                         new THREE.Vector3(0.9, halfRadius, 0.0),
-                        new THREE.Vector3(0.0, 1.0, 0.0)
+                        new THREE.Vector3(0.0, centreRadius, 0.0)
                     );
                 } else {
                     geometry.vertices.push(
