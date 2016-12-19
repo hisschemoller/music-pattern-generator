@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         epgSettings = {},
         file = {},
         midi = {},
+        midiNetwork = {},
         transport = {};
         
     WH.pubSub = WH.createPubSub();
@@ -60,12 +61,15 @@ document.addEventListener('DOMContentLoaded', function(e) {
         midi: midi,
         transport: transport
     });
-    WH.createMidi({
+    WH.createMIDI({
         that: midi,
         epgControls: epgControls,
         epgModel: epgModel,
         epgPreferences: epgPreferences,
         transport: transport
+    });
+    WH.createMIDINetwork({
+        that: midiNetwork
     });
     WH.createTransport({
         that: transport,

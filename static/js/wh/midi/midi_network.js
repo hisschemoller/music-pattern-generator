@@ -6,6 +6,7 @@
 window.WH = window.WH || {};
 
 (function (ns) {
+    
     function createMIDINetwork(specs, my) {
         var that,
         
