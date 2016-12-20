@@ -26,7 +26,7 @@ window.WH = window.WH || {};
     function createSequencer (specs, my) {
         var that,
             arrangement = specs.arrangement,
-            epgModel = specs.epgModel, 
+            // epgModel = specs.epgModel, 
             ppqn = 480,
             bpm = 120,
             lastBpm = bpm,
@@ -56,7 +56,7 @@ window.WH = window.WH || {};
                         step.setDurationAudioContext(tick2msec(step.getDuration()) / 1000);
                         step.setStartDelay(step.getStartMidi() - performance.now());
                     }
-                    epgModel.onTransportScan(playbackQueue);
+                    // epgModel.onTransportScan(playbackQueue);
                 }
             },
             
@@ -65,7 +65,7 @@ window.WH = window.WH || {};
              * @param {Number} position Timing position, equal to performance.now(). 
              */
             updateView = function(position) {
-                epgModel.onTransportRun(msec2tick(position - transportOrigin));
+                // epgModel.onTransportRun(msec2tick(position - transportOrigin));
             },
             
             /**

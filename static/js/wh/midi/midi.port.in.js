@@ -12,6 +12,7 @@ window.WH = window.WH || {};
             midiInput = specs.midiInput;
        
         my = my || {};
+        my.props = my.props || {};
 
         that = ns.createMIDIProcessorBase(specs, my);
         

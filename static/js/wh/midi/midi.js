@@ -10,7 +10,7 @@ window.WH = window.WH || {};
     function createMIDI(specs) {
         var that,
             epgControls = specs.epgControls,
-            epgModel = specs.epgModel,
+            // epgModel = specs.epgModel,
             epgPreferences = specs.epgPreferences,
             midiNetwork = specs.midiNetwork,
             transport = specs.transport,
@@ -94,7 +94,7 @@ window.WH = window.WH || {};
                 epgPreferences.setMidiNoteInEnabled(isNoteInEnabled);
                 // only enable if there is a MIDI input port
                 if ((isNoteInEnabled && selectedInput) || !isNoteInEnabled) {
-                    epgModel.setExternalNoteInEnabled(isNoteInEnabled, selectedInput);
+                    // epgModel.setExternalNoteInEnabled(isNoteInEnabled, selectedInput);
                 }
             },
             

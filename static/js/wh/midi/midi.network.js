@@ -10,11 +10,13 @@ window.WH = window.WH || {};
     function createMIDINetwork(specs, my) {
         var that,
             processorIdCounter = 0,
+            processors = [],
         
             addProcessor = function(processorName, specs) {
                 if (ns.midiProcessors && ns.midiProcessors[processorName]) {
                     specs.id = processorIdCounter;
                     var processor = ns.midiProcessors[processorName].create(specs);
+                    processors.push(processor);
                     processorIdCounter += 1;
                     return processor;
                 } else {
@@ -24,6 +26,14 @@ window.WH = window.WH || {};
             
             removeProcessor = function() {
                 
+            },
+            
+            selectProcessorById = function(id) {
+                var n = processors.length;
+                for (var i = 0; i < n; i++) {
+                    var processor = processors[i];
+                    processor.setProperty('isSelected', processor.getProperty('id') === id);
+                }
             };
        
         my = my || {};
@@ -32,6 +42,7 @@ window.WH = window.WH || {};
         
         that.addProcessor = addProcessor;
         that.removeProcessor = removeProcessor;
+        that.selectProcessorById = selectProcessorById;
         return that;
     };
 

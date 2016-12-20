@@ -11,8 +11,10 @@ window.WH = window.WH || {};
         var that;
        
         my = my || {};
+        my.props = my.props || {};
+        my.props.position3d = specs.position3d || null;
 
-        that = specs.that || {};
+        that = ns.createMIDIProcessorBase(specs, my);
         
         return that;
     };

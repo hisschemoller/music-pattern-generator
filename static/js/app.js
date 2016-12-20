@@ -13,15 +13,16 @@ document.addEventListener('DOMContentLoaded', function(e) {
     
     // Create all objects that will be the modules of the app.
     var arrangement = {},
-        epgCanvas = {},
+        // epgCanvas = {},
         epgControls = {},
-        epgModel = {}, 
+        // epgModel = {}, 
         epgPreferences = {},
         epgSettings = {},
         file = {},
         midi = {},
         midiNetwork = {},
-        transport = {};
+        transport = {},
+        world = {};
         
     WH.pubSub = WH.createPubSub();
     
@@ -29,42 +30,42 @@ document.addEventListener('DOMContentLoaded', function(e) {
     WH.createArrangement({
         that: arrangement
     });
-    WH.createEPGCanvas({
-        that: epgCanvas,
-        epgModel: epgModel
-    });
+    // WH.createEPGCanvas({
+    //     that: epgCanvas,
+    //     epgModel: epgModel
+    // });
     WH.createEPGControls({
         that: epgControls,
         transport: transport
     });
-    WH.createEPGModel({
-        that: epgModel,
-        arrangement: arrangement,
-        epgCanvas: epgCanvas,
-        epgSettings: epgSettings,
-        file: file,
-        midi: midi,
-        transport: transport
-    });
+    // WH.createEPGModel({
+    //     that: epgModel,
+    //     arrangement: arrangement,
+    //     // epgCanvas: epgCanvas,
+    //     epgSettings: epgSettings,
+    //     file: file,
+    //     midi: midi,
+    //     transport: transport
+    // });
     WH.createEPGPreferences({
         that: epgPreferences,
         midi: midi
     });
     WH.epg.createEPGSettings({
         that: epgSettings,
-        epgModel: epgModel
+        // epgModel: epgModel
     });
     WH.createFile({
         that: file,
         arrangement: arrangement,
-        epgModel: epgModel,
+        // epgModel: epgModel,
         midi: midi,
         transport: transport
     });
     WH.createMIDI({
         that: midi,
         epgControls: epgControls,
-        epgModel: epgModel,
+        // epgModel: epgModel,
         epgPreferences: epgPreferences,
         midiNetwork: midiNetwork,
         transport: transport
@@ -75,12 +76,16 @@ document.addEventListener('DOMContentLoaded', function(e) {
     WH.createTransport({
         that: transport,
         arrangement: arrangement,
-        epgModel: epgModel
+        // epgModel: epgModel
+    });
+    WH.createWorld({
+        that: world,
+        midiNetwork: midiNetwork
     });
     
     // initialise
     midi.enable();
-    epgCanvas.setup();
+    world.setup();
     file.setup();
     transport.run();
 });
