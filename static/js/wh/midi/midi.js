@@ -51,7 +51,7 @@ window.WH = window.WH || {};
                 if (WebMidi.enabled) {
                     selectedInput = WebMidi.getInputById(selectedInputID);
                     epgPreferences.setSelectedMidiPort(selectedInputID, true);
-                    midiNetwork.addProcessor('portIn', {
+                    midiNetwork.addProcessor('input', {
                         midiInput: selectedInput
                     });
                     setClockInEnabled(isClockInEnabled);

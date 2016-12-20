@@ -18,7 +18,7 @@ window.WH = window.WH || {};
                     var processor = ns.midiProcessors[processorName].create(specs);
                     processors.push(processor);
                     processorIdCounter += 1;
-                    console.log('addProcessor', processor.getProperty('id'));
+                    console.log('addProcessor', processor.getProperty('id'), processor.getProperty('type'));
                     return processor;
                 } else {
                     console.error('No MIDI processor found with name: ', processorName);

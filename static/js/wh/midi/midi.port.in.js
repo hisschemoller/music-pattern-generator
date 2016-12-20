@@ -13,14 +13,16 @@ window.WH = window.WH || {};
        
         my = my || {};
         my.props = my.props || {};
+        my.props.type = type;
 
         that = ns.createMIDIProcessorBase(specs, my);
         
         return that;
     };
     
+    var type = 'input';
     ns.midiProcessors = ns.midiProcessors || {};
-    ns.midiProcessors['portIn'] = {
+    ns.midiProcessors[type] = {
         create: createMIDIPortIn
     };
 
