@@ -66,6 +66,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         epgControls: epgControls,
         epgModel: epgModel,
         epgPreferences: epgPreferences,
+        midiNetwork: midiNetwork,
         transport: transport
     });
     WH.createMIDINetwork({

@@ -12,6 +12,7 @@ window.WH = window.WH || {};
             epgControls = specs.epgControls,
             epgModel = specs.epgModel,
             epgPreferences = specs.epgPreferences,
+            midiNetwork = specs.midiNetwork,
             transport = specs.transport,
             selectedInput,
             selectedInputID,
@@ -50,6 +51,9 @@ window.WH = window.WH || {};
                 if (WebMidi.enabled) {
                     selectedInput = WebMidi.getInputById(selectedInputID);
                     epgPreferences.setSelectedMidiPort(selectedInputID, true);
+                    midiNetwork.addProcessor('portIn', {
+                        midiInput: selectedInput
+                    });
                     setClockInEnabled(isClockInEnabled);
                     setNoteInEnabled(isNoteInEnabled);
                 }
