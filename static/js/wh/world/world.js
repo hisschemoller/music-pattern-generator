@@ -114,7 +114,8 @@ window.WH = window.WH || {};
                     outerObject = getOuterParentObject(intersects[0]);
                     // ptrn = epgModel.getPatternByProperty('object3d', outerObject);
                     // epgModel.selectPattern(ptrn);
-                    midiNetwork.selectProcessorById(outerObject.id);
+                    var processor = midiNetwork.getProcessorByProperty('id', outerObject.id)
+                    midiNetwork.selectProcessor(processor);
                     dragStart(outerObject, mouse);
                 }
             },
@@ -136,7 +137,7 @@ window.WH = window.WH || {};
                     var processor = midiNetwork.addProcessor('epg', {
                         position3d: intersection.clone()
                     });
-                    midiNetwork.selectProcessorById(processor.getProperty('id'));
+                    midiNetwork.selectProcessor(processor);
                 }
             },
             

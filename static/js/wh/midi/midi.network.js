@@ -18,6 +18,7 @@ window.WH = window.WH || {};
                     var processor = ns.midiProcessors[processorName].create(specs);
                     processors.push(processor);
                     processorIdCounter += 1;
+                    console.log('addProcessor', processor.getProperty('id'));
                     return processor;
                 } else {
                     console.error('No MIDI processor found with name: ', processorName);
@@ -28,12 +29,29 @@ window.WH = window.WH || {};
                 
             },
             
-            selectProcessorById = function(id) {
+            selectProcessor = function(processor) {
                 var n = processors.length;
                 for (var i = 0; i < n; i++) {
-                    var processor = processors[i];
-                    processor.setProperty('isSelected', processor.getProperty('id') === id);
+                    var proc = processors[i];
+                    proc.setProperty('isSelected', proc === processor);
                 }
+            },
+            
+            getProcessorByProperty = function(name, value) {
+                var n = processors.length;
+                for (var i = 0; i < n; i++) {
+                    if (processors[i].getProperty(name) === value) {
+                        return processors[i];
+                    }
+                }
+            },
+            
+            connect = function(processorFrom, processorTo) {
+                processorFrom.connect(processorTo);
+            },
+            
+            disconnect = function() {
+                
             };
        
         my = my || {};
@@ -42,7 +60,10 @@ window.WH = window.WH || {};
         
         that.addProcessor = addProcessor;
         that.removeProcessor = removeProcessor;
-        that.selectProcessorById = selectProcessorById;
+        that.selectProcessor = selectProcessor;
+        that.getProcessorByProperty = getProcessorByProperty;
+        that.connect = connect;
+        that.disconnect = disconnect;
         return that;
     };
 
