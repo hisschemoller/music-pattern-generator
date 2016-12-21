@@ -138,6 +138,10 @@ window.WH = window.WH || {};
                         position3d: intersection.clone()
                     });
                     midiNetwork.selectProcessor(processor);
+                    var midiOutProcessor = midiNetwork.getProcessorByProperty('type', 'output');
+                    if (midiOutProcessor) {
+                        midiOutProcessor.connect(processor);
+                    }
                 }
             },
             

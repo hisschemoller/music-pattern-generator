@@ -47,14 +47,6 @@ window.WH = window.WH || {};
                 }
             },
             
-            connect = function(processorFrom, processorTo) {
-                processorFrom.connect(processorTo);
-            },
-            
-            disconnect = function() {
-                
-            },
-            
             process = function(start, end) {
                 for (var i = 0; i < numProcessors; i++) {
                     processors[i].process(start, end);
@@ -69,8 +61,6 @@ window.WH = window.WH || {};
         that.removeProcessor = removeProcessor;
         that.selectProcessor = selectProcessor;
         that.getProcessorByProperty = getProcessorByProperty;
-        that.connect = connect;
-        that.disconnect = disconnect;
         that.process = process;
         return that;
     };

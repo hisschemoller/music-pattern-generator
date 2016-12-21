@@ -9,13 +9,26 @@ window.WH = window.WH || {};
     
     function createMIDIConnectorIn(specs, my) {
         var that,
-            outputConnectors = [],
-            numOutputConnectors = 0,
+            outConnectors = [],
+            numOutConnectors = 0,
             
             getInputData = function() {
-                for (var i = 0; i < numOutputConnectors; i++) {
-                    var outputData = outputConnectors[i].getOutputData();
+                var outputData = [];
+                for (var i = 0; i < numOutConnectors; i++) {
+                    var data = outConnectors[i].getOutputData();
+                    var outputData = outputData.concat(data);
+                    data.length = 0;
                 }
+                return outputData;
+            },
+            
+            connect = function(outConnector) {
+                outConnectors.push(outConnector);
+                numOutConnectors = outConnectors.length;
+            },
+            
+            disconnect = function() {
+                
             };
        
         my = my || {};
@@ -23,6 +36,8 @@ window.WH = window.WH || {};
 
         that = specs.that || {};
         
+        that.connect = connect;
+        that.disconnect = disconnect;
         return that;
     };
     

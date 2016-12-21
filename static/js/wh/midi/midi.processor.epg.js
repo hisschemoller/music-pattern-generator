@@ -55,6 +55,7 @@ window.WH = window.WH || {};
         my.props.velocity = 100,
 
         that = ns.createMIDIProcessorBase(specs, my);
+        that = ns.createMIDIConnectorIn(specs, my);
         that = ns.createMIDIConnectorOut(specs, my);
         
         that.process = process;

@@ -12,7 +12,6 @@ window.WH = window.WH || {};
             outputData = [],
             
             setOutputData = function(eventData) {
-                console.log('out', eventData.type, eventData.timestamp);
                 outputData.push(eventData);
             },
             
@@ -25,7 +24,7 @@ window.WH = window.WH || {};
 
         that = specs.that || {};
         
-        that.setOutputData = setOutputData;
+        that.getOutputData = getOutputData;
         return that;
     };
     

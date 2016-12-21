@@ -68,6 +68,9 @@ window.WH = window.WH || {};
                 if (WebMidi.enabled) {
                     selectedOutput = WebMidi.getOutputById(selectedOutputID);
                     epgPreferences.setSelectedMidiPort(selectedOutputID, false);
+                    midiNetwork.addProcessor('output', {
+                        midiInput: selectedOutput
+                    });
                 }
             },
             
