@@ -25,6 +25,7 @@ window.WH = window.WH || {};
             connect = function(outConnector) {
                 outConnectors.push(outConnector);
                 numOutConnectors = outConnectors.length;
+                console.log('Connect ' + outConnector.getProperty('type') + ' (id ' + outConnector.getProperty('id') + ') to ' + that.getProperty('type') + ' (id ' + that.getProperty('id') + ')');
             },
             
             disconnect = function() {
