@@ -9,7 +9,11 @@ window.WH = window.WH || {};
     
     function createMIDIPortIn(specs, my) {
         var that,
-            midiInput = specs.midiInput;
+            midiInput = specs.midiInput,
+                
+            process = function(start, end) {
+                
+            };
        
         my = my || {};
         my.props = my.props || {};
@@ -18,6 +22,7 @@ window.WH = window.WH || {};
         that = ns.createMIDIProcessorBase(specs, my);
         that = ns.createMIDIConnectorOut(specs, my);
         
+        that.process = process;
         return that;
     };
     

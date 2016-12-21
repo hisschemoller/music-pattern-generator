@@ -11,6 +11,7 @@ window.WH = window.WH || {};
         var that,
             processorIdCounter = 0,
             processors = [],
+            numProcessors = processors.length,
         
             addProcessor = function(processorName, specs) {
                 if (ns.midiProcessors && ns.midiProcessors[processorName]) {
@@ -19,6 +20,8 @@ window.WH = window.WH || {};
                     var processor = ns.midiProcessors[processorName].create(specs);
                     processors.push(processor);
                     processorIdCounter += 1;
+                    numProcessors = processors.length;
+                    console.log('addProcessor', processor.getProperty('id'), processor.getProperty('type'));
                     return processor;
                 } else {
                     console.error('No MIDI processor found with name: ', processorName);
@@ -26,20 +29,18 @@ window.WH = window.WH || {};
             },
             
             removeProcessor = function() {
-                
+                numProcessors = processors.length;
             },
             
             selectProcessor = function(processor) {
-                var n = processors.length;
-                for (var i = 0; i < n; i++) {
+                for (var i = 0; i < numProcessors; i++) {
                     var proc = processors[i];
                     proc.setProperty('isSelected', proc === processor);
                 }
             },
             
             getProcessorByProperty = function(name, value) {
-                var n = processors.length;
-                for (var i = 0; i < n; i++) {
+                for (var i = 0; i < numProcessors; i++) {
                     if (processors[i].getProperty(name) === value) {
                         return processors[i];
                     }
@@ -52,6 +53,12 @@ window.WH = window.WH || {};
             
             disconnect = function() {
                 
+            },
+            
+            process = function(start, end) {
+                for (var i = 0; i < numProcessors; i++) {
+                    processors[i].process(start, end);
+                }
             };
        
         my = my || {};
@@ -64,6 +71,7 @@ window.WH = window.WH || {};
         that.getProcessorByProperty = getProcessorByProperty;
         that.connect = connect;
         that.disconnect = disconnect;
+        that.process = process;
         return that;
     };
 

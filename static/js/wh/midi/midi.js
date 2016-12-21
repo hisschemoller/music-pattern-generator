@@ -123,8 +123,6 @@ window.WH = window.WH || {};
         
         that = specs.that;
         
-        init();
-        
         that.enable = enable;
         that.selectInputByID = selectInputByID;
         that.selectOutputByID = selectOutputByID;

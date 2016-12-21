@@ -25,7 +25,8 @@ window.WH = window.WH || {};
      */
     function createSequencer (specs, my) {
         var that,
-            arrangement = specs.arrangement,
+            midiNetwork = specs.midiNetwork,
+            // arrangement = specs.arrangement,
             // epgModel = specs.epgModel, 
             ppqn = 480,
             bpm = 120,
@@ -44,20 +45,21 @@ window.WH = window.WH || {};
             scanEvents = function(scanStart, scanEnd) {
                 var scanStartTimeline = msec2tick((scanStart - transportOrigin));
                 var scanEndTimeline = msec2tick((scanEnd - transportOrigin));
-                playbackQueue.length = 0;
-                arrangement.scanEvents(scanStartTimeline, scanEndTimeline, playbackQueue);
-                if (playbackQueue.length) {
-                    var n = playbackQueue.length;
-                    for (var i = 0; i < n; i++) {
-                        var step = playbackQueue[i];
-                        step.setStartMidi(tick2msec(step.getStartAbs()) + transportOrigin);
-                        step.setDurationMidi(tick2msec(step.getDuration()));
-                        step.setStartAudioContext((tick2msec(step.getStartAbs()) / 1000) + audioContextOffset);
-                        step.setDurationAudioContext(tick2msec(step.getDuration()) / 1000);
-                        step.setStartDelay(step.getStartMidi() - performance.now());
-                    }
+                midiNetwork.process(scanStartTimeline, scanEndTimeline);
+                // playbackQueue.length = 0;
+                // arrangement.scanEvents(scanStartTimeline, scanEndTimeline, playbackQueue);
+                // if (playbackQueue.length) {
+                //     var n = playbackQueue.length;
+                //     for (var i = 0; i < n; i++) {
+                //         var step = playbackQueue[i];
+                //         step.setStartMidi(tick2msec(step.getStartAbs()) + transportOrigin);
+                //         step.setDurationMidi(tick2msec(step.getDuration()));
+                //         step.setStartAudioContext((tick2msec(step.getStartAbs()) / 1000) + audioContextOffset);
+                //         step.setDurationAudioContext(tick2msec(step.getDuration()) / 1000);
+                //         step.setStartDelay(step.getStartMidi() - performance.now());
+                //     }
                     // epgModel.onTransportScan(playbackQueue);
-                }
+                // }
             },
             
             /**
