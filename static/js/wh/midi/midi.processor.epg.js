@@ -9,11 +9,40 @@ window.WH = window.WH || {};
     
     function createMIDIProcessorEPG(specs, my) {
         var that,
+            noteOffEvents = [],
             
             process = function(start, end) {
-                // once a second
+                
+                // check for scheduled note off events
+                var i = noteOffEvents.length;
+                while (--i > -1) {
+                    var noteOffTime = noteOffEvents[i].timestamp;
+                    if (start <= noteOffTime && end > noteOffTime) {
+                        my.setOutputData(noteOffEvents.splice(i, 1)[0]);
+                    }
+                }
+                
+                // once a second 
                 if (start % 1000 > end % 1000 || start % 1000 == 0 ) {
-                    console.log(Math.round(start / 1000));
+                    
+                    // note event with duration of 500ms
+                    var noteOnEvent = {
+                        timestamp: start,
+                        channel: my.props.channel,
+                        type: 'noteon',
+                        pitch: my.props.pitch,
+                        velocity: my.props.velocity
+                    }
+                    var noteOffEvent = {
+                        timestamp: start + 500,
+                        channel: my.props.channel,
+                        type: 'noteoff',
+                        pitch: my.props.pitch,
+                        velocity: 0
+                    }
+                    
+                    noteOffEvents.push(noteOffEvent);
+                    my.setOutputData(noteOnEvent);
                 }
             };
        
@@ -21,6 +50,9 @@ window.WH = window.WH || {};
         my.props = my.props || {};
         my.props.type = type;
         my.props.position3d = specs.position3d || null;
+        my.props.channel = 1,
+        my.props.pitch = 60,
+        my.props.velocity = 100,
 
         that = ns.createMIDIProcessorBase(specs, my);
         that = ns.createMIDIConnectorOut(specs, my);

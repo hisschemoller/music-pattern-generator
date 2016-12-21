@@ -11,8 +11,9 @@ window.WH = window.WH || {};
         var that,
             outputData = [],
             
-            setOutputData = function() {
-                
+            setOutputData = function(eventData) {
+                console.log('out', eventData.type, eventData.timestamp);
+                outputData.push(eventData);
             },
             
             getOutputData = function() {
