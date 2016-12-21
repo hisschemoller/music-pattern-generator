@@ -14,11 +14,11 @@ window.WH = window.WH || {};
         
             addProcessor = function(processorName, specs) {
                 if (ns.midiProcessors && ns.midiProcessors[processorName]) {
+                    specs.that = {};
                     specs.id = processorIdCounter;
                     var processor = ns.midiProcessors[processorName].create(specs);
                     processors.push(processor);
                     processorIdCounter += 1;
-                    console.log('addProcessor', processor.getProperty('id'), processor.getProperty('type'));
                     return processor;
                 } else {
                     console.error('No MIDI processor found with name: ', processorName);

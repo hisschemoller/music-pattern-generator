@@ -20,6 +20,7 @@ window.WH = window.WH || {};
         my.props.position3d = specs.position3d || null;
 
         that = ns.createMIDIProcessorBase(specs, my);
+        that = ns.createMIDIConnectorOut(specs, my);
         
         return that;
     };
