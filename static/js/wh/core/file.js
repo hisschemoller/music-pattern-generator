@@ -24,7 +24,7 @@ window.WH = window.WH || {};
              * Autosave file if true.
              * @type {Boolean}
              */
-            autoSaveEnabled = true,
+            autoSaveEnabled = false,
             
             init = function() {
                 window.addEventListener('beforeunload', onBeforeUnload);
