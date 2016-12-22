@@ -50,9 +50,9 @@ window.WH = window.WH || {};
         my.props = my.props || {};
         my.props.type = type;
         my.props.position3d = specs.position3d || null;
-        my.props.channel = 1,
-        my.props.pitch = 60,
-        my.props.velocity = 100,
+        my.props.channel = 1;
+        my.props.pitch = 60;
+        my.props.velocity = 100;
 
         that = ns.createMIDIProcessorBase(specs, my);
         that = ns.createMIDIConnectorIn(specs, my);

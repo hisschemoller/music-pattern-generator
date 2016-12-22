@@ -12,9 +12,22 @@ window.WH = window.WH || {};
             midiOutput = specs.midiOutput,
                 
             process = function(start, end) {
-                var inputData = my.getInputData();
-                console.log('MIDIPortOut inputData', inputData);
+                var inputData = my.getInputData(),
+                    n = inputData.length;
+                
+                for (var i = 0; i < n; i++) {
+                    var item = inputData[i];
+                    switch (item.type) {
+                        case 'noteon':
+                            midiOutput.send(0x90 + (item.channel - 1), [item.pitch, item.velocity], item.timestamp);
+                            break;
+                        case 'noteoff':
+                            midiOutput.send(0x80 + (item.channel - 1), [item.pitch, 0], item.timestamp);
+                            break;
+                    }
+                }
             };
+        
        
         my = my || {};
         my.props = my.props || {};
