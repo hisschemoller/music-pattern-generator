@@ -11,6 +11,11 @@ window.WH = window.WH || {};
         var that,
             noteOffEvents = [],
             
+            /**
+             * [process description]
+             * @param {Number} start Timespan start in ticks from timeline start.
+             * @param {Number} end   Timespan end in ticks from timeline start.
+             */
             process = function(start, end) {
                 
                 // check for scheduled note off events

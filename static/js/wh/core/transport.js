@@ -43,9 +43,9 @@ window.WH = window.WH || {};
              * @param {Number} scanEnd End in ms of timespan to scan.
              */
             scanEvents = function(scanStart, scanEnd) {
-                midiNetwork.process(scanStart, scanEnd);
-                // var scanStartTimeline = msec2tick((scanStart - transportOrigin));
-                // var scanEndTimeline = msec2tick((scanEnd - transportOrigin));
+                var scanStartTimeline = msec2tick((scanStart - transportOrigin));
+                var scanEndTimeline = msec2tick((scanEnd - transportOrigin));
+                midiNetwork.process(scanStartTimeline, scanEndTimeline);
                 // playbackQueue.length = 0;
                 // arrangement.scanEvents(scanStartTimeline, scanEndTimeline, playbackQueue);
                 // if (playbackQueue.length) {

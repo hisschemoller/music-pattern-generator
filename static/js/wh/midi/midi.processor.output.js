@@ -10,7 +10,12 @@ window.WH = window.WH || {};
     function createMIDIPortOut(specs, my) {
         var that,
             midiOutput = specs.midiOutput,
-                
+            
+            /**
+             * [process description]
+             * @param {Number} start Timespan start in ticks from timeline start.
+             * @param {Number} end   Timespan end in ticks from timeline start.
+             */
             process = function(start, end) {
                 var inputData = my.getInputData(),
                     n = inputData.length;
