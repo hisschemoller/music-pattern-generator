@@ -160,21 +160,21 @@ window.WH = window.WH || {};
         my.props.type = type;
         my.props.position3d = specs.position3d || null;
         // euclidean properties
-        my.props.steps = specs.steps || 16;
-        my.props.steps = specs.pulses || 4;
-        my.props.rotation = specs.rotation || 0;
+        // my.props.steps = specs.steps || 16;
+        // my.props.steps = specs.pulses || 4;
+        // my.props.rotation = specs.rotation || 0;
         my.props.euclid = specs.euclid || [];
         // midi properties
-        my.props.channel = 1;
-        my.props.pitch = 60;
-        my.props.velocity = 100;
+        // my.props.channel = 1;
+        // my.props.pitch = 60;
+        // my.props.velocity = 100;
         // playback properties
         // rate in beats, quarter note multiplier
-        my.props.rate = specs.rate || 0.25;
+        // my.props.rate = specs.rate || 0.25;
         // convert to triplets by multiplying rate with 2/3
-        my.props.isTriplets = specs.isTriplets || false;
+        // my.props.isTriplets = specs.isTriplets || false;
         // note length in beats, quarter note multiplier
-        my.props.noteLength = specs.noteLength || 0.25;
+        // my.props.noteLength = specs.noteLength || 0.25;
         // position and duration in ticks
         my.props.position = specs.position || 0;
         my.props.duration = specs.duration || 0;
@@ -182,6 +182,75 @@ window.WH = window.WH || {};
         that = ns.createMIDIProcessorBase(specs, my);
         that = ns.createMIDIConnectorIn(specs, my);
         that = ns.createMIDIConnectorOut(specs, my);
+        
+        my.defineParams({
+            steps: {
+                label: 'Steps',
+                mapping: 'integer',
+                default: 16,
+                min: 1,
+                max: 16
+            },
+            pulses: {
+                label: 'Pulses',
+                mapping: 'integer',
+                default: 4,
+                min: 0,
+                max: 16
+            },
+            rotation: {
+                label: 'Rotation',
+                mapping: 'integer',
+                default: 0,
+                min: 0,
+                max: 15
+            },
+            channelin: {
+                label: 'MIDI Channel',
+                mapping: 'integer',
+                default: 0,
+                min: 0,
+                max: 16
+            },
+            pitchin: {
+                label: 'MIDI Pitch',
+                mapping: 'integer',
+                default: 0,
+                min: 0,
+                max: 127
+            },
+            rate: {
+                label: 'Rate',
+                mapping: 'itemized',
+                default: 0.25,
+                model: [
+                    {label: '1', value: 4},
+                    {label: '1/2', value: 2},
+                    {label: '1/4', value: 1},
+                    {label: '1/8', value: 0.5},
+                    {label: '1/16', value: 0.25},
+                    {label: '1/32', value: 0.125}
+                ]
+            },
+            isTriplets: {
+                label: 'Triplets',
+                mapping: 'boolean',
+                default: false
+            },
+            noteLength: {
+                label: 'Note length',
+                mapping: 'itemized',
+                default: 0.25,
+                model: [
+                    {label: '1', value: 4},
+                    {label: '1/2', value: 2},
+                    {label: '1/4', value: 1},
+                    {label: '1/8', value: 0.5},
+                    {label: '1/16', value: 0.25},
+                    {label: '1/32', value: 0.125}
+                ]
+            }
+        });
         
         that.process = process;
         return that;
