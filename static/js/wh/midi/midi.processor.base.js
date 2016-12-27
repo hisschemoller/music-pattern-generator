@@ -9,6 +9,33 @@ window.WH = window.WH || {};
     
     function createMIDIProcessorBase(specs, my) {
         var that,
+            settingsView = ns.createMidiProcessorSettingsView,
+            
+            /**
+             * Create parameters from an object of parameter specifications.
+             * @param  {Object} paramSpecs Definitions of all the processor's parameters. 
+             */
+            defineParams = function(paramSpecs) {
+                for (var key in paramSpecs) {
+                    paramSpecs[key].key = key;
+                    paramSpecs[key].callback = paramCallback;
+                    my.params[key] = WH.createParameter(paramOptions[key]);
+                }
+                setPreset(my.defaultPreset);
+            },
+            
+            /**
+             * Called by the processor's parameters if their value is changed.
+             */
+            paramCallback = function(key, value, timestamp) {
+                // call the plugin's handler for this parameter
+                my['$' + key](value, timestamp);
+                // update the plugin's view with the new parameter value
+                pubSub.trigger(getId(), {
+                    key: key,
+                    param: params[key]
+                });
+            },
             
             setProperty = function(name, value) {
                 if (my.props.hasOwnProperty(name)) {
@@ -23,9 +50,11 @@ window.WH = window.WH || {};
             };
        
         my = my || {};
+        my.params = my.param || {};
         my.props = my.props || {};
         my.props.id = specs.id;
         my.props.isSelected = specs.isSelected || false;
+        my.defineParams = defineParams;
         
         that = specs.that || {};
         
