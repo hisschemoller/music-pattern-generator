@@ -9,6 +9,8 @@ window.WH = window.WH || {};
     
     function createMIDIProcessorEPG(specs, my) {
         var that,
+            position = 0,
+            duration = 0,
             noteOffEvents = [],
             pulseStartTimes = [],
             
@@ -79,16 +81,16 @@ window.WH = window.WH || {};
             
             updatePattern = function() {
                 // euclidean pattern properties, changes in steps, pulses, rotation
-                my.props.euclid = createBjorklund(my.props.steps, my.props.pulses);
-                var elementsToShift = my.props.euclid.splice(my.props.rotation);
+                my.props.euclid = createBjorklund(my.params.steps.getValue(), my.params.pulses.getValue());
+                var elementsToShift = my.props.euclid.splice(my.params.rotation.getValue());
                 my.props.euclid = elementsToShift.concat(my.props.euclid);
                 
                 // playback properties, changes in isTriplets, rate, noteLength
                 var ppqn = WH.conf.getPPQN(),
-                    rate = my.props.isTriplets ? my.props.rate * (2 / 3) : my.props.rate,
+                    rate = my.params.isTriplets.getValue() ? my.params.rate.getValue() * (2 / 3) : my.params.rate.getValue(),
                     stepDuration = rate * ppqn,
-                    noteDuration = my.props.noteLength * ppqn;
-                my.props.duration = my.props.steps * stepDuration;
+                    noteDuration = my.params.noteLength.getValue() * ppqn;
+                my.props.duration = my.params.steps.getValue() * stepDuration;
                 my.props.position = my.props.position % my.props.duration;
                 
                 // create array of note start times in ticks
@@ -156,28 +158,27 @@ window.WH = window.WH || {};
        
         my = my || {};
         my.props = my.props || {};
-        // general properties
         my.props.type = type;
         my.props.position3d = specs.position3d || null;
-        // euclidean properties
-        // my.props.steps = specs.steps || 16;
-        // my.props.steps = specs.pulses || 4;
-        // my.props.rotation = specs.rotation || 0;
         my.props.euclid = specs.euclid || [];
-        // midi properties
-        // my.props.channel = 1;
-        // my.props.pitch = 60;
-        // my.props.velocity = 100;
-        // playback properties
-        // rate in beats, quarter note multiplier
-        // my.props.rate = specs.rate || 0.25;
-        // convert to triplets by multiplying rate with 2/3
-        // my.props.isTriplets = specs.isTriplets || false;
-        // note length in beats, quarter note multiplier
-        // my.props.noteLength = specs.noteLength || 0.25;
-        // position and duration in ticks
-        my.props.position = specs.position || 0;
-        my.props.duration = specs.duration || 0;
+        
+        /**
+         * Parameter change handlers.
+         * @param {Number|String|Boolean} value New parameter value.
+         * @param {Number} timestamp Possible delay for the change.
+         */
+        my.$steps = function(value, timestamp) {
+            updatePattern();
+        }
+        my.$pulses = function(value, timestamp) {
+            updatePattern();
+        }
+        my.$rotation = function(value, timestamp) {
+            updatePattern();
+        }
+        my.$channel_out = function(value, timestamp) {}
+        my.$pitch_out = function(value, timestamp) {}
+        my.$velocity_out = function(value, timestamp) {}
 
         that = ns.createMIDIProcessorBase(specs, my);
         that = ns.createMIDIConnectorIn(specs, my);
@@ -205,15 +206,22 @@ window.WH = window.WH || {};
                 min: 0,
                 max: 15
             },
-            channelin: {
+            channel_out: {
                 label: 'MIDI Channel',
                 mapping: 'integer',
                 default: 0,
                 min: 0,
                 max: 16
             },
-            pitchin: {
+            pitch_out: {
                 label: 'MIDI Pitch',
+                mapping: 'integer',
+                default: 0,
+                min: 0,
+                max: 127
+            },
+            velocity_out: {
+                label: 'MIDI Velocity',
                 mapping: 'integer',
                 default: 0,
                 min: 0,
@@ -232,12 +240,12 @@ window.WH = window.WH || {};
                     {label: '1/32', value: 0.125}
                 ]
             },
-            isTriplets: {
+            is_triplets: {
                 label: 'Triplets',
                 mapping: 'boolean',
                 default: false
             },
-            noteLength: {
+            note_length: {
                 label: 'Note length',
                 mapping: 'itemized',
                 default: 0.25,
