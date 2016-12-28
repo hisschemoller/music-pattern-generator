@@ -19,9 +19,9 @@ window.WH = window.WH || {};
                 for (var key in paramSpecs) {
                     paramSpecs[key].key = key;
                     paramSpecs[key].callback = paramCallback;
-                    my.params[key] = WH.createParameter(paramOptions[key]);
+                    my.params[key] = ns.createParameter(paramSpecs[key]);
                 }
-                setPreset(my.defaultPreset);
+                // setPreset(my.defaultPreset);
             },
             
             /**

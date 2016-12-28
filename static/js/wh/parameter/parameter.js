@@ -17,12 +17,12 @@ window.WH = window.WH || {};
              * Call all callbacks if the parameter's value changed.
              * @param {Number|String|Boolean} oldValue Value before change.
              */
-        	function valueChanged(oldValue) {
+        	valueChanged = function(oldValue) {
         		if (oldValue == value) {
                     return;
                 }
                 try {
-        			for each (var callback in changedCallbacks) {
+        			for (var callback in changedCallbacks) {
                         callback(that, oldValue, value);
                     }	
         		} catch(err) {
@@ -34,7 +34,7 @@ window.WH = window.WH || {};
         	 * Adds a callback function, invoked on value changed.
         	 * @param {Function} callback The function, that will be invoked on value changed.
         	 */
-        	function addChangedCallback(callback) {
+        	addChangedCallback = function(callback) {
         		changedCallbacks.push(callback);
         	},
 
@@ -42,7 +42,7 @@ window.WH = window.WH || {};
     		 * Removes a callback function.
     		 * @param {Function} callback The function that will be removed.
     		 */
-    		function removeChangedCallback(callback) {
+    		removeChangedCallback = function(callback) {
     			var index = changedCallbacks.indexOf(callback);
     			if (index > -1) {
                     changedCallbacks.splice(index, 1);
@@ -52,7 +52,7 @@ window.WH = window.WH || {};
         	/**
         	 * Reset value to its initial default value
         	 */
-        	function reset() {
+        	reset = function() {
         		setValue(defaultValue);
         	}
 
@@ -79,7 +79,7 @@ window.WH = window.WH || {};
     		 * If changed, inform all callbacks.
     		 * @param normalizedValue A normalized value between 0 and 1.
     		 */
-    		function setValueNormalized(normalizedValue) {
+    		setValueNormalized = function(normalizedValue) {
     			var oldValue = value;
     			value = mapping.map(normalizedValue);
     			valueChanged(oldValue);
@@ -88,7 +88,7 @@ window.WH = window.WH || {};
         	/**
         	 * Returns the current normalized value of the parameter between 0 and 1.
         	 */
-        	function getValueNormalized() {
+        	getValueNormalized = function() {
         		return mapping.mapInverse(value);
         	};
         
