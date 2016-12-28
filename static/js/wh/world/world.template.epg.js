@@ -3,11 +3,9 @@ window.WH = window.WH || {};
 
 (function (ns) {
     
-    function createEPGWorldObjects(specs) {
+    function createWorldEPGTemplate(lineMaterial, defaultColor) {
         
-        var that,
-            defaultColor = 0xeeeeee,
-            circleOutline,
+        var circleOutline,
             circleFilled,
             circleLineAndFill,
             polygon,
@@ -19,13 +17,6 @@ window.WH = window.WH || {};
              * Initialization.
              */
             init = function() {
-                var lineMaterial;
-                
-                lineMaterial = new THREE.LineBasicMaterial({
-                    color: defaultColor,
-                    linewidth: 3
-                });
-                
                 circleOutline = createCircleOutline(lineMaterial);
                 circleFilled = createCircleFilled(defaultColor);
                 circleLineAndFill = createCircleLineAndFill(circleOutline, circleFilled);
@@ -82,7 +73,11 @@ window.WH = window.WH || {};
              * @return {object} Line 3D object.
              */
             createPointer = function(lineMaterial) {
-                var geometry = createPointerGeometry(8, false, false);
+                var geometry = new THREE.Geometry();
+                geometry.vertices.push(
+                    new THREE.Vector3(0.0, 0.0, 0.0),
+                    new THREE.Vector3(0.0, 1.0, 0.0)
+                );
                 var line = new THREE.Line(geometry, lineMaterial);
                 return line;
             },
@@ -95,34 +90,34 @@ window.WH = window.WH || {};
              * @param {Boolean} isNoteInControlled Pointer shows external control state.
              * @return {Object} Three.js Geometry object.
              */
-            createPointerGeometry = function(radius, isSolo, isNoteInControlled) {
-                var geometry = new THREE.Geometry();
-                if (isNoteInControlled) {
-                    var halfRadius = centreRadius + ((radius - centreRadius) / 2);
-                    geometry.vertices.push(
-                        new THREE.Vector3(0.0, centreRadius, 0.0),
-                        new THREE.Vector3(-0.9, halfRadius, 0.0),
-                    	new THREE.Vector3(0.0, radius, 0.0),
-                        new THREE.Vector3(0.9, halfRadius, 0.0),
-                        new THREE.Vector3(0.0, centreRadius, 0.0)
-                    );
-                } else {
-                    geometry.vertices.push(
-                    	new THREE.Vector3(-2.9, 0.7, 0.0),
-                    	new THREE.Vector3(0.0, radius, 0.0),
-                    	new THREE.Vector3(2.9, 0.7, 0.0)
-                    );
-                    
-                    if (isSolo) {
-                        geometry.vertices.push(
-                            new THREE.Vector3(0.0, radius, 0.0),
-                            new THREE.Vector3(0.0, 1.0, 0.0)
-                        );
-                    }
-                }
-                
-                return geometry;
-            },
+            // createPointerGeometry = function(radius, isSolo, isNoteInControlled) {
+            //     var geometry = new THREE.Geometry();
+            //     if (isNoteInControlled) {
+            //         var halfRadius = centreRadius + ((radius - centreRadius) / 2);
+            //         geometry.vertices.push(
+            //             new THREE.Vector3(0.0, centreRadius, 0.0),
+            //             new THREE.Vector3(-0.9, halfRadius, 0.0),
+            //         	new THREE.Vector3(0.0, radius, 0.0),
+            //             new THREE.Vector3(0.9, halfRadius, 0.0),
+            //             new THREE.Vector3(0.0, centreRadius, 0.0)
+            //         );
+            //     } else {
+            //         geometry.vertices.push(
+            //         	new THREE.Vector3(-2.9, 0.7, 0.0),
+            //         	new THREE.Vector3(0.0, radius, 0.0),
+            //         	new THREE.Vector3(2.9, 0.7, 0.0)
+            //         );
+            //         
+            //         if (isSolo) {
+            //             geometry.vertices.push(
+            //                 new THREE.Vector3(0.0, radius, 0.0),
+            //                 new THREE.Vector3(0.0, 1.0, 0.0)
+            //             );
+            //         }
+            //     }
+            //     
+            //     return geometry;
+            // },
             
             /**
              * Create polygon 3D object, the shape that connects the dots. 
@@ -302,164 +297,144 @@ window.WH = window.WH || {};
                     .start();
                 
                 dot.position.set(0, 0, 0);
-            },
-            
-            /**
-             * Add trackball controls to move the camera around the world.
-             * @param {object} camera Camera.
-             */
-            createControls = function(camera) {
-                var controls = new THREE.TrackballControls(camera);
-                controls.rotateSpeed = 1.0;
-                controls.zoomSpeed = 1.2;
-                controls.panSpeed = 0.8;
-                controls.noZoom = false;
-                controls.noPan = false;
-                controls.staticMoving = true;
-                controls.dynamicDampingFactor = 0.3;
-                controls.enabled = false;
-                return controls;
-            },
+            };
             
             /**
              * Update the pattern dots.
              * @param {object} patternData Pattern data object.
              */
-            updateDots = function(patternData) {
-                var dots, i, n, dot, rad, polygonPoints;
-                
-                dots = patternData.dots3d;
-                
-                // remove all existing dots
-                n = dots.children.length;
-                for (i = 0; i < n; i++) {
-                    dots.remove(dots.children[0]);
-                }
-                
-                polygonPoints = [];
-                
-                // add new dots
-                n = patternData.steps;
-                patternData.radius3d = 8 + (n > 16 ? (n - 16) * 0.5 : 0);
-                for (i = 0; i < n; i++) {
-                    rad = TWO_PI * (i / n);
-                    if (patternData.euclidPattern[i]) {
-                        dot = circleLineAndFill.clone();
-                    } else {
-                        dot = circleOutline.clone();
-                    }
-                    dot.scale.set(0.1, 0.1, 1);
-                    dot.translateX(Math.sin(rad) * patternData.radius3d);
-                    dot.translateY(Math.cos(rad) * patternData.radius3d);
-                    dots.add(dot);
-                    
-                    // add coordinate of filled dot to polygon points
-                    if (patternData.euclidPattern[i]) {
-                        polygonPoints.push(dot.position.clone());
-                    }
-                }
-                
-                polygonPoints.push(polygonPoints[0].clone());
-                
-                updatePolygon(patternData, polygonPoints);
-                updateHitarea(patternData);
-                updatePointer(patternData);
-                updateZeroMarker(patternData);
-                updateRotatedMarker(patternData);
-            },
+            // updateDots = function(patternData) {
+            //     var dots, i, n, dot, rad, polygonPoints;
+            //     
+            //     dots = patternData.dots3d;
+            //     
+            //     // remove all existing dots
+            //     n = dots.children.length;
+            //     for (i = 0; i < n; i++) {
+            //         dots.remove(dots.children[0]);
+            //     }
+            //     
+            //     polygonPoints = [];
+            //     
+            //     // add new dots
+            //     n = patternData.steps;
+            //     patternData.radius3d = 8 + (n > 16 ? (n - 16) * 0.5 : 0);
+            //     for (i = 0; i < n; i++) {
+            //         rad = TWO_PI * (i / n);
+            //         if (patternData.euclidPattern[i]) {
+            //             dot = circleLineAndFill.clone();
+            //         } else {
+            //             dot = circleOutline.clone();
+            //         }
+            //         dot.scale.set(0.1, 0.1, 1);
+            //         dot.translateX(Math.sin(rad) * patternData.radius3d);
+            //         dot.translateY(Math.cos(rad) * patternData.radius3d);
+            //         dots.add(dot);
+            //         
+            //         // add coordinate of filled dot to polygon points
+            //         if (patternData.euclidPattern[i]) {
+            //             polygonPoints.push(dot.position.clone());
+            //         }
+            //     }
+            //     
+            //     polygonPoints.push(polygonPoints[0].clone());
+            //     
+            //     updatePolygon(patternData, polygonPoints);
+            //     updateHitarea(patternData);
+            //     updatePointer(patternData);
+            //     updateZeroMarker(patternData);
+            //     updateRotatedMarker(patternData);
+            // },
             
             /**
              * Update the polygon shape that connects the dots.
              * @param {object} patternData Pattern data object.
              * @param {array} points Coordinates of the shape points.
              */
-            updatePolygon = function(patternData, points) {
-                var i, n, polygon, fill, line, lineGeom, fillShape, fillGeom;
-                
-                polygon = patternData.polygon3d;
-                fill = polygon.getObjectByName('polygonFill');
-                
-                if (points.length > 2) {
-                    polygon.visible = true;
-                } else {
-                    polygon.visible = false;
-                    return;
-                }
-                
-                if (points.length > 3) {
-                    fillShape = new THREE.Shape();
-                    fillShape.moveTo(points[0].x, points[0].y);
-                    n = points.length;
-                    for (i = 1; i < n; i++) {
-                        fillShape.lineTo(points[i].x, points[i].y);
-                    }
-                    fillShape.lineTo(points[0].x, points[0].y);
-                    fillGeom = new THREE.ShapeGeometry(fillShape);
-                    fill.geometry = fillGeom;
-                    fill.visible = true;
-                } else {
-                    fill.visible = false;
-                }
-                
-                line = polygon.getObjectByName('polygonLine');
-                line.geometry.dispose();
-                line.geometry = new THREE.Geometry();
-                line.geometry.vertices = points;
-                line.geometry.verticesNeedUpdate = true;
-            },
+            // updatePolygon = function(patternData, points) {
+            //     var i, n, polygon, fill, line, lineGeom, fillShape, fillGeom;
+            //     
+            //     polygon = patternData.polygon3d;
+            //     fill = polygon.getObjectByName('polygonFill');
+            //     
+            //     if (points.length > 2) {
+            //         polygon.visible = true;
+            //     } else {
+            //         polygon.visible = false;
+            //         return;
+            //     }
+            //     
+            //     if (points.length > 3) {
+            //         fillShape = new THREE.Shape();
+            //         fillShape.moveTo(points[0].x, points[0].y);
+            //         n = points.length;
+            //         for (i = 1; i < n; i++) {
+            //             fillShape.lineTo(points[i].x, points[i].y);
+            //         }
+            //         fillShape.lineTo(points[0].x, points[0].y);
+            //         fillGeom = new THREE.ShapeGeometry(fillShape);
+            //         fill.geometry = fillGeom;
+            //         fill.visible = true;
+            //     } else {
+            //         fill.visible = false;
+            //     }
+            //     
+            //     line = polygon.getObjectByName('polygonLine');
+            //     line.geometry.dispose();
+            //     line.geometry = new THREE.Geometry();
+            //     line.geometry.vertices = points;
+            //     line.geometry.verticesNeedUpdate = true;
+            // },
             
             /**
              * Update the hitarea used for mouse detection.
              * @param {object} patternData Pattern data object.
              */
-            updateHitarea = function(patternData) {
-                var scale = (patternData.radius3d + 3) * 0.1;
-                patternData.hitarea3d.scale.set(scale, scale, 1);
-            },
+            // updateHitarea = function(patternData) {
+            //     var scale = (patternData.radius3d + 3) * 0.1;
+            //     patternData.hitarea3d.scale.set(scale, scale, 1);
+            // },
             
             /**
              * Update the pointer that connects the dots.
              * @param {object} patternData Pattern data object.
              */
-            updatePointer = function(ptrn) {
-                console.log(ptrn.isMutedByNoteInControl);
-                var mutedRadius = 4.5,
-                    radius = (ptrn.isMute || ptrn.isNotSolo || ptrn.isMutedByNoteInControl) ? mutedRadius : ptrn.radius3d;
-                ptrn.pointer3d.geometry.dispose();
-                ptrn.pointer3d.geometry = createPointerGeometry(radius, ptrn.isSolo, ptrn.isNoteInControlled);
-            },
+            // updatePointer = function(ptrn) {
+            //     console.log(ptrn.isMutedByNoteInControl);
+            //     var mutedRadius = 4.5,
+            //         radius = (ptrn.isMute || ptrn.isNotSolo || ptrn.isMutedByNoteInControl) ? mutedRadius : ptrn.radius3d;
+            //     ptrn.pointer3d.geometry.dispose();
+            //     ptrn.pointer3d.geometry = createPointerGeometry(radius, ptrn.isSolo, ptrn.isNoteInControlled);
+            // },
             
             /**
              * Update the zero marker.
              * @param {object} patternData Pattern data object.
              */
-            updateZeroMarker = function(patternData) {
-                var rad = TWO_PI * (-patternData.rotation / patternData.steps),
-                    radius = patternData.radius3d + 3;
-                patternData.zeroMarker3d.position.x = Math.sin(rad) * radius;
-                patternData.zeroMarker3d.position.y = Math.cos(rad) * radius;
-            },
+            // updateZeroMarker = function(patternData) {
+            //     var rad = TWO_PI * (-patternData.rotation / patternData.steps),
+            //         radius = patternData.radius3d + 3;
+            //     patternData.zeroMarker3d.position.x = Math.sin(rad) * radius;
+            //     patternData.zeroMarker3d.position.y = Math.cos(rad) * radius;
+            // },
             
             /**
              * Update the marker that indicates if the pattern is rotated.
              * @param {object} patternData Pattern data object.
              */
-            updateRotatedMarker = function(patternData) {
-                patternData.rotatedMarker3d.position.y = patternData.radius3d + 3;
-                patternData.rotatedMarker3d.visible = patternData.rotation !== 0;
-            };
-        
-        that = {};
+            // updateRotatedMarker = function(patternData) {
+            //     patternData.rotatedMarker3d.position.y = patternData.radius3d + 3;
+            //     patternData.rotatedMarker3d.visible = patternData.rotation !== 0;
+            // };
         
         init();
         
-        that.createPatternWheel = createPatternWheel;
-        that.createControls = createControls;
-        that.updateDots = updateDots;
-        that.updatePointer = updatePointer;
-        return that;
+        // that.createPatternWheel = createPatternWheel;
+        // that.updateDots = updateDots;
+        // that.updatePointer = updatePointer;
+        return wheel;
     }
 
-    ns.createEPGWorldObjects = createEPGWorldObjects;
+    ns.createWorldEPGTemplate = createWorldEPGTemplate;
 
 })(WH);

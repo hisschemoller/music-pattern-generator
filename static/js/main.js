@@ -32,7 +32,8 @@ document.addEventListener('DOMContentLoaded', function(e) {
     WH.createApp({
         that: app,
         appView: appView,
-        midiNetwork: midiNetwork
+        midiNetwork: midiNetwork,
+        world: world
     });
     WH.createAppView({
         that: appView

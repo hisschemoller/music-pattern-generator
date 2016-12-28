@@ -13,13 +13,16 @@ window.WH = window.WH || {};
             settingsEl = document.getElementById('settings'),
             settingsViews = [],
             
-            addSettingsView = function(settingsView) {
+            createSettingsView = function(processor) {
+                var settingsView = ns.createSettingsView({
+                    processor: processor
+                });
                 settingsViews.push(settingsView);
             };
         
         that = specs.that || {};
         
-        that.addSettingsView = addSettingsView;
+        that.createSettingsView = createSettingsView;
         return that;
     };
 

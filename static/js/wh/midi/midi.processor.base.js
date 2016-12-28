@@ -37,16 +37,22 @@ window.WH = window.WH || {};
                 });
             },
             
-            setProperty = function(name, value) {
-                if (my.props.hasOwnProperty(name)) {
-                    my.props[name] = value;
+            getParamValue = function(key) {
+                if (my.params.hasOwnProperty(key)) {
+                    return my.params[key].getValue();
+                }
+            },
+            
+            setProperty = function(key, value) {
+                if (my.props.hasOwnProperty(key)) {
+                    my.props[key] = value;
                 } else {
                     console.warn('Property "' + name + '" doesn\'t exist, unable to set value "' + value + '".');
                 }
             },
             
-            getProperty = function(name) {
-                return my.props[name];
+            getProperty = function(key) {
+                return my.props[key];
             };
        
         my = my || {};
@@ -58,6 +64,7 @@ window.WH = window.WH || {};
         
         that = specs.that || {};
         
+        that.getParamValue = getParamValue;
         that.setProperty = setProperty;
         that.getProperty = getProperty;
         return that;

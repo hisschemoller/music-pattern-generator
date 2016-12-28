@@ -9,8 +9,8 @@ window.WH = window.WH || {};
     
     function createParameter(specs) {
         var that,
-            value = specs.value,
-            defaultValue = specs.defaultValue,
+            value = specs.value || specs.default,
+            defaultValue = specs.default,
             changedCallbacks = [],
 		          
             /**

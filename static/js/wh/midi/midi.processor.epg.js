@@ -14,6 +14,10 @@ window.WH = window.WH || {};
             noteOffEvents = [],
             pulseStartTimes = [],
             
+            init = function() {
+                updatePattern();
+            },
+            
             /**
              * [process description]
              * @param {Number} start Timespan start in ticks from timeline start.
@@ -87,9 +91,9 @@ window.WH = window.WH || {};
                 
                 // playback properties, changes in isTriplets, rate, noteLength
                 var ppqn = WH.conf.getPPQN(),
-                    rate = my.params.isTriplets.getValue() ? my.params.rate.getValue() * (2 / 3) : my.params.rate.getValue(),
+                    rate = my.params.is_triplets.getValue() ? my.params.rate.getValue() * (2 / 3) : my.params.rate.getValue(),
                     stepDuration = rate * ppqn,
-                    noteDuration = my.params.noteLength.getValue() * ppqn;
+                    noteDuration = my.params.note_length.getValue() * ppqn;
                 my.props.duration = my.params.steps.getValue() * stepDuration;
                 my.props.position = my.props.position % my.props.duration;
                 
@@ -259,6 +263,8 @@ window.WH = window.WH || {};
                 ]
             }
         });
+        
+        init();
         
         that.process = process;
         return that;

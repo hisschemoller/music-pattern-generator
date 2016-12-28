@@ -11,13 +11,19 @@ window.WH = window.WH || {};
         var that,
             appView = specs.appView,
             midiNetwork = specs.midiNetwork,
+            world = specs.world,
             
             addProcessor = function(type, specs) {
                 var processor = midiNetwork.createProcessor(type, specs);
-                var settingsView = ns.createSettingsView({
-                    processor: processor
-                });
-                appView.addSettingsView(settingsView);
+                appView.createSettingsView(processor);
+                switch (type) {
+                    case 'epg':
+                        ns.createWorldEPGView({
+                            processor: processor,
+                            object3d: world.createObject(type, processor)
+                        });
+                        break;
+                }
             },
             
             removeProcessor = function() {

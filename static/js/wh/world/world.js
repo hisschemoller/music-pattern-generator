@@ -13,7 +13,6 @@ window.WH = window.WH || {};
             app = specs.app,
             midiNetwork = specs.midiNetwork,
             containerEl = document.getElementById('container-webgl'),
-            worldObjects,
             canvasRect,
             renderer,
             scene,
@@ -23,6 +22,7 @@ window.WH = window.WH || {};
             raycaster = new THREE.Raycaster(),
             intersection = new THREE.Vector3(),
             offset = new THREE.Vector3(),
+            templates = {},
             objects = [],
             dragObject,
             controls,
@@ -31,6 +31,7 @@ window.WH = window.WH || {};
             doubleClickCounter = 0,
             doubleClickDelay = 300,
             doubleClickTimer,
+            defaultColor = 0xeeeeee,
             TWO_PI = Math.PI * 2,
         
             /**
@@ -134,14 +135,6 @@ window.WH = window.WH || {};
                     app.addProcessor('epg', {
                         position3d: intersection.clone()
                     });
-                    // var processor = midiNetwork.addProcessor('epg', {
-                    //     position3d: intersection.clone()
-                    // });
-                    // midiNetwork.selectProcessor(processor);
-                    // var midiOutProcessor = midiNetwork.getProcessorByProperty('type', 'output');
-                    // if (midiOutProcessor) {
-                    //     midiOutProcessor.connect(processor);
-                    // }
                 }
             },
             
@@ -210,8 +203,6 @@ window.WH = window.WH || {};
             initWorld = function() {
                 var light,
                     lineMaterial;
-                    
-                worldObjects = WH.createEPGWorldObjects();
                 
                 renderer = new THREE.WebGLRenderer({antialias: true});
                 renderer.setClearColor(0xf9f9f9);
@@ -234,6 +225,13 @@ window.WH = window.WH || {};
                 plane.setFromNormalAndCoplanarPoint(
                     camera.getWorldDirection(plane.normal), 
                     new THREE.Vector3(0,0,0));
+                    
+                lineMaterial = new THREE.LineBasicMaterial({
+                    color: defaultColor,
+                    linewidth: 3
+                });
+                    
+                templates.epg = ns.createWorldEPGTemplate(lineMaterial, defaultColor);
             },
             
             /**
@@ -265,6 +263,24 @@ window.WH = window.WH || {};
             },
             
             /**
+             * Create world object if it exists for the type.
+             * @param  {String} type Type of object to create.
+             * @param  {Object} processor MIDI processor for which the 3D object will be a view.
+             */
+            createObject = function(type, processor) {
+                if (templates[type]) {
+                    var object3d = templates[type].clone();
+                    objects.push(object3d);
+                    scene.add(object3d);
+                    return object3d;
+                }
+            },
+            
+            deleteObject = function() {
+                
+            },
+            
+            /**
              * Update and render the 3D world.
              * @param {array} patternData Array of pattern data objects.
              */
@@ -277,6 +293,8 @@ window.WH = window.WH || {};
         that = specs.that;
         
         that.setup = setup;
+        that.createObject = createObject;
+        that.deleteObject = deleteObject;
         that.draw = draw;
         return that;
     }
