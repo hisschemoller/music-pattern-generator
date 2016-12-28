@@ -12,7 +12,9 @@
 document.addEventListener('DOMContentLoaded', function(e) {
     
     // Create all objects that will be the modules of the app.
-    var arrangement = {},
+    var app = {},
+        appView = {},
+        arrangement = {},
         // epgCanvas = {},
         epgControls = {},
         // epgModel = {}, 
@@ -27,6 +29,14 @@ document.addEventListener('DOMContentLoaded', function(e) {
     WH.pubSub = WH.createPubSub();
     
     // Add functionality to the modules and inject dependencies.
+    WH.createApp({
+        that: app,
+        appView: appView,
+        midiNetwork: midiNetwork
+    });
+    WH.createAppView({
+        that: appView
+    });
     WH.createArrangement({
         that: arrangement
     });
@@ -64,10 +74,10 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     WH.createMIDI({
         that: midi,
+        app: app,
         epgControls: epgControls,
         // epgModel: epgModel,
         epgPreferences: epgPreferences,
-        midiNetwork: midiNetwork,
         transport: transport
     });
     WH.createMIDINetwork({
@@ -81,6 +91,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     WH.createWorld({
         that: world,
+        app: app,
         midiNetwork: midiNetwork
     });
     
