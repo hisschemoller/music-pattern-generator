@@ -10,6 +10,7 @@ window.WH = window.WH || {};
     function createWorld(specs) {
         
         var that,
+            app = specs.app,
             midiNetwork = specs.midiNetwork,
             containerEl = document.getElementById('container-webgl'),
             worldObjects,
@@ -130,18 +131,17 @@ window.WH = window.WH || {};
                 // if ray intersects plane, store point in vector 'intersection'
                 if (raycaster.ray.intersectPlane(plane, intersection)) {
                     // create a new wheel 3D object
-                    // var ptrn = epgModel.createPattern({
-                    //     position3d: intersection.clone()
-                    // });
-                    // epgModel.selectPattern(ptrn);
-                    var processor = midiNetwork.addProcessor('epg', {
+                    app.addProcessor('epg', {
                         position3d: intersection.clone()
                     });
-                    midiNetwork.selectProcessor(processor);
-                    var midiOutProcessor = midiNetwork.getProcessorByProperty('type', 'output');
-                    if (midiOutProcessor) {
-                        midiOutProcessor.connect(processor);
-                    }
+                    // var processor = midiNetwork.addProcessor('epg', {
+                    //     position3d: intersection.clone()
+                    // });
+                    // midiNetwork.selectProcessor(processor);
+                    // var midiOutProcessor = midiNetwork.getProcessorByProperty('type', 'output');
+                    // if (midiOutProcessor) {
+                    //     midiOutProcessor.connect(processor);
+                    // }
                 }
             },
             

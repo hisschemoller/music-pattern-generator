@@ -9,10 +9,10 @@ window.WH = window.WH || {};
     
     function createMIDI(specs) {
         var that,
+            app = specs.app,
             epgControls = specs.epgControls,
             // epgModel = specs.epgModel,
             epgPreferences = specs.epgPreferences,
-            midiNetwork = specs.midiNetwork,
             transport = specs.transport,
             selectedInput,
             selectedInputID,
@@ -51,7 +51,7 @@ window.WH = window.WH || {};
                 if (WebMidi.enabled) {
                     selectedInput = WebMidi.getInputById(selectedInputID);
                     epgPreferences.setSelectedMidiPort(selectedInputID, true);
-                    midiNetwork.addProcessor('input', {
+                    app.addProcessor('input', {
                         midiInput: selectedInput
                     });
                     setClockInEnabled(isClockInEnabled);
@@ -68,7 +68,7 @@ window.WH = window.WH || {};
                 if (WebMidi.enabled) {
                     selectedOutput = WebMidi.getOutputById(selectedOutputID);
                     epgPreferences.setSelectedMidiPort(selectedOutputID, false);
-                    midiNetwork.addProcessor('output', {
+                    app.addProcessor('output', {
                         midiOutput: selectedOutput
                     });
                 }

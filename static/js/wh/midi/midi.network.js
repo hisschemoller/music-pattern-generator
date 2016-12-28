@@ -13,7 +13,7 @@ window.WH = window.WH || {};
             processors = [],
             numProcessors = processors.length,
         
-            addProcessor = function(processorName, specs) {
+            createProcessor = function(processorName, specs) {
                 if (ns.midiProcessors && ns.midiProcessors[processorName]) {
                     specs.that = {};
                     specs.id = processorIdCounter;
@@ -28,7 +28,7 @@ window.WH = window.WH || {};
                 }
             },
             
-            removeProcessor = function() {
+            destroyProcessor = function() {
                 numProcessors = processors.length;
             },
             
@@ -57,8 +57,8 @@ window.WH = window.WH || {};
 
         that = specs.that || {};
         
-        that.addProcessor = addProcessor;
-        that.removeProcessor = removeProcessor;
+        that.createProcessor = createProcessor;
+        that.destroyProcessor = destroyProcessor;
         that.selectProcessor = selectProcessor;
         that.getProcessorByProperty = getProcessorByProperty;
         that.process = process;
