@@ -86,7 +86,8 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     WH.createTransport({
         that: transport,
-        midiNetwork: midiNetwork
+        midiNetwork: midiNetwork,
+        world: world
         // arrangement: arrangement,
         // epgModel: epgModel
     });

@@ -26,6 +26,7 @@ window.WH = window.WH || {};
     function createSequencer (specs, my) {
         var that,
             midiNetwork = specs.midiNetwork,
+            world = specs.world,
             // arrangement = specs.arrangement,
             // epgModel = specs.epgModel, 
             ppqn = 480,
@@ -68,6 +69,7 @@ window.WH = window.WH || {};
              */
             updateView = function(position) {
                 // epgModel.onTransportRun(msec2tick(position - transportOrigin));
+                world.draw();
             },
             
             /**
