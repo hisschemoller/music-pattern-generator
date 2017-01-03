@@ -116,7 +116,7 @@ window.WH = window.WH || {};
                     outerObject = getOuterParentObject(intersects[0]);
                     // ptrn = epgModel.getPatternByProperty('object3d', outerObject);
                     // epgModel.selectPattern(ptrn);
-                    var processor = midiNetwork.getProcessorByProperty('id', outerObject.id)
+                    var processor = midiNetwork.getProcessorByProperty('id', outerObject.userData.id)
                     midiNetwork.selectProcessor(processor);
                     dragStart(outerObject, mouse);
                 }
@@ -172,12 +172,6 @@ window.WH = window.WH || {};
                 if (intersects.length > 0) {
                     if (intersected != intersects[0].object) {
                         intersected = intersects[0].object;
-                        // i don't understand this. set the plane based on 
-                        //   1. where the camera is pointing to
-                        //   2. the object under the mouse
-                        // plane.setFromNormalAndCoplanarPoint(
-                        //     camera.getWorldDirection(plane.normal),
-                        //     intersected.position);
                     }
                     containerEl.style.cursor = 'pointer';
                 } else {
@@ -190,7 +184,7 @@ window.WH = window.WH || {};
                 e.preventDefault();
                 if (dragObject) {
                     // epgModel.setPatternProperty('position3d', dragObject.position.clone());
-                    var processor = midiNetwork.getProcessorById(dragObject.userData.id);
+                    var processor = midiNetwork.getProcessorByProperty('id', dragObject.userData.id);
                     processor.setProperty('position3d', dragObject.position.clone());
                 }
                 dragObject = null;

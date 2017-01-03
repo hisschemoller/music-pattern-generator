@@ -24,8 +24,11 @@ window.WH = window.WH || {};
             radius3d,
             
             init = function() {
+                // add callback to update before render.
+                // processor.addRenderCallback(preRender);
                 // set position in 3d
                 object3d.position.copy(processor.getProperty('position3d'));
+                object3d.userData.id = processor.getProperty('id');
                 // set the dots around the wheel
                 updateDots();
             },
