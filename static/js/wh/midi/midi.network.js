@@ -17,6 +17,7 @@ window.WH = window.WH || {};
             
             init = function() {
                 ns.pubSub.on('create.processor', createProcessor);
+                ns.pubSub.on('select.processor', selectProcessor);
             },
         
             createProcessor = function(specs) {
@@ -27,10 +28,10 @@ window.WH = window.WH || {};
                     processors.push(processor);
                     processorIdCounter += 1;
                     numProcessors = processors.length;
-                    console.log('Add processor ' + processor.getProperty('type') + ' (id ' + processor.getProperty('id') + ')');
                     // create the views for the processor
                     appView.createSettingsView(specs.type, processor);
                     world.createObject(specs.type, processor);
+                    console.log('Add processor ' + processor.getProperty('type') + ' (id ' + processor.getProperty('id') + ')');
                 } else {
                     console.error('No MIDI processor found of type: ', specs.type);
                 }

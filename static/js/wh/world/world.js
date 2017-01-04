@@ -113,10 +113,13 @@ window.WH = window.WH || {};
                 if (intersects.length) {
                     // get topmost parent of closest object
                     outerObject = getOuterParentObject(intersects[0]);
+                    outerObject.dispatchEvent({
+                        type: 'touchstart'
+                    });
                     // ptrn = epgModel.getPatternByProperty('object3d', outerObject);
                     // epgModel.selectPattern(ptrn);
-                    var processor = midiNetwork.getProcessorByProperty('id', outerObject.userData.id)
-                    midiNetwork.selectProcessor(processor);
+                    // var processor = midiNetwork.getProcessorByProperty('id', outerObject.userData.id)
+                    // midiNetwork.selectProcessor(processor);
                     dragStart(outerObject, mouse);
                 }
             },

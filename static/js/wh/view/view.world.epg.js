@@ -29,8 +29,14 @@ window.WH = window.WH || {};
                 // set position in 3d
                 object3d.position.copy(processor.getProperty('position3d'));
                 object3d.userData.id = processor.getProperty('id');
+                object3d.addEventListener('touchstart', onTouchstart);
                 // set the dots around the wheel
                 updateDots();
+            },
+            
+            
+            onTouchstart = function(e) {
+                ns.pubSub.fire('select.processor', processor);
             },
             
             /**
