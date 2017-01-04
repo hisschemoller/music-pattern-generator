@@ -13,7 +13,12 @@ window.WH = window.WH || {};
             settingsEl = document.getElementById('settings'),
             settingsViews = [],
             
-            createSettingsView = function(processor) {
+            /**
+             * Create settings controls view for a processor.
+             * @param  {String} type Type of processor for which to create the view.
+             * @param  {Object} processor MIDI processor to control with the settings.
+             */
+            createSettingsView = function(type, processor) {
                 var settingsView = ns.createSettingsView({
                     processor: processor
                 });

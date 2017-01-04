@@ -9,22 +9,26 @@ window.WH = window.WH || {};
     
     function createMIDINetwork(specs, my) {
         var that,
+            appView = specs.appView,
+            world = specs.world,
             processorIdCounter = 0,
             processors = [],
             numProcessors = processors.length,
         
-            createProcessor = function(processorName, specs) {
-                if (ns.midiProcessors && ns.midiProcessors[processorName]) {
+            createProcessor = function(type, specs) {
+                if (ns.midiProcessors && ns.midiProcessors[type]) {
                     specs.that = {};
                     specs.id = processorIdCounter;
-                    var processor = ns.midiProcessors[processorName].create(specs);
+                    var processor = ns.midiProcessors[type].create(specs);
                     processors.push(processor);
                     processorIdCounter += 1;
                     numProcessors = processors.length;
                     console.log('Add processor ' + processor.getProperty('type') + ' (id ' + processor.getProperty('id') + ')');
-                    return processor;
+                    // create the views for the processor
+                    appView.createSettingsView(type, processor);
+                    world.createObject(type, processor);
                 } else {
-                    console.error('No MIDI processor found with name: ', processorName);
+                    console.error('No MIDI processor found of type: ', type);
                 }
             },
             

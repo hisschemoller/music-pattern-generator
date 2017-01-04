@@ -10,7 +10,6 @@ window.WH = window.WH || {};
     function createWorld(specs) {
         
         var that,
-            app = specs.app,
             midiNetwork = specs.midiNetwork,
             containerEl = document.getElementById('container-webgl'),
             canvasRect,
@@ -132,7 +131,7 @@ window.WH = window.WH || {};
                 // if ray intersects plane, store point in vector 'intersection'
                 if (raycaster.ray.intersectPlane(plane, intersection)) {
                     // create a new wheel 3D object
-                    app.addProcessor('epg', {
+                    midiNetwork.createProcessor('epg', {
                         position3d: intersection.clone()
                     });
                 }
@@ -263,10 +262,19 @@ window.WH = window.WH || {};
              */
             createObject = function(type, processor) {
                 if (templates[type]) {
+                    // create 3D object
                     var object3d = templates[type].clone();
                     objects.push(object3d);
                     scene.add(object3d);
-                    return object3d;
+                    // create view for the 3D object
+                    switch (type) {
+                        case 'epg':
+                            ns.createWorldEPGView({
+                                processor: processor,
+                                object3d: object3d
+                            });
+                            break;
+                    }
                 }
             },
             
