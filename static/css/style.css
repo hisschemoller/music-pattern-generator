@@ -42,3 +42,6 @@ legend {
 #controls {
     width: 150px;
 }
+#templates {
+    display: none;
+}
