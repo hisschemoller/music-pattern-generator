@@ -86,8 +86,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         // epgModel: epgModel
     });
     WH.createWorld({
-        that: world,
-        midiNetwork: midiNetwork
+        that: world
     });
     
     // initialise

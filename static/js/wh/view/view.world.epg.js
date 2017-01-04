@@ -30,13 +30,25 @@ window.WH = window.WH || {};
                 object3d.position.copy(processor.getProperty('position3d'));
                 object3d.userData.id = processor.getProperty('id');
                 object3d.addEventListener('touchstart', onTouchstart);
+                object3d.addEventListener('dragend', onDragEnd);
                 // set the dots around the wheel
                 updateDots();
             },
             
-            
+            /**
+             * Touch start on Object3D.
+             * @param  {Object} e Object3D event.
+             */
             onTouchstart = function(e) {
                 ns.pubSub.fire('select.processor', processor);
+            },
+            
+            /**
+             * Drag end on Object3D.
+             * @param  {Object} e Object3D event.
+             */
+            onDragEnd = function(e) {
+                processor.setProperty('position3d', e.target.position.clone());
             },
             
             /**

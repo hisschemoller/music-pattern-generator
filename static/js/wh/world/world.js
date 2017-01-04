@@ -10,7 +10,6 @@ window.WH = window.WH || {};
     function createWorld(specs) {
         
         var that,
-            midiNetwork = specs.midiNetwork,
             containerEl = document.getElementById('container-webgl'),
             canvasRect,
             renderer,
@@ -116,10 +115,6 @@ window.WH = window.WH || {};
                     outerObject.dispatchEvent({
                         type: 'touchstart'
                     });
-                    // ptrn = epgModel.getPatternByProperty('object3d', outerObject);
-                    // epgModel.selectPattern(ptrn);
-                    // var processor = midiNetwork.getProcessorByProperty('id', outerObject.userData.id)
-                    // midiNetwork.selectProcessor(processor);
                     dragStart(outerObject, mouse);
                 }
             },
@@ -138,9 +133,6 @@ window.WH = window.WH || {};
                         type: 'epg',
                         position3d: intersection.clone()
                     });
-                    // midiNetwork.createProcessor('epg', {
-                    //     position3d: intersection.clone()
-                    // });
                 }
             },
             
@@ -189,9 +181,9 @@ window.WH = window.WH || {};
             dragEnd = function(e) {
                 e.preventDefault();
                 if (dragObject) {
-                    // epgModel.setPatternProperty('position3d', dragObject.position.clone());
-                    var processor = midiNetwork.getProcessorByProperty('id', dragObject.userData.id);
-                    processor.setProperty('position3d', dragObject.position.clone());
+                    dragObject.dispatchEvent({
+                        type: 'dragend'
+                    });
                 }
                 dragObject = null;
                 containerEl.style.cursor = 'auto';
