@@ -70,9 +70,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         that: midi,
         app: app,
         epgControls: epgControls,
-        // epgModel: epgModel,
         epgPreferences: epgPreferences,
-        midiNetwork: midiNetwork,
         transport: transport
     });
     WH.createMIDINetwork({

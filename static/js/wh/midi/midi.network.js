@@ -14,21 +14,25 @@ window.WH = window.WH || {};
             processorIdCounter = 0,
             processors = [],
             numProcessors = processors.length,
+            
+            init = function() {
+                ns.pubSub.on('create.processor', createProcessor);
+            },
         
-            createProcessor = function(type, specs) {
-                if (ns.midiProcessors && ns.midiProcessors[type]) {
+            createProcessor = function(specs) {
+                if (ns.midiProcessors && ns.midiProcessors[specs.type]) {
                     specs.that = {};
                     specs.id = processorIdCounter;
-                    var processor = ns.midiProcessors[type].create(specs);
+                    var processor = ns.midiProcessors[specs.type].create(specs);
                     processors.push(processor);
                     processorIdCounter += 1;
                     numProcessors = processors.length;
                     console.log('Add processor ' + processor.getProperty('type') + ' (id ' + processor.getProperty('id') + ')');
                     // create the views for the processor
-                    appView.createSettingsView(type, processor);
-                    world.createObject(type, processor);
+                    appView.createSettingsView(specs.type, processor);
+                    world.createObject(specs.type, processor);
                 } else {
-                    console.error('No MIDI processor found of type: ', type);
+                    console.error('No MIDI processor found of type: ', specs.type);
                 }
             },
             
@@ -61,7 +65,8 @@ window.WH = window.WH || {};
 
         that = specs.that || {};
         
-        that.createProcessor = createProcessor;
+        init();
+        
         that.destroyProcessor = destroyProcessor;
         that.selectProcessor = selectProcessor;
         that.getProcessorByProperty = getProcessorByProperty;

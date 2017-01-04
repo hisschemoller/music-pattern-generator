@@ -130,10 +130,14 @@ window.WH = window.WH || {};
                 updateMouseRay(e);
                 // if ray intersects plane, store point in vector 'intersection'
                 if (raycaster.ray.intersectPlane(plane, intersection)) {
-                    // create a new wheel 3D object
-                    midiNetwork.createProcessor('epg', {
+                    // create a new processor
+                    ns.pubSub.fire('create.processor', {
+                        type: 'epg',
                         position3d: intersection.clone()
                     });
+                    // midiNetwork.createProcessor('epg', {
+                    //     position3d: intersection.clone()
+                    // });
                 }
             },
             

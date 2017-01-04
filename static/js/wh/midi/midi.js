@@ -11,7 +11,6 @@ window.WH = window.WH || {};
         var that,
             epgControls = specs.epgControls,
             epgPreferences = specs.epgPreferences,
-            midiNetwork = specs.midiNetwork,
             transport = specs.transport,
             selectedInput,
             selectedInputID,
@@ -50,7 +49,8 @@ window.WH = window.WH || {};
                 if (WebMidi.enabled) {
                     selectedInput = WebMidi.getInputById(selectedInputID);
                     epgPreferences.setSelectedMidiPort(selectedInputID, true);
-                    midiNetwork.createProcessor('input', {
+                    ns.pubSub.fire('create.processor', {
+                        type: 'input',
                         midiInput: selectedInput
                     });
                     setClockInEnabled(isClockInEnabled);
@@ -67,7 +67,8 @@ window.WH = window.WH || {};
                 if (WebMidi.enabled) {
                     selectedOutput = WebMidi.getOutputById(selectedOutputID);
                     epgPreferences.setSelectedMidiPort(selectedOutputID, false);
-                    midiNetwork.createProcessor('output', {
+                    ns.pubSub.fire('create.processor', {
+                        type: 'output',
                         midiOutput: selectedOutput
                     });
                 }
