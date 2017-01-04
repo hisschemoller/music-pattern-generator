@@ -20,6 +20,7 @@ window.WH = window.WH || {};
              */
             createSettingsView = function(type, processor) {
                 var settingsView = ns.createSettingsView({
+                    type: type,
                     processor: processor
                 });
                 settingsViews.push(settingsView);

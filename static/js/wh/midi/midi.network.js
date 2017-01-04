@@ -26,12 +26,12 @@ window.WH = window.WH || {};
                     specs.id = processorIdCounter;
                     var processor = ns.midiProcessors[specs.type].create(specs);
                     processors.push(processor);
+                    console.log('Add processor ' + processor.getProperty('type') + ' (id ' + processor.getProperty('id') + ')');
                     processorIdCounter += 1;
                     numProcessors = processors.length;
                     // create the views for the processor
                     appView.createSettingsView(specs.type, processor);
                     world.createObject(specs.type, processor);
-                    console.log('Add processor ' + processor.getProperty('type') + ' (id ' + processor.getProperty('id') + ')');
                 } else {
                     console.error('No MIDI processor found of type: ', specs.type);
                 }

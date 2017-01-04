@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         epgControls = {},
         // epgModel = {}, 
         epgPreferences = {},
-        epgSettings = {},
+        // epgSettings = {},
         file = {},
         midi = {},
         midiNetwork = {},
@@ -55,10 +55,10 @@ document.addEventListener('DOMContentLoaded', function(e) {
         that: epgPreferences,
         midi: midi
     });
-    WH.epg.createEPGSettings({
-        that: epgSettings,
-        // epgModel: epgModel
-    });
+    // WH.epg.createEPGSettings({
+    //     that: epgSettings,
+    //     // epgModel: epgModel
+    // });
     WH.createFile({
         that: file,
         arrangement: arrangement,

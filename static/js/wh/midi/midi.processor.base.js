@@ -51,6 +51,10 @@ window.WH = window.WH || {};
                 }
             },
             
+            getParameters = function() {
+                return my.params;
+            },
+            
             getProperty = function(key) {
                 return my.props[key];
             };
@@ -67,6 +71,7 @@ window.WH = window.WH || {};
         that.getParamValue = getParamValue;
         that.setProperty = setProperty;
         that.getProperty = getProperty;
+        that.getParameters = getParameters;
         return that;
     };
     
