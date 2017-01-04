@@ -23,8 +23,18 @@ window.WH = window.WH || {};
                     parentEl.appendChild(el);
                 }
                 
+                // create setting element from template, based on parameter type and add to settings panel
                 for (var key in params) {
-                    console.log(key, params[key]);
+                    var settingContainerEl = el.getElementsByClassName(key)[0];
+                    if (settingContainerEl) {
+                        var param = params[key];
+                        var settingTemplate = document.getElementById('template-setting-' + param.getType());
+                        if (settingTemplate) {
+                            var settingEl = settingTemplate.firstElementChild.cloneNode(true);
+                            settingContainerEl.appendChild(settingEl);
+                            
+                        }
+                    }
                 }
             };
         

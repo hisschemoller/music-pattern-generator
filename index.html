@@ -8,85 +8,7 @@
 <body>
     <div id="app">
         <div id="container-webgl"></div>
-        <form id="settings" class="form">
-            <div class="form__row">
-                <label for="steps-range" class="form__label">steps</label>
-                <input type="range" id="steps-range" min="1" max="16" step="1" class="form__range" />
-                <input type="number" id="steps-number" min="1" max="16" class="form__number" />
-            </div>
-            <div class="form__row">
-                <label for="pulses-range" class="form__label">pulses</label>
-                <input type="range" id="pulses-range" min="1" max="16" step="1" class="form__range" name="pulses" />
-                <input type="number" id="pulses-number" min="1" max="16" class="form__number" />
-            </div>
-            <div class="form__row">
-                <label for="rotation-range" class="form__label">rotation</label>
-                <input type="range" id="rotation-range" min="0" max="16" step="1" class="form__range" name="rotation" />
-                <input type="number" id="rotation-number" min="0" max="16" class="form__number" />
-            </div>
-            <div class="form__row">
-                <legend class="form__label">rate</legend>
-                <label><input type="radio" name="rate" value="4" class="form__radio" />1</label>
-                <label><input type="radio" name="rate" value="2" class="form__radio" />1/2</label>
-                <label><input type="radio" name="rate" value="1" class="form__radio" />1/4</label>
-                <label><input type="radio" name="rate" value="0.5" class="form__radio" />1/8</label>
-                <label><input type="radio" name="rate" value="0.25" class="form__radio" />1/16</label>
-                <label><input type="radio" name="rate" value="0.125" class="form__radio" />1/32</label>
-            </div>
-            <div class="form__row">
-                <label for="triplets-check" class="form__label">triplets</label>
-                <input type="checkbox" id="triplets-check" class="form__check" />
-            </div>
-            <div class="form__row">
-                <legend class="form__label">note length</legend>
-                <label><input type="radio" name="note-length" value="4" class="form__radio" />1</label>
-                <label><input type="radio" name="note-length" value="2" class="form__radio" />1/2</label>
-                <label><input type="radio" name="note-length" value="1" class="form__radio" />1/4</label>
-                <label><input type="radio" name="note-length" value="0.5" class="form__radio" />1/8</label>
-                <label><input type="radio" name="note-length" value="0.25" class="form__radio" />1/16</label>
-                <label><input type="radio" name="note-length" value="0.125" class="form__radio" />1/32</label>
-            </div>
-            <div class="form__row">
-                <label for="mute-check" class="form__label">mute</label>
-                <input type="checkbox" id="mute-check" class="form__check" />
-            </div>
-            <div class="form__row">
-                <label for="solo-check" class="form__label">solo</label>
-                <input type="checkbox" id="solo-check" class="form__check" />
-            </div>
-            <div class="form__row">
-                <label for="name-text" class="form__label">name</label>
-                <input type="text" id="name-text" class="form__text" />
-            </div>
-            <div class="form__row">
-                <label for="channel-out-range" class="form__label">channel</label>
-                <input type="range" id="channel-out-range" min="1" max="16" step="1" class="form__range" />
-                <input type="number" id="channel-out-number" min="1" max="16" class="form__number" />
-            </div>
-            <div class="form__row">
-                <label for="pitch-out-range" class="form__label">pitch</label>
-                <input type="range" id="pitch-out-range" min="0" max="127" step="1" class="form__range" />
-                <input type="number" id="pitch-out-number" min="0" max="127" class="form__number" />
-            </div>
-            <div class="form__row">
-                <label for="velocity-out-range" class="form__label">velocity</label>
-                <input type="range" id="velocity-out-range" min="0" max="127" step="1" class="form__range" />
-                <input type="number" id="velocity-out-number" min="0" max="127" class="form__number" />
-            </div>
-            <div class="form__row">
-                <label for="channel-in-range" class="form__label">channel in</label>
-                <input type="range" id="channel-in-range" min="1" max="16" step="1" class="form__range" />
-                <input type="number" id="channel-in-number" min="1" max="16" class="form__number" />
-            </div>
-            <div class="form__row">
-                <label for="pitch-in-range" class="form__label">pitch in</label>
-                <input type="range" id="pitch-in-range" min="0" max="127" step="1" class="form__range" />
-                <input type="number" id="pitch-in-number" min="0" max="127" class="form__number" />
-            </div>
-            <div class="form__row">
-                <input type="button" id="delete-button" class="form__button" value="delete pattern" />
-            </div>
-        </form>
+        <div id="settings"></div>
         <form id="controls" class="form">
             <div class="form__row">
                 <label for="play-check" class="form__label">play</label>
@@ -120,6 +42,106 @@
             </div>
         </form>
     </app>
+    <div id="templates">
+        <div id="template-settings-epg">
+            <form class="settings" class="form">
+                <fieldset>
+                    <legend>Euclidean settings</legend>
+                    <div class="settings__row steps"></div>
+                    <div class="settings__row pulses"></div>
+                    <div class="settings__row rotation"></div>
+                </fieldset>
+            </form>
+        </div><!-- /template-settings-epg -->
+        <div id="template-setting-integer">
+            <label class="settings__label"><span class="settings__l"></span>
+                <input type="range" min="" max="" step="1" class="settings__range" />
+                <input type="number" min="" max="" class="settings__number" />
+            </label>
+        </div><!-- /template-setting-integer -->
+        
+        <div id="template-settings">
+            <form class="settings" class="form">
+                <div class="form__row">
+                    <label for="steps-range" class="form__label">steps</label>
+                    <input type="range" id="steps-range" min="1" max="16" step="1" class="form__range" />
+                    <input type="number" id="steps-number" min="1" max="16" class="form__number" />
+                </div>
+                <div class="form__row">
+                    <label for="pulses-range" class="form__label">pulses</label>
+                    <input type="range" id="pulses-range" min="1" max="16" step="1" class="form__range" name="pulses" />
+                    <input type="number" id="pulses-number" min="1" max="16" class="form__number" />
+                </div>
+                <div class="form__row">
+                    <label for="rotation-range" class="form__label">rotation</label>
+                    <input type="range" id="rotation-range" min="0" max="16" step="1" class="form__range" name="rotation" />
+                    <input type="number" id="rotation-number" min="0" max="16" class="form__number" />
+                </div>
+                <div class="form__row">
+                    <legend class="form__label">rate</legend>
+                    <label><input type="radio" name="rate" value="4" class="form__radio" />1</label>
+                    <label><input type="radio" name="rate" value="2" class="form__radio" />1/2</label>
+                    <label><input type="radio" name="rate" value="1" class="form__radio" />1/4</label>
+                    <label><input type="radio" name="rate" value="0.5" class="form__radio" />1/8</label>
+                    <label><input type="radio" name="rate" value="0.25" class="form__radio" />1/16</label>
+                    <label><input type="radio" name="rate" value="0.125" class="form__radio" />1/32</label>
+                </div>
+                <div class="form__row">
+                    <label for="triplets-check" class="form__label">triplets</label>
+                    <input type="checkbox" id="triplets-check" class="form__check" />
+                </div>
+                <div class="form__row">
+                    <legend class="form__label">note length</legend>
+                    <label><input type="radio" name="note-length" value="4" class="form__radio" />1</label>
+                    <label><input type="radio" name="note-length" value="2" class="form__radio" />1/2</label>
+                    <label><input type="radio" name="note-length" value="1" class="form__radio" />1/4</label>
+                    <label><input type="radio" name="note-length" value="0.5" class="form__radio" />1/8</label>
+                    <label><input type="radio" name="note-length" value="0.25" class="form__radio" />1/16</label>
+                    <label><input type="radio" name="note-length" value="0.125" class="form__radio" />1/32</label>
+                </div>
+                <div class="form__row">
+                    <label for="mute-check" class="form__label">mute</label>
+                    <input type="checkbox" id="mute-check" class="form__check" />
+                </div>
+                <div class="form__row">
+                    <label for="solo-check" class="form__label">solo</label>
+                    <input type="checkbox" id="solo-check" class="form__check" />
+                </div>
+                <div class="form__row">
+                    <label for="name-text" class="form__label">name</label>
+                    <input type="text" id="name-text" class="form__text" />
+                </div>
+                <div class="form__row">
+                    <label for="channel-out-range" class="form__label">channel</label>
+                    <input type="range" id="channel-out-range" min="1" max="16" step="1" class="form__range" />
+                    <input type="number" id="channel-out-number" min="1" max="16" class="form__number" />
+                </div>
+                <div class="form__row">
+                    <label for="pitch-out-range" class="form__label">pitch</label>
+                    <input type="range" id="pitch-out-range" min="0" max="127" step="1" class="form__range" />
+                    <input type="number" id="pitch-out-number" min="0" max="127" class="form__number" />
+                </div>
+                <div class="form__row">
+                    <label for="velocity-out-range" class="form__label">velocity</label>
+                    <input type="range" id="velocity-out-range" min="0" max="127" step="1" class="form__range" />
+                    <input type="number" id="velocity-out-number" min="0" max="127" class="form__number" />
+                </div>
+                <div class="form__row">
+                    <label for="channel-in-range" class="form__label">channel in</label>
+                    <input type="range" id="channel-in-range" min="1" max="16" step="1" class="form__range" />
+                    <input type="number" id="channel-in-number" min="1" max="16" class="form__number" />
+                </div>
+                <div class="form__row">
+                    <label for="pitch-in-range" class="form__label">pitch in</label>
+                    <input type="range" id="pitch-in-range" min="0" max="127" step="1" class="form__range" />
+                    <input type="number" id="pitch-in-number" min="0" max="127" class="form__number" />
+                </div>
+                <div class="form__row">
+                    <input type="button" id="delete-button" class="form__button" value="delete pattern" />
+                </div>
+            </form>
+        </div><!-- /template-settings -->
+    </div>
     <script src="static/js/lib/three.js"></script>
     <script src="static/js/lib/trackballcontrols.js"></script>
     <script src="static/js/lib/tween.js"></script>
@@ -148,6 +170,7 @@
     <script src="static/js/wh/midi/midi.processor.epg.js"></script>
     <script src="static/js/wh/midi/midi.processor.input.js"></script>
     <script src="static/js/wh/midi/midi.processor.output.js"></script>
+    <script src="static/js/wh/parameter/mapping.int.linear.js"></script>
     <script src="static/js/wh/parameter/parameter.js"></script>
     <script src="static/js/wh/view/view.app.js"></script>
     <script src="static/js/wh/view/view.settings.js"></script>

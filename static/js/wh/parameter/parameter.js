@@ -7,12 +7,21 @@ window.WH = window.WH || {};
 
 (function (ns) {
     
-    function createParameter(specs) {
+    function createParameter(specs, my) {
         var that,
             value = specs.value || specs.default,
             defaultValue = specs.default,
+            type = specs.type,
             changedCallbacks = [],
-		          
+            
+            init = function() {
+                switch (type) {
+                    case 'linear':
+                        that = ns.createMappingIntLinear(specs, my);
+                        break;
+                }
+            },
+		    
             /**
              * Call all callbacks if the parameter's value changed.
              * @param {Number|String|Boolean} oldValue Value before change.
@@ -26,7 +35,7 @@ window.WH = window.WH || {};
                         callback(that, oldValue, value);
                     }	
         		} catch(err) {
-        			Console.error('Make sure callbacks have the following signature: (parameter, oldValue, newValue)');
+        			console.error('Make sure callbacks have the following signature: (parameter, oldValue, newValue)');
         		}
         	}
 		
@@ -81,7 +90,7 @@ window.WH = window.WH || {};
     		 */
     		setValueNormalized = function(normalizedValue) {
     			var oldValue = value;
-    			value = mapping.map(normalizedValue);
+    			value = my.deNormalize(normalizedValue);
     			valueChanged(oldValue);
     		},
 
@@ -89,10 +98,18 @@ window.WH = window.WH || {};
         	 * Returns the current normalized value of the parameter between 0 and 1.
         	 */
         	getValueNormalized = function() {
-        		return mapping.mapInverse(value);
-        	};
+        		return my.normalize(value);
+        	},
+            
+            getType = function() {
+                return type;
+            };
+            
+        my = my || {};
         
         that = specs.that || {};
+        
+        init();
         
         that.addChangedCallback = addChangedCallback;
         that.removeChangedCallback = removeChangedCallback;
@@ -101,6 +118,7 @@ window.WH = window.WH || {};
         that.getValue = getValue;
         that.setValueNormalized = setValueNormalized;
         that.getValueNormalized = getValueNormalized;
+        that.getType = getType;
         return that;
     };
 

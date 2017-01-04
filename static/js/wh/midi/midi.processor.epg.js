@@ -191,49 +191,49 @@ window.WH = window.WH || {};
         my.defineParams({
             steps: {
                 label: 'Steps',
-                mapping: 'integer',
+                type: 'integer',
                 default: 16,
                 min: 1,
                 max: 16
             },
             pulses: {
                 label: 'Pulses',
-                mapping: 'integer',
+                type: 'integer',
                 default: 4,
                 min: 0,
                 max: 16
             },
             rotation: {
                 label: 'Rotation',
-                mapping: 'integer',
+                type: 'integer',
                 default: 0,
                 min: 0,
                 max: 15
             },
             channel_out: {
                 label: 'MIDI Channel',
-                mapping: 'integer',
+                type: 'integer',
                 default: 0,
                 min: 0,
                 max: 16
             },
             pitch_out: {
                 label: 'MIDI Pitch',
-                mapping: 'integer',
+                type: 'integer',
                 default: 0,
                 min: 0,
                 max: 127
             },
             velocity_out: {
                 label: 'MIDI Velocity',
-                mapping: 'integer',
+                type: 'integer',
                 default: 0,
                 min: 0,
                 max: 127
             },
             rate: {
                 label: 'Rate',
-                mapping: 'itemized',
+                type: 'itemized',
                 default: 0.25,
                 model: [
                     {label: '1', value: 4},
@@ -246,12 +246,12 @@ window.WH = window.WH || {};
             },
             is_triplets: {
                 label: 'Triplets',
-                mapping: 'boolean',
+                type: 'boolean',
                 default: false
             },
             note_length: {
                 label: 'Note length',
-                mapping: 'itemized',
+                type: 'itemized',
                 default: 0.25,
                 model: [
                     {label: '1', value: 4},
