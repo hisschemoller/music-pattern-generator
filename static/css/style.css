@@ -7,7 +7,11 @@ body {
     font-family: sans-serif;
     font-size: 14px;
 }
+fieldset {
+    border: none;
+}
 legend {
+    display: none;
     padding: 0;
 }
 .form {

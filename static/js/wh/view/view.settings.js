@@ -10,12 +10,14 @@ window.WH = window.WH || {};
     function createSettingsView(specs, my) {
         var that,
             processor = specs.processor,
+            settingViews = [],
             el,
             
             init = function() {
                 var params = processor.getParameters(),
                     template = document.getElementById('template-settings-' + specs.type);
                 
+                // create the settings panel
                 if (template) {
                     el = template.firstElementChild.cloneNode(true);
                     var parentEl = document.getElementById('settings');
@@ -23,17 +25,26 @@ window.WH = window.WH || {};
                     parentEl.appendChild(el);
                 }
                 
-                // create setting element from template, based on parameter type and add to settings panel
+                // loop through all processor parameters and add setting view if required
                 for (var key in params) {
+                    // only create setting if there's a container element for it in the settings panel
                     var settingContainerEl = el.getElementsByClassName(key)[0];
                     if (settingContainerEl) {
-                        var param = params[key];
-                        var settingTemplate = document.getElementById('template-setting-' + param.getType());
-                        if (settingTemplate) {
-                            var settingEl = settingTemplate.firstElementChild.cloneNode(true);
-                            settingContainerEl.appendChild(settingEl);
-                            
+                        var param = params[key],
+                            settingView = {},
+                            settingViewSpecs = {
+                                that: settingView,
+                                param: param,
+                                containerEl: settingContainerEl
+                            };
+                        // create the setting view based on the parameter type
+                        switch (param.getType()) {
+                            case 'integer':
+                                ns.createIntegerSettingView(settingViewSpecs);
+                                break;
                         }
+                        // add view to list for future reference
+                        settingViews.push(settingView);
                     }
                 }
             };
