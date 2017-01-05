@@ -42,6 +42,9 @@ window.WH = window.WH || {};
                             case 'integer':
                                 ns.createIntegerSettingView(settingViewSpecs);
                                 break;
+                            case 'boolean':
+                                ns.createBooleanSettingView(settingViewSpecs);
+                                break;
                         }
                         // add view to list for future reference
                         settingViews.push(settingView);

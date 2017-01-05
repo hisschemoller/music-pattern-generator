@@ -180,6 +180,9 @@ window.WH = window.WH || {};
         my.$rotation = function(value, timestamp) {
             updatePattern();
         }
+        my.$is_triplets = function(value, timestamp) {}
+        my.$is_mute = function(value, timestamp) {}
+        my.$is_solo = function(value, timestamp) {}
         my.$channel_out = function(value, timestamp) {}
         my.$pitch_out = function(value, timestamp) {}
         my.$velocity_out = function(value, timestamp) {}
