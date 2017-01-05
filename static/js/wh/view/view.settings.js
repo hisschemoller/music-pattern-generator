@@ -38,7 +38,7 @@ window.WH = window.WH || {};
                                 containerEl: settingContainerEl
                             };
                         // create the setting view based on the parameter type
-                        switch (param.getType()) {
+                        switch (param.getProperty('type')) {
                             case 'integer':
                                 ns.createIntegerSettingView(settingViewSpecs);
                                 break;

@@ -10,18 +10,19 @@ window.WH = window.WH || {};
     
     function createBaseSettingView(specs, my) {
         var that,
-            el,
             
             init = function() {
                 // find template, add clone to settings panel
-                var template = document.getElementById('template-setting-' + my.param.getType());
-                el = template.firstElementChild.cloneNode(true);
-                specs.containerEl.appendChild(el);
+                var template = document.getElementById('template-setting-' + my.param.getProperty('type'));
+                my.el = template.firstElementChild.cloneNode(true);
+                specs.containerEl.appendChild(my.el);
+                
+                my.el.getElementsByClassName('settings__label-inner')[0].innerHTML = my.param.getProperty('label');
             };
             
         my = my || {};
         my.param = specs.param;
-        my.el = el;
+        my.el;
         
         that = that || {};
         

@@ -10,13 +10,14 @@ window.WH = window.WH || {};
     
     function createIntegerSettingView(specs, my) {
         var that,
-            param = specs.param,
-            rootEl,
-            el,
             
             init = function() {
-                
+                var rangeEl = my.el.getElementsByClassName('settings__range')[0];
+                rangeEl.setAttribute('min', my.param.getProperty('min'));
+                rangeEl.setAttribute('max', my.param.getProperty('max'));
             };
+        
+        my = my || {};
         
         that = ns.createBaseSettingView(specs, my);
         

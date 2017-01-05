@@ -1,5 +1,5 @@
 /**
- * Processor settings view.
+ * Base parameter functionality.
  * @namespace WH
  */
 
@@ -7,20 +7,11 @@ window.WH = window.WH || {};
 
 (function (ns) {
     
-    function createParameter(specs, my) {
+    function createBaseParameter(specs, my) {
         var that,
             value = specs.value || specs.default,
             defaultValue = specs.default,
-            type = specs.type,
             changedCallbacks = [],
-            
-            init = function() {
-                switch (type) {
-                    case 'linear':
-                        that = ns.createMappingIntLinear(specs, my);
-                        break;
-                }
-            },
 		    
             /**
              * Call all callbacks if the parameter's value changed.
@@ -79,6 +70,7 @@ window.WH = window.WH || {};
     		 * Returns the current value of the parameter
     		 */
             getValue = function() {
+                console.log('getValue', specs.key, value);
                 return value;
             },
 		
@@ -101,15 +93,17 @@ window.WH = window.WH || {};
         		return my.normalize(value);
         	},
             
-            getType = function() {
-                return type;
+            getProperty = function(key) {
+                if (my.hasOwnProperty(key)) {
+                    return my[key];
+                }
             };
             
         my = my || {};
+        my.type = specs.type,
+        my.label = specs.label,
         
         that = specs.that || {};
-        
-        init();
         
         that.addChangedCallback = addChangedCallback;
         that.removeChangedCallback = removeChangedCallback;
@@ -118,10 +112,10 @@ window.WH = window.WH || {};
         that.getValue = getValue;
         that.setValueNormalized = setValueNormalized;
         that.getValueNormalized = getValueNormalized;
-        that.getType = getType;
+        that.getProperty = getProperty;
         return that;
     };
 
-    ns.createParameter = createParameter;
+    ns.createBaseParameter = createBaseParameter;
 
 })(WH);

@@ -19,7 +19,17 @@ window.WH = window.WH || {};
                 for (var key in paramSpecs) {
                     paramSpecs[key].key = key;
                     paramSpecs[key].callback = paramCallback;
-                    my.params[key] = ns.createParameter(paramSpecs[key]);
+                    switch(paramSpecs[key].type) {
+                        case 'integer':
+                            my.params[key] = ns.createIntegerParameter(paramSpecs[key]);
+                            break;
+                        case 'boolean':
+                            my.params[key] = ns.createBooleanParameter(paramSpecs[key]);
+                            break;
+                        case 'itemized':
+                            my.params[key] = ns.createItemizedParameter(paramSpecs[key]);
+                            break;
+                    }
                 }
                 // setPreset(my.defaultPreset);
             },
