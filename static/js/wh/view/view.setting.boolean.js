@@ -11,7 +11,6 @@
      function createBooleanSettingView(specs, my) {
          var that,
              checkEl,
-             numberEl,
              
              init = function() {
                  checkEl = my.el.getElementsByClassName('settings__check')[0];

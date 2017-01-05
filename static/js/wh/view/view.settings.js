@@ -45,6 +45,9 @@ window.WH = window.WH || {};
                             case 'boolean':
                                 ns.createBooleanSettingView(settingViewSpecs);
                                 break;
+                            case 'itemized':
+                                ns.createItemizedSettingView(settingViewSpecs);
+                                break;
                         }
                         // add view to list for future reference
                         settingViews.push(settingView);

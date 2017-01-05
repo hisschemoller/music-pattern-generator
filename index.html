@@ -46,13 +46,13 @@
         <div id="template-settings-epg">
             <form class="settings" class="form">
                 <fieldset>
-                    <legend>Euclidean settings</legend>
+                    <legend>Euclidean</legend>
                     <div class="settings__row steps"></div>
                     <div class="settings__row pulses"></div>
                     <div class="settings__row rotation"></div>
                 </fieldset>
                 <fieldset>
-                    <legend>Play</legend>
+                    <legend>Playback</legend>
                     <div class="settings__row rate"></div>
                     <div class="settings__row note_length"></div>
                     <div class="settings__row is_triplets"></div>
@@ -68,15 +68,24 @@
             </form>
         </div><!-- /template-settings-epg -->
         <div id="template-setting-integer">
-            <label class="settings__label"><span class="settings__label-inner"></span>
+            <label class="settings__label"><span class="settings__label-text"></span>
                 <input type="range" min="" max="" step="1" class="settings__range" />
                 <input type="number" min="" max="" class="settings__number" />
             </label>
         </div><!-- /template-setting-integer -->
         <div id="template-setting-boolean">
-            <label class="settings__label"><span class="settings__label-inner"></span>
+            <label class="settings__label"><span class="settings__label-text"></span>
                 <input type="checkbox" class="settings__check" />
             </label>
+        </div><!-- /template-setting-boolean -->
+        <div id="template-setting-itemized">
+            <div class="settings__itemized">
+                <label class="settings__label-text"></label>
+                <label class="settings__label-radio">
+                    <input type="radio" name="" class="settings__radio" />
+                    <span class="settings__label-radio-text"></span>
+                </label>
+            </div>
         </div><!-- /template-setting-boolean -->
         
         <div id="template-settings">
@@ -197,6 +206,7 @@
     <script src="static/js/wh/view/view.setting.base.js"></script>
     <script src="static/js/wh/view/view.setting.boolean.js"></script>
     <script src="static/js/wh/view/view.setting.integer.js"></script>
+    <script src="static/js/wh/view/view.setting.itemized.js"></script>
     <script src="static/js/wh/view/view.settings.js"></script>
     <script src="static/js/wh/view/view.world.epg.js"></script>
     <script src="static/js/wh/world/world.js"></script>

@@ -18,7 +18,7 @@ window.WH = window.WH || {};
                 specs.containerEl.appendChild(my.el);
                 
                 // show label
-                my.el.getElementsByClassName('settings__label-inner')[0].innerHTML = my.param.getProperty('label');
+                my.el.getElementsByClassName('settings__label-text')[0].innerHTML = my.param.getProperty('label');
             };
             
         my = my || {};

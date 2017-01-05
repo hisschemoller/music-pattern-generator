@@ -180,6 +180,8 @@ window.WH = window.WH || {};
         my.$rotation = function(value, timestamp) {
             updatePattern();
         }
+        my.$rate = function(value, timestamp) {}
+        my.$note_length = function(value, timestamp) {}
         my.$is_triplets = function(value, timestamp) {}
         my.$is_mute = function(value, timestamp) {}
         my.$is_solo = function(value, timestamp) {}

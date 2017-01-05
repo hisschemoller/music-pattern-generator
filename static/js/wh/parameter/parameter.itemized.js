@@ -19,6 +19,10 @@ window.WH = window.WH || {};
                     return values[my.model[my.model.length - 1].value];
                 }
                 return my.model[Math.floor(normalizedValue * my.model.length)].value;
+            },
+            
+            getModel = function() {
+                return my.model;
             };
         
         my = my || {};
@@ -28,6 +32,7 @@ window.WH = window.WH || {};
         
         that = ns.createBaseParameter(specs, my);
         
+        that.getModel = getModel;
         return that;
     };
 
