@@ -18,7 +18,6 @@ window.WH = window.WH || {};
             defineParams = function(paramSpecs) {
                 for (var key in paramSpecs) {
                     paramSpecs[key].key = key;
-                    paramSpecs[key].callback = paramCallback;
                     switch(paramSpecs[key].type) {
                         case 'integer':
                             my.params[key] = ns.createIntegerParameter(paramSpecs[key]);
@@ -30,6 +29,7 @@ window.WH = window.WH || {};
                             my.params[key] = ns.createItemizedParameter(paramSpecs[key]);
                             break;
                     }
+                    my.params[key].addChangedCallback(paramChangedCallback);
                 }
                 // setPreset(my.defaultPreset);
             },
@@ -37,14 +37,9 @@ window.WH = window.WH || {};
             /**
              * Called by the processor's parameters if their value is changed.
              */
-            paramCallback = function(key, value, timestamp) {
+            paramChangedCallback = function(parameter, oldValue, newValue) {
                 // call the plugin's handler for this parameter
-                my['$' + key](value, timestamp);
-                // update the plugin's view with the new parameter value
-                pubSub.trigger(getId(), {
-                    key: key,
-                    param: params[key]
-                });
+                my['$' + parameter.getProperty('key')](newValue);
             },
             
             getParamValue = function(key) {

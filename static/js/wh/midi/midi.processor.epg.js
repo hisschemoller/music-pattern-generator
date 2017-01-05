@@ -213,21 +213,21 @@ window.WH = window.WH || {};
             channel_out: {
                 label: 'MIDI Channel',
                 type: 'integer',
-                default: 0,
-                min: 0,
+                default: 1,
+                min: 1,
                 max: 16
             },
             pitch_out: {
                 label: 'MIDI Pitch',
                 type: 'integer',
-                default: 0,
+                default: 60,
                 min: 0,
                 max: 127
             },
             velocity_out: {
                 label: 'MIDI Velocity',
                 type: 'integer',
-                default: 0,
+                default: 100,
                 min: 0,
                 max: 127
             },
@@ -261,6 +261,16 @@ window.WH = window.WH || {};
                     {label: '1/16', value: 0.25},
                     {label: '1/32', value: 0.125}
                 ]
+            },
+            is_solo: {
+                label: 'Solo',
+                type: 'boolean',
+                default: false
+            },
+            is_mute: {
+                label: 'Mute',
+                type: 'boolean',
+                default: false
             }
         });
         

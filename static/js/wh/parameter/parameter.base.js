@@ -21,13 +21,10 @@ window.WH = window.WH || {};
         		if (oldValue == value) {
                     return;
                 }
-                try {
-        			for (var callback in changedCallbacks) {
-                        callback(that, oldValue, value);
-                    }	
-        		} catch(err) {
-        			console.error('Make sure callbacks have the following signature: (parameter, oldValue, newValue)');
-        		}
+                var n = changedCallbacks.length;
+    			for (var i = 0; i < n; i++) {
+                    changedCallbacks[i](that, oldValue, value);
+                }
         	}
 		
         	/**
@@ -70,7 +67,6 @@ window.WH = window.WH || {};
     		 * Returns the current value of the parameter
     		 */
             getValue = function() {
-                console.log('getValue', specs.key, value);
                 return value;
             },
 		
@@ -100,8 +96,9 @@ window.WH = window.WH || {};
             };
             
         my = my || {};
-        my.type = specs.type,
-        my.label = specs.label,
+        my.type = specs.type;
+        my.label = specs.label;
+        my.key = specs.key;
         
         that = specs.that || {};
         
