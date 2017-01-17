@@ -68,7 +68,7 @@ window.WH = window.WH || {};
              * @param {Number} position Timing position, equal to performance.now(). 
              */
             updateView = function(position) {
-                // epgModel.onTransportRun(msec2tick(position - transportOrigin));
+                midiNetwork.render(msec2tick(position));
                 world.draw();
             },
             

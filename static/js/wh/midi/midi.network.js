@@ -60,6 +60,14 @@ window.WH = window.WH || {};
                 for (var i = 0; i < numProcessors; i++) {
                     processors[i].process(start, end);
                 }
+            },
+            
+            render = function(position) {
+                for (var i = 0; i < numProcessors; i++) {
+                    if (processors[i].render) {
+                        processors[i].render(position);
+                    }
+                }
             };
        
         my = my || {};
@@ -72,6 +80,7 @@ window.WH = window.WH || {};
         that.selectProcessor = selectProcessor;
         that.getProcessorByProperty = getProcessorByProperty;
         that.process = process;
+        that.render = render;
         return that;
     };
 

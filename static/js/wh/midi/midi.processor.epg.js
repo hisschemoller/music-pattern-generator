@@ -13,6 +13,7 @@ window.WH = window.WH || {};
             duration = 0,
             noteOffEvents = [],
             pulseStartTimes = [],
+            renderCallback,
             
             init = function() {
                 updatePattern();
@@ -35,8 +36,8 @@ window.WH = window.WH || {};
                 }
                 
                 // check to create note events
-                var localStart = start % my.props.duration,
-                    localEnd = end % my.props.duration,
+                var localStart = start % duration,
+                    localEnd = end % duration,
                     n = pulseStartTimes.length;
                 for (var i = 0; i < n; i++) {
                     var time = pulseStartTimes[i];
@@ -82,6 +83,20 @@ window.WH = window.WH || {};
                 // }
             },
             
+            render = function(pos) {
+                position = pos % duration;
+                if (renderCallback) {
+                    renderCallback(position, duration);
+                }
+            },
+            
+            /**
+             * Add callback to update a view each time the processor has processed.
+             * @param {Function} callback Callback function.
+             */
+            addRenderCallback = function(callback) {
+                renderCallback = callback;
+            },
             
             updatePattern = function() {
                 // euclidean pattern properties, changes in steps, pulses, rotation
@@ -94,8 +109,8 @@ window.WH = window.WH || {};
                     rate = my.params.is_triplets.getValue() ? my.params.rate.getValue() * (2 / 3) : my.params.rate.getValue(),
                     stepDuration = rate * ppqn,
                     noteDuration = my.params.note_length.getValue() * ppqn;
-                my.props.duration = my.params.steps.getValue() * stepDuration;
-                my.props.position = my.props.position % my.props.duration;
+                duration = my.params.steps.getValue() * stepDuration;
+                position = position % duration;
                 
                 // create array of note start times in ticks
                 pulseStartTimes.length = 0;
@@ -282,6 +297,8 @@ window.WH = window.WH || {};
         init();
         
         that.process = process;
+        that.render = render;
+        that.addRenderCallback = addRenderCallback;
         return that;
     };
     

@@ -25,7 +25,8 @@ window.WH = window.WH || {};
             
             init = function() {
                 // add callback to update before render.
-                // processor.addRenderCallback(preRender);
+                processor.addRenderCallback(preRender);
+                
                 // set position in 3d
                 object3d.position.copy(processor.getProperty('position3d'));
                 object3d.userData.id = processor.getProperty('id');
@@ -42,6 +43,10 @@ window.WH = window.WH || {};
                 
                 // set the dots around the wheel
                 updateDots();
+            },
+            
+            preRender = function(position, duration) {
+                pointer3d.rotation.z = TWO_PI * (-position / duration);
             },
             
             /**
