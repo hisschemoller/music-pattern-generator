@@ -225,7 +225,7 @@ window.WH = window.WH || {};
                 wheel.add(rotatedMarker);
                 
                 return wheel;
-            },
+            };
             
             /**
              * Create a new wheel mesh in the 3D world and  
@@ -234,70 +234,70 @@ window.WH = window.WH || {};
              * @param {Boolean} isNew True if this is newly added, no restore.
              * @return {object} 3D pattern object created.
              */
-            createPatternWheel = function(ptrn, isNew) {
-                var centreScale, selectScale, object3d, i, n, dot, position;
-                
-                // create the wheel 3D object
-                object3d = wheel.clone();
-                object3d.position.copy(ptrn.position3d);
-                
-                // fill properties of the pattern data.
-                ptrn.object3d = object3d;
-                ptrn.hitarea3d = object3d.getObjectByName('hitarea');
-                ptrn.centreCircle3d = object3d.getObjectByName('centreCircle');
-                ptrn.pointer3d = object3d.getObjectByName('pointer');
-                ptrn.polygon3d = object3d.getObjectByName('polygon');
-                ptrn.dots3d = object3d.getObjectByName('dots');
-                ptrn.select3d = object3d.getObjectByName('select');
-                ptrn.centreDot3d = object3d.getObjectByName('centreDot');
-                ptrn.zeroMarker3d = object3d.getObjectByName('zeroMarker');
-                ptrn.rotatedMarker3d = object3d.getObjectByName('rotatedMarker');
-                
-                // set the dots around the wheel
-                updateDots(ptrn);
-                
-                if (isNew) {
-                    // create the startup animation
-                    new TWEEN.Tween({scale: 0.001})
-                        .to({scale: 1.0}, 400)
-                        .onUpdate(function() {
-                                ptrn.object3d.scale.set(this.scale, this.scale, 1);
-                            })
-                        .start();
-                    
-                    // and the startup animation for the dots
-                    n = ptrn.dots3d.children.length;
-                    for (i = 0; i < n; i++) {
-                        dot = ptrn.dots3d.children[i];
-                        startupAnimateDot(dot, i * 20);
-                    }
-                }
-                
-                return object3d;
-            },
+            // createPatternWheel = function(ptrn, isNew) {
+            //     var centreScale, selectScale, object3d, i, n, dot, position;
+            //     
+            //     // create the wheel 3D object
+            //     object3d = wheel.clone();
+            //     object3d.position.copy(ptrn.position3d);
+            //     
+            //     // fill properties of the pattern data.
+            //     ptrn.object3d = object3d;
+            //     ptrn.hitarea3d = object3d.getObjectByName('hitarea');
+            //     ptrn.centreCircle3d = object3d.getObjectByName('centreCircle');
+            //     ptrn.pointer3d = object3d.getObjectByName('pointer');
+            //     ptrn.polygon3d = object3d.getObjectByName('polygon');
+            //     ptrn.dots3d = object3d.getObjectByName('dots');
+            //     ptrn.select3d = object3d.getObjectByName('select');
+            //     ptrn.centreDot3d = object3d.getObjectByName('centreDot');
+            //     ptrn.zeroMarker3d = object3d.getObjectByName('zeroMarker');
+            //     ptrn.rotatedMarker3d = object3d.getObjectByName('rotatedMarker');
+            //     
+            //     // set the dots around the wheel
+            //     updateDots(ptrn);
+            //     
+            //     if (isNew) {
+            //         // create the startup animation
+            //         new TWEEN.Tween({scale: 0.001})
+            //             .to({scale: 1.0}, 400)
+            //             .onUpdate(function() {
+            //                     ptrn.object3d.scale.set(this.scale, this.scale, 1);
+            //                 })
+            //             .start();
+            //         
+            //         // and the startup animation for the dots
+            //         n = ptrn.dots3d.children.length;
+            //         for (i = 0; i < n; i++) {
+            //             dot = ptrn.dots3d.children[i];
+            //             startupAnimateDot(dot, i * 20);
+            //         }
+            //     }
+            //     
+            //     return object3d;
+            // },
             
             /**
              * Create the startup animation for a pattern wheel dot.
              * @param {object} dot One of a pattern's ring's dots.
              */
-            startupAnimateDot = function(dot, delay) {
-                new TWEEN.Tween({
-                        x: 0,
-                        y: 0
-                    })
-                    .to({
-                        x: dot.position.x,
-                        y: dot.position.y
-                    }, 700)
-                    .easing(TWEEN.Easing.Elastic.Out)
-                    .onUpdate(function() {
-                        dot.position.set(this.x, this.y, 0);
-                    })
-                    .delay(delay)
-                    .start();
-                
-                dot.position.set(0, 0, 0);
-            };
+            // startupAnimateDot = function(dot, delay) {
+            //     new TWEEN.Tween({
+            //             x: 0,
+            //             y: 0
+            //         })
+            //         .to({
+            //             x: dot.position.x,
+            //             y: dot.position.y
+            //         }, 700)
+            //         .easing(TWEEN.Easing.Elastic.Out)
+            //         .onUpdate(function() {
+            //             dot.position.set(this.x, this.y, 0);
+            //         })
+            //         .delay(delay)
+            //         .start();
+            //     
+            //     dot.position.set(0, 0, 0);
+            // },
             
             /**
              * Update the pattern dots.

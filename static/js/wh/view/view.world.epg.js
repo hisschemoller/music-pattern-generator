@@ -31,6 +31,15 @@ window.WH = window.WH || {};
                 object3d.userData.id = processor.getProperty('id');
                 object3d.addEventListener('touchstart', onTouchstart);
                 object3d.addEventListener('dragend', onDragEnd);
+                
+                // add listeners to parameters
+                var params = processor.getParameters();
+                params.steps.addChangedCallback(updateDots);
+                params.pulses.addChangedCallback(updateDots);
+                params.rotation.addChangedCallback(updateDots);
+                params.is_solo.addChangedCallback(updatePointer);
+                params.is_mute.addChangedCallback(updatePointer);
+                
                 // set the dots around the wheel
                 updateDots();
             },
@@ -53,6 +62,8 @@ window.WH = window.WH || {};
             
             /**
              * Update the pattern dots.
+             * If the steps, pulses or rotation properties have changed.
+             * If steps change it might invalidate the ponter.
              */
             updateDots = function() {
                 var steps = processor.getParamValue('steps'),
