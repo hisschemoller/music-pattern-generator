@@ -80,6 +80,7 @@ window.WH = window.WH || {};
                     dot.scale.set(0.1, 0.1, 1);
                     dot.translateX(Math.sin(rad) * radius3d);
                     dot.translateY(Math.cos(rad) * radius3d);
+                    dot.visible = true;
                     dots3d.add(dot);
                     
                     // add coordinate of filled dot to polygon points
