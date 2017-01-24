@@ -20,12 +20,13 @@ window.WH = window.WH || {};
             centreDot3d = object3d.getObjectByName('centreDot'),
             zeroMarker3d = object3d.getObjectByName('zeroMarker'),
             rotatedMarker3d = object3d.getObjectByName('rotatedMarker'),
+            centreDotEndTween,
             TWO_PI = Math.PI * 2,
             radius3d,
             
             init = function() {
                 // add callback to update before render.
-                processor.addRenderCallback(preRender);
+                processor.addRenderCallback(showPlaybackPosition);
                 
                 // set position in 3d
                 object3d.position.copy(processor.getProperty('position3d'));
@@ -45,8 +46,54 @@ window.WH = window.WH || {};
                 updateDots();
             },
             
-            preRender = function(position, duration) {
+            showPlaybackPosition = function(position, duration) {
                 pointer3d.rotation.z = TWO_PI * (-position / duration);
+            },
+            
+            showNoteOn = function(stepIndex, noteStartDelay, noteStopDelay) {
+                
+                // find and animate the necklace dot
+                var dot = dots3d.children[stepIndex];
+                new TWEEN.Tween({scale: 0.2})
+                    .to({scale: 0.10}, 300)
+                    .onUpdate(function() {
+                            dot.scale.set(this.scale, this.scale, 1);
+                        })
+                    .delay(noteStartDelay)
+                    .start();
+                    
+                // stop centre dot animation, if any
+                if (centreDotEndTween) {
+                    centreDotEndTween.stop();
+                }
+                
+                // centre dot start animation
+                var startTween = new TWEEN.Tween({scale: 0.01})
+                    .to({scale: 0.10}, 10)
+                    .onStart(function() {
+                            centreDot3d.visible = true;
+                        })
+                    .onUpdate(function() {
+                            centreDot3d.scale.set(this.scale, this.scale, 1);
+                        })
+                    .delay(noteStartDelay);
+                    
+                // centre dot end animation
+                var stopTween = new TWEEN.Tween({scale: 0.10})
+                    .to({scale: 0.01}, 150)
+                    .onUpdate(function() {
+                            centreDot3d.scale.set(this.scale, this.scale, 1);
+                        })
+                    .onComplete(function() {
+                            centreDot3d.visible = false;
+                        })
+                    .delay(noteStopDelay - noteStartDelay);
+                
+                // start centre dot animation
+                startTween.chain(stopTween);
+                startTween.start();
+                
+                centreDotEndTween = stopTween;
             },
             
             /**
