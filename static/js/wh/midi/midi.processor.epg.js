@@ -42,13 +42,31 @@ window.WH = window.WH || {};
                     }
                 }
                 
-                // check to create note events
                 var localStart = scanStart % duration,
                     localEnd = scanEnd % duration,
+                    localStart2 = false,
                     n = pulsesOnly.length;
+                
+                // if the pattern loops during this timespan.
+                if (localStart > localEnd) {
+                    var localStart2 = 0,
+                        localEnd2 = localEnd;
+                    localEnd = duration;
+                }
+                
+                // check if notes occur during the current timespan
                 for (var i = 0; i < n; i++) {
-                    var pulseStartTime = pulsesOnly[i].startTime;
-                    if ((localStart <= pulseStartTime) && (pulseStartTime < localEnd)) {
+                    var pulseStartTime = pulsesOnly[i].startTime,
+                        isOn = (localStart <= pulseStartTime) && (pulseStartTime < localEnd);
+                    
+                    // if pattern looped back to the start
+                    if (localStart2 !== false) {
+                        isOn = isOn || (localStart2 <= pulseStartTime) && (pulseStartTime < localEnd2);
+                        localStart = localStart2;
+                    } 
+                    
+                    // if a note should play
+                    if (isOn) {
                         
                         // send the Note On message
                         my.setOutputData({
@@ -61,7 +79,7 @@ window.WH = window.WH || {};
                         
                         // store the Note Off message to send later
                         noteOffEvents.push({
-                            timestampTicks: pulseStartTime + 500,
+                            timestampTicks: pulseStartTime + 240,
                             channel: my.props.channel,
                             type: 'noteoff',
                             pitch: my.props.pitch,
@@ -71,7 +89,7 @@ window.WH = window.WH || {};
                         // update pattern graphic view
                         var stepIndex = pulsesOnly[i].stepIndex,
                             delayFromNowToNoteStart = (nowToScanStart + pulseStartTime - localStart) * ticksToMsMultiplier,
-                            delayFromNowToNoteEnd = (delayFromNowToNoteStart + 500) * ticksToMsMultiplier;
+                            delayFromNowToNoteEnd = (delayFromNowToNoteStart + 240) * ticksToMsMultiplier;
                         processCallback(stepIndex, delayFromNowToNoteStart, delayFromNowToNoteEnd);
                     }
                 }
