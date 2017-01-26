@@ -27,6 +27,7 @@ window.WH = window.WH || {};
             init = function() {
                 // add callback to update before render.
                 processor.addRenderCallback(showPlaybackPosition);
+                processor.addProcessCallback(showNote);
                 
                 // set position in 3d
                 object3d.position.copy(processor.getProperty('position3d'));
@@ -50,7 +51,7 @@ window.WH = window.WH || {};
                 pointer3d.rotation.z = TWO_PI * (-position / duration);
             },
             
-            showNoteOn = function(stepIndex, noteStartDelay, noteStopDelay) {
+            showNote = function(stepIndex, noteStartDelay, noteStopDelay) {
                 
                 // find and animate the necklace dot
                 var dot = dots3d.children[stepIndex];

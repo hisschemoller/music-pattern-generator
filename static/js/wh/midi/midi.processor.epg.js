@@ -12,50 +12,67 @@ window.WH = window.WH || {};
             position = 0,
             duration = 0,
             noteOffEvents = [],
-            pulseStartTimes = [],
+            pulsesOnly = [],
             renderCallback,
+            processCallback,
             
             init = function() {
                 updatePattern();
             },
             
             /**
-             * [process description]
-             * @param {Number} start Timespan start in ticks from timeline start.
-             * @param {Number} end   Timespan end in ticks from timeline start.
+             * Process events to happen in a time slice 
+             * timeline start        now      scanStart     scanEnd
+             *  |---------------------|-----------|------------|
+             *                        |-----------| 
+             *                        nowToScanStart
+             * @param {Number} scanStart Timespan start in ticks from timeline start.
+             * @param {Number} scanEnd   Timespan end in ticks from timeline start.
+             * @param {Number} nowToScanStart Timespan between current timeline position and scanStart.
+             * @param {Number} ticksToMsMultiplier Duration of one tick in milliseconds.
              */
-            process = function(start, end) {
+            process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier) {
                 
                 // check for scheduled note off events
                 var i = noteOffEvents.length;
                 while (--i > -1) {
                     var noteOffTime = noteOffEvents[i].timestamp;
-                    if (start <= noteOffTime && end > noteOffTime) {
+                    if (scanStart <= noteOffTime && scanEnd > noteOffTime) {
                         my.setOutputData(noteOffEvents.splice(i, 1)[0]);
                     }
                 }
                 
                 // check to create note events
-                var localStart = start % duration,
-                    localEnd = end % duration,
-                    n = pulseStartTimes.length;
+                var localStart = scanStart % duration,
+                    localEnd = scanEnd % duration,
+                    n = pulsesOnly.length;
                 for (var i = 0; i < n; i++) {
-                    var time = pulseStartTimes[i];
-                    if (localStart <= time < localEnd) {
+                    var pulseStartTime = pulsesOnly[i].startTime;
+                    if ((localStart <= pulseStartTime) && (pulseStartTime < localEnd)) {
+                        
+                        // send the Note On message
                         my.setOutputData({
-                            timestampTicks: time,
+                            timestampTicks: pulseStartTime,
                             channel: my.props.channel,
                             type: 'noteon',
                             pitch: my.props.pitch,
                             velocity: my.props.velocity
                         });
+                        
+                        // store the Note Off message to send later
                         noteOffEvents.push({
-                            timestampTicks: time + 500,
+                            timestampTicks: pulseStartTime + 500,
                             channel: my.props.channel,
                             type: 'noteoff',
                             pitch: my.props.pitch,
                             velocity: 0
                         });
+                        
+                        // update pattern graphic view
+                        var stepIndex = pulsesOnly[i].stepIndex,
+                            delayFromNowToNoteStart = (nowToScanStart + pulseStartTime - localStart) * ticksToMsMultiplier,
+                            delayFromNowToNoteEnd = (delayFromNowToNoteStart + 500) * ticksToMsMultiplier;
+                        processCallback(stepIndex, delayFromNowToNoteStart, delayFromNowToNoteEnd);
                     }
                 }
                 
@@ -98,6 +115,16 @@ window.WH = window.WH || {};
                 renderCallback = callback;
             },
             
+            /**
+             * Add callback to update a view each time the processor has processed 
+             * something worthwhile for a view to know.
+             * In this case for the Pattern wheel graphic to show played notes.
+             * @param {Function} callback Callback function.
+             */
+            addProcessCallback = function(callback) {
+                processCallback = callback;
+            },
+            
             updatePattern = function() {
                 // euclidean pattern properties, changes in steps, pulses, rotation
                 my.props.euclid = createBjorklund(my.params.steps.getValue(), my.params.pulses.getValue());
@@ -113,11 +140,14 @@ window.WH = window.WH || {};
                 position = position % duration;
                 
                 // create array of note start times in ticks
-                pulseStartTimes.length = 0;
+                pulsesOnly.length = 0;
                 var n = my.props.euclid.length;
                 for (var i = 0; i < n; i++) {
                     if (my.props.euclid[i]) {
-                        pulseStartTimes.push(i * stepDuration);
+                        pulsesOnly.push({
+                            startTime: i * stepDuration,
+                            stepIndex: i
+                        });
                     }
                 }
             },
@@ -299,6 +329,7 @@ window.WH = window.WH || {};
         that.process = process;
         that.render = render;
         that.addRenderCallback = addRenderCallback;
+        that.addProcessCallback = addProcessCallback;
         return that;
     };
     

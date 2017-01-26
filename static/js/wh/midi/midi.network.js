@@ -56,9 +56,9 @@ window.WH = window.WH || {};
                 }
             },
             
-            process = function(start, end) {
+            process = function(start, end, nowToScanStart, ticksToMsMultiplier) {
                 for (var i = 0; i < numProcessors; i++) {
-                    processors[i].process(start, end);
+                    processors[i].process(start, end, nowToScanStart, ticksToMsMultiplier);
                 }
             },
             
