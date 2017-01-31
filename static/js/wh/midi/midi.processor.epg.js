@@ -23,7 +23,7 @@ window.WH = window.WH || {};
             /**
              * Process events to happen in a time slice 
              * timeline start        now      scanStart     scanEnd
-             *  |---------------------|-----------|------------|
+             * |----------------------|-----------|------------|
              *                        |-----------| 
              *                        nowToScanStart
              * @param {Number} scanStart Timespan start in ticks from timeline start.
@@ -58,11 +58,9 @@ window.WH = window.WH || {};
                 for (var i = 0; i < n; i++) {
                     var pulseStartTime = pulsesOnly[i].startTime,
                         isOn = (localStart <= pulseStartTime) && (pulseStartTime < localEnd);
-                    
                     // if pattern looped back to the start
                     if (localStart2 !== false) {
                         isOn = isOn || (localStart2 <= pulseStartTime) && (pulseStartTime < localEnd2);
-                        localStart = localStart2;
                     } 
                     
                     // if a note should play
@@ -92,6 +90,10 @@ window.WH = window.WH || {};
                             delayFromNowToNoteEnd = (delayFromNowToNoteStart + 240) * ticksToMsMultiplier;
                         processCallback(stepIndex, delayFromNowToNoteStart, delayFromNowToNoteEnd);
                     }
+                }
+                
+                if (localStart2 !== false) {
+                    localStart = localStart2;
                 }
                 
                 // once a second 
