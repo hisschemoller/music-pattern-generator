@@ -42,24 +42,27 @@ window.WH = window.WH || {};
                     }
                 }
                 
+                // if the pattern loops during this timespan.
                 var localStart = scanStart % duration,
                     localEnd = scanEnd % duration,
                     localStart2 = false,
-                    n = pulsesOnly.length;
-                
-                // if the pattern loops during this timespan.
+                    localEnd2;
                 if (localStart > localEnd) {
-                    var localStart2 = 0,
-                        localEnd2 = localEnd;
+                    localStart2 = 0,
+                    localEnd2 = localEnd;
                     localEnd = duration;
                 }
                 
                 // check if notes occur during the current timespan
+                var n = pulsesOnly.length;
                 for (var i = 0; i < n; i++) {
                     var pulseStartTime = pulsesOnly[i].startTime,
+                        scanStartToNoteStart = pulseStartTime - localStart,
                         isOn = (localStart <= pulseStartTime) && (pulseStartTime < localEnd);
+                        
                     // if pattern looped back to the start
                     if (localStart2 !== false) {
+                        scanStartToNoteStart = pulseStartTime - localStart + duration;
                         isOn = isOn || (localStart2 <= pulseStartTime) && (pulseStartTime < localEnd2);
                     } 
                     
@@ -86,7 +89,9 @@ window.WH = window.WH || {};
                         
                         // update pattern graphic view
                         var stepIndex = pulsesOnly[i].stepIndex,
-                            delayFromNowToNoteStart = (nowToScanStart + pulseStartTime - localStart) * ticksToMsMultiplier,
+                            // scanStartToNoteStart = pulseStartTime - localStart,
+                            // delayFromNowToNoteStart = (nowToScanStart + scanStartToNoteStart) * ticksToMsMultiplier,
+                            delayFromNowToNoteStart = (nowToScanStart + scanStartToNoteStart) * ticksToMsMultiplier,
                             delayFromNowToNoteEnd = (delayFromNowToNoteStart + 240) * ticksToMsMultiplier;
                         processCallback(stepIndex, delayFromNowToNoteStart, delayFromNowToNoteEnd);
                     }
@@ -95,29 +100,6 @@ window.WH = window.WH || {};
                 if (localStart2 !== false) {
                     localStart = localStart2;
                 }
-                
-                // once a second 
-                // if (start % 1000 > end % 1000 || start % 1000 == 0 ) {
-                //     
-                //     // note event with duration of 500ms
-                //     var noteOnEvent = {
-                //         timestamp: start,
-                //         channel: my.props.channel,
-                //         type: 'noteon',
-                //         pitch: my.props.pitch,
-                //         velocity: my.props.velocity
-                //     }
-                //     var noteOffEvent = {
-                //         timestamp: start + 500,
-                //         channel: my.props.channel,
-                //         type: 'noteoff',
-                //         pitch: my.props.pitch,
-                //         velocity: 0
-                //     }
-                //     
-                //     noteOffEvents.push(noteOffEvent);
-                //     my.setOutputData(noteOnEvent);
-                // }
             },
             
             render = function(pos) {
