@@ -27,15 +27,12 @@ window.WH = window.WH || {};
         var that,
             midiNetwork = specs.midiNetwork,
             world = specs.world,
-            // arrangement = specs.arrangement,
-            // epgModel = specs.epgModel, 
             ppqn = 480,
             bpm = 120,
             lastBpm = bpm,
             tickInMilliseconds,
             audioContextOffset = 0,
             timelineOffset = 0,
-            transportOrigin = 0,
             playbackQueue = [],
             
             /**
@@ -44,23 +41,9 @@ window.WH = window.WH || {};
              * @param {Number} scanEnd End in ms of timespan to scan.
              */
             scanEvents = function(scanStart, scanEnd, nowToScanStart) {
-                var scanStartTimeline = msec2tick((scanStart - transportOrigin)),
-                    scanEndTimeline = msec2tick((scanEnd - transportOrigin));
+                var scanStartTimeline = msec2tick(scanStart),
+                    scanEndTimeline = msec2tick(scanEnd);
                 midiNetwork.process(scanStartTimeline, scanEndTimeline, msec2tick(nowToScanStart), tickInMilliseconds);
-                // playbackQueue.length = 0;
-                // arrangement.scanEvents(scanStartTimeline, scanEndTimeline, playbackQueue);
-                // if (playbackQueue.length) {
-                //     var n = playbackQueue.length;
-                //     for (var i = 0; i < n; i++) {
-                //         var step = playbackQueue[i];
-                //         step.setStartMidi(tick2msec(step.getStartAbs()) + transportOrigin);
-                //         step.setDurationMidi(tick2msec(step.getDuration()));
-                //         step.setStartAudioContext((tick2msec(step.getStartAbs()) / 1000) + audioContextOffset);
-                //         step.setDurationAudioContext(tick2msec(step.getDuration()) / 1000);
-                //         step.setStartDelay(step.getStartMidi() - performance.now());
-                //     }
-                    // epgModel.onTransportScan(playbackQueue);
-                // }
             },
             
             /**
@@ -105,14 +88,6 @@ window.WH = window.WH || {};
             },
             
             /**
-             * Set timestamp of transport start point in ms.
-             * @param {Number} origin Timestamp in milliseconds.
-             */
-            setTransportOrigin = function(origin) {
-                transportOrigin = origin;
-            },
-            
-            /**
              * Set difference between AudioContext.currentTime and performance.now.
              * Used to convert timing for AudioContext playback.
              * @param {Number} acCurrentTime Timestamp in seconds.
@@ -124,7 +99,6 @@ window.WH = window.WH || {};
         my = my || {};
         my.scanEvents = scanEvents;
         my.updateView = updateView;
-        my.setTransportOrigin = setTransportOrigin;
         
         that = specs.that || {};
         
@@ -258,7 +232,6 @@ window.WH = window.WH || {};
                 loopStart = loopStart - origin + newOrigin;
                 loopEnd = loopEnd - origin + newOrigin;
                 origin = newOrigin;
-                my.setTransportOrigin(newOrigin);
             },
             
             /**
@@ -275,10 +248,10 @@ window.WH = window.WH || {};
                     }
                     if (needsScan) {
                         needsScan = false;
-                        my.scanEvents(scanStart, scanEnd, scanStart - position);
+                        my.scanEvents(scanStart - origin, scanEnd - origin, scanStart - position);
                     }
                 }
-                my.updateView(position);
+                my.updateView(position - origin);
                 requestAnimationFrame(run);
             },
             

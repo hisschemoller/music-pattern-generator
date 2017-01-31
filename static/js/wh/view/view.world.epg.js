@@ -52,6 +52,7 @@ window.WH = window.WH || {};
             },
             
             showNote = function(stepIndex, noteStartDelay, noteStopDelay) {
+                // console.log('showNote', stepIndex, noteStartDelay, noteStopDelay);
                 
                 // find and animate the necklace dot
                 var dot = dots3d.children[stepIndex];
@@ -279,12 +280,17 @@ window.WH = window.WH || {};
             updateRotatedMarker = function(rotation) {
                 rotatedMarker3d.position.y = radius3d + 3;
                 rotatedMarker3d.visible = rotation !== 0;
+            },
+            
+            updateSelectCircle = function(isSelected) {
+                centreCircle3d.visible = isSelected;
             };
     
         that = specs.that || {};
         
         init();
         
+        that.updateSelectCircle = that;
         return that;
     };
 
