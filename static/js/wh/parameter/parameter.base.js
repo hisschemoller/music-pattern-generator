@@ -25,7 +25,7 @@ window.WH = window.WH || {};
     			for (var i = 0; i < n; i++) {
                     changedCallbacks[i](that, oldValue, value);
                 }
-        	}
+        	},
 		
         	/**
         	 * Adds a callback function, invoked on value changed.
@@ -51,7 +51,7 @@ window.WH = window.WH || {};
         	 */
         	reset = function() {
         		setValue(defaultValue);
-        	}
+        	},
 
         	/**
         	 * Sets the current value of the parameter.

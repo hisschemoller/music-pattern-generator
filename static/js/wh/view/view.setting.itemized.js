@@ -1,6 +1,6 @@
 /**
- * Processor setting view for a Boolean type parameter,
- * which has a checkbox input.
+ * Processor setting view for a itemized type parameter,
+ * which has a radio buttons for item selection.
  * @namespace WH
  */
  

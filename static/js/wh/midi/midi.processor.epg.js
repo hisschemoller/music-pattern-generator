@@ -243,6 +243,14 @@ window.WH = window.WH || {};
          * @param {Number} timestamp Possible delay for the change.
          */
         my.$steps = function(value, timestamp) {
+            my.params['pulses'].setMax(value);
+            my.params['rotation'].setMax(value - 1);
+            if (my.params['pulses'].getValue() > value) {
+                my.params['pulses'].setValue(value);
+            }
+            if (my.params['rotation'].getValue() > value - 1) {
+                my.params['rotation'].setValue(value);
+            }
             updatePattern();
         }
         my.$pulses = function(value, timestamp) {
@@ -270,7 +278,7 @@ window.WH = window.WH || {};
                 type: 'integer',
                 default: 16,
                 min: 1,
-                max: 16
+                max: 64
             },
             pulses: {
                 label: 'Pulses',

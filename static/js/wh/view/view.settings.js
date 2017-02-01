@@ -16,9 +16,10 @@ window.WH = window.WH || {};
             init = function() {
                 var params = processor.getParameters(),
                     template = document.getElementById('template-settings-' + specs.type);
-                    
-                    
-                processor.addSelectCallback(showSettings);
+                
+                if (typeof processor.addSelectCallback === 'function') {
+                    processor.addSelectCallback(showSettings);
+                }
                 
                 // create the settings panel
                 if (template) {

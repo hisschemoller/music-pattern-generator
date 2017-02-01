@@ -28,6 +28,7 @@ window.WH = window.WH || {};
                 numberEl.addEventListener('change', onChange);
                 
                 my.param.addChangedCallback(changedCallback);
+                my.param.addChangedMaxCallback(changedMaxCallback);
             },
             
             onChange = function(e) {
@@ -37,6 +38,15 @@ window.WH = window.WH || {};
             changedCallback = function(parameter, oldValue, newValue) {
                 rangeEl.value = newValue;
                 numberEl.value = newValue;
+            },
+            
+            /**
+             * The maximum value of the parameter has changed.
+             * @param {Number} max New maximum value. 
+             */
+            changedMaxCallback = function(max) {
+                rangeEl.setAttribute('max', max);
+                numberEl.setAttribute('max', max);
             };
         
         my = my || {};
