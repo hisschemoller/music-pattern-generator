@@ -28,6 +28,7 @@ window.WH = window.WH || {};
                 // add callback to update before render.
                 processor.addRenderCallback(showPlaybackPosition);
                 processor.addProcessCallback(showNote);
+                processor.addSelectCallback(updateSelectCircle);
                 
                 // set position in 3d
                 object3d.position.copy(processor.getProperty('position3d'));
@@ -283,14 +284,13 @@ window.WH = window.WH || {};
             },
             
             updateSelectCircle = function(isSelected) {
-                centreCircle3d.visible = isSelected;
+                select3d.visible = isSelected;
             };
     
         that = specs.that || {};
         
         init();
         
-        that.updateSelectCircle = that;
         return that;
     };
 

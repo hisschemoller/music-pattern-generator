@@ -32,6 +32,7 @@ window.WH = window.WH || {};
                     // create the views for the processor
                     appView.createSettingsView(specs.type, processor);
                     world.createObject(specs.type, processor);
+                    selectProcessor(processor);
                 } else {
                     console.error('No MIDI processor found of type: ', specs.type);
                 }
@@ -44,7 +45,9 @@ window.WH = window.WH || {};
             selectProcessor = function(processor) {
                 for (var i = 0; i < numProcessors; i++) {
                     var proc = processors[i];
-                    proc.setProperty('isSelected', proc === processor);
+                    if (typeof proc.setSelected == 'function') {
+                        proc.setSelected(proc === processor);
+                    }
                 }
             },
             

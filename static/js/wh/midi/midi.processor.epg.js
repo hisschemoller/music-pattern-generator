@@ -15,6 +15,8 @@ window.WH = window.WH || {};
             pulsesOnly = [],
             renderCallback,
             processCallback,
+            selectCallbacks = [],
+            isSelected = false,
             
             init = function() {
                 updatePattern();
@@ -125,6 +127,28 @@ window.WH = window.WH || {};
              */
             addProcessCallback = function(callback) {
                 processCallback = callback;
+            },
+            
+            /**
+             * Add callback to update the selected state of the processor's views.
+             * @param {Function} callback Callback function.
+             */
+            addSelectCallback = function(callback) {
+                selectCallbacks.push(callback);
+            },
+            
+            /**
+             * Set processor's selected state.
+             * @param {Boolean} isSelected Selected state.
+             */
+            setSelected = function(selected) {
+                if (selected != isSelected) {
+                    isSelected = selected;
+                    let n = selectCallbacks.length;
+                    while (--n >= 0) {
+                        selectCallbacks[n](isSelected);
+                    }
+                }
             },
             
             updatePattern = function() {
@@ -332,6 +356,8 @@ window.WH = window.WH || {};
         that.render = render;
         that.addRenderCallback = addRenderCallback;
         that.addProcessCallback = addProcessCallback;
+        that.addSelectCallback = addSelectCallback;
+        that.setSelected = setSelected;
         return that;
     };
     

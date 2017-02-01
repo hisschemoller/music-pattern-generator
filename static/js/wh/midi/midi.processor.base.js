@@ -9,7 +9,6 @@ window.WH = window.WH || {};
     
     function createMIDIProcessorBase(specs, my) {
         var that,
-            settingsView = ns.createMidiProcessorSettingsView,
             
             /**
              * Create parameters from an object of parameter specifications.
@@ -68,7 +67,6 @@ window.WH = window.WH || {};
         my.params = my.param || {};
         my.props = my.props || {};
         my.props.id = specs.id;
-        my.props.isSelected = specs.isSelected || false;
         my.defineParams = defineParams;
         
         that = specs.that || {};
