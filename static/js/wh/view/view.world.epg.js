@@ -283,6 +283,10 @@ window.WH = window.WH || {};
                 rotatedMarker3d.visible = rotation !== 0;
             },
             
+            /**
+             * Show circle if the processor is selected, else hide.
+             * @param {Boolean} isSelected True if selected.
+             */
             updateSelectCircle = function(isSelected) {
                 select3d.visible = isSelected;
             };

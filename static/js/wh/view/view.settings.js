@@ -16,13 +16,13 @@ window.WH = window.WH || {};
             init = function() {
                 var params = processor.getParameters(),
                     template = document.getElementById('template-settings-' + specs.type);
+                    
+                    
+                processor.addSelectCallback(showSettings);
                 
                 // create the settings panel
                 if (template) {
                     el = template.firstElementChild.cloneNode(true);
-                    var parentEl = document.getElementById('settings');
-                    parentEl.innerHTML = '';
-                    parentEl.appendChild(el);
                 }
                 
                 // loop through all processor parameters and add setting view if required
@@ -53,6 +53,20 @@ window.WH = window.WH || {};
                         settingViews.push(settingView);
                     }
                 }
+            },
+            
+            /**
+             * Show settings if the processor is selected, else remove.
+             * @param {Boolean} isSelected True if selected.
+             */
+            showSettings = function(isSelected) {
+                var parentEl = document.getElementById('settings');
+                if (isSelected) {
+                    parentEl.appendChild(el);
+                } else {
+                    parentEl.removeChild(el);
+                }
+                
             };
         
         that = specs.that || {};
