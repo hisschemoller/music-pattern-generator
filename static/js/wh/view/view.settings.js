@@ -68,7 +68,7 @@ window.WH = window.WH || {};
              * Called before this view is deleted.
              */
             terminate = function() {
-                if (el) {
+                if (el && el.parentNode) {
                     el.parentNode.removeChild(el);
                 }
             },

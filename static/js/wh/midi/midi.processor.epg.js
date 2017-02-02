@@ -18,9 +18,11 @@ window.WH = window.WH || {};
             selectCallbacks = [],
             isSelected = false,
             
-            init = function() {
+            initialize = function() {
                 updatePattern();
             },
+            
+            terminate = function() {},
             
             /**
              * Process events to happen in a time slice 
@@ -358,8 +360,9 @@ window.WH = window.WH || {};
             }
         });
         
-        init();
+        initialize();
         
+        that.terminate = terminate;
         that.process = process;
         that.render = render;
         that.addRenderCallback = addRenderCallback;

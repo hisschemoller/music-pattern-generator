@@ -40,12 +40,11 @@ window.WH = window.WH || {};
             },
             
             deleteProcessor = function(processor) {
+                selectNextProcessor(processor);
                 appView.deleteSettingsView(processor);
                 world.deleteObject(processor);
-                // selectProcessor(nextProcessor);
-                // processor.terminate();
-                // processors.splice();
-                console.log('delete', processor);
+                processor.terminate();
+                processors.splice(processors.indexOf(processor), 1);
                 numProcessors = processors.length;
             },
             
@@ -57,6 +56,21 @@ window.WH = window.WH || {};
                     }
                 }
             },
+            
+            /**
+             * Select the next processor from the given.
+             * @param  {Object} processor [description]
+             */
+            selectNextProcessor = function(processor) {
+                if (processors.length > 1) {
+                    var processorIndex = processors.indexOf(processor),
+                        nextIndex = processorIndex + 1;
+                    if (nextIndex == processors.length) {
+                        nextIndex = 0;
+                    }
+                    selectProcessor(processors[nextIndex]);
+                }
+            }
             
             getProcessorByProperty = function(name, value) {
                 for (var i = 0; i < numProcessors; i++) {
