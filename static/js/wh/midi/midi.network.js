@@ -17,6 +17,7 @@ window.WH = window.WH || {};
             
             init = function() {
                 ns.pubSub.on('create.processor', createProcessor);
+                ns.pubSub.on('delete.processor', deleteProcessor);
                 ns.pubSub.on('select.processor', selectProcessor);
             },
         
@@ -38,7 +39,13 @@ window.WH = window.WH || {};
                 }
             },
             
-            destroyProcessor = function() {
+            deleteProcessor = function(processor) {
+                // appView.deleteSettingsView(specs.type, processor);
+                // world.deleteObject(specs.type, processor);
+                // selectProcessor(nextProcessor);
+                // processor.terminate();
+                // processors.splice();
+                console.log('delete', processor);
                 numProcessors = processors.length;
             },
             
@@ -79,8 +86,6 @@ window.WH = window.WH || {};
         
         init();
         
-        that.destroyProcessor = destroyProcessor;
-        that.selectProcessor = selectProcessor;
         that.getProcessorByProperty = getProcessorByProperty;
         that.process = process;
         that.render = render;

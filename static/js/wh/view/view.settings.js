@@ -54,6 +54,14 @@ window.WH = window.WH || {};
                         settingViews.push(settingView);
                     }
                 }
+                
+                // default delete button of the settings panel
+                if (el) {
+                    el.querySelector('.settings__delete').addEventListener('click', function(e) {
+                        e.preventDefault();
+                        ns.pubSub.fire('delete.processor', processor);
+                    });
+                }
             },
             
             /**
