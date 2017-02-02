@@ -65,7 +65,7 @@ window.WH = window.WH || {};
             },
             
             /**
-             * [terminate description]
+             * Called before this view is deleted.
              */
             terminate = function() {
                 if (el) {
@@ -86,6 +86,11 @@ window.WH = window.WH || {};
                 }
             },
             
+            /**
+             * Check if this view is for a certain processor.
+             * @param  {Object} proc MIDI processor object.
+             * @return {Boolean} True if the processors match.
+             */
             hasProcessor = function(proc) {
                 return proc === processor;
             };

@@ -21,9 +21,9 @@ window.WH = window.WH || {};
             intersection = new THREE.Vector3(),
             offset = new THREE.Vector3(),
             templates = {},
+            views = [],
             objects = [],
             dragObject,
-            controls,
             intersected,
             isTouchDevice = 'ontouchstart' in window || window.DocumentTouch && document instanceof DocumentTouch,
             doubleClickCounter = 0,
@@ -268,17 +268,32 @@ window.WH = window.WH || {};
                     // create view for the 3D object
                     switch (type) {
                         case 'epg':
-                            ns.createWorldEPGView({
+                            var view = ns.createWorldEPGView({
                                 processor: processor,
                                 object3d: object3d
                             });
                             break;
                     }
+                    views.push(view);
                 }
             },
             
-            deleteObject = function() {
-                
+            /**
+             * Delete world object when processor is deleted.
+             * @param  {Object} processor MIDI processor for which the 3D object will be a view.
+             */
+            deleteObject = function(processor) {
+                var n = views.length;
+                while (--n >= 0) {
+                    if (views[n].hasProcessor(processor)) {
+                        var object3d = views[n].getObject3d();
+                        objects.splice(objects.indexOf(object3d), 1);
+                        scene.remove(object3d);
+                        views[n].terminate();
+                        views.splice(n, 1);
+                        return false;
+                    }
+                }
             },
             
             /**

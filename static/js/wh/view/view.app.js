@@ -36,7 +36,6 @@ window.WH = window.WH || {};
                     if (settingsViews[n].hasProcessor(processor)) {
                         settingsViews[n].terminate();
                         settingsViews.splice(n, 1);
-                        console.log(settingsViews.length);
                         return false;
                     }
                 }

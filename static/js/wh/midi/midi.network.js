@@ -41,7 +41,7 @@ window.WH = window.WH || {};
             
             deleteProcessor = function(processor) {
                 appView.deleteSettingsView(processor);
-                // world.deleteObject(specs.type, processor);
+                world.deleteObject(processor);
                 // selectProcessor(nextProcessor);
                 // processor.terminate();
                 // processors.splice();

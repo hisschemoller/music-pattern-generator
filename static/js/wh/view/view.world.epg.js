@@ -24,7 +24,7 @@ window.WH = window.WH || {};
             TWO_PI = Math.PI * 2,
             radius3d,
             
-            init = function() {
+            initialize = function() {
                 // add callback to update before render.
                 processor.addRenderCallback(showPlaybackPosition);
                 processor.addProcessCallback(showNote);
@@ -47,6 +47,11 @@ window.WH = window.WH || {};
                 // set the dots around the wheel
                 updateDots();
             },
+            
+            /**
+             * Called before this view is deleted.
+             */
+            terminate = function() {},
             
             showPlaybackPosition = function(position, duration) {
                 pointer3d.rotation.z = TWO_PI * (-position / duration);
@@ -289,12 +294,28 @@ window.WH = window.WH || {};
              */
             updateSelectCircle = function(isSelected) {
                 select3d.visible = isSelected;
+            },
+            
+            /**
+             * Check if this view is for a certain processor.
+             * @param  {Object} proc MIDI processor object.
+             * @return {Boolean} True if the processors match.
+             */
+            hasProcessor = function(proc) {
+                return proc === processor;
+            },
+            
+            getObject3d = function() {
+                return object3d;
             };
     
         that = specs.that || {};
         
-        init();
+        initialize();
         
+        that.terminate = terminate;
+        that.hasProcessor = hasProcessor;
+        that.getObject3d = getObject3d;
         return that;
     };
 
