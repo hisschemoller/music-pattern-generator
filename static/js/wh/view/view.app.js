@@ -24,11 +24,28 @@ window.WH = window.WH || {};
                     processor: processor
                 });
                 settingsViews.push(settingsView);
+            },
+            
+            /**
+             * Delete settings controls view for a processor.
+             * @param  {Object} processor MIDI processor to control with the settings.
+             */
+            deleteSettingsView = function(processor) {
+                var n = settingsViews.length;
+                while (--n >= 0) {
+                    if (settingsViews[n].hasProcessor(processor)) {
+                        settingsViews[n].terminate();
+                        settingsViews.splice(n, 1);
+                        console.log(settingsViews.length);
+                        return false;
+                    }
+                }
             };
         
         that = specs.that || {};
         
         that.createSettingsView = createSettingsView;
+        that.deleteSettingsView = deleteSettingsView;
         return that;
     };
 

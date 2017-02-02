@@ -40,7 +40,7 @@ window.WH = window.WH || {};
             },
             
             deleteProcessor = function(processor) {
-                // appView.deleteSettingsView(specs.type, processor);
+                appView.deleteSettingsView(processor);
                 // world.deleteObject(specs.type, processor);
                 // selectProcessor(nextProcessor);
                 // processor.terminate();

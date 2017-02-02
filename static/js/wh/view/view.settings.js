@@ -13,12 +13,12 @@ window.WH = window.WH || {};
             settingViews = [],
             el,
             
-            init = function() {
+            initialize = function() {
                 var params = processor.getParameters(),
                     template = document.getElementById('template-settings-' + specs.type);
                 
                 if (typeof processor.addSelectCallback === 'function') {
-                    processor.addSelectCallback(showSettings);
+                    processor.addSelectCallback(show);
                 }
                 
                 // create the settings panel
@@ -65,23 +65,37 @@ window.WH = window.WH || {};
             },
             
             /**
+             * [terminate description]
+             */
+            terminate = function() {
+                if (el) {
+                    el.parentNode.removeChild(el);
+                }
+            },
+            
+            /**
              * Show settings if the processor is selected, else remove.
              * @param {Boolean} isSelected True if selected.
              */
-            showSettings = function(isSelected) {
+            show = function(isSelected) {
                 var parentEl = document.getElementById('settings');
                 if (isSelected) {
                     parentEl.appendChild(el);
                 } else {
                     parentEl.removeChild(el);
                 }
-                
+            },
+            
+            hasProcessor = function(proc) {
+                return proc === processor;
             };
         
         that = specs.that || {};
         
-        init();
+        initialize();
         
+        that.terminate = terminate;
+        that.hasProcessor = hasProcessor;
         return that;
     };
 
