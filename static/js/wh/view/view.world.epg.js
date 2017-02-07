@@ -128,7 +128,7 @@ window.WH = window.WH || {};
             updateDots = function() {
                 var steps = processor.getParamValue('steps'),
                     rotation = processor.getParamValue('rotation'),
-                    euclid = processor.getProperty('euclid');
+                    euclid = processor.getEuclidPattern();
                 
                 // remove all existing dots
                 var n = dots3d.children.length;

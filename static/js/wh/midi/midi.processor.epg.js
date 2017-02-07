@@ -11,6 +11,7 @@ window.WH = window.WH || {};
         var that,
             position = 0,
             duration = 0,
+            euclidPattern = [],
             noteOffEvents = [],
             pulsesOnly = [],
             renderCallback,
@@ -155,9 +156,9 @@ window.WH = window.WH || {};
             
             updatePattern = function() {
                 // euclidean pattern properties, changes in steps, pulses, rotation
-                my.props.euclid = createBjorklund(my.params.steps.getValue(), my.params.pulses.getValue());
-                var elementsToShift = my.props.euclid.splice(my.params.rotation.getValue());
-                my.props.euclid = elementsToShift.concat(my.props.euclid);
+                euclidPattern = createBjorklund(my.params.steps.getValue(), my.params.pulses.getValue());
+                var elementsToShift = euclidPattern.splice(my.params.rotation.getValue());
+                euclidPattern = elementsToShift.concat(euclidPattern);
                 
                 // playback properties, changes in isTriplets, rate, noteLength
                 var ppqn = WH.conf.getPPQN(),
@@ -169,9 +170,9 @@ window.WH = window.WH || {};
                 
                 // create array of note start times in ticks
                 pulsesOnly.length = 0;
-                var n = my.props.euclid.length;
+                var n = euclidPattern.length;
                 for (var i = 0; i < n; i++) {
-                    if (my.props.euclid[i]) {
+                    if (euclidPattern[i]) {
                         pulsesOnly.push({
                             startTime: i * stepDuration,
                             stepIndex: i
@@ -231,13 +232,16 @@ window.WH = window.WH || {};
 
             	build(level);
             	return pattern.reverse();
+            },
+            
+            getEuclidPattern = function() {
+                return euclidPattern;
             };
        
         my = my || {};
         my.props = my.props || {};
         my.props.type = type;
         my.props.position3d = specs.position3d || null;
-        my.props.euclid = specs.euclid || [];
         
         /**
          * Parameter change handlers.
@@ -262,7 +266,9 @@ window.WH = window.WH || {};
             updatePattern();
         }
         my.$rate = function(value, timestamp) {}
-        my.$note_length = function(value, timestamp) {}
+        my.$note_length = function(value, timestamp) {
+            
+        }
         my.$is_triplets = function(value, timestamp) {}
         my.$is_mute = function(value, timestamp) {}
         my.$is_solo = function(value, timestamp) {}
@@ -369,6 +375,7 @@ window.WH = window.WH || {};
         that.addProcessCallback = addProcessCallback;
         that.addSelectCallback = addSelectCallback;
         that.setSelected = setSelected;
+        that.getEuclidPattern = getEuclidPattern;
         return that;
     };
     
