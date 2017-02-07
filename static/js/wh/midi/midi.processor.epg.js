@@ -11,6 +11,7 @@ window.WH = window.WH || {};
         var that,
             position = 0,
             duration = 0,
+            noteDuration,
             euclidPattern = [],
             noteOffEvents = [],
             pulsesOnly = [],
@@ -20,7 +21,7 @@ window.WH = window.WH || {};
             isSelected = false,
             
             initialize = function() {
-                updatePattern();
+                updatePattern(true);
             },
             
             terminate = function() {},
@@ -85,7 +86,7 @@ window.WH = window.WH || {};
                         
                         // store the Note Off message to send later
                         noteOffEvents.push({
-                            timestampTicks: pulseStartTime + 240,
+                            timestampTicks: pulseStartTime + noteDuration,
                             channel: my.props.channel,
                             type: 'noteoff',
                             pitch: my.props.pitch,
@@ -97,7 +98,7 @@ window.WH = window.WH || {};
                             // scanStartToNoteStart = pulseStartTime - localStart,
                             // delayFromNowToNoteStart = (nowToScanStart + scanStartToNoteStart) * ticksToMsMultiplier,
                             delayFromNowToNoteStart = (nowToScanStart + scanStartToNoteStart) * ticksToMsMultiplier,
-                            delayFromNowToNoteEnd = (delayFromNowToNoteStart + 240) * ticksToMsMultiplier;
+                            delayFromNowToNoteEnd = (delayFromNowToNoteStart + noteDuration) * ticksToMsMultiplier;
                         processCallback(stepIndex, delayFromNowToNoteStart, delayFromNowToNoteEnd);
                     }
                 }
@@ -154,17 +155,23 @@ window.WH = window.WH || {};
                 }
             },
             
-            updatePattern = function() {
+            /**
+             * Update all pattern properties.
+             * @param {Boolean} isEuclidChange Steps, pulses or rotation change.
+             */
+            updatePattern = function(isEuclidChange) {
                 // euclidean pattern properties, changes in steps, pulses, rotation
-                euclidPattern = createBjorklund(my.params.steps.getValue(), my.params.pulses.getValue());
-                var elementsToShift = euclidPattern.splice(my.params.rotation.getValue());
-                euclidPattern = elementsToShift.concat(euclidPattern);
+                if (isEuclidChange) {
+                    euclidPattern = createBjorklund(my.params.steps.getValue(), my.params.pulses.getValue());
+                    var elementsToShift = euclidPattern.splice(my.params.rotation.getValue());
+                    euclidPattern = elementsToShift.concat(euclidPattern);
+                }
                 
                 // playback properties, changes in isTriplets, rate, noteLength
                 var ppqn = WH.conf.getPPQN(),
                     rate = my.params.is_triplets.getValue() ? my.params.rate.getValue() * (2 / 3) : my.params.rate.getValue(),
-                    stepDuration = rate * ppqn,
-                    noteDuration = my.params.note_length.getValue() * ppqn;
+                    stepDuration = rate * ppqn;
+                noteDuration = my.params.note_length.getValue() * ppqn;
                 duration = my.params.steps.getValue() * stepDuration;
                 position = position % duration;
                 
@@ -257,19 +264,23 @@ window.WH = window.WH || {};
             if (my.params['rotation'].getValue() > value - 1) {
                 my.params['rotation'].setValue(value);
             }
-            updatePattern();
+            updatePattern(true);
         }
         my.$pulses = function(value, timestamp) {
-            updatePattern();
+            updatePattern(true);
         }
         my.$rotation = function(value, timestamp) {
-            updatePattern();
+            updatePattern(true);
         }
-        my.$rate = function(value, timestamp) {}
+        my.$rate = function(value, timestamp) {
+            updatePattern(false);
+        }
         my.$note_length = function(value, timestamp) {
-            
+            updatePattern(false);
         }
-        my.$is_triplets = function(value, timestamp) {}
+        my.$is_triplets = function(value, timestamp) {
+            updatePattern(false);
+        }
         my.$is_mute = function(value, timestamp) {}
         my.$is_solo = function(value, timestamp) {}
         my.$channel_out = function(value, timestamp) {}
