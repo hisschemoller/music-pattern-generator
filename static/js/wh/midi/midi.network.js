@@ -34,12 +34,31 @@ window.WH = window.WH || {};
                     appView.createSettingsView(specs.type, processor);
                     world.createObject(specs.type, processor);
                     selectProcessor(processor);
+                    
+                    // TEMP
+                    // if this is an EPG processor, connect it to MIDI out processor (if any)
+                    if (specs.type == 'epg') {
+                        for (var i = 0; i < numProcessors; i++) {
+                            if (processors[i].getProperty('type') == 'output') {
+                                processor.connect(processors[i]);
+                                break;
+                            }
+                        }
+                    }
                 } else {
                     console.error('No MIDI processor found of type: ', specs.type);
                 }
             },
             
             deleteProcessor = function(processor) {
+                // disconnect other processors that have this processor as destination
+                for (var i = 0; i < numProcessors; i++) {
+                    if (typeof processors[i].disconnect === 'function') {
+                        processors[i].disconnect(processor);
+                    }
+                }
+                // disconnect this processor from its destinations
+                processor.disconnect();
                 selectNextProcessor(processor);
                 appView.deleteSettingsView(processor);
                 world.deleteObject(processor);

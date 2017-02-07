@@ -9,36 +9,44 @@ window.WH = window.WH || {};
     
     function createMIDIConnectorIn(specs, my) {
         var that,
-            outConnectors = [],
-            numOutConnectors = 0,
+            sources = [],
+            numSources = 0,
             
             getInputData = function() {
-                var outputData = [];
-                for (var i = 0; i < numOutConnectors; i++) {
-                    var data = outConnectors[i].getOutputData();
-                    var outputData = outputData.concat(data);
+                var outputData = [], 
+                    data = [];
+                for (var i = 0; i < numSources; i++) {
+                    data = sources[i].getOutputData();
+                    outputData = outputData.concat(data);
                     data.length = 0;
                 }
                 return outputData;
             },
             
-            connect = function(outConnector) {
-                outConnectors.push(outConnector);
-                numOutConnectors = outConnectors.length;
-                console.log('Connect ' + outConnector.getProperty('type') + ' (id ' + outConnector.getProperty('id') + ') to ' + that.getProperty('type') + ' (id ' + that.getProperty('id') + ')');
+            addConnection = function(processor) {
+                sources.push(processor);
+                numSources = sources.length;
+                console.log('Connect ' + processor.getProperty('type') + ' (id ' + processor.getProperty('id') + ') to ' + that.getProperty('type') + ' (id ' + that.getProperty('id') + ')');
             },
             
-            disconnect = function() {
-                
+            removeConnection = function(processor) {
+                var n = sources.length;
+                while (--n >= 0) {
+                    if (processor === sources[n]) {
+                        sources.splice(n, 1);
+                        numSources = sources.length;
+                        console.log('Disconnect ' + processor.getProperty('type') + ' (id ' + processor.getProperty('id') + ') from ' + that.getProperty('type') + ' (id ' + that.getProperty('id') + ')');
+                        break;
+                    }
+                }
             };
        
         my = my || {};
         my.getInputData = getInputData;
 
         that = specs.that || {};
-        
-        that.connect = connect;
-        that.disconnect = disconnect;
+        that.addConnection = addConnection;
+        that.removeConnection = removeConnection;
         return that;
     };
     
