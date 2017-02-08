@@ -12,22 +12,28 @@ window.WH = window.WH || {};
             midiOutput = specs.midiOutput,
             
             /**
-             * [process description]
-             * @param {Number} start Timespan start in ticks from timeline start.
-             * @param {Number} end   Timespan end in ticks from timeline start.
+             * Process events to happen in a time slice.
+             * @param {Number} scanStart Timespan start in ticks from timeline start.
+             * @param {Number} scanEnd   Timespan end in ticks from timeline start.
+             * @param {Number} nowToScanStart Timespan from current timeline position to scanStart.
+             * @param {Number} ticksToMsMultiplier Duration of one tick in milliseconds.
+             * @param {Number} offset Time from doc start to timeline start in ticks.
              */
-            process = function(start, end) {
+            process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset) {
                 var inputData = my.getInputData(),
+                    origin = performance.now() - offset,
                     n = inputData.length;
                 
                 for (var i = 0; i < n; i++) {
-                    var item = inputData[i];
+                    var item = inputData[i],
+                        timestamp = (origin + item.timestampTicks) * ticksToMsMultiplier;
+                    
                     switch (item.type) {
                         case 'noteon':
-                            midiOutput.send(0x90 + (item.channel - 1), [item.pitch, item.velocity], item.timestamp);
+                            midiOutput.send(0x90 + (item.channel - 1), [item.pitch, item.velocity], timestamp);
                             break;
                         case 'noteoff':
-                            midiOutput.send(0x80 + (item.channel - 1), [item.pitch, 0], item.timestamp);
+                            midiOutput.send(0x80 + (item.channel - 1), [item.pitch, 0], timestamp);
                             break;
                     }
                 }
