@@ -1,5 +1,9 @@
 /**
  * MIDI input port processor.
+ *
+ * MIDI timestamps are in milliseconds since document start, so performance.now().
+ * Processors communicate using ticks since timeline start.
+ * 
  * @namespace WH
  */
 
@@ -10,10 +14,11 @@ window.WH = window.WH || {};
     function createMIDIPortIn(specs, my) {
         var that,
             midiInput = specs.midiInput,
+            incoming = [],
             
             addEventListeners = function() {
                 midiInput.addListener('noteon', 'all', function(e) {
-                    my.setOutputData({
+                    incoming.push({
                         timestamp: e.receivedTime,
                         channel: e.channel,
                         type: e.type,
@@ -22,7 +27,7 @@ window.WH = window.WH || {};
                     });
                 });
                 midiInput.addListener('noteoff', 'all', function(e) {
-                    my.setOutputData({
+                    incoming.push({
                         timestamp: e.receivedTime,
                         channel: e.channel,
                         type: e.type,
@@ -31,7 +36,7 @@ window.WH = window.WH || {};
                     });
                 });
                 midiInput.addListener('controlchange', 'all', function(e) {
-                    my.setOutputData({
+                    incoming.push({
                         timestamp: e.receivedTime,
                         channel: e.channel,
                         type: e.type,
@@ -40,9 +45,23 @@ window.WH = window.WH || {};
                     });
                 });
             },
-                
-            process = function(start, end) {
-                // the midi input has nothing to process but needs this function
+            
+            /**
+             * Process events to happen in a time slice.
+             * @param {Number} scanStart Timespan start in ticks from timeline start.
+             * @param {Number} scanEnd   Timespan end in ticks from timeline start.
+             * @param {Number} nowToScanStart Timespan from current timeline position to scanStart.
+             * @param {Number} ticksToMsMultiplier Duration of one tick in milliseconds.
+             * @param {Number} offset Time from doc start to timeline start in ticks.
+             */
+            process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset) {
+                var timelineStartToNow = scanStart - nowToScanStart,
+                    n = incoming.length;
+                for (var i = 0; i < n; i++) {
+                    var message = incoming[i];
+                    message.timestampTicks = (message.timestamp / ticksToMsMultiplier) - offset
+                    my.setOutputData(message);
+                }
             };
        
         my = my || {};

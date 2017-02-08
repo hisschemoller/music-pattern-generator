@@ -40,10 +40,10 @@ window.WH = window.WH || {};
              * @param {Number} scanStart Start in ms of timespan to scan.
              * @param {Number} scanEnd End in ms of timespan to scan.
              */
-            scanEvents = function(scanStart, scanEnd, nowToScanStart) {
+            scanEvents = function(scanStart, scanEnd, nowToScanStart, offset) {
                 var scanStartTimeline = msec2tick(scanStart),
                     scanEndTimeline = msec2tick(scanEnd);
-                midiNetwork.process(scanStartTimeline, scanEndTimeline, msec2tick(nowToScanStart), tickInMilliseconds);
+                midiNetwork.process(scanStartTimeline, scanEndTimeline, msec2tick(nowToScanStart), tickInMilliseconds, msec2tick(offset));
             },
             
             /**
@@ -248,7 +248,7 @@ window.WH = window.WH || {};
                     }
                     if (needsScan) {
                         needsScan = false;
-                        my.scanEvents(scanStart - origin, scanEnd - origin, scanStart - position);
+                        my.scanEvents(scanStart - origin, scanEnd - origin, scanStart - position, position - origin);
                     }
                 }
                 my.updateView(position - origin);

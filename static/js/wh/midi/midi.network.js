@@ -99,9 +99,9 @@ window.WH = window.WH || {};
                 }
             },
             
-            process = function(start, end, nowToScanStart, ticksToMsMultiplier) {
+            process = function(start, end, nowToScanStart, ticksToMsMultiplier, offset) {
                 for (var i = 0; i < numProcessors; i++) {
-                    processors[i].process(start, end, nowToScanStart, ticksToMsMultiplier);
+                    processors[i].process(start, end, nowToScanStart, ticksToMsMultiplier, offset);
                 }
             },
             
