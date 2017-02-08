@@ -27,26 +27,18 @@ window.WH = window.WH || {};
             terminate = function() {},
             
             /**
-             * Process events to happen in a time slice 
+             * Process events to happen in a time slice.
              * timeline start        now      scanStart     scanEnd
              * |----------------------|-----------|------------|
              *                        |-----------| 
              *                        nowToScanStart
              * @param {Number} scanStart Timespan start in ticks from timeline start.
              * @param {Number} scanEnd   Timespan end in ticks from timeline start.
-             * @param {Number} nowToScanStart Timespan between current timeline position and scanStart.
+             * @param {Number} nowToScanStart Timespan from current timeline position to scanStart.
              * @param {Number} ticksToMsMultiplier Duration of one tick in milliseconds.
+             * @param {Number} offset Time from doc start to timeline start in ticks.
              */
-            process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier) {
-                
-                // check for scheduled note off events
-                var i = noteOffEvents.length;
-                while (--i > -1) {
-                    var noteOffTime = noteOffEvents[i].timestamp;
-                    if (scanStart <= noteOffTime && scanEnd > noteOffTime) {
-                        my.setOutputData(noteOffEvents.splice(i, 1)[0]);
-                    }
-                }
+            process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset) {
                 
                 // if the pattern loops during this timespan.
                 var localStart = scanStart % duration,
@@ -74,22 +66,26 @@ window.WH = window.WH || {};
                     
                     // if a note should play
                     if (isOn) {
+                        var channel = my.params.channel_out.getValue(),
+                            pitch = my.params.pitch_out.getValue(),
+                            velocity = my.params.velocity_out.getValue(),
+                            pulseStartTimestamp = scanStart + scanStartToNoteStart;
                         
                         // send the Note On message
                         my.setOutputData({
-                            timestampTicks: pulseStartTime,
-                            channel: my.props.channel,
+                            timestampTicks: pulseStartTimestamp,
+                            channel: channel,
                             type: 'noteon',
-                            pitch: my.props.pitch,
-                            velocity: my.props.velocity
+                            pitch: pitch,
+                            velocity: velocity
                         });
                         
                         // store the Note Off message to send later
                         noteOffEvents.push({
-                            timestampTicks: pulseStartTime + noteDuration,
-                            channel: my.props.channel,
+                            timestampTicks: pulseStartTimestamp + noteDuration,
+                            channel: channel,
                             type: 'noteoff',
-                            pitch: my.props.pitch,
+                            pitch: pitch,
                             velocity: 0
                         });
                         
@@ -105,6 +101,15 @@ window.WH = window.WH || {};
                 
                 if (localStart2 !== false) {
                     localStart = localStart2;
+                }
+                    
+                // check for scheduled note off events
+                var i = noteOffEvents.length;
+                while (--i > -1) {
+                    var noteOffTime = noteOffEvents[i].timestampTicks;
+                    if (scanStart <= noteOffTime && scanEnd > noteOffTime) {
+                        my.setOutputData(noteOffEvents.splice(i, 1)[0]);
+                    }
                 }
             },
             
