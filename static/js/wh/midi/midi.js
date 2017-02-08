@@ -30,10 +30,10 @@ window.WH = window.WH || {};
                         console.log('WebMidi enabled');
                         epgPreferences.setMidiPorts(WebMidi.inputs, true);
                         epgPreferences.setMidiPorts(WebMidi.outputs, false);
-                        if (typeof selectedInputID === 'string') {
+                        if (typeof selectedInputID === 'string' && selectedOutputID.length) {
                             selectInputByID(selectedInputID);
                         }
-                        if (typeof selectedOutputID === 'string') {
+                        if (typeof selectedOutputID === 'string' && selectedOutputID.length) {
                             selectOutputByID(selectedOutputID);
                         }
                     }
