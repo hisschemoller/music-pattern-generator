@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     
     // initialise
-    midi.enable();
+    midi.setup();
     world.setup();
     file.setup();
     transport.run();

@@ -45,7 +45,7 @@ window.WH = window.WH || {};
             },
             
             /**
-             * Populate the MIDI inputs dropdown.
+             * Populate the MIDI inputs or outputs dropdown.
              * @param {Array} midiPorts WebMidi.inputs or WebMidi.outputs
              * @param {Boolean} isInputs True if inputs, else outputs.
              */
