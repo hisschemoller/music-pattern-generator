@@ -91,14 +91,6 @@ window.WH = window.WH || {};
                 }
             }
             
-            getProcessorByProperty = function(name, value) {
-                for (var i = 0; i < numProcessors; i++) {
-                    if (processors[i].getProperty(name) === value) {
-                        return processors[i];
-                    }
-                }
-            },
-            
             process = function(start, end, nowToScanStart, ticksToMsMultiplier, offset) {
                 for (var i = 0; i < numProcessors; i++) {
                     processors[i].process(start, end, nowToScanStart, ticksToMsMultiplier, offset);
@@ -119,7 +111,6 @@ window.WH = window.WH || {};
         
         init();
         
-        that.getProcessorByProperty = getProcessorByProperty;
         that.process = process;
         that.render = render;
         return that;
