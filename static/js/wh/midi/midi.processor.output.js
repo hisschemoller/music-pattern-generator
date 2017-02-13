@@ -24,17 +24,19 @@ window.WH = window.WH || {};
                     origin = performance.now() - offset,
                     n = inputData.length;
                 
-                for (var i = 0; i < n; i++) {
-                    var item = inputData[i],
-                        timestamp = (origin + item.timestampTicks) * ticksToMsMultiplier;
-                    
-                    switch (item.type) {
-                        case 'noteon':
-                            midiOutput.send(0x90 + (item.channel - 1), [item.pitch, item.velocity], timestamp);
-                            break;
-                        case 'noteoff':
-                            midiOutput.send(0x80 + (item.channel - 1), [item.pitch, 0], timestamp);
-                            break;
+                if (midiOutput.state === 'connected') {
+                    for (var i = 0; i < n; i++) {
+                        var item = inputData[i],
+                            timestamp = (origin + item.timestampTicks) * ticksToMsMultiplier;
+                        
+                        switch (item.type) {
+                            case 'noteon':
+                                midiOutput.send([0x90 + (item.channel - 1), item.pitch, item.velocity], timestamp);
+                                break;
+                            case 'noteoff':
+                                midiOutput.send([0x80 + (item.channel - 1), item.pitch, 0], timestamp);
+                                break;
+                        }
                     }
                 }
             };

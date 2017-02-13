@@ -75,6 +75,11 @@ window.WH = window.WH || {};
                         name: port.value.name,
                         id: port.value.id
                     });
+                    // create a MIDI input processor for each port
+                    ns.pubSub.fire('create.processor', {
+                        type: 'input',
+                        midiInput: port.value
+                    });
                 }
                 epgPreferences.setMidiPorts(portInfos, true);
                 
@@ -86,6 +91,11 @@ window.WH = window.WH || {};
                         name: port.value.name,
                         id: port.value.id
                     });
+                    // create a MIDI output processor for each port
+                    ns.pubSub.fire('create.processor', {
+                        type: 'output',
+                        midiOutput: port.value
+                    });
                 }
                 epgPreferences.setMidiPorts(portInfos, false);
                 
@@ -96,18 +106,6 @@ window.WH = window.WH || {};
                 if (typeof selectedOutputID === 'string' && selectedOutputID.length) {
                     selectOutputByID(selectedOutputID);
                 }
-                
-                // create MIDI Input processor
-                ns.pubSub.fire('create.processor', {
-                    type: 'input',
-                    midiInput: selectedInput
-                });
-                
-                // create MIDI Output processor
-                ns.pubSub.fire('create.processor', {
-                    type: 'output',
-                    midiInput: selectedOutput
-                });
             },
             
             /**
@@ -275,7 +273,6 @@ window.WH = window.WH || {};
              * @param {Object} data Preferences data object.
              */
             setData = function(data) {
-                console.log(data);
                 selectInputByID(data.midiin, true);
                 selectOutputByID(data.midiout, false);
                 setClockInEnabled(data.clockin);
