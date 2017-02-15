@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         // epgSettings = {},
         file = {},
         midi = {},
+        midiExternalControl = {},
         midiNetwork = {},
         transport = {},
         world = {};
@@ -72,6 +73,9 @@ document.addEventListener('DOMContentLoaded', function(e) {
         epgControls: epgControls,
         epgPreferences: epgPreferences,
         transport: transport
+    });
+    WH.createMIDIExternalControl({
+        that: midiExternalControl
     });
     WH.createMIDINetwork({
         that: midiNetwork,
