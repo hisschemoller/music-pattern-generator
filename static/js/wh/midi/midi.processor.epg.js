@@ -302,42 +302,48 @@ window.WH = window.WH || {};
                 type: 'integer',
                 default: 16,
                 min: 1,
-                max: 64
+                max: 64,
+                isMidiControllable: true
             },
             pulses: {
                 label: 'Pulses',
                 type: 'integer',
                 default: 4,
                 min: 0,
-                max: 16
+                max: 16,
+                isMidiControllable: true
             },
             rotation: {
                 label: 'Rotation',
                 type: 'integer',
                 default: 0,
                 min: 0,
-                max: 15
+                max: 15,
+                isMidiControllable: true
             },
             channel_out: {
                 label: 'MIDI Channel',
                 type: 'integer',
                 default: 1,
                 min: 1,
-                max: 16
+                max: 16,
+                isMidiControllable: false
             },
             pitch_out: {
                 label: 'MIDI Pitch',
                 type: 'integer',
                 default: 60,
                 min: 0,
-                max: 127
+                max: 127,
+                isMidiControllable: false
             },
             velocity_out: {
                 label: 'MIDI Velocity',
                 type: 'integer',
                 default: 100,
                 min: 0,
-                max: 127
+                max: 127,
+                isMidiControllable: false
             },
             rate: {
                 label: 'Rate',
@@ -350,12 +356,14 @@ window.WH = window.WH || {};
                     {label: '1/8', value: 0.5},
                     {label: '1/16', value: 0.25},
                     {label: '1/32', value: 0.125}
-                ]
+                ],
+                isMidiControllable: false
             },
             is_triplets: {
                 label: 'Triplets',
                 type: 'boolean',
-                default: false
+                default: false,
+                isMidiControllable: false
             },
             note_length: {
                 label: 'Note length',
@@ -368,17 +376,20 @@ window.WH = window.WH || {};
                     {label: '1/8', value: 0.5},
                     {label: '1/16', value: 0.25},
                     {label: '1/32', value: 0.125}
-                ]
+                ],
+                isMidiControllable: false
             },
             is_solo: {
                 label: 'Solo',
                 type: 'boolean',
-                default: false
+                default: false,
+                isMidiControllable: false
             },
             is_mute: {
                 label: 'Mute',
                 type: 'boolean',
-                default: false
+                default: false,
+                isMidiControllable: false
             }
         });
         
