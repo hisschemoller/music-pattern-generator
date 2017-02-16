@@ -12,6 +12,7 @@
     
     function createEPGControls(specs) {
         var that,
+            midiExternalControl = specs.midiExternalControl,
             transport = specs.transport
             controlsEl = document.getElementById('controls'),
             controls = {
@@ -22,6 +23,10 @@
                 bpm: {
                     type: 'number',
                     input: document.getElementById('bpm-number')
+                },
+                learn: {
+                    type: 'checkbox',
+                    input: document.getElementById('learn-check')
                 }
             },
             
@@ -31,6 +36,9 @@
                 });
                 controls.bpm.input.addEventListener('change', function(e) {
                     transport.setBPM(e.target.value);
+                });
+                controls.learn.input.addEventListener('change', function(e) {
+                    midiExternalControl.toggleMidiLearn(e.target.checked);
                 });
                 WH.pubSub.on('transport.start', function() {
                     controls.play.input.checked = true;
