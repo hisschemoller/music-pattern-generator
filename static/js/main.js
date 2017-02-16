@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         // epgModel = {}, 
         epgPreferences = {},
         // epgSettings = {},
+        externalControlView = {},
         file = {},
         midi = {},
         midiExternalControl = {},
@@ -41,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     // });
     WH.createEPGControls({
         that: epgControls,
+        midiExternalControl: midiExternalControl,
         transport: transport
     });
     // WH.createEPGModel({
@@ -60,6 +62,10 @@ document.addEventListener('DOMContentLoaded', function(e) {
     //     that: epgSettings,
     //     // epgModel: epgModel
     // });
+    WH.createExternalControlView({
+        that: externalControlView,
+        midiExternalControl: midiExternalControl
+    });
     WH.createFile({
         that: file,
         arrangement: arrangement,
@@ -75,7 +81,8 @@ document.addEventListener('DOMContentLoaded', function(e) {
         transport: transport
     });
     WH.createMIDIExternalControl({
-        that: midiExternalControl
+        that: midiExternalControl,
+        externalControlView: externalControlView
     });
     WH.createMIDINetwork({
         that: midiNetwork,

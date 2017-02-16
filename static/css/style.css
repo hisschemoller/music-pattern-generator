@@ -49,3 +49,9 @@ legend {
 #templates {
     display: none;
 }
+#externalcontrol {
+    display: none;
+}
+    .externalcontrol__list {
+        
+    }
