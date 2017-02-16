@@ -39,12 +39,20 @@ window.WH = window.WH || {};
                         return false;
                     }
                 }
+            },
+            
+            toggleMidiLearnMode = function(isLearnMode, addParamCallback) {
+                var n = settingsViews.length;
+                while (--n >= 0) {
+                    settingsViews[n].toggleLearnMode(isLearnMode, addParamCallback);
+                }
             };
         
         that = specs.that || {};
         
         that.createSettingsView = createSettingsView;
         that.deleteSettingsView = deleteSettingsView;
+        that.toggleMidiLearnMode = toggleMidiLearnMode;
         return that;
     };
 

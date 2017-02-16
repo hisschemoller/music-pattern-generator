@@ -52,6 +52,17 @@ legend {
 #externalcontrol {
     display: none;
 }
+    .settings__row {
+        position: relative;
+    }
+    .setting__learnmode {
+        background-color: rgba(255, 225, 200, 0.4);
+        bottom: 0;
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
     .externalcontrol__list {
         
     }

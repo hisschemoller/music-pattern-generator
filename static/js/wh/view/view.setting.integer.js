@@ -14,14 +14,14 @@ window.WH = window.WH || {};
             numberEl,
             
             init = function() {
-                rangeEl = my.el.getElementsByClassName('settings__range')[0];
+                rangeEl = my.el.getElementsByClassName('setting__range')[0];
                 rangeEl.setAttribute('min', my.param.getProperty('min'));
                 rangeEl.setAttribute('max', my.param.getProperty('max'));
                 rangeEl.value = my.param.getValue();
                 rangeEl.addEventListener('input', onChange);
                 rangeEl.addEventListener('change', onChange);
                 
-                numberEl = my.el.getElementsByClassName('settings__number')[0];
+                numberEl = my.el.getElementsByClassName('setting__number')[0];
                 numberEl.setAttribute('min', my.param.getProperty('min'));
                 numberEl.setAttribute('max', my.param.getProperty('max'));
                 numberEl.value = my.param.getValue();

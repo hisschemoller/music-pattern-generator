@@ -82,6 +82,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     WH.createMIDIExternalControl({
         that: midiExternalControl,
+        appView: appView,
         externalControlView: externalControlView
     });
     WH.createMIDINetwork({

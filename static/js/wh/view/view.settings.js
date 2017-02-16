@@ -28,30 +28,32 @@ window.WH = window.WH || {};
                 
                 // loop through all processor parameters and add setting view if required
                 for (var key in params) {
-                    // only create setting if there's a container element for it in the settings panel
-                    var settingContainerEl = el.getElementsByClassName(key)[0];
-                    if (settingContainerEl) {
-                        var param = params[key],
-                            settingView = {},
-                            settingViewSpecs = {
-                                that: settingView,
-                                param: param,
-                                containerEl: settingContainerEl
-                            };
-                        // create the setting view based on the parameter type
-                        switch (param.getProperty('type')) {
-                            case 'integer':
-                                ns.createIntegerSettingView(settingViewSpecs);
-                                break;
-                            case 'boolean':
-                                ns.createBooleanSettingView(settingViewSpecs);
-                                break;
-                            case 'itemized':
-                                ns.createItemizedSettingView(settingViewSpecs);
-                                break;
+                    if (params.hasOwnProperty(key)) {
+                        // only create setting if there's a container element for it in the settings panel
+                        var settingContainerEl = el.getElementsByClassName(key)[0];
+                        if (settingContainerEl) {
+                            var param = params[key],
+                                settingView = {},
+                                settingViewSpecs = {
+                                    that: settingView,
+                                    param: param,
+                                    containerEl: settingContainerEl
+                                };
+                            // create the setting view based on the parameter type
+                            switch (param.getProperty('type')) {
+                                case 'integer':
+                                    settingView = ns.createIntegerSettingView(settingViewSpecs);
+                                    break;
+                                case 'boolean':
+                                    settingView = ns.createBooleanSettingView(settingViewSpecs);
+                                    break;
+                                case 'itemized':
+                                    settingView = ns.createItemizedSettingView(settingViewSpecs);
+                                    break;
+                            }
+                            // add view to list for future reference
+                            settingViews.push(settingView);
                         }
-                        // add view to list for future reference
-                        settingViews.push(settingView);
                     }
                 }
                 
@@ -93,7 +95,14 @@ window.WH = window.WH || {};
              */
             hasProcessor = function(proc) {
                 return proc === processor;
-            };
+            },
+            
+            toggleLearnMode = function(isLearnMode, addParamCallback) {
+                var n = settingViews.length;
+                while (--n >= 0) {
+                    settingViews[n].toggleLearnMode(isLearnMode, addParamCallback);
+                }
+            };;
         
         that = specs.that || {};
         
@@ -101,6 +110,7 @@ window.WH = window.WH || {};
         
         that.terminate = terminate;
         that.hasProcessor = hasProcessor;
+        that.toggleLearnMode = toggleLearnMode;
         return that;
     };
 

@@ -9,6 +9,7 @@ window.WH = window.WH || {};
     
     function createMIDIExternalControl(specs) {
         var that,
+            appView = specs.appView,
             externalControlView = specs.externalControlView,
             midiInputs = [],
             paramLookup = [],
@@ -67,6 +68,7 @@ window.WH = window.WH || {};
             toggleMidiLearn = function(isEnabled) {
                 isInLearnMode = isEnabled;
                 externalControlView.toggleVisibility(isInLearnMode);
+                appView.toggleMidiLearnMode(isInLearnMode, addParameter);
                 
                 var midimessageListener;
                 if (isInLearnMode) {

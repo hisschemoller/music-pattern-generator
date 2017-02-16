@@ -17,11 +17,11 @@ window.WH = window.WH || {};
                 var parentEl = my.el.parentNode;
                 
                 // add the main label
-                var label = my.el.getElementsByClassName('settings__label-text')[0];
+                var label = my.el.getElementsByClassName('setting__label-text')[0];
                 parentEl.appendChild(label);
                 
                 // add the radio buttons
-                var radioTemplateEl = my.el.getElementsByClassName('settings__label-radio')[0],
+                var radioTemplateEl = my.el.getElementsByClassName('setting__label-radio')[0],
                     model = my.param.getModel(),
                     numInputs = model.length;
                 for (var i = 0; i < numInputs; i++) {
@@ -29,14 +29,14 @@ window.WH = window.WH || {};
                     var radioEl = radioTemplateEl.cloneNode(true);
                     parentEl.appendChild(radioEl);
                     // set the radio input
-                    var radioInputEl = radioEl.getElementsByClassName('settings__radio')[0];
+                    var radioInputEl = radioEl.getElementsByClassName('setting__radio')[0];
                     radioInputEl.setAttribute('name', my.param.getProperty('key'));
                     radioInputEl.value = model[i].value;
                     radioInputEl.checked = model[i].value == my.param.getValue();
                     radioInputEl.addEventListener('change', onChange);
                     radioInputs.push(radioInputEl);
                     // set the label
-                    radioLabelEl = radioEl.getElementsByClassName('settings__label-radio-text')[0];
+                    radioLabelEl = radioEl.getElementsByClassName('setting__label-radio-text')[0];
                     radioLabelEl.innerHTML = model[i].label;
                 }
                 

@@ -13,7 +13,7 @@
              checkEl,
              
              init = function() {
-                 checkEl = my.el.getElementsByClassName('settings__check')[0];
+                 checkEl = my.el.getElementsByClassName('setting__check')[0];
                  checkEl.value = my.param.getValue();
                  checkEl.addEventListener('change', onChange);
                  

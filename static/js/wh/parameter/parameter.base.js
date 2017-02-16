@@ -99,6 +99,7 @@ window.WH = window.WH || {};
         my.type = specs.type;
         my.label = specs.label;
         my.key = specs.key;
+        my.isMidiControllable = specs.isMidiControllable;
         
         that = specs.that || {};
         
