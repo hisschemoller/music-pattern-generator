@@ -11,6 +11,7 @@ window.WH = window.WH || {};
     function createBaseSettingView(specs, my) {
         var that,
             learnClickLayer,
+            learnCallback,
             
             init = function() {
                 // find template, add clone to settings panel
@@ -31,11 +32,19 @@ window.WH = window.WH || {};
             toggleLearnMode = function(isLearnMode, callback) {
                 if (my.param.getProperty('isMidiControllable')) {
                     if (isLearnMode) {
+                        learnCallback = callback;
                         my.el.appendChild(learnClickLayer);
+                        learnClickLayer.addEventListener('click', onLearnLayerClick);
                     } else {
+                        learnCallback = null;
                         my.el.removeChild(learnClickLayer);
+                        learnClickLayer.removeEventListener('click', onLearnLayerClick);
                     }
                 }
+            },
+            
+            onLearnLayerClick = function(e) {
+                learnCallback(my.param);
             };
             
         my = my || {};

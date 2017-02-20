@@ -13,6 +13,7 @@ window.WH = window.WH || {};
             externalControlView = specs.externalControlView,
             midiInputs = [],
             paramLookup = [],
+            selectedParameter,
             isInLearnMode = false,
             
             /**
@@ -28,6 +29,7 @@ window.WH = window.WH || {};
                         break;
                     }
                 }
+                
                 if (!exists) {
                     midiInputs.push({
                         port: midiInput,
@@ -50,7 +52,7 @@ window.WH = window.WH || {};
             },
             
             onMIDIMessage = function(e) {
-                console.log(e, e.data);
+                console.log(e.data);
                 // only continuous controller message, 0xB == 11
                 if (e.data[0] >> 4 === 0xB) {
                     var channelIndex = e.data[0] & 0xf,
@@ -61,14 +63,24 @@ window.WH = window.WH || {};
                 }
             },
             
+            /**
+             * Listener for MIDI events in case the app is in MIDI learn mode.
+             * @param  {Object} e MIDI message.
+             */
             onMIDILearnMessage = function(e) {
-                
+                if (selectedParameter) {
+                    if (e.data[0] >> 4 === 0xB) {
+                        paramLookup[e.target.id][(e.data[0] & 0xf) + '_ ' + e.data[1]] = selectedParameter;
+                        selectedParameter = null;
+                    }
+                }
             },
             
             toggleMidiLearn = function(isEnabled) {
                 isInLearnMode = isEnabled;
+                selectedParameter = null;
                 externalControlView.toggleVisibility(isInLearnMode);
-                appView.toggleMidiLearnMode(isInLearnMode, addParameter);
+                appView.toggleMidiLearnMode(isInLearnMode, selectParameter);
                 
                 var midimessageListener;
                 if (isInLearnMode) {
@@ -80,7 +92,7 @@ window.WH = window.WH || {};
                 // set listener on all midi ports
                 var n = midiInputs.length;
                 for (var i = 0; i < n; i++) {
-                    midiInputs[i].onmidimessage = midiMessageListener;
+                    midiInputs[i].port.onmidimessage = midiMessageListener;
                 }
                 
                 
@@ -113,6 +125,11 @@ window.WH = window.WH || {};
                 // 
             },
             
+            selectParameter = function(param) {
+                console.log('selectParameter: ', param);
+                selectedParameter = param;
+            }
+            
             addParameter = function(param) {
                 // add parameter to the lookup table
                 // add parameter to the list view table
@@ -125,6 +142,8 @@ window.WH = window.WH || {};
         
         that = specs.that;
         
+        that.addMidiInput = addMidiInput;
+        that.removeMidiInput = removeMidiInput;
         that.toggleMidiLearn = toggleMidiLearn;
         return that;
     }
