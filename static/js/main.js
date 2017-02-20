@@ -78,6 +78,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         app: app,
         epgControls: epgControls,
         epgPreferences: epgPreferences,
+        midiExternalControl: midiExternalControl,
         transport: transport
     });
     WH.createMIDIExternalControl({

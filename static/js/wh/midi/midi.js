@@ -11,6 +11,7 @@ window.WH = window.WH || {};
         var that,
             epgControls = specs.epgControls,
             epgPreferences = specs.epgPreferences,
+            midiExternalControl = specs.midiExternalControl,
             transport = specs.transport,
             localStorageName = 'midiprefs',
             midiAccess,
@@ -80,6 +81,8 @@ window.WH = window.WH || {};
                         type: 'input',
                         midiInput: port.value
                     });
+                    // all midi inputs are available for external MIDI control
+                    midiExternalControl.addMidiInput(port.value);
                 }
                 epgPreferences.setMidiPorts(portInfos, true);
                 
