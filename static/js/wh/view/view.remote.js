@@ -7,7 +7,7 @@ window.WH = window.WH || {};
 
 (function (ns) {
     
-    function createExternalControlView(specs, my) {
+    function createRemoteView(specs, my) {
         var that,
             midiRemote = specs.midiRemote,
             rootEl = document.querySelector('#externalcontrol'),
@@ -23,6 +23,6 @@ window.WH = window.WH || {};
         return that;
     }
 
-    ns.createExternalControlView = createExternalControlView;
+    ns.createRemoteView = createRemoteView;
 
 })(WH);

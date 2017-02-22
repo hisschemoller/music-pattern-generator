@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         // epgModel = {}, 
         epgPreferences = {},
         // epgSettings = {},
-        externalControlView = {},
+        remoteView = {},
         file = {},
         midi = {},
         midiRemote = {},
@@ -62,9 +62,9 @@ document.addEventListener('DOMContentLoaded', function(e) {
     //     that: epgSettings,
     //     // epgModel: epgModel
     // });
-    WH.createExternalControlView({
-        that: externalControlView,
-        midiExternalControl: midiExternalControl
+    WH.createRemoteView({
+        that: remoteView,
+        midiRemote: midiRemote
     });
     WH.createFile({
         that: file,
@@ -78,13 +78,13 @@ document.addEventListener('DOMContentLoaded', function(e) {
         app: app,
         epgControls: epgControls,
         epgPreferences: epgPreferences,
-        midiExternalControl: midiExternalControl,
+        midiRemote: midiRemote,
         transport: transport
     });
     WH.createMIDIRemote({
         that: midiRemote,
         appView: appView,
-        externalControlView: externalControlView
+        remoteView: remoteView
     });
     WH.createMIDINetwork({
         that: midiNetwork,

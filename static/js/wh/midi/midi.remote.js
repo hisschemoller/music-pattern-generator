@@ -1,5 +1,5 @@
 /**
- * MIDIExternalControl assigns MIDI Continuous Controllers to processor parameters.
+ * MIDIRemote assigns MIDI Continuous Controllers to processor parameters.
  *
  * If a CC is assigned and that CC was already assigned, the old assignment is removed.
  * If a parameter is assigned and it is then reassigned to a different CC, the old assignment is removed.
@@ -13,7 +13,7 @@ window.WH = window.WH || {};
     function createMIDIRemote(specs) {
         var that,
             appView = specs.appView,
-            externalControlView = specs.externalControlView,
+            remoteView = specs.remoteView,
             midiInputs = [],
             paramLookup = [],
             paramList = [],
@@ -83,7 +83,7 @@ window.WH = window.WH || {};
             toggleMidiLearn = function(isEnabled) {
                 isInLearnMode = isEnabled;
                 selectedParameter = null;
-                externalControlView.toggleVisibility(isInLearnMode);
+                remoteView.toggleVisibility(isInLearnMode);
                 appView.toggleMidiLearnMode(isInLearnMode, selectParameter);
                 
                 var midimessageListener;
