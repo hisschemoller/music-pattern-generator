@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         externalControlView = {},
         file = {},
         midi = {},
-        midiExternalControl = {},
+        midiRemote = {},
         midiNetwork = {},
         transport = {},
         world = {};
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     // });
     WH.createEPGControls({
         that: epgControls,
-        midiExternalControl: midiExternalControl,
+        midiRemote: midiRemote,
         transport: transport
     });
     // WH.createEPGModel({
@@ -81,8 +81,8 @@ document.addEventListener('DOMContentLoaded', function(e) {
         midiExternalControl: midiExternalControl,
         transport: transport
     });
-    WH.createMIDIExternalControl({
-        that: midiExternalControl,
+    WH.createMIDIRemote({
+        that: midiRemote,
         appView: appView,
         externalControlView: externalControlView
     });

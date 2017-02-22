@@ -11,7 +11,7 @@ window.WH = window.WH || {};
         var that,
             epgControls = specs.epgControls,
             epgPreferences = specs.epgPreferences,
-            midiExternalControl = specs.midiExternalControl,
+            midiRemote = specs.midiRemote,
             transport = specs.transport,
             localStorageName = 'midiprefs',
             midiAccess,

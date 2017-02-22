@@ -12,7 +12,7 @@
     
     function createEPGControls(specs) {
         var that,
-            midiExternalControl = specs.midiExternalControl,
+            midiRemote,
             transport = specs.transport
             controlsEl = document.getElementById('controls'),
             controls = {
@@ -38,7 +38,7 @@
                     transport.setBPM(e.target.value);
                 });
                 controls.learn.input.addEventListener('change', function(e) {
-                    midiExternalControl.toggleMidiLearn(e.target.checked);
+                    midiRemotes.toggleMidiLearn(e.target.checked);
                 });
                 WH.pubSub.on('transport.start', function() {
                     controls.play.input.checked = true;
@@ -59,7 +59,7 @@
             },
             
             /**
-             * Toggle controls disabled state. When external clock sync is used.
+             * Toggle controls disabled state. When e clock sync is used.
              * @param {Boolean} isEnabled Disable controls when false.
              */
             setControlsEnabled = function(isEnabled) {

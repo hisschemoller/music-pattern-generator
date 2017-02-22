@@ -89,7 +89,7 @@ window.WH = window.WH || {};
                     }
                     selectProcessor(processors[nextIndex]);
                 }
-            }
+            },
             
             process = function(start, end, nowToScanStart, ticksToMsMultiplier, offset) {
                 for (var i = 0; i < numProcessors; i++) {

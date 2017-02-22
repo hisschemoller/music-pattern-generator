@@ -1,5 +1,8 @@
 /**
- * 
+ * MIDIExternalControl assigns MIDI Continuous Controllers to processor parameters.
+ *
+ * If a CC is assigned and that CC was already assigned, the old assignment is removed.
+ * If a parameter is assigned and it is then reassigned to a different CC, the old assignment is removed.
  * 
  * @namespace WH
  */
@@ -7,12 +10,13 @@ window.WH = window.WH || {};
 
 (function (ns) {
     
-    function createMIDIExternalControl(specs) {
+    function createMIDIRemote(specs) {
         var that,
             appView = specs.appView,
             externalControlView = specs.externalControlView,
             midiInputs = [],
             paramLookup = [],
+            paramList = [],
             selectedParameter,
             isInLearnMode = false,
             
@@ -127,6 +131,14 @@ window.WH = window.WH || {};
             
             selectParameter = function(param) {
                 console.log('selectParameter: ', param);
+                var isAssigned = false,
+                    n = paramList.length;
+                while (--n >= 0) {
+                    if (paramList[i].param === param) {
+                        isAssigned = true;
+                        break;
+                    }
+                }
                 selectedParameter = param;
             }
             
@@ -149,7 +161,7 @@ window.WH = window.WH || {};
     }
         
 
-    ns.createMIDIExternalControl = createMIDIExternalControl;
+    ns.createMIDIRemote = createMIDIRemote;
 
 })(WH);
         

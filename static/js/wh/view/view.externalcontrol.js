@@ -9,7 +9,7 @@ window.WH = window.WH || {};
     
     function createExternalControlView(specs, my) {
         var that,
-            midiExternalControl = specs.midiExternalControl,
+            midiRemote = specs.midiRemote,
             rootEl = document.querySelector('#externalcontrol'),
             listEl = document.querySelector('.externalcontrol__list'),
             
