@@ -82,7 +82,7 @@ window.WH = window.WH || {};
                         midiInput: port.value
                     });
                     // all midi inputs are available for remote MIDI control
-                    remoteView.addMidiInput(port.value);
+                    midiRemote.addMidiInput(port.value);
                 }
                 epgPreferences.setMidiPorts(portInfos, true);
                 

@@ -10,6 +10,7 @@ window.WH = window.WH || {};
     function createMIDINetwork(specs, my) {
         var that,
             appView = specs.appView,
+            remoteView = specs.remoteView,
             world = specs.world,
             processorIdCounter = 0,
             processors = [],
@@ -32,6 +33,7 @@ window.WH = window.WH || {};
                     numProcessors = processors.length;
                     // create the views for the processor
                     appView.createSettingsView(specs.type, processor);
+                    remoteView.createRemoteGroup(processor);
                     world.createObject(specs.type, processor);
                     selectProcessor(processor);
                     
@@ -61,6 +63,7 @@ window.WH = window.WH || {};
                 processor.disconnect();
                 selectNextProcessor(processor);
                 appView.deleteSettingsView(processor);
+                remoteView.deleteRemoteGroup(processor);
                 world.deleteObject(processor);
                 processor.terminate();
                 processors.splice(processors.indexOf(processor), 1);

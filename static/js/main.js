@@ -89,6 +89,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     WH.createMIDINetwork({
         that: midiNetwork,
         appView: appView,
+        remoteView: remoteView,
         world: world
     });
     WH.createTransport({
