@@ -291,6 +291,7 @@ window.WH = window.WH || {};
         my.$channel_out = function(value, timestamp) {}
         my.$pitch_out = function(value, timestamp) {}
         my.$velocity_out = function(value, timestamp) {}
+        my.$name = function(value, timestamp) {}
 
         that = ns.createMIDIProcessorBase(specs, my);
         that = ns.createMIDIConnectorIn(specs, my);
@@ -389,6 +390,12 @@ window.WH = window.WH || {};
                 label: 'Mute',
                 type: 'boolean',
                 default: false,
+                isMidiControllable: false
+            },
+            name: {
+                label: 'Name',
+                type: 'string',
+                default: 'Unnamed',
                 isMidiControllable: false
             }
         });
