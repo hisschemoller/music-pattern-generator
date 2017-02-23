@@ -27,6 +27,9 @@ window.WH = window.WH || {};
                         case 'itemized':
                             my.params[key] = ns.createItemizedParameter(paramSpecs[key]);
                             break;
+                        case 'string':
+                            my.params[key] = ns.createStringParameter(paramSpecs[key]);
+                            break;
                     }
                     my.params[key].addChangedCallback(paramChangedCallback);
                 }
