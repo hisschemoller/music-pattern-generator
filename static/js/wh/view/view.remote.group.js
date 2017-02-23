@@ -25,7 +25,7 @@ window.WH = window.WH || {};
                 nameParam = processor.getParameters()['name'];
                 if (nameParam) {
                     nameParam.addChangedCallback(setName);
-                    setName(nameParam.getValue());
+                    setName(nameParam);
                 }
             },
             
@@ -48,8 +48,8 @@ window.WH = window.WH || {};
                 return proc === processor;
             },
             
-            setName = function(value) {
-                el.querySelector('.remote__group-header').innerHTML = value;
+            setName = function(nameParam) {
+                el.querySelector('.remote__group-header').innerHTML = nameParam.getValue();
             };
         
         that = specs.that || {};

@@ -73,6 +73,8 @@
                     <div class="settings__row velocity_out"></div>
                 </fieldset>
                 <fieldset>
+                    <legend>Other</legend>
+                    <div class="settings__row name"></div>
                     <button class="settings__delete">Delete</button>
                 </fieldset>
             </form>
@@ -96,7 +98,12 @@
                     <span class="setting__label-radio-text"></span>
                 </label>
             </div>
-        </div><!-- /template-setting-boolean -->
+        </div><!-- /template-setting-itemized -->
+        <div id="template-setting-string">
+            <label class="setting__label"><span class="setting__label-text"></span>
+                <input type="text" class="setting__text" />
+            </label>
+        </div><!-- /template-setting-string -->
         <div id="template-setting-learnmode">
             <div class="setting__learnmode"></div>
         </div><!-- /template-setting-learnmode -->
@@ -229,6 +236,7 @@
     <script src="static/js/wh/view/view.setting.boolean.js"></script>
     <script src="static/js/wh/view/view.setting.integer.js"></script>
     <script src="static/js/wh/view/view.setting.itemized.js"></script>
+    <script src="static/js/wh/view/view.setting.string.js"></script>
     <script src="static/js/wh/view/view.settings.js"></script>
     <script src="static/js/wh/view/view.world.epg.js"></script>
     <script src="static/js/wh/world/world.js"></script>

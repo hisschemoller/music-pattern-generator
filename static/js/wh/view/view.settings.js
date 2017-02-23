@@ -50,6 +50,9 @@ window.WH = window.WH || {};
                                 case 'itemized':
                                     settingView = ns.createItemizedSettingView(settingViewSpecs);
                                     break;
+                                case 'string':
+                                    settingView = ns.createStringSettingView(settingViewSpecs);
+                                    break;
                             }
                             // add view to list for future reference
                             settingViews.push(settingView);
