@@ -35,6 +35,16 @@ window.WH = window.WH || {};
             
             toggleVisibility = function(isVisible) {
                 rootEl.style.display = isVisible ? 'block' : 'none';
+            },
+            
+            addParameter = function(param) {
+                var n = groupViews.length;
+                while (--n >= 0) {
+                    if (groupViews[n].hasParameter(param)) {
+                        groupViews[n].addParameter(param);
+                        return;
+                    }
+                }
             };
         
         that = specs.that || {};
@@ -42,6 +52,7 @@ window.WH = window.WH || {};
         that.createRemoteGroup = createRemoteGroup;
         that.deleteRemoteGroup = deleteRemoteGroup;
         that.toggleVisibility = toggleVisibility;
+        that.addParameter = addParameter;
         return that;
     }
 

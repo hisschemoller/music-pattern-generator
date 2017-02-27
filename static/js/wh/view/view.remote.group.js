@@ -13,13 +13,17 @@ window.WH = window.WH || {};
             processor = specs.processor,
             parentEl = specs.parentEl,
             el,
+            listEl,
             nameParam,
+            itemViews = [],
             
             initialize = function() {
                 // create the DOM element.
                 var template = document.getElementById('template-remote-group');
                 el = template.firstElementChild.cloneNode(true);
                 parentEl.appendChild(el);
+                
+                listEl = el.querySelector('.remote__group-list');
                 
                 // listen for name parameter changes
                 nameParam = processor.getParameters()['name'];
@@ -48,6 +52,19 @@ window.WH = window.WH || {};
                 return proc === processor;
             },
             
+            hasParameter = function(param) {
+                return processor.hasParameter(param);
+            },
+            
+            addParameter = function(param) {
+                var itemView = ns.createRemoteItemView({
+                    param: param,
+                    parentEl: listEl
+                });
+                itemViews.push(itemView);
+                console.log(itemView);
+            },
+            
             setName = function(nameParam) {
                 el.querySelector('.remote__group-header').innerHTML = nameParam.getValue();
             };
@@ -58,6 +75,8 @@ window.WH = window.WH || {};
         
         that.terminate = terminate;
         that.hasProcessor = hasProcessor;
+        that.hasParameter = hasParameter;
+        that.addParameter = addParameter;
         return that;
     }
 

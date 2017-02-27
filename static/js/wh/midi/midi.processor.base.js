@@ -50,16 +50,27 @@ window.WH = window.WH || {};
                 }
             },
             
+            getParameters = function() {
+                return my.params;
+            },
+            
+            hasParameter = function(param) {
+                for (var key in my.params) {
+                    if (my.params.hasOwnProperty(key)) {
+                        if (my.params[key] === param) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            
             setProperty = function(key, value) {
                 if (my.props.hasOwnProperty(key)) {
                     my.props[key] = value;
                 } else {
                     console.warn('Property "' + name + '" doesn\'t exist, unable to set value "' + value + '".');
                 }
-            },
-            
-            getParameters = function() {
-                return my.params;
             },
             
             getProperty = function(key) {
@@ -75,9 +86,10 @@ window.WH = window.WH || {};
         that = specs.that || {};
         
         that.getParamValue = getParamValue;
+        that.getParameters = getParameters;
+        that.hasParameter = hasParameter;
         that.setProperty = setProperty;
         that.getProperty = getProperty;
-        that.getParameters = getParameters;
         return that;
     };
     

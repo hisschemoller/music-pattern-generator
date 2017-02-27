@@ -75,6 +75,7 @@ window.WH = window.WH || {};
                 if (selectedParameter) {
                     if (e.data[0] >> 4 === 0xB) {
                         paramLookup[e.target.id][(e.data[0] & 0xf) + '_ ' + e.data[1]] = selectedParameter;
+                        remoteView.addParameter(selectedParameter);
                         selectedParameter = null;
                     }
                 }
@@ -130,7 +131,6 @@ window.WH = window.WH || {};
             },
             
             selectParameter = function(param) {
-                console.log('selectParameter: ', param);
                 var isAssigned = false,
                     n = paramList.length;
                 while (--n >= 0) {
