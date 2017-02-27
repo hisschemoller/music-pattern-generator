@@ -37,11 +37,11 @@ window.WH = window.WH || {};
                 rootEl.style.display = isVisible ? 'block' : 'none';
             },
             
-            addParameter = function(param) {
+            addParameter = function(param, portName, channel, cc) {
                 var n = groupViews.length;
                 while (--n >= 0) {
                     if (groupViews[n].hasParameter(param)) {
-                        groupViews[n].addParameter(param);
+                        groupViews[n].addParameter(param, portName, channel, cc);
                         return;
                     }
                 }

@@ -56,13 +56,15 @@ window.WH = window.WH || {};
                 return processor.hasParameter(param);
             },
             
-            addParameter = function(param) {
+            addParameter = function(param, portName, channel, cc) {
                 var itemView = ns.createRemoteItemView({
                     param: param,
-                    parentEl: listEl
+                    parentEl: listEl,
+                    portName: portName,
+                    channel: channel,
+                    cc: cc
                 });
                 itemViews.push(itemView);
-                console.log(itemView);
             },
             
             setName = function(nameParam) {

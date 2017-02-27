@@ -74,8 +74,10 @@ window.WH = window.WH || {};
             onMIDILearnMessage = function(e) {
                 if (selectedParameter) {
                     if (e.data[0] >> 4 === 0xB) {
-                        paramLookup[e.target.id][(e.data[0] & 0xf) + '_ ' + e.data[1]] = selectedParameter;
-                        remoteView.addParameter(selectedParameter);
+                        var channelIndex = e.data[0] & 0xf,
+                            cc = e.data[1];
+                        paramLookup[e.target.id][channelIndex + '_ ' + cc] = selectedParameter;
+                        remoteView.addParameter(selectedParameter, e.target.name, channelIndex + 1, cc);
                         selectedParameter = null;
                     }
                 }
