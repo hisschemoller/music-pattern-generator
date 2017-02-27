@@ -12,7 +12,7 @@
     
     function createEPGControls(specs) {
         var that,
-            midiRemote,
+            midiRemote = specs.midiRemote,
             transport = specs.transport
             controlsEl = document.getElementById('controls'),
             controls = {
@@ -38,7 +38,7 @@
                     transport.setBPM(e.target.value);
                 });
                 controls.learn.input.addEventListener('change', function(e) {
-                    midiRemotes.toggleMidiLearn(e.target.checked);
+                    midiRemote.toggleMidiLearn(e.target.checked);
                 });
                 WH.pubSub.on('transport.start', function() {
                     controls.play.input.checked = true;
