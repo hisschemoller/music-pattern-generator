@@ -56,7 +56,6 @@ window.WH = window.WH || {};
             },
             
             onMIDIMessage = function(e) {
-                console.log(e.data);
                 // only continuous controller message, 0xB == 11
                 if (e.data[0] >> 4 === 0xB) {
                     var channelIndex = e.data[0] & 0xf,
@@ -136,7 +135,7 @@ window.WH = window.WH || {};
                 var isAssigned = false,
                     n = paramList.length;
                 while (--n >= 0) {
-                    if (paramList[i].param === param) {
+                    if (paramList[n].param === param) {
                         isAssigned = true;
                         break;
                     }
@@ -151,7 +150,15 @@ window.WH = window.WH || {};
             
             removeParameter = function(param) {
                 // remove parameter from the lookup table
+                
                 // remove parameter from the list view table
+                var n = paramList.length;
+                while (--n >= 0) {
+                    if (paramList[n].param === param) {
+                        paramList.splice(n, 1);
+                        break;
+                    }
+                }
             };
         
         that = specs.that;

@@ -45,6 +45,10 @@ window.WH = window.WH || {};
                         return;
                     }
                 }
+            },
+            
+            removeParameter = function(param) {
+                
             };
         
         that = specs.that || {};

@@ -25,6 +25,10 @@ window.WH = window.WH || {};
                 el.querySelector('.remote__item-channel').innerHTML = channel;
                 el.querySelector('.remote__item-cc').innerHTML = cc;
                 parentEl.appendChild(el);
+                
+                el.querySelector('.remote__item-remove').addEventListener('click', function(e) {
+                    
+                });
             },
             
             /**

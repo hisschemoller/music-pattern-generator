@@ -10,8 +10,6 @@ window.WH = window.WH || {};
     
     function createBaseSettingView(specs, my) {
         var that,
-            learnClickLayer,
-            learnCallback,
             
             init = function() {
                 // find template, add clone to settings panel
@@ -21,7 +19,16 @@ window.WH = window.WH || {};
                 
                 // show label
                 my.el.getElementsByClassName('setting__label-text')[0].innerHTML = my.param.getProperty('label');
-                
+            },
+            
+            /**
+             * MIDI learn mode
+             */
+            
+            learnClickLayer,
+            learnCallback,
+            
+            initLearnMode = function() {
                 // add learn mode layer
                 if (my.param.getProperty('isMidiControllable')) {
                     var template = document.getElementById('template-setting-learnmode');
@@ -54,6 +61,7 @@ window.WH = window.WH || {};
         that = that || {};
         
         init();
+        initLearnMode();
     
         that.toggleLearnMode = toggleLearnMode;
         return that;
