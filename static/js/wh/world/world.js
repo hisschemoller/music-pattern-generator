@@ -301,7 +301,6 @@ window.WH = window.WH || {};
              * @param {array} patternData Array of pattern data objects.
              */
             draw = function(patternData) {
-                // updateWorld(patternData);
                 TWEEN.update();
                 renderer.render(scene, camera);
             };

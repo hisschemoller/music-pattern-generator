@@ -112,38 +112,6 @@ window.WH = window.WH || {};
             },
             
             /**
-             * Select a MIDI input or output by its ID.
-             * @param {string} id ID of the MIDI port.
-             * @param {boolean} isInput True if input is to be selected, else output.
-             */
-            // selectPort = function(id, isInput) {
-            //     var port, portMap, 
-            //         isFound = false;
-            //     portMap = isInput ? midiAccess.inputs.values() : midiAccess.outputs.values();
-            //     for (port = portMap.next(); port && !port.done; port = portMap.next()) {
-            //         if (port.value.id === id) {
-            //             if (isInput) {
-            //                 midiInput = port.value;
-            //             } else {
-            //                 midiOutput = port.value;
-            //             }
-            //             isFound = true;
-            //         }
-            //     }
-            //     
-            //     // midi outputs can be deselected
-            //     if (!isFound) {
-            //         if (isInput) {
-            //             midiInput = null;
-            //         } else {
-            //             midiOutput = null;
-            //         }
-            //     }
-            //     
-            //     saveToLocalStorage();
-            // },
-            
-            /**
              * Select an input.
              * @param {String} id ID of the input.
              */
@@ -177,72 +145,7 @@ window.WH = window.WH || {};
                         }
                     }
                 }
-            }, 
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-        
-            /**
-             * Retrieve access to the MIDI devices.
-             */
-            // enable = function() {
-            //     WebMidi.enable(function(err) {
-            //         if (err) {
-            //             console.log('WebMidi could not be enabled.', err);
-            //         } else {
-            //             console.log('WebMidi enabled');
-            //             epgPreferences.setMidiPorts(WebMidi.inputs, true);
-            //             epgPreferences.setMidiPorts(WebMidi.outputs, false);
-            //             if (typeof selectedInputID === 'string' && selectedOutputID.length) {
-            //                 selectInputByID(selectedInputID);
-            //             }
-            //             if (typeof selectedOutputID === 'string' && selectedOutputID.length) {
-            //                 selectOutputByID(selectedOutputID);
-            //             }
-            //         }
-            //     });
-            // },
-            
-            /**
-             * Select an input.
-             * @param {String} id ID of the input.
-             */
-            // selectInputByID = function(id) {
-            //     selectedInputID = id;
-            //     if (WebMidi.enabled) {
-            //         selectedInput = WebMidi.getInputById(selectedInputID);
-            //         epgPreferences.setSelectedMidiPort(selectedInputID, true);
-            //         ns.pubSub.fire('create.processor', {
-            //             type: 'input',
-            //             midiInput: selectedInput
-            //         });
-            //         setClockInEnabled(isClockInEnabled);
-            //         setNoteInEnabled(isNoteInEnabled);
-            //     }
-            // },
-            
-            /**
-             * Select an output.
-             * @param {String} id ID of the output.
-             */
-            // selectOutputByID = function(id) {
-            //     selectedOutputID = id;
-            //     if (WebMidi.enabled) {
-            //         selectedOutput = WebMidi.getOutputById(selectedOutputID);
-            //         epgPreferences.setSelectedMidiPort(selectedOutputID, false);
-            //         ns.pubSub.fire('create.processor', {
-            //             type: 'output',
-            //             midiOutput: selectedOutput
-            //         });
-            //     }
-            // },
+            },
             
             /**
              * Toggle between internal clock and external MIDI clock sync.
@@ -265,10 +168,6 @@ window.WH = window.WH || {};
             setNoteInEnabled = function(isEnabled) {
                 isNoteInEnabled = isEnabled;
                 epgPreferences.setMidiNoteInEnabled(isNoteInEnabled);
-                // only enable if there is a MIDI input port
-                if ((isNoteInEnabled && selectedInput) || !isNoteInEnabled) {
-                    // epgModel.setExternalNoteInEnabled(isNoteInEnabled, selectedInput);
-                }
             },
             
             /**
@@ -297,7 +196,6 @@ window.WH = window.WH || {};
         that = specs.that;
         
         that.setup = setup;
-        // that.enable = enable;
         that.selectInputByID = selectInputByID;
         that.selectOutputByID = selectOutputByID;
         that.setClockInEnabled = setClockInEnabled;

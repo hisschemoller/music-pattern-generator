@@ -14,11 +14,8 @@ document.addEventListener('DOMContentLoaded', function(e) {
     // Create all objects that will be the modules of the app.
     var appView = {},
         arrangement = {},
-        // epgCanvas = {},
         epgControls = {},
-        // epgModel = {}, 
         epgPreferences = {},
-        // epgSettings = {},
         remoteView = {},
         file = {},
         midi = {},
@@ -36,32 +33,15 @@ document.addEventListener('DOMContentLoaded', function(e) {
     WH.createArrangement({
         that: arrangement
     });
-    // WH.createEPGCanvas({
-    //     that: epgCanvas,
-    //     epgModel: epgModel
-    // });
     WH.createEPGControls({
         that: epgControls,
         midiRemote: midiRemote,
         transport: transport
     });
-    // WH.createEPGModel({
-    //     that: epgModel,
-    //     arrangement: arrangement,
-    //     // epgCanvas: epgCanvas,
-    //     epgSettings: epgSettings,
-    //     file: file,
-    //     midi: midi,
-    //     transport: transport
-    // });
     WH.createEPGPreferences({
         that: epgPreferences,
         midi: midi
     });
-    // WH.epg.createEPGSettings({
-    //     that: epgSettings,
-    //     // epgModel: epgModel
-    // });
     WH.createRemoteView({
         that: remoteView,
         midiRemote: midiRemote
@@ -69,7 +49,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
     WH.createFile({
         that: file,
         arrangement: arrangement,
-        // epgModel: epgModel,
         midi: midi,
         transport: transport
     });
@@ -83,7 +62,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     WH.createMIDIRemote({
         that: midiRemote,
-        // appView: appView,
         remoteView: remoteView
     });
     WH.createMIDINetwork({
@@ -96,8 +74,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
         that: transport,
         midiNetwork: midiNetwork,
         world: world
-        // arrangement: arrangement,
-        // epgModel: epgModel
     });
     WH.createWorld({
         that: world

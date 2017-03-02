@@ -91,8 +91,6 @@ window.WH = window.WH || {};
                         
                         // update pattern graphic view
                         var stepIndex = pulsesOnly[i].stepIndex,
-                            // scanStartToNoteStart = pulseStartTime - localStart,
-                            // delayFromNowToNoteStart = (nowToScanStart + scanStartToNoteStart) * ticksToMsMultiplier,
                             delayFromNowToNoteStart = (nowToScanStart + scanStartToNoteStart) * ticksToMsMultiplier,
                             delayFromNowToNoteEnd = (delayFromNowToNoteStart + noteDuration) * ticksToMsMultiplier;
                         processCallback(stepIndex, delayFromNowToNoteStart, delayFromNowToNoteEnd);
