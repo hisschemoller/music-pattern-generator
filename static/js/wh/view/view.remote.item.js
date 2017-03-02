@@ -12,9 +12,7 @@ window.WH = window.WH || {};
         var that,
             param = specs.param,
             parentEl = specs.parentEl,
-            portName = specs.portName,
-            channel = specs.channel,
-            cc = specs.cc,
+            unregisterCallback = specs.unregisterCallback,
             el,
             
             initialize = function() {
@@ -22,24 +20,37 @@ window.WH = window.WH || {};
                 var template = document.getElementById('template-remote-item');
                 el = template.firstElementChild.cloneNode(true);
                 el.querySelector('.remote__item-label').innerHTML = param.getProperty('label');
-                el.querySelector('.remote__item-channel').innerHTML = channel;
-                el.querySelector('.remote__item-cc').innerHTML = cc;
+                el.querySelector('.remote__item-channel').innerHTML = param.getRemoteProperty('channel');
+                el.querySelector('.remote__item-cc').innerHTML = param.getRemoteProperty('controller');
                 parentEl.appendChild(el);
                 
-                el.querySelector('.remote__item-remove').addEventListener('click', function(e) {
-                    
-                });
+                el.querySelector('.remote__item-remove').addEventListener('click', onUnregisterClick);
             },
             
             /**
              * Called before this view is deleted.
              */
-            terminate = function() {};
+            terminate = function() {
+                el.querySelector('.remote__item-remove').removeEventListener('click', onUnregisterClick);
+                parentEl.removeChild(el);
+                param = null;
+                parentEl = null;
+            },
+            
+            hasParameter = function(parameter) {
+                return parameter === param;
+            },
+            
+            onUnregisterClick = function(e) {
+                unregisterCallback(param);
+            };
             
             that = specs.that || {};
             
             initialize();
             
+            that.terminate = terminate;
+            that.hasParameter = hasParameter;
             return that;
         }
 

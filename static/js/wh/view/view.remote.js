@@ -37,18 +37,24 @@ window.WH = window.WH || {};
                 rootEl.style.display = isVisible ? 'block' : 'none';
             },
             
-            addParameter = function(param, portName, channel, cc) {
+            addParameter = function(param) {
                 var n = groupViews.length;
                 while (--n >= 0) {
                     if (groupViews[n].hasParameter(param)) {
-                        groupViews[n].addParameter(param, portName, channel, cc);
+                        groupViews[n].addParameter(param, midiRemote.unassingParameter);
                         return;
                     }
                 }
             },
             
             removeParameter = function(param) {
-                
+                var n = groupViews.length;
+                while (--n >= 0) {
+                    if (groupViews[n].hasParameter(param)) {
+                        groupViews[n].removeParameter(param);
+                        return;
+                    }
+                }
             };
         
         that = specs.that || {};
@@ -57,6 +63,7 @@ window.WH = window.WH || {};
         that.deleteRemoteGroup = deleteRemoteGroup;
         that.toggleVisibility = toggleVisibility;
         that.addParameter = addParameter;
+        that.removeParameter = removeParameter;
         return that;
     }
 

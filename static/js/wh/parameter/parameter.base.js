@@ -102,6 +102,9 @@ window.WH = window.WH || {};
         my.isMidiControllable = specs.isMidiControllable;
         
         that = specs.that || {};
+        if (my.isMidiControllable) {
+            that = ns.createRemoteParameter(specs, my);
+        }
         
         that.addChangedCallback = addChangedCallback;
         that.removeChangedCallback = removeChangedCallback;

@@ -100,12 +100,12 @@ window.WH = window.WH || {};
                 return proc === processor;
             },
             
-            toggleLearnMode = function(isLearnMode, addParamCallback) {
-                var n = settingViews.length;
-                while (--n >= 0) {
-                    settingViews[n].toggleLearnMode(isLearnMode, addParamCallback);
-                }
-            };;
+            // toggleLearnMode = function(isLearnMode, addParamCallback) {
+            //     var n = settingViews.length;
+            //     while (--n >= 0) {
+            //         settingViews[n].toggleLearnMode(isLearnMode, addParamCallback);
+            //     }
+            // };
         
         that = specs.that || {};
         
@@ -113,7 +113,7 @@ window.WH = window.WH || {};
         
         that.terminate = terminate;
         that.hasProcessor = hasProcessor;
-        that.toggleLearnMode = toggleLearnMode;
+        // that.toggleLearnMode = toggleLearnMode;
         return that;
     };
 

@@ -12,13 +12,13 @@ window.WH = window.WH || {};
     
     function createMIDIRemote(specs) {
         var that,
-            appView = specs.appView,
+            // appView = specs.appView,
             remoteView = specs.remoteView,
             midiInputs = [],
             paramLookup = [],
-            paramList = [],
             selectedParameter,
             isInLearnMode = false,
+            processors = [],
             
             /**
              * Add a MIDI Input port only if it dosn't yet exist.
@@ -59,7 +59,7 @@ window.WH = window.WH || {};
                 // only continuous controller message, 0xB == 11
                 if (e.data[0] >> 4 === 0xB) {
                     var channelIndex = e.data[0] & 0xf,
-                        param = paramLookup[e.target.id][(e.data[0] & 0xf) + '_ ' + e.data[1]];
+                        param = paramLookup[e.target.id][(e.data[0] & 0xf) + '_' + e.data[1]];
                     if (param) {
                         param.setValueNormalized(e.data[2] / 127);
                     }
@@ -73,21 +73,30 @@ window.WH = window.WH || {};
             onMIDILearnMessage = function(e) {
                 if (selectedParameter) {
                     if (e.data[0] >> 4 === 0xB) {
-                        var channelIndex = e.data[0] & 0xf,
-                            cc = e.data[1];
-                        paramLookup[e.target.id][channelIndex + '_ ' + cc] = selectedParameter;
-                        remoteView.addParameter(selectedParameter, e.target.name, channelIndex + 1, cc);
-                        selectedParameter = null;
+                        var portId = e.target.id,
+                            channelIndex = e.data[0] & 0xf,
+                            controller = e.data[1];
+                        assignParameter(selectedParameter, portId, channelIndex, controller);
+                        deselectParameter();
                     }
                 }
             },
             
             toggleMidiLearn = function(isEnabled) {
                 isInLearnMode = isEnabled;
-                selectedParameter = null;
+                deselectParameter();
                 remoteView.toggleVisibility(isInLearnMode);
-                appView.toggleMidiLearnMode(isInLearnMode, selectParameter);
                 
+                // set learn mode on all parameters
+                var remoteState = isInLearnMode ? 'enter' : 'exit';
+                for (var i = 0; i < processors.length; i++) {
+                    var processor = processors[i];
+                    for (var j = 0; j < processor.params.length; j++) {
+                        processor.params[j].setRemoteState(remoteState, selectParameter);
+                    }
+                }
+                
+                // midi listener switches with learn mode
                 var midimessageListener;
                 if (isInLearnMode) {
                     midiMessageListener = onMIDILearnMessage;
@@ -100,63 +109,86 @@ window.WH = window.WH || {};
                 for (var i = 0; i < n; i++) {
                     midiInputs[i].port.onmidimessage = midiMessageListener;
                 }
-                
-                
-                // ON
-                // the assigned parameter list is shown
-                // all controllable parameter's setting views show overlay
-                // - actually, a callback is called on appView
-                // -- the callback contains a callback
-                // - appView calls function on all it's settingsviews
-                // - settings views call function on all their controllable settingViews
-                // - settingViews show clickable overlay
-                // overlay click selects the parameter
-                // - actually, the selected parameter is referenced to here
-                // incoming midi cc assigns port, channel and cc to that parameter
-                // - actually, the parameter is stored here in the array
-                // the parameter is added to the list view
-                // - 
-                
-                // OFF 
-                // the assigned parameter list is hidden
-                // all controllable parameter's setting views hide overlay
-                
-                // CLICK ON PARAMETER SETTING OVERLAY 
-                // the callback is called with the parameter as parameter :)
-                // the parameter is referenced here as the current selected one
-                // if a midi cc is received, the parameter is stored and is assigned
-                // - this overwrites old assignments for that port, channel and cc
-                
-                // PROCESSOR WITH CONTROLLED PARAMETER(S) IS DELETED
-                // 
             },
             
             selectParameter = function(param) {
-                var isAssigned = false,
-                    n = paramList.length;
-                while (--n >= 0) {
-                    if (paramList[n].param === param) {
-                        isAssigned = true;
-                        break;
-                    }
+                if (selectedParameter) {
+                    deselectParameter();
                 }
                 selectedParameter = param;
-            }
-            
-            addParameter = function(param) {
-                // add parameter to the lookup table
-                // add parameter to the list view table
+                selectedParameter.setRemoteState('selected');
             },
             
-            removeParameter = function(param) {
-                // remove parameter from the lookup table
+            deselectParameter = function() {
+                if (selectedParameter) {
+                    selectedParameter.setRemoteState('deselected');
+                    selectedParameter = null;
+                }
+            },
+            
+            assignParameter = function(param, portId, channelIndex, controller) {
+                // add parameter to the lookup table
+                paramLookup[portId][channelIndex + '_' + controller] = param;
                 
-                // remove parameter from the list view table
-                var n = paramList.length;
+                // update the parameter
+                param.setRemoteProperty('portId', portId);
+                param.setRemoteProperty('channel', channelIndex + 1);
+                param.setRemoteProperty('controller', controller);
+                param.setRemoteState('assigned');
+                
+                // add parameter to the view
+                remoteView.addParameter(param);
+            },
+            
+            unassingParameter = function(param) {
+                // remove parameter from the lookup table
+                var portId = param.getRemoteProperty('portId'),
+                    channelIndex = param.getRemoteProperty('channel') - 1,
+                    controller = param.getRemoteProperty('controller');
+                paramLookup[portId][channelIndex + '_ ' + controller] = null;
+                
+                // update the parameter
+                param.setRemoteProperty('portId', null);
+                param.setRemoteProperty('channel', null);
+                param.setRemoteProperty('controller', null);
+                param.setRemoteState('unassigned');
+                
+                // remove parameter from the view
+                remoteView.removeParameter(param);
+            },
+            
+            registerProcessor = function(processor) {
+                var params = processor.getParameters(),
+                    controllableParams = [];
+                
+                // create array of all controllable parameters of the processor
+                for (var key in params) {
+                    if (params.hasOwnProperty(key)) {
+                        if (params[key].getProperty('isMidiControllable') === true) {
+                            controllableParams.push(params[key]);
+                        }
+                    }
+                }
+                
+                if (controllableParams.length) {
+                    // add data to processors list
+                    processors.push({
+                        processor: processor,
+                        params: controllableParams
+                    });
+                    // update view
+                    remoteView.createRemoteGroup(processor);
+                }
+            },
+            
+            unregisterProcessor = function(processor) {
+                var n = processors.length;
                 while (--n >= 0) {
-                    if (paramList[n].param === param) {
-                        paramList.splice(n, 1);
-                        break;
+                    if (processors[n].processor === processor) {
+                        // remove data from processors list
+                        processors.splice(n, 1);
+                        // update view
+                        remoteView.deleteRemoteGroup(processor);
                     }
                 }
             };
@@ -166,6 +198,9 @@ window.WH = window.WH || {};
         that.addMidiInput = addMidiInput;
         that.removeMidiInput = removeMidiInput;
         that.toggleMidiLearn = toggleMidiLearn;
+        that.unassingParameter = unassingParameter;
+        that.registerProcessor = registerProcessor;
+        that.unregisterProcessor = unregisterProcessor;
         return that;
     }
         

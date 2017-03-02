@@ -37,10 +37,16 @@ window.WH = window.WH || {};
              * Called before this view is deleted.
              */
             terminate = function() {
+                var n = itemViews.length;
+                while (--n >= 0) {
+                    itemViews[n].terminate();
+                }
                 parentEl.removeChild(el);
                 nameParam.removeChangedCallback(setName);
                 nameParam = null;
                 processor = null;
+                itemViews = null;
+                parentEl = null;
             },
             
             /**
@@ -56,15 +62,24 @@ window.WH = window.WH || {};
                 return processor.hasParameter(param);
             },
             
-            addParameter = function(param, portName, channel, cc) {
+            addParameter = function(param, unregisterCallback) {
                 var itemView = ns.createRemoteItemView({
                     param: param,
                     parentEl: listEl,
-                    portName: portName,
-                    channel: channel,
-                    cc: cc
+                    unregisterCallback: unregisterCallback
                 });
                 itemViews.push(itemView);
+            },
+            
+            removeParameter = function(param) {
+                var n = itemViews.length;
+                while (--n >= 0) {
+                    if (itemViews[n].hasParameter(param)) {
+                        itemViews[n].terminate();
+                        itemViews.splice(n, 1);
+                        break;
+                    }
+                }
             },
             
             setName = function(nameParam) {
@@ -79,6 +94,7 @@ window.WH = window.WH || {};
         that.hasProcessor = hasProcessor;
         that.hasParameter = hasParameter;
         that.addParameter = addParameter;
+        that.removeParameter = removeParameter;
         return that;
     }
 

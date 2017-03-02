@@ -19,39 +19,6 @@ window.WH = window.WH || {};
                 
                 // show label
                 my.el.getElementsByClassName('setting__label-text')[0].innerHTML = my.param.getProperty('label');
-            },
-            
-            /**
-             * MIDI learn mode
-             */
-            
-            learnClickLayer,
-            learnCallback,
-            
-            initLearnMode = function() {
-                // add learn mode layer
-                if (my.param.getProperty('isMidiControllable')) {
-                    var template = document.getElementById('template-setting-learnmode');
-                    learnClickLayer = template.firstElementChild.cloneNode(true);
-                }
-            },
-            
-            toggleLearnMode = function(isLearnMode, callback) {
-                if (my.param.getProperty('isMidiControllable')) {
-                    if (isLearnMode) {
-                        learnCallback = callback;
-                        my.el.appendChild(learnClickLayer);
-                        learnClickLayer.addEventListener('click', onLearnLayerClick);
-                    } else {
-                        learnCallback = null;
-                        my.el.removeChild(learnClickLayer);
-                        learnClickLayer.removeEventListener('click', onLearnLayerClick);
-                    }
-                }
-            },
-            
-            onLearnLayerClick = function(e) {
-                learnCallback(my.param);
             };
             
         my = my || {};
@@ -59,11 +26,12 @@ window.WH = window.WH || {};
         my.el;
         
         that = that || {};
+        if (my.param.getProperty('isMidiControllable')) {
+            that = ns.createRemoteSettingView(specs, my);
+        }
         
         init();
-        initLearnMode();
     
-        that.toggleLearnMode = toggleLearnMode;
         return that;
     };
 

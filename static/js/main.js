@@ -83,13 +83,13 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     WH.createMIDIRemote({
         that: midiRemote,
-        appView: appView,
+        // appView: appView,
         remoteView: remoteView
     });
     WH.createMIDINetwork({
         that: midiNetwork,
         appView: appView,
-        remoteView: remoteView,
+        midiRemote: midiRemote,
         world: world
     });
     WH.createTransport({
