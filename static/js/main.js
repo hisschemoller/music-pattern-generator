@@ -13,8 +13,8 @@ document.addEventListener('DOMContentLoaded', function(e) {
     
     // Create all objects that will be the modules of the app.
     var appView = {},
-        epgControls = {},
-        epgPreferences = {},
+        controlsView = {},
+        preferencesView = {},
         remoteView = {},
         file = {},
         midi = {},
@@ -29,13 +29,13 @@ document.addEventListener('DOMContentLoaded', function(e) {
     WH.createAppView({
         that: appView
     });
-    WH.createEPGControls({
-        that: epgControls,
+    WH.createControlsView({
+        that: controlsView,
         midiRemote: midiRemote,
         transport: transport
     });
-    WH.createEPGPreferences({
-        that: epgPreferences,
+    WH.createPreferencesView({
+        that: preferencesView,
         midi: midi
     });
     WH.createRemoteView({
@@ -50,8 +50,8 @@ document.addEventListener('DOMContentLoaded', function(e) {
     WH.createMIDI({
         that: midi,
         app: app,
-        epgControls: epgControls,
-        epgPreferences: epgPreferences,
+        controlsView: controlsView,
+        preferencesView: preferencesView,
         midiRemote: midiRemote,
         transport: transport
     });

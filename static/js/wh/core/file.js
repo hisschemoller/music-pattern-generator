@@ -13,7 +13,6 @@ window.WH = window.WH || {};
      */
     function createFile(specs) {
         var that,
-            epgModel = specs.epgModel,
             midi = specs.midi,
             transport = specs.transport,
             projectName = 'project',
@@ -23,7 +22,7 @@ window.WH = window.WH || {};
              * Autosave file if true.
              * @type {Boolean}
              */
-            autoSaveEnabled = false,
+            autoSaveEnabled = true,
             
             init = function() {
                 window.addEventListener('beforeunload', onBeforeUnload);
@@ -83,7 +82,6 @@ window.WH = window.WH || {};
                 if (data) {
                     data = JSON.parse(data);
                     transport.setBPM(data.bpm);
-                    epgModel.setData(data.epgmodel);
                 } else {
                     console.log('No data in LocalStorage with name "' + projectName + '".');
                     return false;
@@ -106,7 +104,7 @@ window.WH = window.WH || {};
             save = function() {
                 var data = {
                     bpm: transport.getBPM(),
-                    epgmodel: epgModel.getData()
+                    
                 }
                 
                 localStorage.setItem(projectName, JSON.stringify(data));

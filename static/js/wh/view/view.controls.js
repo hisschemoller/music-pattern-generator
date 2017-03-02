@@ -1,5 +1,5 @@
 /**
- * @description EPG patterns model.
+ * @description Controls view.
  * @author Wouter Hisschemöller
  * @version 0.0.0
  * 
@@ -10,7 +10,7 @@
 
 (function (ns) {
     
-    function createEPGControls(specs) {
+    function createControlsView(specs) {
         var that,
             midiRemote = specs.midiRemote,
             transport = specs.transport
@@ -75,6 +75,6 @@
         return that;
     }
 
-    ns.createEPGControls = createEPGControls;
+    ns.createControlsView = createControlsView;
 
 })(WH);

@@ -9,8 +9,8 @@ window.WH = window.WH || {};
     
     function createMIDI(specs) {
         var that,
-            epgControls = specs.epgControls,
-            epgPreferences = specs.epgPreferences,
+            controlsView = specs.controlsView,
+            preferencesView = specs.preferencesView,
             midiRemote = specs.midiRemote,
             transport = specs.transport,
             localStorageName = 'midiprefs',
@@ -84,7 +84,7 @@ window.WH = window.WH || {};
                     // all midi inputs are available for remote MIDI control
                     midiRemote.addMidiInput(port.value);
                 }
-                epgPreferences.setMidiPorts(portInfos, true);
+                preferencesView.setMidiPorts(portInfos, true);
                 
                 // populate output dropdown with MIDI ports
                 portInfos = [];
@@ -100,7 +100,7 @@ window.WH = window.WH || {};
                         midiOutput: port.value
                     });
                 }
-                epgPreferences.setMidiPorts(portInfos, false);
+                preferencesView.setMidiPorts(portInfos, false);
                 
                 // select an input and output if they're already known
                 if (typeof selectedInputID === 'string' && selectedOutputID.length) {
@@ -123,7 +123,7 @@ window.WH = window.WH || {};
                     for (port = portMap.next(); port && !port.done; port = portMap.next()) {
                         if (port.value.id === id) {
                             selectedInput = port.value;
-                            epgPreferences.setSelectedMidiPort(selectedInputID, true);
+                            preferencesView.setSelectedMidiPort(selectedInputID, true);
                         }
                     }
                 }
@@ -141,7 +141,7 @@ window.WH = window.WH || {};
                     for (port = portMap.next(); port && !port.done; port = portMap.next()) {
                         if (port.value.id === id) {
                             selectedOutput = port.value;
-                            epgPreferences.setSelectedMidiPort(selectedOutputID, false);
+                            preferencesView.setSelectedMidiPort(selectedOutputID, false);
                         }
                     }
                 }
@@ -153,8 +153,8 @@ window.WH = window.WH || {};
              */
             setClockInEnabled = function(isEnabled) {
                 isClockInEnabled = isEnabled;
-                epgControls.setControlsEnabled(!isClockInEnabled);
-                epgPreferences.setMidiClockInEnabled(isClockInEnabled);
+                controlsView.setControlsEnabled(!isClockInEnabled);
+                preferencesView.setMidiClockInEnabled(isClockInEnabled);
                 // only enable if there is a MIDI input port
                 if ((isClockInEnabled && selectedInput) || !isClockInEnabled) {
                     transport.setExternalClockEnabled(isClockInEnabled, selectedInput);
@@ -167,7 +167,7 @@ window.WH = window.WH || {};
              */
             setNoteInEnabled = function(isEnabled) {
                 isNoteInEnabled = isEnabled;
-                epgPreferences.setMidiNoteInEnabled(isNoteInEnabled);
+                preferencesView.setMidiNoteInEnabled(isNoteInEnabled);
             },
             
             /**

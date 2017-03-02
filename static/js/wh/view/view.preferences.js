@@ -1,5 +1,4 @@
 /**
- * Handles MIDI, interfaces with the WebMIDI library.
  * 
  * @namespace WH
  */
@@ -7,7 +6,7 @@ window.WH = window.WH || {};
 
 (function (ns) {
     
-    function createEPGPreferences(specs) {
+    function createPreferencesView(specs) {
         var that,
             midi = specs.midi,
             inputs = {
@@ -99,6 +98,6 @@ window.WH = window.WH || {};
         return that;
     }
 
-    ns.createEPGPreferences = createEPGPreferences;
+    ns.createPreferencesView = createPreferencesView;
 
 })(WH);
