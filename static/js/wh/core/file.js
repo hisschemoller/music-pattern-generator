@@ -13,7 +13,6 @@ window.WH = window.WH || {};
      */
     function createFile(specs) {
         var that,
-            arrangement = specs.arrangement,
             epgModel = specs.epgModel,
             midi = specs.midi,
             transport = specs.transport,
@@ -68,22 +67,10 @@ window.WH = window.WH || {};
              * Create data to setup a new empty project.
              */
             createNew = function() {
-                var patternCount = WH.conf.getPatternCount(),
-                    data = {
-                        bpm: 120,
-                        racks: [],
-                        arrangement: {
-                            patterns: [],
-                            song: {}
-                        }
-                    },
-                    i;
+                var data = {
+                        bpm: 120
+                    };
                 
-                for (i = 0; i < patternCount; i++) {
-                    data.arrangement.patterns.push({tracks: []});
-                }
-                
-                arrangement.setData(data.arrangement);
                 transport.setBPM(data.bpm);
             },
 
@@ -95,7 +82,6 @@ window.WH = window.WH || {};
                 var data = localStorage.getItem(projectName);
                 if (data) {
                     data = JSON.parse(data);
-                    arrangement.setData(data.arrangement);
                     transport.setBPM(data.bpm);
                     epgModel.setData(data.epgmodel);
                 } else {
@@ -120,8 +106,7 @@ window.WH = window.WH || {};
             save = function() {
                 var data = {
                     bpm: transport.getBPM(),
-                    epgmodel: epgModel.getData(),
-                    arrangement: arrangement.getData()
+                    epgmodel: epgModel.getData()
                 }
                 
                 localStorage.setItem(projectName, JSON.stringify(data));
