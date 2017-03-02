@@ -9,9 +9,9 @@ window.WH = window.WH || {};
     
     function createMidi(specs) {
         var that,
-            epgControls = specs.epgControls,
+            controlsView = specs.controlsView,
             epgModel = specs.epgModel,
-            epgPreferences = specs.epgPreferences,
+            preferencesView = specs.preferencesView,
             transport = specs.transport,
             selectedInput,
             selectedInputID,
@@ -31,8 +31,8 @@ window.WH = window.WH || {};
                         console.log('WebMidi could not be enabled.', err);
                     } else {
                         console.log('WebMidi enabled');
-                        epgPreferences.setMidiPorts(WebMidi.inputs, true);
-                        epgPreferences.setMidiPorts(WebMidi.outputs, false);
+                        preferencesView.setMidiPorts(WebMidi.inputs, true);
+                        preferencesView.setMidiPorts(WebMidi.outputs, false);
                         if (typeof selectedInputID === 'string') {
                             selectInputByID(selectedInputID);
                         }
@@ -51,7 +51,7 @@ window.WH = window.WH || {};
                 selectedInputID = id;
                 if (WebMidi.enabled) {
                     selectedInput = WebMidi.getInputById(selectedInputID);
-                    epgPreferences.setSelectedMidiPort(selectedInputID, true);
+                    preferencesView.setSelectedMidiPort(selectedInputID, true);
                     setClockInEnabled(isClockInEnabled);
                     setNoteInEnabled(isNoteInEnabled);
                 }
@@ -65,7 +65,7 @@ window.WH = window.WH || {};
                 selectedOutputID = id;
                 if (WebMidi.enabled) {
                     selectedOutput = WebMidi.getOutputById(selectedOutputID);
-                    epgPreferences.setSelectedMidiPort(selectedOutputID, false);
+                    preferencesView.setSelectedMidiPort(selectedOutputID, false);
                 }
             },
             
@@ -75,8 +75,8 @@ window.WH = window.WH || {};
              */
             setClockInEnabled = function(isEnabled) {
                 isClockInEnabled = isEnabled;
-                epgControls.setControlsEnabled(!isClockInEnabled);
-                epgPreferences.setMidiClockInEnabled(isClockInEnabled);
+                controlsView.setControlsEnabled(!isClockInEnabled);
+                preferencesView.setMidiClockInEnabled(isClockInEnabled);
                 // only enable if there is a MIDI input port
                 if ((isClockInEnabled && selectedInput) || !isClockInEnabled) {
                     transport.setExternalClockEnabled(isClockInEnabled, selectedInput);
@@ -89,7 +89,7 @@ window.WH = window.WH || {};
              */
             setNoteInEnabled = function(isEnabled) {
                 isNoteInEnabled = isEnabled;
-                epgPreferences.setMidiNoteInEnabled(isNoteInEnabled);
+                preferencesView.setMidiNoteInEnabled(isNoteInEnabled);
                 // only enable if there is a MIDI input port
                 if ((isNoteInEnabled && selectedInput) || !isNoteInEnabled) {
                     epgModel.setExternalNoteInEnabled(isNoteInEnabled, selectedInput);
