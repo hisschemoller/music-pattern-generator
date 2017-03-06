@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     WH.createFile({
         that: file,
         midi: midi,
+        midiNetwork: midiNetwork,
         transport: transport
     });
     WH.createMIDI({

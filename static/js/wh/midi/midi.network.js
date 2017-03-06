@@ -106,6 +106,29 @@ window.WH = window.WH || {};
                         processors[i].render(position);
                     }
                 }
+            },
+            
+            /**
+             * Restore network from data object.
+             * @param {Object} data Preferences data object.
+             */
+            setData = function(data) {
+            }, 
+            
+            /**
+             * Write network settings to data object.
+             */
+            getData = function() {
+                // collect data from all processors
+                var procData = [];
+                for (var i = 0; i < numProcessors; i++) {
+                    procData.push(processors[i].getData());
+                }
+                
+                return {
+                    processors: procData,
+                    processorIdCounter: processorIdCounter
+                };
             };
        
         my = my || {};
@@ -116,6 +139,8 @@ window.WH = window.WH || {};
         
         that.process = process;
         that.render = render;
+        that.setData = setData;
+        that.getData = getData;
         return that;
     };
 

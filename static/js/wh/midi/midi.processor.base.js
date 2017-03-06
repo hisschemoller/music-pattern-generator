@@ -75,6 +75,19 @@ window.WH = window.WH || {};
             
             getProperty = function(key) {
                 return my.props[key];
+            },
+            
+            /**
+             * Restore processor from data object.
+             * @param {Object} data Preferences data object.
+             */
+            setData = function(data) {
+            }, 
+            
+            /**
+             * Write processor settings to data object.
+             */
+            getData = function() {
             };
        
         my = my || {};
@@ -90,6 +103,8 @@ window.WH = window.WH || {};
         that.hasParameter = hasParameter;
         that.setProperty = setProperty;
         that.getProperty = getProperty;
+        that.setData = setData;
+        that.getData = getData;
         return that;
     };
     

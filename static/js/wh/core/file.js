@@ -14,6 +14,7 @@ window.WH = window.WH || {};
     function createFile(specs) {
         var that,
             midi = specs.midi,
+            midiNetwork = specs.midiNetwork,
             transport = specs.transport,
             projectName = 'project',
             preferencesName = 'preferences',
@@ -104,7 +105,7 @@ window.WH = window.WH || {};
             save = function() {
                 var data = {
                     bpm: transport.getBPM(),
-                    
+                    network: midiNetwork.getData()
                 }
                 
                 localStorage.setItem(projectName, JSON.stringify(data));
