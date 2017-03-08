@@ -21,10 +21,6 @@ window.WH = window.WH || {};
             isSelected = false,
             
             initialize = function() {
-                if (specs.position3d) {
-                    my.params.position3d.setValue(specs.position3d);
-                }
-                
                 updatePattern(true);
             },
             

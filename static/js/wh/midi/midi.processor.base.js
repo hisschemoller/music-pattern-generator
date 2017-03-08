@@ -38,7 +38,20 @@ window.WH = window.WH || {};
                     }
                     my.params[key].addChangedCallback(paramChangedCallback);
                 }
-                // setPreset(my.defaultPreset);
+                initParams();
+            },
+            
+            /**
+             * Set all parameter values from specs.
+             */
+            initParams = function() {
+                for (var key in my.params) {
+                    if (my.params.hasOwnProperty(key)) {
+                        if (specs[key]) {
+                            my.params[key].setValue(specs[key]);
+                        }
+                    }
+                }
             },
             
             /**
