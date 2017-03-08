@@ -31,7 +31,7 @@ window.WH = window.WH || {};
                 processor.addSelectCallback(updateSelectCircle);
                 
                 // set position in 3d
-                object3d.position.copy(processor.getProperty('position3d'));
+                object3d.position.fromArray(processor.getParamValue('position3d'));
                 object3d.userData.id = processor.getID();
                 object3d.addEventListener('touchstart', onTouchstart);
                 object3d.addEventListener('dragend', onDragEnd);
@@ -117,7 +117,7 @@ window.WH = window.WH || {};
              * @param  {Object} e Object3D event.
              */
             onDragEnd = function(e) {
-                processor.setProperty('position3d', e.target.position.clone());
+                processor.getParameters().position3d.setValue(e.target.position.toArray());
             },
             
             /**

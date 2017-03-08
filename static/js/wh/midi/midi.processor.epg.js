@@ -21,6 +21,10 @@ window.WH = window.WH || {};
             isSelected = false,
             
             initialize = function() {
+                if (specs.position3d) {
+                    my.params.position3d.setValue(specs.position3d);
+                }
+                
                 updatePattern(true);
             },
             
@@ -249,7 +253,6 @@ window.WH = window.WH || {};
             };
        
         my = my || {};
-        my.props.position3d = specs.position3d || null;
         
         /**
          * Parameter change handlers.
@@ -288,6 +291,7 @@ window.WH = window.WH || {};
         my.$pitch_out = function(value, timestamp) {}
         my.$velocity_out = function(value, timestamp) {}
         my.$name = function(value, timestamp) {}
+        my.$position3d = function(value, timestamp) {}
 
         that = ns.createMIDIProcessorBase(specs, my);
         that = ns.createMIDIConnectorIn(specs, my);
@@ -392,6 +396,12 @@ window.WH = window.WH || {};
                 label: 'Name',
                 type: 'string',
                 default: 'Unnamed',
+                isMidiControllable: false
+            },
+            position3d: {
+                label: '3D position',
+                type: 'vector3d',
+                default: [0, 0, 0],
                 isMidiControllable: false
             }
         });

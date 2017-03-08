@@ -131,7 +131,7 @@ window.WH = window.WH || {};
                     // create a new processor
                     ns.pubSub.fire('create.processor', {
                         type: 'epg',
-                        position3d: intersection.clone()
+                        position3d: intersection.toArray()
                     });
                 }
             },

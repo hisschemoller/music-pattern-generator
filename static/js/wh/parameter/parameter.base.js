@@ -15,7 +15,7 @@ window.WH = window.WH || {};
 		    
             /**
              * Call all callbacks if the parameter's value changed.
-             * @param {Number|String|Boolean} oldValue Value before change.
+             * @param {Number|String|Boolean|Array} oldValue Value before change.
              */
         	valueChanged = function(oldValue) {
         		if (oldValue == value) {
