@@ -32,7 +32,7 @@ window.WH = window.WH || {};
                 
                 // set position in 3d
                 object3d.position.copy(processor.getProperty('position3d'));
-                object3d.userData.id = processor.getProperty('id');
+                object3d.userData.id = processor.getID();
                 object3d.addEventListener('touchstart', onTouchstart);
                 object3d.addEventListener('dragend', onDragEnd);
                 
@@ -221,9 +221,9 @@ window.WH = window.WH || {};
             updatePointer = function() {
                 var isSolo = processor.getParamValue('is_solo'),
                     isMute = processor.getParamValue('is_mute'),
-                    isNotSolo = processor.getProperty('is_not_solo'),
-                    isNoteInControlled = processor.getProperty('isNoteInControlled'),
-                    isMutedByNoteInControl = processor.getProperty('isMutedByNoteInControl'),
+                    isNotSolo = false, /* processor.getProperty('is_not_solo'), */
+                    isNoteInControlled = false, /* processor.getProperty('isNoteInControlled'), */
+                    isMutedByNoteInControl = false, /* processor.getProperty('isMutedByNoteInControl'), */
                     mutedRadius = 4.5,
                     radius = (isMute || isNotSolo || isMutedByNoteInControl) ? mutedRadius : radius3d;
                 pointer3d.geometry.dispose();

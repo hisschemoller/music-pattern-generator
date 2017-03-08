@@ -28,7 +28,7 @@ window.WH = window.WH || {};
                     specs.id = processorIdCounter;
                     var processor = ns.midiProcessors[specs.type].create(specs);
                     processors.push(processor);
-                    console.log('Add processor ' + processor.getProperty('type') + ' (id ' + processor.getProperty('id') + ')');
+                    console.log('Add processor ' + processor.getType() + ' (id ' + processor.getID() + ')');
                     processorIdCounter += 1;
                     numProcessors = processors.length;
                     // create the views for the processor
@@ -41,7 +41,7 @@ window.WH = window.WH || {};
                     // if this is an EPG processor, connect it to MIDI out processor (if any)
                     if (specs.type == 'epg') {
                         for (var i = 0; i < numProcessors; i++) {
-                            if (processors[i].getProperty('type') == 'output') {
+                            if (processors[i].getType() == 'output') {
                                 processor.connect(processors[i]);
                                 break;
                             }

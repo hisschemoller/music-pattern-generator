@@ -9,6 +9,8 @@ window.WH = window.WH || {};
     
     function createMIDIProcessorBase(specs, my) {
         var that,
+            type = specs.type,
+            id = specs.id,
             
             /**
              * Create parameters from an object of parameter specifications.
@@ -63,18 +65,14 @@ window.WH = window.WH || {};
                     }
                 }
                 return false;
-            }
-            
-            setProperty = function(key, value) {
-                if (my.props.hasOwnProperty(key)) {
-                    my.props[key] = value;
-                } else {
-                    console.warn('Property "' + name + '" doesn\'t exist, unable to set value "' + value + '".');
-                }
             },
             
-            getProperty = function(key) {
-                return my.props[key];
+            getType = function() {
+                return type;
+            },
+            
+            getID = function() {
+                return id;
             },
             
             /**
@@ -92,8 +90,6 @@ window.WH = window.WH || {};
        
         my = my || {};
         my.params = my.param || {};
-        my.props = my.props || {};
-        my.props.id = specs.id;
         my.defineParams = defineParams;
         
         that = specs.that || {};
@@ -101,8 +97,8 @@ window.WH = window.WH || {};
         that.getParamValue = getParamValue;
         that.getParameters = getParameters;
         that.hasParameter = hasParameter;
-        that.setProperty = setProperty;
-        that.getProperty = getProperty;
+        that.getType = getType;
+        that.getID = getID;
         that.setData = setData;
         that.getData = getData;
         return that;

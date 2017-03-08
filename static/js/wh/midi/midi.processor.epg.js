@@ -249,8 +249,6 @@ window.WH = window.WH || {};
             };
        
         my = my || {};
-        my.props = my.props || {};
-        my.props.type = type;
         my.props.position3d = specs.position3d || null;
         
         /**

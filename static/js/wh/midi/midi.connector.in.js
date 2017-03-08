@@ -26,7 +26,7 @@ window.WH = window.WH || {};
             addConnection = function(processor) {
                 sources.push(processor);
                 numSources = sources.length;
-                console.log('Connect ' + processor.getProperty('type') + ' (id ' + processor.getProperty('id') + ') to ' + that.getProperty('type') + ' (id ' + that.getProperty('id') + ')');
+                console.log('Connect ' + processor.getType() + ' (id ' + processor.getID() + ') to ' + that.getType() + ' (id ' + that.getID() + ')');
             },
             
             removeConnection = function(processor) {
@@ -35,7 +35,7 @@ window.WH = window.WH || {};
                     if (processor === sources[n]) {
                         sources.splice(n, 1);
                         numSources = sources.length;
-                        console.log('Disconnect ' + processor.getProperty('type') + ' (id ' + processor.getProperty('id') + ') from ' + that.getProperty('type') + ' (id ' + that.getProperty('id') + ')');
+                        console.log('Disconnect ' + processor.getType() + ' (id ' + processor.getID() + ') from ' + that.getType() + ' (id ' + that.getID() + ')');
                         break;
                     }
                 }

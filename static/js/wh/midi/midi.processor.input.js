@@ -65,8 +65,6 @@ window.WH = window.WH || {};
             };
        
         my = my || {};
-        my.props = my.props || {};
-        my.props.type = type;
         
         that = ns.createMIDIProcessorBase(specs, my);
         that = ns.createMIDIConnectorOut(specs, my);
