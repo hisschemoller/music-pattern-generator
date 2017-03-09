@@ -9,7 +9,6 @@ window.WH = window.WH || {};
     
     function createBaseParameter(specs, my) {
         var that,
-            value = specs.value || specs.default,
             defaultValue = specs.default,
             changedCallbacks = [],
 		    
@@ -18,12 +17,12 @@ window.WH = window.WH || {};
              * @param {Number|String|Boolean|Array} oldValue Value before change.
              */
         	valueChanged = function(oldValue) {
-        		if (oldValue == value) {
+        		if (oldValue == my.props.value) {
                     return;
                 }
                 var n = changedCallbacks.length;
     			for (var i = 0; i < n; i++) {
-                    changedCallbacks[i](that, oldValue, value);
+                    changedCallbacks[i](that, oldValue, my.props.value);
                 }
         	},
 		
@@ -58,8 +57,8 @@ window.WH = window.WH || {};
         	 * If changed, inform all callbacks.
         	 */
             setValue = function(newValue) {
-                var oldValue = value;
-                value = newValue;
+                var oldValue = my.props.value;
+                my.props.value = newValue;
                 valueChanged(oldValue);
             },
 		
@@ -67,7 +66,7 @@ window.WH = window.WH || {};
     		 * Returns the current value of the parameter
     		 */
             getValue = function() {
-                return value;
+                return my.props.value;
             },
 		
     		/**
@@ -77,8 +76,8 @@ window.WH = window.WH || {};
     		 * @param normalizedValue A normalized value between 0 and 1.
     		 */
     		setValueNormalized = function(normalizedValue) {
-    			var oldValue = value;
-    			value = my.deNormalize(normalizedValue);
+    			var oldValue = my.props.value;
+    			my.props.value = my.deNormalize(normalizedValue);
     			valueChanged(oldValue);
     		},
 
@@ -86,7 +85,7 @@ window.WH = window.WH || {};
         	 * Returns the current normalized value of the parameter between 0 and 1.
         	 */
         	getValueNormalized = function() {
-        		return my.normalize(value);
+        		return my.normalize(my.props.value);
         	},
             
             getProperty = function(key) {
@@ -115,7 +114,9 @@ window.WH = window.WH || {};
             };
             
         my = my || {};
-        my.props = {};
+        my.props = {
+            value: specs.value || specs.default,
+        };
         my.type = specs.type;
         my.label = specs.label;
         my.key = specs.key;

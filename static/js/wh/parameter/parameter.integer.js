@@ -11,12 +11,17 @@ window.WH = window.WH || {};
         var that,
             changedMaxCallbacks = [],
             
+            init = function() {
+                my.props.min = specs.min;
+                my.props.max = specs.max; 
+            },
+            
             normalize = function(value) {
-                return (value - my.min) / (my.max - my.min);
+                return (value - my.props.min) / (my.props.max - my.props.min);
             },
             
             deNormalize = function(normalizedValue) {
-                return Math.round(my.min + normalizedValue * (my.max - my.min));
+                return Math.round(my.props.min + normalizedValue * (my.props.max - my.props.min));
             },
             
             /**
@@ -25,10 +30,10 @@ window.WH = window.WH || {};
              * @param {Number} newMax The new Maximum value for this parameter.
              */
             setMax = function(newMax) {
-                my.max = newMax;
+                my.props.max = newMax;
                 var n = changedMaxCallbacks.length;
     			for (var i = 0; i < n; i++) {
-                    changedMaxCallbacks[i](my.max);
+                    changedMaxCallbacks[i](my.props.max);
                 }
             },
 		
@@ -52,12 +57,13 @@ window.WH = window.WH || {};
     		};
         
         my = my || {};
-        my.min = specs.min;
-        my.max = specs.max;
         my.normalize = normalize;
         my.deNormalize = deNormalize;
         
         that = ns.createBaseParameter(specs, my);
+        
+        init();
+        
         that.setMax = setMax;
         that.addChangedMaxCallback = addChangedMaxCallback;
         that.removeChangedMaxCallback = removeChangedMaxCallback;
