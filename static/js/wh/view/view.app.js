@@ -19,11 +19,21 @@ window.WH = window.WH || {};
              * @param  {Object} processor MIDI processor to control with the settings.
              */
             createSettingsView = function(type, processor) {
-                var settingsView = ns.createSettingsView({
-                    type: type,
-                    processor: processor
-                });
-                settingsViews.push(settingsView);
+                switch (type) {
+                    case 'epg':
+                        var settingsView = ns.createSettingsView({
+                            type: type,
+                            processor: processor,
+                            parentEl: settingsEl
+                        });
+                        settingsViews.push(settingsView);
+                        break;
+                        
+                    case 'input':
+                    case 'output':
+                        
+                        break;
+                }
             },
             
             /**

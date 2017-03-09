@@ -10,6 +10,7 @@ window.WH = window.WH || {};
     function createSettingsView(specs, my) {
         var that,
             processor = specs.processor,
+            parentEl = specs.parentEl,
             settingViews = [],
             el,
             
@@ -73,8 +74,8 @@ window.WH = window.WH || {};
              * Called before this view is deleted.
              */
             terminate = function() {
-                if (el && el.parentNode) {
-                    el.parentNode.removeChild(el);
+                if (el && parentEl) {
+                    parentEl.removeChild(el);
                 }
             },
             
@@ -83,7 +84,6 @@ window.WH = window.WH || {};
              * @param {Boolean} isSelected True if selected.
              */
             show = function(isSelected) {
-                var parentEl = document.getElementById('settings');
                 if (isSelected) {
                     parentEl.appendChild(el);
                 } else {
