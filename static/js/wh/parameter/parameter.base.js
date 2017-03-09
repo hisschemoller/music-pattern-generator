@@ -105,17 +105,17 @@ window.WH = window.WH || {};
              * Write processor settings to data object.
              */
             getData = function() {
-                var data = {};
-                data.type = type;
-                for (var key in my.params) {
-                    if (my.params.hasOwnProperty(key)) {
-                        data[key] = my.params[key].getData();
-                    }
+                var data = {
+                    props: my.props
+                };
+                if (my.isMidiControllable) {
+                    data.remoteProps = my.remoteProps
                 }
                 return data;
             };
             
         my = my || {};
+        my.props = {};
         my.type = specs.type;
         my.label = specs.label;
         my.key = specs.key;
@@ -134,6 +134,8 @@ window.WH = window.WH || {};
         that.setValueNormalized = setValueNormalized;
         that.getValueNormalized = getValueNormalized;
         that.getProperty = getProperty;
+        that.setData = setData;
+        that.getData = getData;
         return that;
     };
 

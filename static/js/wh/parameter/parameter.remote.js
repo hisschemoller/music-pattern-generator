@@ -11,11 +11,6 @@ window.WH = window.WH || {};
     function createRemoteParameter(specs, my) {
         var that,
             remoteStateChangeCallback,
-            remoteProps = {
-                portId: null,
-                channel: null,
-                controller: null
-            },
             
             setRemoteState = function(state, callback) {
                 if (remoteStateChangeCallback) {
@@ -28,16 +23,23 @@ window.WH = window.WH || {};
             },
             
             setRemoteProperty = function(key, value) {
-                if (remoteProps.hasOwnProperty(key)) {
+                if (my.remoteProps.hasOwnProperty(key)) {
                     remoteProps[key] = value;
                 }
             },
             
             getRemoteProperty = function(key) {
-                if (remoteProps.hasOwnProperty(key)) {
+                if (my.remoteProps.hasOwnProperty(key)) {
                     return remoteProps[key];
                 }
             };
+        
+        my = my || {};
+        my.remoteProps = {
+            portId: null,
+            channel: null,
+            controller: null
+        };
         
         that = specs.that || {};
         
