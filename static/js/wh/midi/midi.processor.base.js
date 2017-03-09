@@ -117,8 +117,6 @@ window.WH = window.WH || {};
         
         that = specs.that || {};
         
-        init();
-        
         that.getParamValue = getParamValue;
         that.getParameters = getParameters;
         that.hasParameter = hasParameter;
@@ -127,7 +125,7 @@ window.WH = window.WH || {};
         that.setData = setData;
         that.getData = getData;
         return that;
-    };
+    }
     
     ns.createMIDIProcessorBase = createMIDIProcessorBase;
 
