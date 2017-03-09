@@ -175,8 +175,8 @@ window.WH = window.WH || {};
              * @param {Object} data Preferences data object.
              */
             setData = function(data) {
-                selectInputByID(data.midiin, true);
-                selectOutputByID(data.midiout, false);
+                selectInputByID(data.midiin);
+                selectOutputByID(data.midiout);
                 setClockInEnabled(data.clockin);
                 setNoteInEnabled(data.notein);
             }, 
