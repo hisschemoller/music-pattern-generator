@@ -211,7 +211,7 @@ window.WH = window.WH || {};
             		return new Array();
             	}
                 
-            	while(true) {
+            	while (true) {
             		counts.push(Math.floor(divisor / remainders[level]));
             		remainders.push(divisor % remainders[level]);
             		divisor = remainders[level]; 

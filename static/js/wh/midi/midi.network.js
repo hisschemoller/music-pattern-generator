@@ -113,6 +113,7 @@ window.WH = window.WH || {};
              * @param {Object} data Preferences data object.
              */
             setData = function(data) {
+                
             }, 
             
             /**
@@ -120,7 +121,8 @@ window.WH = window.WH || {};
              */
             getData = function() {
                 // collect data from all processors
-                var procData = [];
+                var processor,
+                    procData = [];
                 for (var i = 0; i < numProcessors; i++) {
                     procData.push(processors[i].getData());
                 }

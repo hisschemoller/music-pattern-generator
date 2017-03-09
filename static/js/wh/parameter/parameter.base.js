@@ -93,6 +93,26 @@ window.WH = window.WH || {};
                 if (my.hasOwnProperty(key)) {
                     return my[key];
                 }
+            },
+            
+            /**
+             * Restore processor from data object.
+             * @param {Object} data Preferences data object.
+             */
+            setData = function(data) {}, 
+            
+            /**
+             * Write processor settings to data object.
+             */
+            getData = function() {
+                var data = {};
+                data.type = type;
+                for (var key in my.params) {
+                    if (my.params.hasOwnProperty(key)) {
+                        data[key] = my.params[key].getData();
+                    }
+                }
+                return data;
             };
             
         my = my || {};
