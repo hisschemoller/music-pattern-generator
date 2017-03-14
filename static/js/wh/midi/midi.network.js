@@ -31,11 +31,20 @@ window.WH = window.WH || {};
                     console.log('Add processor ' + processor.getType() + ' (id ' + processor.getID() + ')');
                     processorIdCounter += 1;
                     numProcessors = processors.length;
+                    
                     // create the views for the processor
-                    appView.createSettingsView(specs.type, processor);
-                    world.createObject(specs.type, processor);
-                    midiRemote.registerProcessor(processor);
-                    selectProcessor(processor);
+                    switch (specs.type) {
+                        case 'input':
+                        case 'output':
+                            appView.createMIDIPortView(processor);
+                            break;
+                        case 'epg':
+                            appView.createSettingsView(processor);
+                            world.createObject(processor);
+                            midiRemote.registerProcessor(processor);
+                            selectProcessor(processor);
+                            break;
+                    }
                     
                     // TEMP
                     // if this is an EPG processor, connect it to MIDI out processor (if any)

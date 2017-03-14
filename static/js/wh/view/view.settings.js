@@ -16,7 +16,7 @@ window.WH = window.WH || {};
             
             initialize = function() {
                 var params = processor.getParameters(),
-                    template = document.getElementById('template-settings-' + specs.type);
+                    template = document.getElementById('template-settings-' + processor.getType());
                 
                 if (typeof processor.addSelectCallback === 'function') {
                     processor.addSelectCallback(show);

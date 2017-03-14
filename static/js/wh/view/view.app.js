@@ -11,29 +11,19 @@ window.WH = window.WH || {};
         var that,
             rootEl = document.getElementById('app'),
             settingsEl = document.getElementById('settings'),
+            midiPortsEl = document.getElementById('midiports'),
             settingsViews = [],
             
             /**
              * Create settings controls view for a processor.
-             * @param  {String} type Type of processor for which to create the view.
              * @param  {Object} processor MIDI processor to control with the settings.
              */
-            createSettingsView = function(type, processor) {
-                switch (type) {
-                    case 'epg':
-                        var settingsView = ns.createSettingsView({
-                            type: type,
-                            processor: processor,
-                            parentEl: settingsEl
-                        });
-                        settingsViews.push(settingsView);
-                        break;
-                        
-                    case 'input':
-                    case 'output':
-                        
-                        break;
-                }
+            createSettingsView = function(processor) {
+                var settingsView = ns.createSettingsView({
+                    processor: processor,
+                    parentEl: settingsEl
+                });
+                settingsViews.push(settingsView);
             },
             
             /**
@@ -49,20 +39,22 @@ window.WH = window.WH || {};
                         return false;
                     }
                 }
-            };
+            },
             
-            // toggleMidiLearnMode = function(isLearnMode, addParamCallback) {
-            //     var n = settingsViews.length;
-            //     while (--n >= 0) {
-            //         settingsViews[n].toggleLearnMode(isLearnMode, addParamCallback);
-            //     }
-            // };
+            createMIDIPortView = function(processor) {
+                
+            },
+            
+            deleteMIDIPortView = function(processor) {
+                
+            };
         
         that = specs.that || {};
         
         that.createSettingsView = createSettingsView;
         that.deleteSettingsView = deleteSettingsView;
-        // that.toggleMidiLearnMode = toggleMidiLearnMode;
+        that.createMIDIPortView = createMIDIPortView;
+        that.deleteMIDIPortView = deleteMIDIPortView;
         return that;
     };
 

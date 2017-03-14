@@ -256,10 +256,10 @@ window.WH = window.WH || {};
             
             /**
              * Create world object if it exists for the type.
-             * @param  {String} type Type of object to create.
              * @param  {Object} processor MIDI processor for which the 3D object will be a view.
              */
-            createObject = function(type, processor) {
+            createObject = function(processor) {
+                var type = processor.getType();
                 if (templates[type]) {
                     // create 3D object
                     var object3d = templates[type].clone();
