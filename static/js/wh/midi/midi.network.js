@@ -22,7 +22,7 @@ window.WH = window.WH || {};
                 ns.pubSub.on('select.processor', selectProcessor);
             },
         
-            createProcessor = function(specs) {
+            createProcessor = function(specs, isRestore) {
                 if (ns.midiProcessors && ns.midiProcessors[specs.type]) {
                     specs.that = {};
                     specs.id = processorIdCounter;
@@ -46,15 +46,25 @@ window.WH = window.WH || {};
                             break;
                     }
                     
-                    // TEMP
-                    // if this is an EPG processor, connect it to MIDI out processor (if any)
-                    if (specs.type == 'epg') {
-                        for (var i = 0; i < numProcessors; i++) {
-                            if (processors[i].getType() == 'output') {
-                                processor.connect(processors[i]);
-                                break;
+                    
+                    
+                    // If the app is in EPG mode,
+                    // and this is a newly created processor (not a project restore),
+                    // then connect each EPG processor to the first input and output port.
+                    var epgMode = true;
+                    if (epgMode && isRestore !== true) {
+                        if (specs.type == 'epg') {
+                            for (var i = 0; i < numProcessors; i++) {
+                                if (processors[i].getType() == 'input') {
+                                    processors[i].connect(processor);
+                                }
+                                if (processors[i].getType() == 'output') {
+                                    processor.connect(processors[i]);
+                                }
                             }
                         }
+                    } else {
+                        
                     }
                 } else {
                     console.error('No MIDI processor found of type: ', specs.type);
