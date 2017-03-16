@@ -12,7 +12,6 @@ window.WH = window.WH || {};
             appView = specs.appView,
             midiRemote = specs.midiRemote,
             world = specs.world,
-            processorIdCounter = 0,
             processors = [],
             numProcessors = processors.length,
             
@@ -24,12 +23,12 @@ window.WH = window.WH || {};
         
             createProcessor = function(specs, isRestore) {
                 if (ns.midiProcessors && ns.midiProcessors[specs.type]) {
+                    specs = specs || {};
                     specs.that = {};
-                    specs.id = processorIdCounter;
+                    specs.id = specs.id || specs.type + performance.now() + '_' + Math.random();
                     var processor = ns.midiProcessors[specs.type].create(specs);
                     processors.push(processor);
                     console.log('Add processor ' + processor.getType() + ' (id ' + processor.getID() + ')');
-                    processorIdCounter += 1;
                     numProcessors = processors.length;
                     
                     // create the views for the processor
@@ -46,8 +45,6 @@ window.WH = window.WH || {};
                             break;
                     }
                     
-                    
-                    
                     // If the app is in EPG mode,
                     // and this is a newly created processor (not a project restore),
                     // then connect each EPG processor to the first input and output port.
@@ -63,8 +60,6 @@ window.WH = window.WH || {};
                                 }
                             }
                         }
-                    } else {
-                        
                     }
                 } else {
                     console.error('No MIDI processor found of type: ', specs.type);
@@ -132,7 +127,75 @@ window.WH = window.WH || {};
              * @param {Object} data Preferences data object.
              */
             setData = function(data) {
+                // create the processors
+                var pdata = data.processors,
+                    n = pdata.length;
+                for (var i = 0; i < n; i++) {
+                    // don't create MIDI inputs and outputs
+                    if (pdata[i].type !== 'input' && pdata[i].type !== 'output') {
+                        createProcessor({
+                            type: pdata[i].type,
+                            id: pdata[i].id
+                        }, true);
+                    }
+                }
                 
+                // find midi processors created for the detected midi ports,
+                // match them with the saved midi processor data,
+                // by comparing the midi port ids
+                // then give the matched processors the processor id from the saved data
+                // so that connections to input and output processors can be restored
+                var procType, 
+                    numProcessors = processors.length;
+                for (var i = 0; i < n; i++) {
+                    if (pdata[i].type === 'input' || pdata[i].type === 'output') {
+                        for (var j = 0; j < numProcessors; j++) {
+                            procType = processors[j].getType();
+                            if (procType === 'input' || procType === 'output') {
+                                if (pdata[i].midiPortID === processors[j].getPort().id) {
+                                    processors[j].setID(pdata[i].id);
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // restore state of the processor
+                for (var i = 0; i < n; i++) {
+                    for (var j = 0; j < numProcessors; j++) {
+                        if (pdata[i].id === processors[j].getID()) {
+                            processors[j].setData(pdata[i]);
+                        }
+                    }
+                }
+                
+                // connect the processors
+                var sourceProcessor, numDestinations, destinationIDs;
+                for (var i = 0; i < n; i++) {
+                    destinationIDs = pdata[i].destinations;
+                    if (destinationIDs && destinationIDs.length) {
+                        // find source processor
+                        sourceProcessor = null;
+                        for (var j = 0; j < numProcessors; j++) {
+                            if (pdata[i].id === processors[j].getID()) {
+                                sourceProcessor = processors[j];
+                            }
+                        }
+                        
+                        // find destination processor(s)
+                        if (sourceProcessor) {
+                            numDestinations = destinationIDs.length;
+                            for (var j = 0; j < numDestinations; j++) {
+                                for (var k = 0; k < numProcessors; k++) {
+                                    if (destinationIDs[j] == processors[k].getID()) {
+                                        sourceProcessor.connect(processors[k]);
+                                        console.log('Connect ' + sourceProcessor.getType() + ' to ' + processors[k].getType());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }, 
             
             /**
@@ -147,8 +210,7 @@ window.WH = window.WH || {};
                 }
                 
                 return {
-                    processors: procData,
-                    processorIdCounter: processorIdCounter
+                    processors: procData
                 };
             };
        

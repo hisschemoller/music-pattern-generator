@@ -62,14 +62,24 @@ window.WH = window.WH || {};
                     message.timestampTicks = (message.timestamp / ticksToMsMultiplier) - offset
                     my.setOutputData(message);
                 }
+            },
+            
+            getPort = function() {
+                return midiInput;
+            },
+            
+            getProcessorSpecificData = function(data) {
+                data.midiPortID = midiInput.id;
             };
        
         my = my || {};
+        my.getProcessorSpecificData = getProcessorSpecificData;
         
         that = ns.createMIDIProcessorBase(specs, my);
         that = ns.createMIDIConnectorOut(specs, my);
         
         that.process = process;
+        that.getPort = getPort;
         return that;
     };
     

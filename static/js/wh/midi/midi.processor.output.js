@@ -39,15 +39,25 @@ window.WH = window.WH || {};
                         }
                     }
                 }
+            },
+            
+            getPort = function() {
+                return midiOutput;
+            },
+            
+            getProcessorSpecificData = function(data) {
+                data.midiPortID = midiOutput.id;
             };
         
        
         my = my || {};
+        my.getProcessorSpecificData = getProcessorSpecificData;
         
         that = ns.createMIDIProcessorBase(specs, my);
         that = ns.createMIDIConnectorIn(specs, my);
         
         that.process = process;
+        that.getPort = getPort;
         return that;
     };
     

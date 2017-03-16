@@ -87,6 +87,10 @@ window.WH = window.WH || {};
                 return type;
             },
             
+            setID = function(newId) {
+                id = newId;
+            },
+            
             getID = function() {
                 return id;
             },
@@ -95,7 +99,13 @@ window.WH = window.WH || {};
              * Restore processor from data object.
              * @param {Object} data Preferences data object.
              */
-            setData = function(data) {}, 
+            setData = function(data) {
+                for (var key in my.params) {
+                    if (my.params.hasOwnProperty(key)) {
+                        my.params[key].setData(data[key]);
+                    }
+                }
+            }, 
             
             /**
              * Write processor settings to data object.
@@ -103,10 +113,23 @@ window.WH = window.WH || {};
             getData = function() {
                 var data = {};
                 data.type = type;
+                data.id = id;
+                
+                // parameters
                 for (var key in my.params) {
                     if (my.params.hasOwnProperty(key)) {
                         data[key] = my.params[key].getData();
                     }
+                }
+                
+                // connections
+                if (typeof my.getDestinationsData == 'function') {
+                    my.getDestinationsData(data);
+                }
+                
+                // processor specific data
+                if (typeof my.getProcessorSpecificData == 'function') {
+                    my.getProcessorSpecificData(data);
                 }
                 return data;
             };
@@ -121,6 +144,7 @@ window.WH = window.WH || {};
         that.getParameters = getParameters;
         that.hasParameter = hasParameter;
         that.getType = getType;
+        that.setID = setID;
         that.getID = getID;
         that.setData = setData;
         that.getData = getData;

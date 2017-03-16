@@ -32,7 +32,7 @@ window.WH = window.WH || {};
             },
             
             onChange = function(e) {
-                my.param.setValue(e.target.value);
+                my.param.setValue(parseInt(e.target.value, 10));
             },
             
             changedCallback = function(parameter, oldValue, newValue) {

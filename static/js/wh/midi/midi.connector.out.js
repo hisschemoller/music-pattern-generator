@@ -51,10 +51,19 @@ window.WH = window.WH || {};
                         destinations.splice(n, 1);
                     }
                 }
+            },
+            
+            getDestinationsData = function(data) {
+                data.destinations = [];
+                var n = destinations.length;
+                for (var i = 0; i < n; i++) {
+                    data.destinations.push(destinations[i].getID());
+                }
             };
        
         my = my || {};
         my.setOutputData = setOutputData;
+        my.getDestinationsData = getDestinationsData;
 
         that = specs.that || {};
         

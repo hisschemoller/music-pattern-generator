@@ -98,7 +98,16 @@ window.WH = window.WH || {};
              * Restore processor from data object.
              * @param {Object} data Preferences data object.
              */
-            setData = function(data) {}, 
+            setData = function(data) {
+                for (var key in my.props) {
+                    if (my.props.hasOwnProperty(key)) {
+                        my.props[key] = data.props[key];
+                    }
+                }
+                // use setValue to trigger callbacks
+                my.props.value = defaultValue;
+                setValue(data.props.value);
+            }, 
             
             /**
              * Write processor settings to data object.
