@@ -43,6 +43,7 @@ window.WH = window.WH || {};
                 params.rotation.addChangedCallback(updateDots);
                 params.is_solo.addChangedCallback(updatePointer);
                 params.is_mute.addChangedCallback(updatePointer);
+                params.position3d.addChangedCallback(updatePosition);
                 
                 // set the dots around the wheel
                 updateDots();
@@ -294,6 +295,10 @@ window.WH = window.WH || {};
              */
             updateSelectCircle = function(isSelected) {
                 select3d.visible = isSelected;
+            },
+            
+            updatePosition = function(param, oldValue, newValue) {
+                object3d.position.fromArray(newValue);
             },
             
             /**
