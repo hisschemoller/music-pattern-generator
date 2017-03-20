@@ -12,25 +12,38 @@ window.WH = window.WH || {};
         var that,
             remoteStateChangeCallback,
             
+            /**
+             * Set the remote state of the parameter.
+             * This calls the setting view associated with this parameter, so that
+             * it goes into learn mode or shows it's selected or assigned.
+             * @param {String} state Remote assignment state, for example 'selected' or 'assigned'
+             * @param {Function} callback Function to call when in learn mode (ugly, improve some day)
+             */
             setRemoteState = function(state, callback) {
                 if (remoteStateChangeCallback) {
                     remoteStateChangeCallback(state, callback);
                 }
             },
             
+            /**
+             * Add a callback function to update the remote overlay on the
+             * parameter's setting view, so that the setting view can go
+             * into learn mode, or show that it's selected or assigned.
+             * @param {Function} callback Callback function.
+             */
             setRemoteStateCallback = function(callback) {
                 remoteStateChangeCallback = callback;
             },
             
             setRemoteProperty = function(key, value) {
                 if (my.remoteProps.hasOwnProperty(key)) {
-                    remoteProps[key] = value;
+                    my.remoteProps[key] = value;
                 }
             },
             
             getRemoteProperty = function(key) {
                 if (my.remoteProps.hasOwnProperty(key)) {
-                    return remoteProps[key];
+                    return my.remoteProps[key];
                 }
             };
         
