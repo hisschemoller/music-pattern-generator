@@ -15,6 +15,7 @@ window.WH = window.WH || {};
         var that,
             midi = specs.midi,
             midiNetwork = specs.midiNetwork,
+            midiRemote = specs.midiRemote,
             transport = specs.transport,
             projectName = 'project',
             preferencesName = 'preferences',
@@ -83,6 +84,8 @@ window.WH = window.WH || {};
                 if (data) {
                     data = JSON.parse(data);
                     transport.setBPM(data.bpm);
+                    midiNetwork.setData(data.network);
+                    midiRemote.setData(data.remote);
                 } else {
                     console.log('No data in LocalStorage with name "' + projectName + '".');
                     return false;
@@ -105,7 +108,8 @@ window.WH = window.WH || {};
             save = function() {
                 var data = {
                     bpm: transport.getBPM(),
-                    network: midiNetwork.getData()
+                    network: midiNetwork.getData(),
+                    remote: midiRemote.getData()
                 }
                 
                 localStorage.setItem(projectName, JSON.stringify(data));

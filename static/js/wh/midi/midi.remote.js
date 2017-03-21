@@ -191,6 +191,93 @@ window.WH = window.WH || {};
                         remoteView.deleteRemoteGroup(processor);
                     }
                 }
+            },
+            
+            /**
+             * Restore assigned parameters from data object.
+             * @param {Object} data  data object.
+             */
+            setData = function(data) {
+                // loop through midi ports data
+                for (let dataPortID in data) {
+                    if (data.hasOwnProperty(dataPortID)) {
+                        // find MIDI port with this ID
+                        for (let lookupPortID in paramLookup) {
+                            if (paramLookup.hasOwnProperty(lookupPortID)) {
+                                if (dataPortID == lookupPortID) {
+                                    // the stored port exists, params can be assigned
+                                    let paramsData = data[dataPortID],
+                                        numParams = paramsData.length;
+                                    for (let i = 0; i < numParams; i++) {
+                                        // find processor
+                                        let processorID = paramsData[i].processorID;
+                                        let n = processors.length;
+                                        while (--n >= 0) {
+                                            if (processors[n].processor.getID() == processorID) {
+                                                // processor found, find parameter
+                                                let params = processors[n].params,
+                                                    m = params.length;
+                                                while (--m >= 0) {
+                                                    if (params[m].getProperty('key') == paramsData[i].paramKey) {
+                                                        // found parameter, assign ti remote controller
+                                                        let channelIndex = paramsData[i].paramRemoteData.channel,
+                                                            controller = paramsData[i].paramRemoteData.controller;
+                                                        assignParameter(params[m], dataPortID, channelIndex, controller)
+                                                        break;
+                                                    }
+                                                }
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            
+            /**
+             * Write assigned parameters to data object.
+             * @return {Object} Contains 
+             */
+            getData = function() {
+                let lookupPort, param, processorID,
+                    data = {};
+                // loop through midi ports lookup
+                for (var portKey in paramLookup) {
+                    if (paramLookup.hasOwnProperty(portKey)) {
+                        console.log('port id ', portKey);
+                        lookupPort = paramLookup[portKey];
+                        data[portKey] = [];
+                        // loop through parameters listening to this port
+                        for (var paramKey in lookupPort) {
+                            if (lookupPort.hasOwnProperty(paramKey)) {
+                                param = lookupPort[paramKey];
+                                // find processor for the parameter to get its id
+                                processorID = null;
+                                let n = processors.length;
+                                while (--n >= 0) {
+                                    console.log('processors[n] ', processors[n]);
+                                    let m = processors[n].params.length;
+                                    while (--m >= 0) {
+                                        if (param === processors[n].params[m]) {
+                                            processorID = processors[n].processor.getID();
+                                            break;
+                                        }
+                                    }
+                                }
+                                // create the parameter's data entry
+                                data[portKey].push({
+                                    processorID: processorID,
+                                    paramKey: param.getProperty('key'),
+                                    paramRemoteData: param.getRemoteData()
+                                });
+                            }
+                        }
+                    }
+                }
+                return data;
             };
         
         that = specs.that;
@@ -201,6 +288,8 @@ window.WH = window.WH || {};
         that.unassingParameter = unassingParameter;
         that.registerProcessor = registerProcessor;
         that.unregisterProcessor = unregisterProcessor;
+        that.setData = setData;
+        that.getData = getData;
         return that;
     }
         

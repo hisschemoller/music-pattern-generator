@@ -116,9 +116,6 @@ window.WH = window.WH || {};
                 var data = {
                     props: my.props
                 };
-                if (my.isMidiControllable) {
-                    data.remoteProps = my.remoteProps
-                }
                 return data;
             };
             

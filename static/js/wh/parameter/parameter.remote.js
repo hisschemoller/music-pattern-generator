@@ -45,6 +45,10 @@ window.WH = window.WH || {};
                 if (my.remoteProps.hasOwnProperty(key)) {
                     return my.remoteProps[key];
                 }
+            },
+            
+            getRemoteData = function() {
+                return my.remoteProps;
             };
         
         my = my || {};
@@ -60,6 +64,7 @@ window.WH = window.WH || {};
         that.setRemoteStateCallback = setRemoteStateCallback;
         that.setRemoteProperty = setRemoteProperty;
         that.getRemoteProperty = getRemoteProperty;
+        that.getRemoteData = getRemoteData;
         return that;
     }
 
