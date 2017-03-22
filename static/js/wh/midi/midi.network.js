@@ -134,6 +134,52 @@ window.WH = window.WH || {};
                 }
             },
             
+            connectAllEPGToInput = function(newPortID, oldPortID) {
+                let newPortProcessor, oldPortProcessor;
+                for (let i = 0; i < numProcessors; i++) {
+                    if (processors[i].getType() == 'input') {
+                        let portID = processors[i].getPort().id;
+                        if (portID == oldPortID) {
+                            oldPortProcessor = processors[i];
+                        }
+                        if (portID == newPortID) {
+                            newPortProcessor = processors[i];
+                        }
+                    }
+                }
+                for (let i = 0; i < numProcessors; i++) {
+                    if (processors[i].getType() == 'epg') {
+                        if (oldPortProcessor) {
+                            oldPortProcessor.disconnect(processors[i]);
+                        }
+                        newPortProcessor.connect(processors[i]);
+                    }
+                }
+            },
+            
+            connectAllEPGToOutput = function(newPortID, oldPortID) {
+                let newPortProcessor, oldPortProcessor;
+                for (let i = 0; i < numProcessors; i++) {
+                    if (processors[i].getType() == 'output') {
+                        let portID = processors[i].getPort().id;
+                        if (portID == oldPortID) {
+                            oldPortProcessor = processors[i];
+                        }
+                        if (portID == newPortID) {
+                            newPortProcessor = processors[i];
+                        }
+                    }
+                }
+                for (let i = 0; i < numProcessors; i++) {
+                    if (processors[i].getType() == 'epg') {
+                        if (oldPortProcessor) {
+                            processors[i].disconnect(oldPortProcessor);
+                        }
+                        processors[i].connect(newPortProcessor);
+                    }
+                }
+            },
+            
             /**
              * Restore network from data object.
              * @param {Object} data Preferences data object.
@@ -234,6 +280,8 @@ window.WH = window.WH || {};
         
         that.process = process;
         that.render = render;
+        that.connectAllEPGToInput = connectAllEPGToInput;
+        that.connectAllEPGToOutput = connectAllEPGToOutput;
         that.setData = setData;
         that.getData = getData;
         return that;

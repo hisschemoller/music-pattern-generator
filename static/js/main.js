@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         app: app,
         controlsView: controlsView,
         preferencesView: preferencesView,
+        midiNetwork: midiNetwork,
         midiRemote: midiRemote,
         transport: transport
     });

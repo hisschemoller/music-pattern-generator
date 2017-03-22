@@ -11,9 +11,9 @@ window.WH = window.WH || {};
         var that,
             controlsView = specs.controlsView,
             preferencesView = specs.preferencesView,
+            midiNetwork = specs.midiNetwork,
             midiRemote = specs.midiRemote,
             transport = specs.transport,
-            localStorageName = 'midiprefs',
             midiAccess,
             selectedInput,
             selectedInputID,
@@ -116,14 +116,15 @@ window.WH = window.WH || {};
              * @param {String} id ID of the input.
              */
             selectInputByID = function(id) {
-                selectedInputID = id;
                 if (midiAccess) {
                     selectedInput = null;
                     var portMap = midiAccess.inputs.values();
                     for (port = portMap.next(); port && !port.done; port = portMap.next()) {
                         if (port.value.id === id) {
                             selectedInput = port.value;
-                            preferencesView.setSelectedMidiPort(selectedInputID, true);
+                            preferencesView.setSelectedMidiPort(id, true);
+                            midiNetwork.connectAllEPGToInput(id, selectedInputID);
+                            selectedInputID = id;
                         }
                     }
                 }
@@ -134,14 +135,15 @@ window.WH = window.WH || {};
              * @param {String} id ID of the output.
              */
             selectOutputByID = function(id) {
-                selectedOutputID = id;
                 if (midiAccess) {
                     selectedOutput = null;
                     var portMap = midiAccess.outputs.values();
                     for (port = portMap.next(); port && !port.done; port = portMap.next()) {
                         if (port.value.id === id) {
                             selectedOutput = port.value;
-                            preferencesView.setSelectedMidiPort(selectedOutputID, false);
+                            preferencesView.setSelectedMidiPort(id, false);
+                            midiNetwork.connectAllEPGToOutput(id, selectedOutputID);
+                            selectedOutputID = id;
                         }
                     }
                 }
