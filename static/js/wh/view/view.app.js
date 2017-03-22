@@ -14,6 +14,7 @@ window.WH = window.WH || {};
             midiInputsEl = document.querySelector('.prefs__inputs'),
             midiOutputsEl = document.querySelector('.prefs__outputs'),
             settingsViews = [],
+            midiPortViews = [],
             
             /**
              * Create settings controls view for a processor.
@@ -58,10 +59,18 @@ window.WH = window.WH || {};
                         });
                         break;
                 }
+                midiPortViews.push(view);
             },
             
             deleteMIDIPortView = function(processor) {
-                
+                var n = midiPortViews.length;
+                while (--n >= 0) {
+                    if (midiPortViews[n].hasProcessor(processor)) {
+                        midiPortViews[n].terminate();
+                        midiPortViews.splice(n, 1);
+                        return false;
+                    }
+                }
             };
         
         that = specs.that || {};

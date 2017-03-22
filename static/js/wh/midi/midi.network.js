@@ -73,12 +73,24 @@ window.WH = window.WH || {};
                         processors[i].disconnect(processor);
                     }
                 }
+                
+                // delete the views for the processor
+                switch (specs.type) {
+                    case 'input':
+                    case 'output':
+                        appView.deleteMIDIPortView(processor);
+                        break;
+                    case 'epg':
+                        appView.deleteSettingsView(processor);
+                        world.deleteObject(processor);
+                        midiRemote.unregisterProcessor(processor);
+                        selectProcessor(processor);
+                        break;
+                }
+                
                 // disconnect this processor from its destinations
                 processor.disconnect();
                 selectNextProcessor(processor);
-                appView.deleteSettingsView(processor);
-                world.deleteObject(processor);
-                midiRemote.unregisterProcessor(processor);
                 processor.terminate();
                 processors.splice(processors.indexOf(processor), 1);
                 numProcessors = processors.length;

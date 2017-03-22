@@ -98,7 +98,7 @@ window.WH = window.WH || {};
              */
             hasProcessor = function(proc) {
                 return proc === processor;
-            },
+            };
         
         that = specs.that || {};
         
