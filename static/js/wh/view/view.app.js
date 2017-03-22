@@ -11,7 +11,8 @@ window.WH = window.WH || {};
         var that,
             rootEl = document.getElementById('app'),
             settingsEl = document.getElementById('settings'),
-            midiPortsEl = document.getElementById('midiports'),
+            midiInputsEl = document.querySelector('.prefs__inputs'),
+            midiOutputsEl = document.querySelector('.prefs__outputs'),
             settingsViews = [],
             
             /**
@@ -42,7 +43,21 @@ window.WH = window.WH || {};
             },
             
             createMIDIPortView = function(processor) {
-                
+                var view;
+                switch (processor.getType()) {
+                    case 'input':
+                        view = ns.createMIDIInputView({
+                            processor: processor,
+                            parentEl: midiInputsEl
+                        });
+                        break;
+                    case 'output':
+                        view = ns.createMIDIOutputView({
+                            processor: processor,
+                            parentEl: midiOutputsEl
+                        });
+                        break;
+                }
             },
             
             deleteMIDIPortView = function(processor) {

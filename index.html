@@ -23,6 +23,10 @@
             </div>
         </form>
         <div id="settings"></div>
+        <div id="prefs" class="form">
+            <ul class="prefs__inputs"></ul>
+            <ul class="prefs__outputs"></ul>
+        </div>
         <form id="config" class="form">
             <div class="form__row">
                 <label for="inputs-select" class="form__label">midi in</label>
@@ -121,6 +125,19 @@
                 <button class="remote__item-remove">x</button>
             </li>
         </div><!-- /template-remote-item -->
+        <div id="template-midi-input">
+            <li class="midi-port">
+                <span class="midi-port__label"></span>
+                <label><input type="checkbox" class="midi-port__track" />Track</label>
+                <label><input type="checkbox" class="midi-port__remote" />Remote</label>
+            </li>
+        </div><!-- /template-midi-input -->
+        <div id="template-midi-output">
+            <li class="midi-port">
+                <span class="midi-port__label"></span>
+                <label><input type="checkbox" class="midi-port__track" />Track</label>
+            </li>
+        </div><!-- /template-midi-output -->
         
         
         
@@ -231,6 +248,9 @@
     <script src="static/js/wh/parameter/parameter.vector3d.js"></script>
     <script src="static/js/wh/view/view.app.js"></script>
     <script src="static/js/wh/view/view.controls.js"></script>
+    <script src="static/js/wh/view/view.midi.base.js"></script>
+    <script src="static/js/wh/view/view.midi.input.js"></script>
+    <script src="static/js/wh/view/view.midi.output.js"></script>
     <script src="static/js/wh/view/view.preferences.js"></script>
     <script src="static/js/wh/view/view.remote.js"></script>
     <script src="static/js/wh/view/view.remote.group.js"></script>
