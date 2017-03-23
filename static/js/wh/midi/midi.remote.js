@@ -12,10 +12,9 @@ window.WH = window.WH || {};
     
     function createMIDIRemote(specs) {
         var that,
-            // appView = specs.appView,
             remoteView = specs.remoteView,
             midiInputs = [],
-            paramLookup = [],
+            paramLookup = {},
             selectedParameter,
             isInLearnMode = false,
             processors = [],
@@ -194,6 +193,28 @@ window.WH = window.WH || {};
             },
             
             /**
+             * Clear all assignments.
+             * Unassign all parameters.
+             * Unregister all processors.
+             */
+            clear = function() {
+                // Unassign all parameters.
+                for (let lookupPortID in paramLookup) {
+                    if (paramLookup.hasOwnProperty(lookupPortID)) {
+                        let params = paramLookup[lookupPortID],
+                            n = params.length;
+                        while (--n >= 0) {
+                            unassingParameter(params[n]);
+                        }
+                    }
+                }
+                // Unregister all processors.
+                for (var i = 0; i < processors.length; i++) {
+                    unregisterProcessor(processors[i]);
+                }
+            },
+            
+            /**
              * Restore assigned parameters from data object.
              * @param {Object} data  data object.
              */
@@ -288,6 +309,7 @@ window.WH = window.WH || {};
         that.unassingParameter = unassingParameter;
         that.registerProcessor = registerProcessor;
         that.unregisterProcessor = unregisterProcessor;
+        that.clear = clear;
         that.setData = setData;
         that.getData = getData;
         return that;

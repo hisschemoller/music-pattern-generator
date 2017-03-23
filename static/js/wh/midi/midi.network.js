@@ -181,6 +181,22 @@ window.WH = window.WH || {};
             },
             
             /**
+             * Clear the whole network.
+             * Remove all processors except the inputs and outputs.
+             * Remove all the connections.
+             */
+            clear = function() {
+                let type,   
+                    n = numProcessors;
+                while (--n >= 0) {
+                    type = processors[n].getType();
+                    if (type !== 'input' && type !== 'output') {
+                        deleteProcessor(processors[n]);
+                    }
+                }
+            },
+            
+            /**
              * Restore network from data object.
              * @param {Object} data Preferences data object.
              */
@@ -282,6 +298,7 @@ window.WH = window.WH || {};
         that.render = render;
         that.connectAllEPGToInput = connectAllEPGToInput;
         that.connectAllEPGToOutput = connectAllEPGToOutput;
+        that.clear = clear;
         that.setData = setData;
         that.getData = getData;
         return that;

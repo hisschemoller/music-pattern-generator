@@ -43,8 +43,6 @@ window.WH = window.WH || {};
                 }
                 parentEl.removeChild(el);
                 nameParam.removeChangedCallback(setName);
-                nameParam = null;
-                processor = null;
                 itemViews = null;
                 parentEl = null;
             },
