@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     // Create all objects that will be the modules of the app.
     var appView = {},
         controlsView = {},
+        fileView = {},
         preferencesView = {},
         remoteView = {},
         file = {},
@@ -48,6 +49,10 @@ document.addEventListener('DOMContentLoaded', function(e) {
         midiNetwork: midiNetwork,
         midiRemote: midiRemote,
         transport: transport
+    });
+    WH.createFileView({
+        that: fileView,
+        file: file
     });
     WH.createMIDI({
         that: midi,
