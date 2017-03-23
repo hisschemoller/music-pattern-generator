@@ -68,11 +68,9 @@ window.WH = window.WH || {};
              * Create data to setup a new empty project.
              */
             createNew = function() {
-                var data = {
-                        bpm: 120
-                    };
-                
-                transport.setBPM(data.bpm);
+                midiRemote.clear();
+                midiNetwork.clear();
+                transport.setBPM(120);
             },
 
             /**
@@ -106,12 +104,8 @@ window.WH = window.WH || {};
              * Collect all project data and save it in localStorage.
              */
             save = function() {
-                var data = {
-                    bpm: transport.getBPM(),
-                    network: midiNetwork.getData(),
-                    remote: midiRemote.getData()
-                }
-                
+                let data = getData();
+                console.log(data);
                 localStorage.setItem(projectName, JSON.stringify(data));
             }, 
             
@@ -121,6 +115,27 @@ window.WH = window.WH || {};
             onBeforeUnload = function(e) {
                 savePreferences();
                 autoSave();
+            },
+            
+            getData = function() {
+                return {
+                    bpm: transport.getBPM(),
+                    network: midiNetwork.getData(),
+                    remote: midiRemote.getData()
+                };
+            },
+            
+            importFile = function() {
+                
+            },
+            
+            exportFile = function() {
+                let jsonString = JSON.stringify(getData()),
+                    blob = new Blob([jsonString], {type: 'application/json'}),
+                    a = document.createElement('a');
+                a.download = 'epg.json';
+                a.href = URL.createObjectURL(blob);
+                a.click();
             };
         
         that = specs.that;
@@ -131,6 +146,8 @@ window.WH = window.WH || {};
         that.createNew = createNew;
         that.autoSave = autoSave;
         that.save = save;
+        that.importFile = importFile;
+        that.exportFile = exportFile;
         return that;
     }
     
