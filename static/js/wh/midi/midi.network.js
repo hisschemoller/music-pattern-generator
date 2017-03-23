@@ -75,7 +75,7 @@ window.WH = window.WH || {};
                 }
                 
                 // delete the views for the processor
-                switch (specs.type) {
+                switch (processor.getType()) {
                     case 'input':
                     case 'output':
                         appView.deleteMIDIPortView(processor);
