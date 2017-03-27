@@ -81,9 +81,7 @@ window.WH = window.WH || {};
                 var data = localStorage.getItem(projectName);
                 if (data) {
                     data = JSON.parse(data);
-                    transport.setBPM(data.bpm);
-                    midiNetwork.setData(data.network);
-                    midiRemote.setData(data.remote);
+                    setData(data);
                 } else {
                     console.log('No data in LocalStorage with name "' + projectName + '".');
                     return false;
@@ -125,9 +123,29 @@ window.WH = window.WH || {};
                 };
             },
             
-            importFile = function() {
-                
+            setData = function(data) {
+                console.log(data);
+                transport.setBPM(data.bpm);
+                midiNetwork.setData(data.network);
+                midiRemote.setData(data.remote);
             },
+            
+            importFile = function(file) {
+                let fileReader = new FileReader();
+                // closure to capture the file information
+                fileReader.onload = (function(f) {
+                    return function(e) {
+                        try {
+                            let data = JSON.parse(e.target.result);
+                            setData(data);
+                        } catch(e) {
+                            console.log(e);
+                        }
+                    };
+                })(file);
+                fileReader.readAsText(file);
+            },
+            
             
             exportFile = function() {
                 let jsonString = JSON.stringify(getData()),

@@ -20,8 +20,8 @@
                 fileEl.querySelector('.file__new').addEventListener('click', function(e) {
                     file.createNew();
                 });
-                fileEl.querySelector('.file__import').addEventListener('click', function(e) {
-                    file.importFile();
+                fileEl.querySelector('.file__import').addEventListener('change', function(e) {
+                    file.importFile(e.target.files[0]);
                 });
                 fileEl.querySelector('.file__export').addEventListener('click', function(e) {
                     file.exportFile();
