@@ -16,7 +16,7 @@ window.WH = window.WH || {};
             
             initialize = function() {
                 var params = processor.getParameters(),
-                    template = document.getElementById('template-settings-' + processor.getType());
+                    template = document.querySelector('#template-settings-' + processor.getType());
                 
                 if (typeof processor.addSelectCallback === 'function') {
                     processor.addSelectCallback(show);
@@ -24,14 +24,14 @@ window.WH = window.WH || {};
                 
                 // create the settings panel
                 if (template) {
-                    el = template.firstElementChild.cloneNode(true);
+                    el = document.importNode(template.content, true);
                 }
                 
                 // loop through all processor parameters and add setting view if required
                 for (var key in params) {
                     if (params.hasOwnProperty(key)) {
                         // only create setting if there's a container element for it in the settings panel
-                        var settingContainerEl = el.getElementsByClassName(key)[0];
+                        var settingContainerEl = el.querySelector('.' + key);
                         if (settingContainerEl) {
                             var param = params[key],
                                 settingView = {},
@@ -75,7 +75,7 @@ window.WH = window.WH || {};
              */
             terminate = function() {
                 if (el && parentEl) {
-                    parentEl.removeChild(el);
+                    parentEl.removeChild(parentEl.children[0]);
                 }
             },
             
@@ -87,7 +87,7 @@ window.WH = window.WH || {};
                 if (isSelected) {
                     parentEl.appendChild(el);
                 } else {
-                    parentEl.removeChild(el);
+                    parentEl.removeChild(parentEl.children[0]);
                 }
             },
             

@@ -58,36 +58,37 @@
             <ul class="remote__list"></ul>
         </div>
     </app>
+    
+    <template id="template-settings-epg">
+        <form class="form settings">
+            <fieldset>
+                <legend>Euclidean</legend>
+                <div class="settings__row steps"></div>
+                <div class="settings__row pulses"></div>
+                <div class="settings__row rotation"></div>
+            </fieldset>
+            <fieldset>
+                <legend>Playback</legend>
+                <div class="settings__row rate"></div>
+                <div class="settings__row note_length"></div>
+                <div class="settings__row is_triplets"></div>
+                <div class="settings__row is_solo"></div>
+                <div class="settings__row is_mute"></div>
+            </fieldset>
+            <fieldset>
+                <legend>MIDI out</legend>
+                <div class="settings__row channel_out"></div>
+                <div class="settings__row pitch_out"></div>
+                <div class="settings__row velocity_out"></div>
+            </fieldset>
+            <fieldset>
+                <legend>Other</legend>
+                <div class="settings__row name"></div>
+                <button class="settings__delete">Delete</button>
+            </fieldset>
+        </form>
+    </template><!-- /template-settings-epg -->
     <div id="templates">
-        <div id="template-settings-epg">
-            <form class="settings" class="form">
-                <fieldset>
-                    <legend>Euclidean</legend>
-                    <div class="settings__row steps"></div>
-                    <div class="settings__row pulses"></div>
-                    <div class="settings__row rotation"></div>
-                </fieldset>
-                <fieldset>
-                    <legend>Playback</legend>
-                    <div class="settings__row rate"></div>
-                    <div class="settings__row note_length"></div>
-                    <div class="settings__row is_triplets"></div>
-                    <div class="settings__row is_solo"></div>
-                    <div class="settings__row is_mute"></div>
-                </fieldset>
-                <fieldset>
-                    <legend>MIDI out</legend>
-                    <div class="settings__row channel_out"></div>
-                    <div class="settings__row pitch_out"></div>
-                    <div class="settings__row velocity_out"></div>
-                </fieldset>
-                <fieldset>
-                    <legend>Other</legend>
-                    <div class="settings__row name"></div>
-                    <button class="settings__delete">Delete</button>
-                </fieldset>
-            </form>
-        </div><!-- /template-settings-epg -->
         <div id="template-setting-integer">
             <label class="setting__label"><span class="setting__label-text"></span>
                 <input type="range" min="" max="" step="1" class="setting__range" />
