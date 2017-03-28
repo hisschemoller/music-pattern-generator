@@ -12,10 +12,20 @@ window.WH = window.WH || {};
             outputData = [],
             destinations = [],
             
+            /**
+             * Set output data that is the result of this processor's processing.
+             * It will be collected by the processors attached to this output.
+             * @param {Object} eventData MIDI event data.
+             */
             setOutputData = function(eventData) {
                 outputData.push(eventData);
             },
             
+            /**
+             * Public function for processors connected to this output to
+             * collect the data this processor's process function has produced.
+             * @return {Object} MIDI event data.
+             */
             getOutputData = function() {
                 return outputData;
             },
@@ -53,6 +63,13 @@ window.WH = window.WH || {};
                 }
             },
             
+            /**
+             * The destinations are the processors this output is connected to.
+             * This function collects the ID's of these processors and adds them
+             * to a data object that can be stored.
+             * So this project and its processor connections can be restored.
+             * @param  {Object} data Project data object.
+             */
             getDestinationsData = function(data) {
                 data.destinations = [];
                 var n = destinations.length;

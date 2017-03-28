@@ -12,6 +12,10 @@ window.WH = window.WH || {};
             sources = [],
             numSources = 0,
             
+            /**
+             * Collects data from all processors this input is connected to.
+             * @return {Array} MIDI event data from all connected processors.
+             */
             getInputData = function() {
                 var outputData = [], 
                     data = [];
@@ -23,12 +27,20 @@ window.WH = window.WH || {};
                 return outputData;
             },
             
+            /**
+             * Connect a processor as source for this processor.
+             * @param  {Object} processor Network MIDI processor.
+             */
             addConnection = function(processor) {
                 sources.push(processor);
                 numSources = sources.length;
                 console.log('Connect ' + processor.getType() + ' (id ' + processor.getID() + ') to ' + that.getType() + ' (id ' + that.getID() + ')');
             },
             
+            /**
+             * Remove a processor as source for this processor.
+             * @param  {Object} processor Network MIDI processor.
+             */
             removeConnection = function(processor) {
                 var n = sources.length;
                 while (--n >= 0) {
