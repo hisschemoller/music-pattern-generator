@@ -13,12 +13,13 @@ window.WH = window.WH || {};
             
             init = function() {
                 // find template, add clone to settings panel
-                var template = document.getElementById('template-setting-' + my.param.getProperty('type'));
-                my.el = template.firstElementChild.cloneNode(true);
-                specs.containerEl.appendChild(my.el);
+                const template = document.querySelector('#template-setting-' + my.param.getProperty('type'));
+                const clone = document.importNode(template.content, true);
+                specs.containerEl.appendChild(clone);
+                my.el = specs.containerEl.children[0];
                 
                 // show label
-                my.el.getElementsByClassName('setting__label-text')[0].innerHTML = my.param.getProperty('label');
+                my.el.querySelector('.setting__label-text').innerHTML = my.param.getProperty('label');
             };
             
         my = my || {};
