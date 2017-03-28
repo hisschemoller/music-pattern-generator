@@ -1,5 +1,5 @@
 /**
- * Parameter for integer values between an minimum and maximum.
+ * Parameter for integer values between a minimum and maximum.
  * @namespace WH
  */
 
@@ -13,13 +13,23 @@ window.WH = window.WH || {};
             
             init = function() {
                 my.props.min = specs.min;
-                my.props.max = specs.max; 
+                my.props.max = specs.max;
             },
             
+            /**
+             * Convert value to number between 0 and 1.
+             * @param  {Number} value Parameter's value.
+             * @return {Number} Normalised value between 0 and 1.
+             */
             normalize = function(value) {
                 return (value - my.props.min) / (my.props.max - my.props.min);
             },
             
+            /**
+             * Get value from number between 0 and 1.
+             * @param  {Number} normalizedValue Normalised value between 0 and 1.
+             * @return {Number} Parameter's value.
+             */
             deNormalize = function(normalizedValue) {
                 return Math.round(my.props.min + normalizedValue * (my.props.max - my.props.min));
             },

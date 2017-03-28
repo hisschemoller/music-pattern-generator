@@ -46,7 +46,7 @@ window.WH = window.WH || {};
     		},
 		
         	/**
-        	 * Reset value to its initial default value
+        	 * Reset value to its initial default value.
         	 */
         	reset = function() {
         		setValue(defaultValue);
@@ -63,7 +63,8 @@ window.WH = window.WH || {};
             },
 		
     		/**
-    		 * Returns the current value of the parameter
+    		 * Returns the current value of the parameter.
+    		 * @return {*} Parameter value.
     		 */
             getValue = function() {
                 return my.props.value;
@@ -83,15 +84,25 @@ window.WH = window.WH || {};
 
         	/**
         	 * Returns the current normalized value of the parameter between 0 and 1.
+        	 * @return {Number} Normalized value.
         	 */
         	getValueNormalized = function() {
         		return my.normalize(my.props.value);
         	},
             
+            /**
+             * Get a property's value.
+             * @param  {String} key Property name.
+             * @return {*} Property value.
+             */
             getProperty = function(key) {
+                let propValue;
                 if (my.hasOwnProperty(key)) {
-                    return my[key];
+                    propValue =  my[key];
+                } else if (my.props.hasOwnProperty(key)) {
+                    propValue =  my.props[key];
                 }
+                return propValue;
             },
             
             /**
@@ -110,7 +121,8 @@ window.WH = window.WH || {};
             }, 
             
             /**
-             * Write processor settings to data object.
+             * Write parameter properties to data object.
+             * @return {Object} Data object.
              */
             getData = function() {
                 var data = {
