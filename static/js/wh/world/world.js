@@ -10,7 +10,7 @@ window.WH = window.WH || {};
     function createWorld(specs) {
         
         var that,
-            containerEl = document.getElementById('container-webgl'),
+            containerEl = document.querySelector('.webgl'),
             canvasRect,
             renderer,
             scene,

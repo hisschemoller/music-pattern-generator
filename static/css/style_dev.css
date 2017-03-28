@@ -6,6 +6,7 @@ body {
     background-color: #eee;
     font-family: sans-serif;
     font-size: 14px;
+    margin: 0;
 }
 fieldset {
     border: none;
@@ -36,9 +37,14 @@ legend {
             vertical-align: middle;
             width: 40px;
         }
-#container-webgl {
-    height: 300px;
-    width: 550px;
+.webgl {
+    height: 100vh;
+    position: absolute;
+    width: 100vw;
+    z-index: -1;
+}
+.webgl > canvas {
+    display: block;
 }
 #settings {
     width: 380px;
