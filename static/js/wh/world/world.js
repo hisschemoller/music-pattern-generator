@@ -67,13 +67,24 @@ window.WH = window.WH || {};
                 window.addEventListener('scroll', onWindowScroll, false);
             },
             
+            /**
+             * Window resize event handler.
+             */
             onWindowResize = function() {
-                // camera.aspect = window.innerWidth / window.innerHeight;
-				// camera.updateProjectionMatrix();
-				// renderer.setSize(window.innerWidth, window.innerHeight);
-                // canvasRect = renderer.domElement.getBoundingClientRect();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                canvasRect = renderer.domElement.getBoundingClientRect();
+                // move camera further back when viewport height increases so objects stay the same size 
+                let scale = 0.15;
+                let fieldOfView = camera.fov * (Math.PI / 180); // convert fov to radians
+                let targetZ = canvasRect.height / (2 * Math.tan(fieldOfView / 2));
+                camera.position.set(0, 0, targetZ * scale);
             },
             
+            /**
+             * Window scroll event handler.
+             */
             onWindowScroll = function() {
                 canvasRect = renderer.domElement.getBoundingClientRect();
             },
@@ -198,15 +209,11 @@ window.WH = window.WH || {};
                 
                 renderer = new THREE.WebGLRenderer({antialias: true});
                 renderer.setClearColor(0xf9f9f9);
-                renderer.setSize(containerEl.offsetWidth, containerEl.offsetHeight);
-                
                 containerEl.appendChild(renderer.domElement);
-                canvasRect = renderer.domElement.getBoundingClientRect();
                 
                 scene = new THREE.Scene();
                 
-                camera = new THREE.PerspectiveCamera(45, containerEl.offsetWidth / containerEl.offsetHeight, 1, 500);
-                camera.position.set(0, 0, 80);
+                camera = new THREE.PerspectiveCamera(45, 1, 1, 500);
                 scene.add(camera);
                 
                 light = new THREE.DirectionalLight(0xffffff, 1.5);
