@@ -24,10 +24,21 @@ window.WH = window.WH || {};
              * Autosave file if true.
              * @type {Boolean}
              */
-            autoSaveEnabled = true,
+            autoSaveEnabled = false,
             
             init = function() {
                 window.addEventListener('beforeunload', onBeforeUnload);
+                document.addEventListener('keyup', function(e) {
+                    console.log(e.keyCode);
+                    switch (e.keyCode) {
+                        case 83: // s
+                            save();
+                            break;
+                        case 76: // l
+                            loadProjectFromStorage();
+                            break;
+                    }
+                });
             },
             
             /**
@@ -35,9 +46,9 @@ window.WH = window.WH || {};
              */
             setup = function() {
                 loadPreferences();
-                if (!loadProjectFromStorage()) {
-                    createNew();
-                }
+                // if (!loadProjectFromStorage()) {
+                //     createNew();
+                // }
             },
             
             /**
@@ -65,7 +76,8 @@ window.WH = window.WH || {};
             },
             
             /**
-             * Create data to setup a new empty project.
+             * Create new empty default project.
+             * Clear all settings and set default values..
              */
             createNew = function() {
                 midiRemote.clear();
@@ -103,7 +115,6 @@ window.WH = window.WH || {};
              */
             save = function() {
                 let data = getData();
-                console.log(data);
                 localStorage.setItem(projectName, JSON.stringify(data));
             }, 
             
@@ -115,6 +126,10 @@ window.WH = window.WH || {};
                 autoSave();
             },
             
+            /**
+             * Collect project data to save.
+             * @return {Object} Project data.
+             */
             getData = function() {
                 return {
                     bpm: transport.getBPM(),
@@ -123,6 +138,10 @@ window.WH = window.WH || {};
                 };
             },
             
+            /**
+             * Restore project from data object.
+             * @param {Object} Project data.
+             */
             setData = function(data) {
                 console.log(data);
                 transport.setBPM(data.bpm);
@@ -130,6 +149,10 @@ window.WH = window.WH || {};
                 midiRemote.setData(data.remote);
             },
             
+            /**
+             * Import project data from filesystem JSON file.
+             * @param {Object} file File object.
+             */
             importFile = function(file) {
                 let fileReader = new FileReader();
                 // closure to capture the file information
@@ -138,15 +161,17 @@ window.WH = window.WH || {};
                         try {
                             let data = JSON.parse(e.target.result);
                             setData(data);
-                        } catch(e) {
-                            console.log(e);
+                        } catch(errorMessage) {
+                            console.log(errorMessage);
                         }
                     };
                 })(file);
                 fileReader.readAsText(file);
             },
             
-            
+            /**
+             * Export project data to filesystem JSON file.
+             */
             exportFile = function() {
                 let jsonString = JSON.stringify(getData()),
                     blob = new Blob([jsonString], {type: 'application/json'}),

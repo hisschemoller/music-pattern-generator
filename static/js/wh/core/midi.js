@@ -1,5 +1,5 @@
 /**
- * Handles MIDI, interfaces with the WebMIDI library.
+ * Handles MIDI, detects and accesses MIDI ports.
  * 
  * @namespace WH
  */
@@ -19,8 +19,6 @@ window.WH = window.WH || {};
             selectedOutputID,
             isClockInEnabled,
             isNoteInEnabled,
-            
-            init = function() {},
             
             /**
              * Retrieve access to the MIDI devices.
@@ -97,26 +95,6 @@ window.WH = window.WH || {};
             },
             
             /**
-             * Send a MIDI note On and Off message.
-             * @param  {Number} pitch          Note pitch 0 - 127
-             * @param  {Number} velocity       Note velocity 0 - 127
-             * @param  {Number} channelIndex   Channel 0 - 15
-             * @param  {Number} startTimeStamp Note start time in ms.
-             * @param  {Number} duration       Note duration in ms.
-             */
-            playNote = function(pitch, velocity, channelIndex, startTimeStamp, duration) {
-                if (selectedOutput) {
-                    // selectedOutput.clear();
-                    selectedOutput.playNote(pitch, channelIndex + 1, {
-                        velocity: velocity,
-                        rawVelocity: true,
-                        time: startTimeStamp,
-                        duration: duration
-                    });
-                }
-            },
-            
-            /**
              * Set all preferences from a data object.
              * @param {Object} data Preferences data object.
              */
@@ -129,6 +107,7 @@ window.WH = window.WH || {};
             
             /**
              * Save the preferences when the page unloads.
+             * @return {Object} Preferences data.
              */
             getData = function() {
                 return {
@@ -141,14 +120,11 @@ window.WH = window.WH || {};
         
         that = specs.that;
         
-        init();
-        
         that.enable = enable;
         that.selectInputByID = selectInputByID;
         that.selectOutputByID = selectOutputByID;
         that.setClockInEnabled = setClockInEnabled;
         that.setNoteInEnabled = setNoteInEnabled;
-        that.playNote = playNote;
         that.setData = setData;
         that.getData = getData;
         return that;

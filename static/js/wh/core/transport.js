@@ -83,6 +83,10 @@ window.WH = window.WH || {};
                 WH.pubSub.fire('transport.bpm', bpm);
             },
             
+            /**
+             * Get Beats Per Minute of the project.
+             * @return [Number] Beats Per Minute.
+             */
             getBPM = function() {
                 return bpm;
             },
@@ -130,6 +134,8 @@ window.WH = window.WH || {};
             
             /**
              * Enable synchronisation to external MIDI clock.
+             * @param {Boolean} isEnabled True to synchronise to external MIDI clock.
+             * @param {Object} midiInputPort MIDI input port.
              */
             setExternalClockEnabled = function(isEnabled, midiInputPort) {
                 if (isEnabled) {
@@ -147,11 +153,17 @@ window.WH = window.WH || {};
                 }
             },
             
-            onStart = function(e) {
+            /**
+             * Start transport.
+             */
+            onStart = function() {
                 that.start();
             },
             
-            onStop = function(e) {
+            /**
+             * Stop transport.
+             */
+            onStop = function() {
                 that.pause();
                 that.rewind();
             },

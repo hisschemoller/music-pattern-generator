@@ -1,6 +1,5 @@
 /**
- * Unchangeable application configuration settings.
- * 
+ * Simple PubSub pattern.
  * @namespace WH
  */
 window.WH = window.WH || {};
