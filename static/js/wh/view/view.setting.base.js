@@ -15,8 +15,8 @@ window.WH = window.WH || {};
                 // find template, add clone to settings panel
                 let template = document.querySelector('#template-setting-' + my.param.getProperty('type'));
                 let clone = template.content.cloneNode(true);
-                specs.containerEl.appendChild(clone);
-                my.el = specs.containerEl.children[0];
+                my.el = clone.firstElementChild;;
+                specs.containerEl.appendChild(my.el);
                 
                 // show label
                 my.el.querySelector('.setting__label-text').innerHTML = my.param.getProperty('label');

@@ -17,8 +17,9 @@ window.WH = window.WH || {};
             
             initialize = function() {
                 // create the DOM element.
-                var template = document.getElementById('template-remote-item');
-                el = template.firstElementChild.cloneNode(true);
+                let template = document.querySelector('#template-remote-item');
+                let clone = template.content.cloneNode(true);
+                el = clone.firstElementChild;
                 el.querySelector('.remote__item-label').innerHTML = param.getProperty('label');
                 el.querySelector('.remote__item-channel').innerHTML = param.getRemoteProperty('channel');
                 el.querySelector('.remote__item-cc').innerHTML = param.getRemoteProperty('controller');

@@ -13,8 +13,9 @@ window.WH = window.WH || {};
             
             initialize = function() {
                 // find template, add clone to midi ports list
-                var template = document.getElementById('template-midi-' + my.processor.getType());
-                my.el = template.firstElementChild.cloneNode(true);
+                let template = document.querySelector('#template-midi-' + my.processor.getType());
+                let clone = template.content.cloneNode(true);
+                my.el = clone.firstElementChild;
                 parentEl.appendChild(my.el);
                 
                 // show label

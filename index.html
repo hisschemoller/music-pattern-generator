@@ -113,38 +113,36 @@
             <input type="text" class="setting__text" />
         </label>
     </template><!-- /template-setting-string -->
-    <div id="templates">
-        <div id="template-setting-learnmode">
-            <div class="setting__learnmode"></div>
-        </div><!-- /template-setting-learnmode -->
-        <div id="template-remote-group">
-            <li class="remote__group">
-                <span class="remote__group-header"></span>
-                <ul class="remote__group-list"></ul>
-            </li>
-        </div><!-- /template-remote-group -->
-        <div id="template-remote-item">
-            <li class="remote__item">
-                <span class="remote__item-label"></span>
-                <span class="remote__item-channel"></span>
-                <span class="remote__item-cc"></span>
-                <button class="remote__item-remove">x</button>
-            </li>
-        </div><!-- /template-remote-item -->
-        <div id="template-midi-input">
-            <li class="midi-port">
-                <span class="midi-port__label"></span>
-                <label><input type="checkbox" class="midi-port__track" />Track</label>
-                <label><input type="checkbox" class="midi-port__remote" />Remote</label>
-            </li>
-        </div><!-- /template-midi-input -->
-        <div id="template-midi-output">
-            <li class="midi-port">
-                <span class="midi-port__label"></span>
-                <label><input type="checkbox" class="midi-port__track" />Track</label>
-            </li>
-        </div><!-- /template-midi-output -->
-    </div>
+    <template id="template-setting-learnmode">
+        <div class="setting__learnmode"></div>
+    </template><!-- /template-setting-learnmode -->
+    <template id="template-remote-group">
+        <li class="remote__group">
+            <span class="remote__group-header"></span>
+            <ul class="remote__group-list"></ul>
+        </li>
+    </template><!-- /template-remote-group -->
+    <template id="template-remote-item">
+        <li class="remote__item">
+            <span class="remote__item-label"></span>
+            <span class="remote__item-channel"></span>
+            <span class="remote__item-cc"></span>
+            <button class="remote__item-remove">x</button>
+        </li>
+    </template><!-- /template-remote-item -->
+    <template id="template-midi-input">
+        <li class="midi-port">
+            <span class="midi-port__label"></span>
+            <label><input type="checkbox" class="midi-port__track" />Track</label>
+            <label><input type="checkbox" class="midi-port__remote" />Remote</label>
+        </li>
+    </template><!-- /template-midi-input -->
+    <template id="template-midi-output">
+        <li class="midi-port">
+            <span class="midi-port__label"></span>
+            <label><input type="checkbox" class="midi-port__track" />Track</label>
+        </li>
+    </template><!-- /template-midi-output -->
     <script src="static/js/lib/three.js"></script>
     <script src="static/js/lib/tween.js"></script>
     <script src="static/js/main.js"></script>

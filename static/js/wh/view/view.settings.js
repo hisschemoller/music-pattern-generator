@@ -18,11 +18,7 @@ window.WH = window.WH || {};
                 const params = processor.getParameters();
                 let template = document.querySelector('#template-settings-' + processor.getType());
                 let clone = template.content.cloneNode(true);
-                
-                // add as first child
-                addAsFirstChild(parentEl, clone);
-                
-                el = parentEl.children[0];
+                el = clone.firstElementChild;
                 
                 if (typeof processor.addSelectCallback === 'function') {
                     processor.addSelectCallback(show);
@@ -76,7 +72,7 @@ window.WH = window.WH || {};
              */
             terminate = function() {
                 if (el && parentEl) {
-                    parentEl.removeChild(parentEl.children[0]);
+                    parentEl.removeChild(el);
                 }
             },
             
@@ -86,22 +82,11 @@ window.WH = window.WH || {};
              */
             show = function(isSelected)  {
                 if (isSelected) {
-                    addAsFirstChild(parentEl, el);
+                    parentEl.appendChild(el);
                 } else {
-                    if (el && el.parentNode) {
+                    if (el.parentNode) {
                         el.parentNode.removeChild(el);
                     }
-                }
-            },
-            
-            /**
-             * Add the settings panel as first child to the settings container.
-             */
-            addAsFirstChild = function(parentEl, el) {
-                if (parentEl.firstChild) {
-                    parentEl.insertBefore(el, parentEl.firstChild);
-                } else {
-                    parentEl.appendChild(el);
                 }
             },
             

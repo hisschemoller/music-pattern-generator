@@ -18,9 +18,9 @@ window.WH = window.WH || {};
                     // set callback on parameter
                     my.param.setRemoteStateCallback(changeRemoteState);
                     
-                    // add learn mode layer
-                    var template = document.getElementById('template-setting-learnmode');
-                    learnClickLayer = template.firstElementChild.cloneNode(true);
+                    let template = document.querySelector('#template-setting-learnmode');
+                    let clone = template.content.cloneNode(true);
+                    learnClickLayer = clone.firstElementChild;
                 }
             },
             

@@ -19,8 +19,9 @@ window.WH = window.WH || {};
             
             initialize = function() {
                 // create the DOM element.
-                var template = document.getElementById('template-remote-group');
-                el = template.firstElementChild.cloneNode(true);
+                let template = document.querySelector('#template-remote-group');
+                let clone = template.content.cloneNode(true);
+                el = clone.firstElementChild;
                 parentEl.appendChild(el);
                 
                 listEl = el.querySelector('.remote__group-list');
