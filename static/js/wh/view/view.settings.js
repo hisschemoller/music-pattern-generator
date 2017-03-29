@@ -15,16 +15,17 @@ window.WH = window.WH || {};
             el,
             
             initialize = function() {
-                var params = processor.getParameters(),
-                    template = document.querySelector('#template-settings-' + processor.getType());
+                const params = processor.getParameters();
+                let template = document.querySelector('#template-settings-' + processor.getType());
+                let clone = template.content.cloneNode(true);
+                
+                // add as first child
+                addAsFirstChild(parentEl, clone);
+                
+                el = parentEl.children[0];
                 
                 if (typeof processor.addSelectCallback === 'function') {
                     processor.addSelectCallback(show);
-                }
-                
-                // create the settings panel
-                if (template) {
-                    el = document.importNode(template.content, true);
                 }
                 
                 // loop through all processor parameters and add setting view if required
@@ -83,11 +84,24 @@ window.WH = window.WH || {};
              * Show settings if the processor is selected, else remove.
              * @param {Boolean} isSelected True if selected.
              */
-            show = function(isSelected) {
+            show = function(isSelected)  {
                 if (isSelected) {
-                    parentEl.appendChild(el);
+                    addAsFirstChild(parentEl, el);
                 } else {
-                    parentEl.removeChild(parentEl.children[0]);
+                    if (el && el.parentNode) {
+                        el.parentNode.removeChild(el);
+                    }
+                }
+            },
+            
+            /**
+             * Add the settings panel as first child to the settings container.
+             */
+            addAsFirstChild = function(parentEl, el) {
+                if (parentEl.firstChild) {
+                    parentEl.insertBefore(el, parentEl.firstChild);
+                } else {
+                    parentEl.appendChild(el);
                 }
             },
             

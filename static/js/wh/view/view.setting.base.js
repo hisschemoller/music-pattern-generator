@@ -13,8 +13,8 @@ window.WH = window.WH || {};
             
             init = function() {
                 // find template, add clone to settings panel
-                const template = document.querySelector('#template-setting-' + my.param.getProperty('type'));
-                const clone = document.importNode(template.content, true);
+                let template = document.querySelector('#template-setting-' + my.param.getProperty('type'));
+                let clone = template.content.cloneNode(true);
                 specs.containerEl.appendChild(clone);
                 my.el = specs.containerEl.children[0];
                 

@@ -46,10 +46,15 @@ legend {
 .webgl > canvas {
     display: block;
 }
+.file {
+    display: inline-block;
+}
 #settings {
+    display: inline-block;
     width: 380px;
 }
 #controls {
+    display: inline-block;
     width: 150px;
 }
 #templates {

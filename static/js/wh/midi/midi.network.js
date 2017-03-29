@@ -118,7 +118,7 @@ window.WH = window.WH || {};
                     nextIndex = (processorIndex + i) % n;
                     nextProcessor = processors[nextIndex];
                     if (nextProcessor.getType() !== 'input' && nextProcessor.getType() !== 'output' && nextProcessor !== processor) {
-                        selectProcessor(processors[nextIndex]);
+                        selectProcessor(nextProcessor);
                         break;
                     }
                 }
