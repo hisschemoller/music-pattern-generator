@@ -110,13 +110,17 @@ window.WH = window.WH || {};
              * @param  {Object} processor [description]
              */
             selectNextProcessor = function(processor) {
-                if (processors.length > 1) {
-                    var processorIndex = processors.indexOf(processor),
-                        nextIndex = processorIndex + 1;
-                    if (nextIndex == processors.length) {
-                        nextIndex = 0;
+                let processorIndex = processors.indexOf(processor),
+                    n = processors.length,
+                    nextIndex,
+                    nextProcessor;
+                for (let i = 1; i <= n; i++) {
+                    nextIndex = (processorIndex + i) % n;
+                    nextProcessor = processors[nextIndex];
+                    if (nextProcessor.getType() !== 'input' && nextProcessor.getType() !== 'output' && nextProcessor !== processor) {
+                        selectProcessor(processors[nextIndex]);
+                        break;
                     }
-                    selectProcessor(processors[nextIndex]);
                 }
             },
             
