@@ -38,10 +38,19 @@ window.WH = window.WH || {};
                 parentEl = null;
             },
             
+            /**
+             * Check if this view is for a certain parameter.
+             * @param  {Object} proc Parameter object.
+             * @return {Boolean} True if this view has the parameter.
+             */
             hasParameter = function(parameter) {
                 return parameter === param;
             },
             
+            /**
+             * Unassign button click handler.
+             * @param  {Object} e Click event object.
+             */
             onUnregisterClick = function(e) {
                 unregisterCallback(param);
             };

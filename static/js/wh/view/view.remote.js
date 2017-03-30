@@ -14,6 +14,10 @@ window.WH = window.WH || {};
             listEl = document.querySelector('.remote__list'),
             groupViews = [],
             
+            /**
+             * Create a container view to hold assigned parameter views.
+             * @param {Object} processor Processor with assignable parameters.
+             */
             createRemoteGroup = function(processor) {
                 var remoteGroupView = ns.createRemoteGroupView({
                     processor: processor,
@@ -22,6 +26,10 @@ window.WH = window.WH || {};
                 groupViews.push(remoteGroupView);
             },
             
+            /**
+             * Delete a container view to hold assigned parameter views.
+             * @param {Object} processor Processor with assignable parameters.
+             */
             deleteRemoteGroup = function(processor) {
                 var n = groupViews.length;
                 while (--n >= 0) {
@@ -33,10 +41,18 @@ window.WH = window.WH || {};
                 }
             },
             
+            /**
+             * Show or hide the remote list element.
+             * @param  {Boolean} isVisible [description]
+             */
             toggleVisibility = function(isVisible) {
                 rootEl.style.display = isVisible ? 'block' : 'none';
             },
             
+            /**
+             * Add a parameter that is assigned.
+             * @param  {Object} param Processor parameter.
+             */
             addParameter = function(param) {
                 var n = groupViews.length;
                 while (--n >= 0) {
@@ -47,6 +63,10 @@ window.WH = window.WH || {};
                 }
             },
             
+            /**
+             * Remove a parameter that isn't assigned anymore.
+             * @param  {Object} param Processor parameter.
+             */
             removeParameter = function(param) {
                 var n = groupViews.length;
                 while (--n >= 0) {

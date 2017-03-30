@@ -1,5 +1,5 @@
 /**
- * 
+ * Preferences settings view.
  * @namespace WH
  */
 window.WH = window.WH || {};

@@ -43,6 +43,10 @@ window.WH = window.WH || {};
                 }
             },
             
+            /**
+             * Create view for a MIDI input ou output processor.
+             * @param  {Object} processor MIDI processor for a MIDI input or output.
+             */
             createMIDIPortView = function(processor) {
                 var view;
                 switch (processor.getType()) {
@@ -62,6 +66,10 @@ window.WH = window.WH || {};
                 midiPortViews.push(view);
             },
             
+            /**
+             * Delete view for a MIDI input ou output processor.
+             * @param  {Object} processor MIDI processor for a MIDI input or output.
+             */
             deleteMIDIPortView = function(processor) {
                 var n = midiPortViews.length;
                 while (--n >= 0) {

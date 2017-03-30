@@ -57,10 +57,20 @@ window.WH = window.WH || {};
                 return proc === processor;
             },
             
+            /**
+             * Check if this view's processor has a certain parameter.
+             * @param  {Object} proc Parameter object.
+             * @return {Boolean} True if the parameter exists for the processor.
+             */
             hasParameter = function(param) {
                 return processor.hasParameter(param);
             },
             
+            /**
+             * Add a parameter that is assigned.
+             * @param  {Object} param Processor parameter.
+             * @param  {Function} unregisterCallback Callback for the unassign button click.
+             */
             addParameter = function(param, unregisterCallback) {
                 var itemView = ns.createRemoteItemView({
                     param: param,
@@ -70,6 +80,10 @@ window.WH = window.WH || {};
                 itemViews.push(itemView);
             },
             
+            /**
+             * Remove a parameter that isn't assigned anymore.
+             * @param  {Object} param Processor parameter.
+             */
             removeParameter = function(param) {
                 var n = itemViews.length;
                 while (--n >= 0) {
@@ -81,6 +95,10 @@ window.WH = window.WH || {};
                 }
             },
             
+            /**
+             * Set the group's header to the processor's name.
+             * @param {Object} nameParam Processor's name parameter.
+             */
             setName = function(nameParam) {
                 el.querySelector('.remote__group-header').innerHTML = nameParam.getValue();
             };

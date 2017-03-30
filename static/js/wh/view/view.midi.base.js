@@ -1,5 +1,5 @@
 /**
- * MIDI Input processor view.
+ * MIDI input or output port processor view.
  * @namespace WH
  */
 
