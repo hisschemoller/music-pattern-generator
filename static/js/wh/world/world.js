@@ -164,6 +164,10 @@ window.WH = window.WH || {};
                 }
             },
             
+            /**
+             * Drag a 3D object.
+             * @param  {Object} e Event.
+             */
             dragMove = function(e) {
                 e.preventDefault();
                 // update picking ray.
@@ -189,6 +193,10 @@ window.WH = window.WH || {};
                 }
             },
             
+            /**
+             * Dragging 3D object ended.
+             * @param  {Object} e Event.
+             */
             dragEnd = function(e) {
                 e.preventDefault();
                 if (dragObject) {

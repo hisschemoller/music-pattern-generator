@@ -39,6 +39,8 @@ window.WH = window.WH || {};
              * Scan the arrangement for events and send them to concerned components.
              * @param {Number} scanStart Start in ms of timespan to scan.
              * @param {Number} scanEnd End in ms of timespan to scan.
+             * @param {Number} nowToScanStart Duration from now until start time in ms.
+             * @param {Number} offset Position of transport playhead in ms.
              */
             scanEvents = function(scanStart, scanEnd, nowToScanStart, offset) {
                 var scanStartTimeline = msec2tick(scanStart),
@@ -71,7 +73,7 @@ window.WH = window.WH || {};
             
             /**
              * Set Beats Per Minute.
-             *  @param {Number} newBpm New value for BPM.
+             * @param {Number} newBpm New value for BPM.
              */
             setBPM = function(newBpm) {
                 bpm = (newBpm || 120);

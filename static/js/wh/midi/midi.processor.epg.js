@@ -111,6 +111,10 @@ window.WH = window.WH || {};
                 }
             },
             
+            /**
+             * Update view. At requestAnimationFrame speed.
+             * @param  {Number} pos Transport playback position in ticks.
+             */
             render = function(pos) {
                 position = pos % duration;
                 if (renderCallback) {
@@ -244,6 +248,9 @@ window.WH = window.WH || {};
             	return pattern.reverse();
             },
             
+            /**
+             * @return {Array} Euclidean pattern this processor plays.
+             */
             getEuclidPattern = function() {
                 return euclidPattern;
             };

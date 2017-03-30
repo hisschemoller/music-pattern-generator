@@ -54,13 +54,23 @@ window.WH = window.WH || {};
              */
             terminate = function() {},
             
+            /**
+             * Show the playback position within the pattern.
+             * Indicated by the pointer's rotation.
+             * @param  {Number} position Position within pattern in ticks.
+             * @param  {Number} duration Pattern length in ticks.
+             */
             showPlaybackPosition = function(position, duration) {
                 pointer3d.rotation.z = TWO_PI * (-position / duration);
             },
             
+            /**
+             * Show animation of the pattern dot that is about to play. 
+             * @param {Number} stepIndex Index of the step to play.
+             * @param {Number} noteStartDelay Delay from now until note start in ms.
+             * @param {Number} noteStopDelay Delay from now until note end in ms.
+             */
             showNote = function(stepIndex, noteStartDelay, noteStopDelay) {
-                // console.log('showNote', stepIndex, noteStartDelay, noteStopDelay);
-                
                 // find and animate the necklace dot
                 var dot = dots3d.children[stepIndex];
                 new TWEEN.Tween({scale: 0.2})
@@ -297,6 +307,12 @@ window.WH = window.WH || {};
                 select3d.visible = isSelected;
             },
             
+            /**
+             * Update pattern's position in 3D space.
+             * @param  {Object} param Processor 3D position parameter.
+             * @param  {Array} oldValue Previous 3D position as array.
+             * @param  {Array} newValue New 3D position as array.
+             */
             updatePosition = function(param, oldValue, newValue) {
                 object3d.position.fromArray(newValue);
             },
@@ -310,6 +326,9 @@ window.WH = window.WH || {};
                 return proc === processor;
             },
             
+            /**
+             * @return {Object} 3D object for this view.
+             */
             getObject3d = function() {
                 return object3d;
             };

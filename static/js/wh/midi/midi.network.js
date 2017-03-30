@@ -20,7 +20,12 @@ window.WH = window.WH || {};
                 ns.pubSub.on('delete.processor', deleteProcessor);
                 ns.pubSub.on('select.processor', selectProcessor);
             },
-        
+            
+            /**
+             * Create a new processor in the network.
+             * @param {Object} specs Processor specifications.
+             * @param {Boolean} isRestore True if this is called as part of restoring a project. 
+             */
             createProcessor = function(specs, isRestore) {
                 if (ns.midiProcessors && ns.midiProcessors[specs.type]) {
                     specs = specs || {};
@@ -66,6 +71,10 @@ window.WH = window.WH || {};
                 }
             },
             
+            /**
+             * Delete a processor.
+             * @param {Object} processor Processor to delete.
+             */
             deleteProcessor = function(processor) {
                 // disconnect other processors that have this processor as destination
                 for (var i = 0; i < numProcessors; i++) {
@@ -96,6 +105,10 @@ window.WH = window.WH || {};
                 numProcessors = processors.length;
             },
             
+            /**
+             * Select a processor.
+             * @param  {Object} processor Processor to select.
+             */
             selectProcessor = function(processor) {
                 for (var i = 0; i < numProcessors; i++) {
                     var proc = processors[i];
@@ -124,12 +137,24 @@ window.WH = window.WH || {};
                 }
             },
             
+            /**
+             * Let all processors process their data.
+             * @param {Number} start Start time in ticks of timespan to process.
+             * @param {Number} end End time in ticks of timespan to process.
+             * @param {Number} nowToScanStart Duration from now until start time in ticks.
+             * @param {Number} ticksToMsMultiplier Ticks to ms. conversion multiplier.
+             * @param {Number} offset Position of transport playhead in ticks.
+             */
             process = function(start, end, nowToScanStart, ticksToMsMultiplier, offset) {
                 for (var i = 0; i < numProcessors; i++) {
                     processors[i].process(start, end, nowToScanStart, ticksToMsMultiplier, offset);
                 }
             },
             
+            /**
+             * Update view. At requestAnimationFrame speed.
+             * @param  {Number} position Transport playback position in ticks.
+             */
             render = function(position) {
                 for (var i = 0; i < numProcessors; i++) {
                     if (processors[i].render) {
@@ -138,6 +163,11 @@ window.WH = window.WH || {};
                 }
             },
             
+            /**
+             * Connect all EPG processors to a MIDI input port.
+             * @param {String} newPortID MIDI input to connect to.
+             * @param {String} oldPortID MIDI input to disconnect from.
+             */
             connectAllEPGToInput = function(newPortID, oldPortID) {
                 let newPortProcessor, oldPortProcessor;
                 for (let i = 0; i < numProcessors; i++) {
@@ -161,6 +191,11 @@ window.WH = window.WH || {};
                 }
             },
             
+            /**
+             * Connect all EPG processors to a MIDI output port.
+             * @param {String} newPortID MIDI output to connect to.
+             * @param {String} oldPortID MIDI output to disconnect from.
+             */
             connectAllEPGToOutput = function(newPortID, oldPortID) {
                 let newPortProcessor, oldPortProcessor;
                 for (let i = 0; i < numProcessors; i++) {
@@ -278,6 +313,7 @@ window.WH = window.WH || {};
             
             /**
              * Write network settings to data object.
+             * @return {Object} Data to store.
              */
             getData = function() {
                 // collect data from all processors
