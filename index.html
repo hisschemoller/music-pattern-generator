@@ -3,30 +3,41 @@
 <head>
     <title>epg</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="static/css/style_dev.css">
+    <link rel="stylesheet" href="static/css/style.css">
 </head>
 <body>
     <div id="app">
         <div class="webgl"></div>
-        <form id="controls" class="form">
-            <div class="form__row">
-                <label for="play-check" class="form__label">play</label>
-                <input type="checkbox" id="play-check" class="form__check" />
+        <header>
+            <div class="file">
+                <button class="file__new btn" title="New project">
+                    <span class="icon-new"></span>
+                </button>
+                <input type="file" multiple="false" id="file-import" class="file__import">
+                <label for="file-import" class="btn" title="Import project...">
+                    <span class="icon-open"></span>
+                </label>
+                <button class="file__export btn" title="Export project...">
+                    <span class="icon-save"></span>
+                </button>
             </div>
-            <div class="form__row">
-                <label for="bpm-number" class="form__label">bpm</label>
-                <input type="number" id="bpm-number" class="form__number" min="1" max="1000" value="" />
-            </div>
-            <div class="form__row">
-                <label for="learn-check" class="form__label">learn</label>
-                <input type="checkbox" id="learn-check" class="form__check" />
-            </div>
-        </form>
-        <div class="file">
-            <button class="file__new">New</button>
-            <input type="file" multiple="false" class="file__import">
-            <button class="file__export">Export...</button>
-        </div>
+            <form id="controls">
+                <div class="toggle">
+                    <input type="checkbox" id="play-check" class="toggle__check" />
+                    <label for="play-check" class="toggle__label btn">
+                        <span class="icon-new" data-on="&#xe804;" data-off="&#xe802;"></span>
+                    </label>
+                </div>
+                <div class="form__row">
+                    <label for="bpm-number" class="form__label">bpm</label>
+                    <input type="number" id="bpm-number" class="form__number" min="1" max="1000" value="" />
+                </div>
+                <div class="form__row">
+                    <label for="learn-check" class="form__label">learn</label>
+                    <input type="checkbox" id="learn-check" class="form__check btn" />
+                </div>
+            </form>
+        </header>
         <div id="settings"></div>
         <div id="prefs" class="form">
             <ul class="prefs__inputs"></ul>
