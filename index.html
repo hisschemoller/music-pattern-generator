@@ -25,22 +25,20 @@
             </label>
             <input type="number" id="bpm-number" class="bpm" min="1" max="1000" value="" />
             <input type="checkbox" id="learn-check" class="toggle__check" />
-            <label for="learn-check" class="toggle__label btn">
+            <label for="learn-check" class="toggle__label btn" title="MIDI learn">
                 <span class="icon-new" data-on="&#xe900;" data-off="&#xe900;"></span>
             </label>
-            <button class="settings btn" title="Settings">
+            <button class="controls__settings btn" title="Settings">
                 <span class="icon-cog"></span>
             </button>
-            <button class="help btn" title="Help">
+            <button class="controls__help btn" title="Help">
                 <span class="icon-help"></span>
             </button>
         </header>
-        <div id="settings"></div>
-        <div id="prefs" class="form">
+        <div class="settings"></div>
+        <div class="form prefs config">
             <ul class="prefs__inputs"></ul>
             <ul class="prefs__outputs"></ul>
-        </div>
-        <form id="config" class="form">
             <div class="form__row">
                 <label for="inputs-select" class="form__label">midi in</label>
                 <select id="inputs-select" class="form__select">
@@ -61,35 +59,35 @@
                 <label for="notein-check" class="form__label">note in</label>
                 <input type="checkbox" id="notein-check" class="form__check" />
             </div>
-        </form>
-        <div id="remote">
+        </div>
+        <div class="remote">
             <ul class="remote__list"></ul>
         </div>
     </app>
     
     <template id="template-settings-epg">
-        <form class="form settings">
-            <fieldset>
-                <legend>Euclidean</legend>
+        <form class="settings__epg">
+            <fieldset class="settings__fieldset">
+                <legend class="settings__legend">Euclidean</legend>
                 <div class="settings__row steps"></div>
                 <div class="settings__row pulses"></div>
                 <div class="settings__row rotation"></div>
             </fieldset>
-            <fieldset>
-                <legend>Playback</legend>
+            <fieldset class="settings__fieldset">
+                <legend class="settings__legend">Playback</legend>
                 <div class="settings__row rate"></div>
                 <div class="settings__row note_length"></div>
                 <div class="settings__row is_triplets"></div>
                 <div class="settings__row is_solo"></div>
                 <div class="settings__row is_mute"></div>
             </fieldset>
-            <fieldset>
-                <legend>MIDI out</legend>
+            <fieldset class="settings__fieldset">
+                <legend class="settings__legend">MIDI out</legend>
                 <div class="settings__row channel_out"></div>
                 <div class="settings__row pitch_out"></div>
                 <div class="settings__row velocity_out"></div>
             </fieldset>
-            <fieldset>
+            <fieldset class="settings__fieldset">
                 <legend>Other</legend>
                 <div class="settings__row name"></div>
                 <button class="settings__delete">Delete</button>
@@ -97,7 +95,8 @@
         </form>
     </template><!-- /template-settings-epg -->
     <template id="template-setting-integer">
-        <label class="setting__label"><span class="setting__label-text"></span>
+        <label class="setting__label setting__integer">
+            <span class="setting__label-text"></span>
             <input type="range" min="" max="" step="1" class="setting__range" />
             <input type="number" min="" max="" class="setting__number" />
         </label>

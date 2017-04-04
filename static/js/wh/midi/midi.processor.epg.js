@@ -326,7 +326,7 @@ window.WH = window.WH || {};
                 isMidiControllable: true
             },
             channel_out: {
-                label: 'MIDI Channel',
+                label: 'Channel',
                 type: 'integer',
                 default: 1,
                 min: 1,
@@ -334,7 +334,7 @@ window.WH = window.WH || {};
                 isMidiControllable: false
             },
             pitch_out: {
-                label: 'MIDI Pitch',
+                label: 'Pitch',
                 type: 'integer',
                 default: 60,
                 min: 0,
@@ -342,7 +342,7 @@ window.WH = window.WH || {};
                 isMidiControllable: false
             },
             velocity_out: {
-                label: 'MIDI Velocity',
+                label: 'Velocity',
                 type: 'integer',
                 default: 100,
                 min: 0,

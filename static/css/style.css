@@ -68,10 +68,6 @@ body {
 header {
     align-items: flex-start;
     border-bottom: 1px solid #ccc;
-    display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
-    display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
-    display: -ms-flexbox;      /* TWEENER - IE 10 */
-    display: -webkit-flex;     /* NEW - Chrome */
     display: flex;
     padding: 8px;
 }
@@ -138,4 +134,49 @@ input[type='file'] + label {}
     outline: none;
     text-align: center;
     width: 80px;
+}
+.prefs.config {
+    display: none;
+}
+.remote {
+    display: none;
+}
+
+/************************
+ * settings
+ ************************/
+.settings {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    display: none;
+    max-width: 300px;
+}
+.settings__fieldset {
+    border: none;
+}
+.settings__legend {
+    line-height: 32px;
+    padding-left: 8px;
+}
+
+.setting__integer {
+    display: flex;
+}
+.setting__label-text {
+    display: inline-block;
+    line-height: 32px;
+    padding-left: 8px;
+    width: 30%;
+}
+.setting__range {
+    display: inline-block;
+    width: 50%;
+}
+.setting__number {
+    border: none;
+    display: inline-block;
+    font-size: 16px;
+    line-height: 32px;
+    padding-left: 8px;
+    width: 20%;
 }
