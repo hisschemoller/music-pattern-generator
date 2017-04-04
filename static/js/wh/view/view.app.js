@@ -9,8 +9,8 @@ window.WH = window.WH || {};
     
     function createAppView(specs, my) {
         var that,
-            rootEl = document.getElementById('app'),
-            settingsEl = document.getElementById('settings'),
+            rootEl = document.querySelector('#app'),
+            settingsEl = document.querySelector('.settings'),
             midiInputsEl = document.querySelector('.prefs__inputs'),
             midiOutputsEl = document.querySelector('.prefs__outputs'),
             settingsViews = [],
