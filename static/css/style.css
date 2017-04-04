@@ -42,6 +42,15 @@
 .icon-open:before {
   content: "\f115";
 }
+.icon-midi:before {
+  content: "\e900";
+}
+.icon-cog:before {
+  content: "\e805";
+}
+.icon-help:before {
+  content: "\f128";
+}
 
 :root {
     --btn__border-color: #ccc;
@@ -57,10 +66,18 @@ body {
     font-size: 14px;
 }
 header {
+    align-items: flex-start;
     border-bottom: 1px solid #ccc;
+    display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
+    display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
+    display: -ms-flexbox;      /* TWEENER - IE 10 */
+    display: -webkit-flex;     /* NEW - Chrome */
     display: flex;
-    flex-flow: row wrap;
     padding: 8px;
+}
+header .btn,
+header .bpm {
+    margin-right: 2px;
 }
 input[type='file'] {
 	height: 0.1px;
@@ -92,14 +109,11 @@ input[type='file'] + label {}
     line-height: 40px;
     outline: none;
     text-align: center;
-    vertical-align: middle;
     width: 40px;
 }
 .btn:hover {
+    background-color: #eee;
     color: #666;
-}
-.toggle {
-    
 }
 .toggle__check {
     position: absolute;
@@ -111,4 +125,17 @@ input[type='file'] + label {}
 }
 .toggle__check:checked + .toggle__label > span:before {
     content: attr(data-on);
+}
+.toggle__check:checked + .toggle__label {
+    background-color: #eee;
+    color: #333;
+}
+.bpm {
+    border: 1px solid #ccc;
+    display: inline-block;
+    font-size: 16px;
+    height: 40px;
+    outline: none;
+    text-align: center;
+    width: 80px;
 }

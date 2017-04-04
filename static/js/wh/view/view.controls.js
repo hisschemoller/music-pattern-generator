@@ -14,7 +14,7 @@
         var that,
             midiRemote = specs.midiRemote,
             transport = specs.transport
-            controlsEl = document.getElementById('controls'),
+            controlsEl = document.querySelector('.controls'),
             controls = {
                 play: {
                     type: 'checkbox',
