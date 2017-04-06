@@ -14,29 +14,37 @@ window.WH = window.WH || {};
             numInputs,
             
             init = function() {
-                var parentEl = my.el.parentNode;
+                let parentEl = my.el.parentNode;
                 
                 // add the main label
-                var label = my.el.getElementsByClassName('setting__label-text')[0];
+                let label = my.el.querySelector('.setting__label-text');
                 parentEl.appendChild(label);
                 
                 // add the radio buttons
-                var radioTemplateEl = my.el.getElementsByClassName('setting__label-radio')[0],
+                let radioTemplate = document.querySelector('#template-setting-itemized-item'),
                     model = my.param.getModel(),
                     numInputs = model.length;
                 for (var i = 0; i < numInputs; i++) {
+                    let id = getTemporaryInputAndLabelId();
                     // add a new cloned radio element
-                    var radioEl = radioTemplateEl.cloneNode(true);
-                    parentEl.appendChild(radioEl);
+                    let clone = radioTemplate.content.cloneNode(true)
+                    // let radioEl = clone.firstElementChild;
+                    // parentEl.appendChild(radioEl);
                     // set the radio input
-                    var radioInputEl = radioEl.getElementsByClassName('setting__radio')[0];
+                    // let radioInputEl = radioEl.querySelector('.setting__radio');
+                    let radioInputEl = clone.children[0];
+                    parentEl.appendChild(radioInputEl);
                     radioInputEl.setAttribute('name', my.param.getProperty('key'));
+                    radioInputEl.setAttribute('id', id);
                     radioInputEl.value = model[i].value;
                     radioInputEl.checked = model[i].value == my.param.getValue();
                     radioInputEl.addEventListener('change', onChange);
                     radioInputs.push(radioInputEl);
                     // set the label
-                    radioLabelEl = radioEl.getElementsByClassName('setting__label-radio-text')[0];
+                    let radioLabelEl = clone.children[1];
+                    parentEl.appendChild(radioInputEl);
+                    // radioLabelEl = radioEl.querySelector('.setting__label-radio-text');
+                    radioLabelEl.setAttribute('for', id);
                     radioLabelEl.innerHTML = model[i].label;
                 }
                 
@@ -44,6 +52,14 @@ window.WH = window.WH || {};
                 parentEl.removeChild(my.el);
                 
                 my.param.addChangedCallback(changedCallback);
+            },
+            
+            /**
+             * A quick ID to tie label to input elements.
+             * @return {Number} Unique ID.
+             */
+            getTemporaryInputAndLabelId = function() {
+                return 'id' + Math.random() + performance.now();
             },
             
             onChange = function(e) {
