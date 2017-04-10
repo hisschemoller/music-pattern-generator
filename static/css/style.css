@@ -126,6 +126,20 @@ input[type='file'] + label {}
     background-color: #eee;
     color: #333;
 }
+
+.setting__radio {
+    position: absolute;
+    margin-left: -9999px;
+    visibility: hidden;
+}
+.setting__radio + .setting__label-radio-text {
+    font-size: 16px;
+}
+.setting__radio:checked + .setting__label-radio-text {
+    background-color: #eee;
+    color: #333;
+}
+
 .bpm {
     border: 1px solid #ccc;
     display: inline-block;
@@ -149,7 +163,7 @@ input[type='file'] + label {}
     background-color: #fff;
     border: 1px solid #ccc;
     display: none;
-    max-width: 300px;
+    max-width: 360px;
 }
 .settings__fieldset {
     border: none;

@@ -26,13 +26,9 @@ window.WH = window.WH || {};
                     numInputs = model.length;
                 for (var i = 0; i < numInputs; i++) {
                     let id = getTemporaryInputAndLabelId();
+                    
                     // add a new cloned radio element
-                    let clone = radioTemplate.content.cloneNode(true)
-                    // let radioEl = clone.firstElementChild;
-                    // parentEl.appendChild(radioEl);
-                    // set the radio input
-                    // let radioInputEl = radioEl.querySelector('.setting__radio');
-                    let radioInputEl = clone.children[0];
+                    let radioInputEl = radioTemplate.content.children[0].cloneNode(true);
                     parentEl.appendChild(radioInputEl);
                     radioInputEl.setAttribute('name', my.param.getProperty('key'));
                     radioInputEl.setAttribute('id', id);
@@ -40,10 +36,10 @@ window.WH = window.WH || {};
                     radioInputEl.checked = model[i].value == my.param.getValue();
                     radioInputEl.addEventListener('change', onChange);
                     radioInputs.push(radioInputEl);
-                    // set the label
-                    let radioLabelEl = clone.children[1];
-                    parentEl.appendChild(radioInputEl);
-                    // radioLabelEl = radioEl.querySelector('.setting__label-radio-text');
+                    
+                    // add a new cloned label element
+                    let radioLabelEl = radioTemplate.content.children[1].cloneNode(true);
+                    parentEl.appendChild(radioLabelEl);
                     radioLabelEl.setAttribute('for', id);
                     radioLabelEl.innerHTML = model[i].label;
                 }
