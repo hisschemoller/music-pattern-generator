@@ -83,13 +83,9 @@ window.WH = window.WH || {};
              */
             show = function(isSelected)  {
                 if (isSelected) {
-                    parentEl.style.display = 'block';
                     parentEl.appendChild(el);
                 } else {
-                    if (el.parentNode) {
-                        el.parentNode.removeChild(el);
-                        el.parentNode.style.display = 'none';
-                    }
+                    parentEl.removeChild(el);
                 }
             },
             

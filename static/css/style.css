@@ -162,7 +162,6 @@ input[type='file'] + label {}
 .settings {
     background-color: #fff;
     border: 1px solid #ccc;
-    display: none;
     position: absolute;
     right: 0;
     width: 360px;
