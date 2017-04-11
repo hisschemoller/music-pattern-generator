@@ -13,14 +13,29 @@
              checkEl,
              
              init = function() {
-                 checkEl = my.el.getElementsByClassName('setting__check')[0];
+                 let id = getTemporaryInputAndLabelId();
+                 
+                 checkEl = my.el.querySelector('.setting__check');
                  checkEl.value = my.param.getValue();
+                 checkEl.setAttribute('id', id);
                  checkEl.addEventListener('change', onChange);
+                 
+                 let labelEl = my.el.querySelector('.toggle__label');
+                 labelEl.setAttribute('for', id);
                  
                  my.param.addChangedCallback(changedCallback);
              },
              
+             /**
+              * A quick ID to tie label to input elements.
+              * @return {Number} Unique ID.
+              */
+             getTemporaryInputAndLabelId = function() {
+                 return 'id' + Math.random() + performance.now();
+             },
+             
              onChange = function(e) {
+                 console.log(e.target);
                  my.param.setValue(e.target.checked);
              },
              

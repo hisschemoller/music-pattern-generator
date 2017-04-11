@@ -51,6 +51,9 @@
 .icon-help:before {
   content: "\f128";
 }
+.icon-ok:before {
+  content: "\f115";
+}
 
 :root {
     --btn__border-color: #ccc;
