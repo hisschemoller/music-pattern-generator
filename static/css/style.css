@@ -119,10 +119,6 @@ input[type='file'] + label {}
     display: none;
     position: relative;
 }
-.remote {
-    display: none;
-    position: relative;
-}
 
 /************************
  * header
@@ -160,11 +156,13 @@ input[type='file'] + label {}
  ************************/
 
 .settings {
-    background-color: #fff;
-    border: 1px solid #ccc;
     position: absolute;
     right: 0;
     width: 360px;
+}
+.settings > * {
+    background-color: #fff;
+    border: 1px solid #ccc;
 }
 .settings .btn {
     height: 32px;
@@ -182,7 +180,6 @@ input[type='file'] + label {}
     line-height: 32px;
     padding-left: 8px;
 }
-
 .setting__integer {
     display: flex;
 }
@@ -231,4 +228,24 @@ input[type='file'] + label {}
 }
 .setting__learnmode[data-assigned='true'] {
     background-color: rgba(255, 200, 200, 0.4);
+}
+
+/************************
+ * remote assignments
+ ************************/
+
+.remote {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    display: none;
+    position: relative;
+    width: 200px;
+}
+.remote__group-header {
+    line-height: 32px;
+    padding-left: 10px;
+}
+.remote__item {
+    line-height: 32px;
+    padding-left: 20px;
 }
