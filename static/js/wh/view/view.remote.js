@@ -10,7 +10,7 @@ window.WH = window.WH || {};
     function createRemoteView(specs, my) {
         var that,
             midiRemote = specs.midiRemote,
-            rootEl = document.querySelector('#remote'),
+            rootEl = document.querySelector('.remote'),
             listEl = document.querySelector('.remote__list'),
             groupViews = [],
             
