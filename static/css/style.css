@@ -65,16 +65,6 @@ body {
     font-family: sans-serif;
     font-size: 14px;
 }
-header {
-    align-items: flex-start;
-    border-bottom: 1px solid #ccc;
-    display: flex;
-    padding: 8px;
-}
-header .btn,
-header .bpm {
-    margin-right: 2px;
-}
 input[type='file'] {
 	height: 0.1px;
 	opacity: 0;
@@ -84,6 +74,7 @@ input[type='file'] {
 	z-index: -1;
 }
 input[type='file'] + label {}
+
 .webgl {
     height: 100vh;
     position: absolute;
@@ -100,12 +91,8 @@ input[type='file'] + label {}
     color: #999;
     cursor: pointer;
     display: inline-block;
-    height: 40px;
-    font-size: 20px;
-    line-height: 40px;
     outline: none;
     text-align: center;
-    width: 40px;
 }
 .btn:hover {
     background-color: #eee;
@@ -126,29 +113,6 @@ input[type='file'] + label {}
     background-color: #eee;
     color: #333;
 }
-
-.setting__radio {
-    position: absolute;
-    margin-left: -9999px;
-    visibility: hidden;
-}
-.setting__radio + .setting__label-radio-text {
-    font-size: 16px;
-}
-.setting__radio:checked + .setting__label-radio-text {
-    background-color: #eee;
-    color: #333;
-}
-
-.bpm {
-    border: 1px solid #ccc;
-    display: inline-block;
-    font-size: 16px;
-    height: 40px;
-    outline: none;
-    text-align: center;
-    width: 80px;
-}
 .prefs.config {
     display: none;
 }
@@ -157,13 +121,50 @@ input[type='file'] + label {}
 }
 
 /************************
+ * header
+ ************************/
+
+.header {
+    align-items: flex-start;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    padding: 8px;
+}
+.header .btn,
+.header .bpm {
+    margin-right: 2px;
+}
+.header .btn {
+    height: 40px;
+    font-size: 20px;
+    line-height: 40px;
+    width: 40px;
+}
+.header .bpm {
+    border: 1px solid #ccc;
+    display: inline-block;
+    font-size: 16px;
+    height: 40px;
+    outline: none;
+    text-align: center;
+    width: 80px;
+}
+
+/************************
  * settings
  ************************/
+
 .settings {
     background-color: #fff;
     border: 1px solid #ccc;
     display: none;
     max-width: 360px;
+}
+.settings .btn {
+    height: 32px;
+    font-size: 14px;
+    line-height: 32px;
+    width: 32px;
 }
 .settings__fieldset {
     border: none;
@@ -193,4 +194,16 @@ input[type='file'] + label {}
     line-height: 32px;
     padding-left: 8px;
     width: 20%;
+}
+.setting__radio {
+    position: absolute;
+    margin-left: -9999px;
+    visibility: hidden;
+}
+.setting__radio + .setting__label-radio-text {
+    /*font-size: 16px;*/
+}
+.setting__radio:checked + .setting__label-radio-text {
+    background-color: #eee;
+    color: #333;
 }
