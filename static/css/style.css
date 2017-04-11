@@ -79,7 +79,6 @@ input[type='file'] + label {}
     height: 100vh;
     position: absolute;
     width: 100vw;
-    z-index: -1;
 }
 .webgl > canvas {
     display: block;
@@ -115,9 +114,11 @@ input[type='file'] + label {}
 }
 .prefs.config {
     display: none;
+    position: relative;
 }
 .remote {
     display: none;
+    position: relative;
 }
 
 /************************
@@ -129,6 +130,7 @@ input[type='file'] + label {}
     border-bottom: 1px solid #ccc;
     display: flex;
     padding: 8px;
+    position: relative;
 }
 .header .btn,
 .header .bpm {
@@ -158,7 +160,9 @@ input[type='file'] + label {}
     background-color: #fff;
     border: 1px solid #ccc;
     display: none;
-    max-width: 360px;
+    position: absolute;
+    right: 0;
+    width: 360px;
 }
 .settings .btn {
     height: 32px;
