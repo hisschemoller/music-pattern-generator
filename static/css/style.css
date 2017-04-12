@@ -54,6 +54,9 @@
 .icon-ok:before {
   content: "\f115";
 }
+.icon-cancel:before {
+  content: "\e807";
+}
 
 :root {
     --btn__border-color: #ccc;
@@ -237,15 +240,41 @@ input[type='file'] + label {}
 .remote {
     background-color: #fff;
     border: 1px solid #ccc;
+    border-bottom: none;
     display: none;
     position: relative;
     width: 200px;
 }
 .remote__group-header {
+    border-bottom: 1px solid #ccc;
     line-height: 32px;
     padding-left: 10px;
 }
 .remote__item {
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
     line-height: 32px;
-    padding-left: 20px;
+}
+.remote__item-label {
+    border-right: 1px solid #ccc;
+    flex-grow: 1;
+    padding-left: 10px;
+}
+.remote__item-channel {
+    border-right: 1px solid #ccc;
+    text-align: center;
+    width: 32px;
+}
+.remote__item-cc {
+    border-right: 1px solid #ccc;
+    text-align: center;
+    width: 32px;
+}
+.remote__item-remove {
+    border: none;
+    height: 32px;
+    text-align: center;
+    width: 32px;
 }
