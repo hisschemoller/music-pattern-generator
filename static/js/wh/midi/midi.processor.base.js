@@ -32,8 +32,8 @@ window.WH = window.WH || {};
                         case 'string':
                             my.params[key] = ns.createStringParameter(paramSpecs[key]);
                             break;
-                        case 'vector3d':
-                            my.params[key] = ns.createVector3DParameter(paramSpecs[key]);
+                        case 'vector2d':
+                            my.params[key] = ns.createVector2DParameter(paramSpecs[key]);
                             break;
                     }
                     my.params[key].addChangedCallback(paramChangedCallback);

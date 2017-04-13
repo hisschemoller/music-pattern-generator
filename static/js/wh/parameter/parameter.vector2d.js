@@ -7,7 +7,7 @@ window.WH = window.WH || {};
 
 (function (ns) {
     
-    function createVector3DParameter(specs, my) {
+    function createVector2DParameter(specs, my) {
         var that,
             
             normalize = function(value) {
@@ -27,6 +27,6 @@ window.WH = window.WH || {};
         return that;
     };
 
-    ns.createVector3DParameter = createVector3DParameter;
+    ns.createVector2DParameter = createVector2DParameter;
 
 })(WH);

@@ -294,7 +294,7 @@ window.WH = window.WH || {};
         my.$pitch_out = function(value, timestamp) {}
         my.$velocity_out = function(value, timestamp) {}
         my.$name = function(value, timestamp) {}
-        my.$position3d = function(value, timestamp) {}
+        my.$position2d = function(value, timestamp) {}
 
         that = ns.createMIDIProcessorBase(specs, my);
         that = ns.createMIDIConnectorIn(specs, my);
@@ -401,10 +401,10 @@ window.WH = window.WH || {};
                 default: 'Unnamed',
                 isMidiControllable: false
             },
-            position3d: {
-                label: '3D position',
-                type: 'vector3d',
-                default: [0, 0, 0],
+            position2d: {
+                label: '2D position',
+                type: 'vector2d',
+                default: {x: 0, y: 0},
                 isMidiControllable: false
             }
         });

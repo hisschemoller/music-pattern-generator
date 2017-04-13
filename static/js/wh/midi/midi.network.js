@@ -10,8 +10,8 @@ window.WH = window.WH || {};
     function createMIDINetwork(specs, my) {
         var that,
             appView = specs.appView,
+            canvasView = specs.canvasView,
             midiRemote = specs.midiRemote,
-            world = specs.world,
             processors = [],
             numProcessors = processors.length,
             
@@ -44,9 +44,10 @@ window.WH = window.WH || {};
                             break;
                         case 'epg':
                             appView.createSettingsView(processor);
-                            world.createObject(processor);
+                            canvasView.createObject(processor);
                             midiRemote.registerProcessor(processor);
                             selectProcessor(processor);
+                            canvasView.markDirty();
                             break;
                     }
                     
@@ -91,7 +92,7 @@ window.WH = window.WH || {};
                         break;
                     case 'epg':
                         appView.deleteSettingsView(processor);
-                        world.deleteObject(processor);
+                        canvasView.deleteObject(processor);
                         midiRemote.unregisterProcessor(processor);
                         selectProcessor(processor);
                         break;

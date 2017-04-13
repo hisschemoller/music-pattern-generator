@@ -7,7 +7,8 @@
 </head>
 <body>
     <div id="app">
-        <div class="webgl"></div>
+        <canvas class="canvas-static"></canvas>
+        <canvas class="canvas-dynamic"></canvas>
         <header class="header file controls">
             <button class="file__new btn" title="New project">
                 <span class="icon-new"></span>
@@ -162,7 +163,6 @@
             <label><input type="checkbox" class="midi-port__track" />Track</label>
         </li>
     </template><!-- /template-midi-output -->
-    <script src="static/js/lib/three.js"></script>
     <script src="static/js/lib/tween.js"></script>
     <script src="static/js/main.js"></script>
     <script src="static/js/wh/core/conf.js"></script>
@@ -184,8 +184,10 @@
     <script src="static/js/wh/parameter/parameter.itemized.js"></script>
     <script src="static/js/wh/parameter/parameter.remote.js"></script>
     <script src="static/js/wh/parameter/parameter.string.js"></script>
-    <script src="static/js/wh/parameter/parameter.vector3d.js"></script>
+    <script src="static/js/wh/parameter/parameter.vector2d.js"></script>
     <script src="static/js/wh/view/view.app.js"></script>
+    <script src="static/js/wh/view/view.canvas.js"></script>
+    <script src="static/js/wh/view/view.canvas.epg.js"></script>
     <script src="static/js/wh/view/view.controls.js"></script>
     <script src="static/js/wh/view/view.file.js"></script>
     <script src="static/js/wh/view/view.midi.base.js"></script>
@@ -202,8 +204,5 @@
     <script src="static/js/wh/view/view.setting.remote.js"></script>
     <script src="static/js/wh/view/view.setting.string.js"></script>
     <script src="static/js/wh/view/view.settings.js"></script>
-    <script src="static/js/wh/view/view.world.epg.js"></script>
-    <script src="static/js/wh/world/world.js"></script>
-    <script src="static/js/wh/world/world.template.epg.js"></script>
 </body>
 </html>
