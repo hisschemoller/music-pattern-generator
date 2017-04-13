@@ -61,12 +61,12 @@
 :root {
     --bg-color: #fff;
     --border-color: #ccc;
-    --btn-hover-color: #666;
-    --btn-active-color: #333;
+    --btn-hover-color: #ccc;
+    --btn-active-color: #999;
     --btn-bg-color: #fff;
     --btn-bg-hover-color: #eee;
     --btn-border-color: #ccc;
-    --text-color: #999;
+    --text-color: #ccc;
 }
 * {
     box-sizing: border-box;
@@ -99,6 +99,10 @@ input[type='file'] + label {}
 }
 .webgl > canvas {
     display: block;
+}
+.canvas-static,
+.canvas-dynamic {
+    position: absolute;
 }
 .btn {
     background-color: var(--btn-bg-color);
