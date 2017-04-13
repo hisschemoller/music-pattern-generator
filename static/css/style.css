@@ -59,7 +59,14 @@
 }
 
 :root {
-    --btn__border-color: #ccc;
+    --bg-color: #fff;
+    --border-color: #ccc;
+    --btn-hover-color: #666;
+    --btn-active-color: #333;
+    --btn-bg-color: #fff;
+    --btn-bg-hover-color: #eee;
+    --btn-border-color: #ccc;
+    --text-color: #999;
 }
 * {
     box-sizing: border-box;
@@ -67,9 +74,13 @@
     padding: 0;
 }
 body {
-    background-color: #fff;
+    background-color: var(--bg-color);
+    color: var(--text-color);
     font-family: sans-serif;
     font-size: 14px;
+}
+input[type='number'] {
+    color: var(--text-color);
 }
 input[type='file'] {
 	height: 0.1px;
@@ -90,18 +101,18 @@ input[type='file'] + label {}
     display: block;
 }
 .btn {
-    background-color: #fff;
-    border: 1px solid #ccc;
+    background-color: var(--btn-bg-color);
+    border: 1px solid var(--btn-border-color);
     border-radius: 0;
-    color: #999;
+    color: var(--text-color);
     cursor: pointer;
     display: inline-block;
     outline: none;
     text-align: center;
 }
 .btn:hover {
-    background-color: #eee;
-    color: #666;
+    background-color: var(--btn-bg-hover-color);
+    color: var(--btn-hover-color);
 }
 .toggle__check {
     position: absolute;
@@ -115,8 +126,8 @@ input[type='file'] + label {}
     content: attr(data-on);
 }
 .toggle__check:checked + .toggle__label {
-    background-color: #eee;
-    color: #333;
+    background-color: var(--btn-bg-color);
+    color: var(--btn-active-color);
 }
 .prefs.config {
     display: none;
@@ -129,7 +140,7 @@ input[type='file'] + label {}
 
 .header {
     align-items: flex-start;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid var(--border-color);
     display: flex;
     padding: 8px;
     position: relative;
@@ -145,7 +156,7 @@ input[type='file'] + label {}
     width: 40px;
 }
 .header .bpm {
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     display: inline-block;
     font-size: 16px;
     height: 40px;
@@ -164,8 +175,8 @@ input[type='file'] + label {}
     width: 360px;
 }
 .settings > * {
-    background-color: #fff;
-    border: 1px solid #ccc;
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
 }
 .settings .btn {
     height: 32px;
@@ -214,8 +225,8 @@ input[type='file'] + label {}
     /*font-size: 16px;*/
 }
 .setting__radio:checked + .setting__label-radio-text {
-    background-color: #eee;
-    color: #333;
+    background-color: var(--btn-bg-color);
+    color: var(--btn-active-color);
 }
 .setting__learnmode {
     background-color: rgba(255, 180, 100, 0.3);
@@ -238,37 +249,37 @@ input[type='file'] + label {}
  ************************/
 
 .remote {
-    background-color: #fff;
-    border: 1px solid #ccc;
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
     border-bottom: none;
     display: none;
     position: relative;
     width: 200px;
 }
 .remote__group-header {
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid var(--border-color);
     line-height: 32px;
     padding-left: 10px;
 }
 .remote__item {
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid var(--border-color);
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
     line-height: 32px;
 }
 .remote__item-label {
-    border-right: 1px solid #ccc;
+    border-right: 1px solid var(--border-color);
     flex-grow: 1;
     padding-left: 10px;
 }
 .remote__item-channel {
-    border-right: 1px solid #ccc;
+    border-right: 1px solid var(--border-color);
     text-align: center;
     width: 32px;
 }
 .remote__item-cc {
-    border-right: 1px solid #ccc;
+    border-right: 1px solid var(--border-color);
     text-align: center;
     width: 32px;
 }
