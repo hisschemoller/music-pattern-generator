@@ -13,8 +13,8 @@ window.WH = window.WH || {};
                 
             },
             
-            drawStatic = function() {
-                console.log(staticCtx.canvas);
+            draw = function(isDirty) {
+                // console.log(staticCtx.canvas);
             }
             
             /**
@@ -26,6 +26,7 @@ window.WH = window.WH || {};
         
         initialise();
         
+        that.draw = draw;
         return that;
     }
 

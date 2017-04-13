@@ -44,7 +44,7 @@ window.WH = window.WH || {};
                             break;
                         case 'epg':
                             appView.createSettingsView(processor);
-                            canvasView.createObject(processor);
+                            canvasView.createView(processor);
                             midiRemote.registerProcessor(processor);
                             selectProcessor(processor);
                             canvasView.markDirty();
@@ -92,7 +92,7 @@ window.WH = window.WH || {};
                         break;
                     case 'epg':
                         appView.deleteSettingsView(processor);
-                        canvasView.deleteObject(processor);
+                        canvasView.deleteView(processor);
                         midiRemote.unregisterProcessor(processor);
                         selectProcessor(processor);
                         break;

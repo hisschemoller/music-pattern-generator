@@ -14,6 +14,8 @@ window.WH = window.WH || {};
             staticCtx,
             dynamicCtx,
             views = [],
+            numViews,
+            isDirty = false,
             isTouchDevice = 'ontouchstart' in window || window.DocumentTouch && document instanceof DocumentTouch,
             doubleClickCounter = 0,
             doubleClickDelay = 300,
@@ -31,6 +33,7 @@ window.WH = window.WH || {};
             },
             
             init = function() {
+                numViews = 0;
                 staticCanvas = document.querySelector('.canvas-static');
                 dynamicCanvas = document.querySelector('.canvas-dynamic');
                 staticCtx = staticCanvas.getContext('2d');
@@ -91,7 +94,7 @@ window.WH = window.WH || {};
              * Create world object if it exists for the type.
              * @param  {Object} processor MIDI processor for which the 3D object will be a view.
              */
-            createObject = function(processor) {
+            createView = function(processor) {
                 let specs = {
                     processor: processor,
                     staticCtx: staticCtx,
@@ -103,27 +106,40 @@ window.WH = window.WH || {};
                         break;
                 }
                 views.push(view);
+                numViews = views.length;
             },
             
             /**
              * Delete world object when processor is deleted.
              * @param  {Object} processor MIDI processor for which the 3D object will be a view.
              */
-            deleteObject = function(processor) {
-                
+            deleteView = function(processor) {
+                numViews = views.length;
             },
             
             markDirty = function() {
-                
+                isDirty = true;
+            },
+            
+            draw = function() {
+                if (isDirty) {
+                    staticCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
+                }
+                dynamicCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
+                for (let i = 0; i < numViews; i++) {
+                    views[i].draw(isDirty);
+                }
+                isDirty = false;
             };
         
         that = specs.that || {};
         
         init();
         
-        that.createObject = createObject;
-        that.deleteObject = deleteObject;
+        that.createView = createView;
+        that.deleteView = deleteView;
         that.markDirty = markDirty;
+        that.draw = draw;
         return that;
     }
 
