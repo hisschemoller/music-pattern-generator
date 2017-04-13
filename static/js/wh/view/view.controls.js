@@ -27,6 +27,14 @@
                 learn: {
                     type: 'checkbox',
                     input: document.getElementById('learn-check')
+                },
+                prefs: {
+                    type: 'checkbox',
+                    input: document.getElementById('prefs-check')
+                },
+                help: {
+                    type: 'checkbox',
+                    input: document.getElementById('help-check')
                 }
             },
             
@@ -39,6 +47,9 @@
                 });
                 controls.learn.input.addEventListener('change', function(e) {
                     midiRemote.toggleMidiLearn(e.target.checked);
+                });
+                controls.prefs.input.addEventListener('change', function(e) {
+                    //midiRemote.toggleMidiLearn(e.target.checked);
                 });
                 WH.pubSub.on('transport.start', function() {
                     controls.play.input.checked = true;

@@ -26,14 +26,16 @@
             <input type="number" id="bpm-number" class="bpm" min="1" max="1000" value="" />
             <input type="checkbox" id="learn-check" class="toggle__check" />
             <label for="learn-check" class="toggle__label btn" title="MIDI learn">
-                <span class="icon-new" data-on="&#xe900;" data-off="&#xe900;"></span>
+                <span class="icon-midi" data-on="&#xe900;" data-off="&#xe900;"></span>
             </label>
-            <button class="controls__settings btn" title="Settings">
-                <span class="icon-cog"></span>
-            </button>
-            <button class="controls__help btn" title="Help">
-                <span class="icon-help"></span>
-            </button>
+            <input type="checkbox" id="prefs-check" class="toggle__check" />
+            <label for="prefs-check" class="toggle__label btn" title="Preferences">
+                <span class="icon-cog" data-on="&#xe805;" data-off="&#xe805;"></span>
+            </label>
+            <input type="checkbox" id="help-check" class="toggle__check" />
+            <label for="help-check" class="toggle__label btn" title="Help">
+                <span class="icon-help" data-on="&#xf128;" data-off="&#xf128;"></span>
+            </label>
         </header>
         <div class="settings"></div>
         <div class="form prefs config">
