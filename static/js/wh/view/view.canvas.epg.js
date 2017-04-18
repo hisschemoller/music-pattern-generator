@@ -47,8 +47,11 @@ window.WH = window.WH || {};
                 staticCtx.stroke();
             },
             
-            getStaticImageData = function() {
-                return staticCtx.getImageData(0, 0, canvasWidth, canvasHeight);
+            addStaticView = function(mainStaticCtx) {
+                mainStaticCtx.putImageData(
+                    staticCtx.getImageData(0, 0, canvasWidth, canvasHeight),
+                    position2d.x - (canvasWidth / 2),
+                    position2d.y - (canvasHeight / 2));
             }
             
             /**
@@ -60,7 +63,7 @@ window.WH = window.WH || {};
         
         initialise();
         
-        that.getStaticImageData = getStaticImageData;
+        that.addStaticView = addStaticView;
         return that;
     }
 

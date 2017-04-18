@@ -99,8 +99,8 @@ window.WH = window.WH || {};
                 ns.pubSub.fire('create.processor', {
                     type: 'epg',
                     position2d: {
-                        x: (e.pageX - e.target.offsetLeft) - (dynamicCanvas.width / 2),
-                        y: (e.pageY - e.target.offsetTop) - (dynamicCanvas.height / 2)
+                        x: e.pageX - e.target.offsetLeft,
+                        y: e.pageY - e.target.offsetTop
                     }
                 });
             },
@@ -141,7 +141,7 @@ window.WH = window.WH || {};
                 if (isDirty) {
                     staticCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
                     for (let i = 0; i < numViews; i++) {
-                        staticCtx.putImageData(views[i].getStaticImageData(), 0, 0);
+                        views[i].addStaticView(staticCtx);
                     }
                 }
                 dynamicCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
