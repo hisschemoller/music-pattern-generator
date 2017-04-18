@@ -6,19 +6,27 @@ window.WH = window.WH || {};
     function createCanvasEPGView(specs) {
         let that,
             processor = specs.processor,
-            staticCtx = specs.staticCtx,
             dynamicCtx = specs.dynamicCtx,
+            canvasDirtyCallback = specs.canvasDirtyCallback,
+            staticCtx,
+            canvasHeight = 300,
+            canvasWidth = 300,
+            position2d,
             
             initialise = function() {
+                // offscreen canvas for static shapes
+                let staticCanvas = document.createElement('canvas');
+                staticCanvas.height = canvasHeight;
+                staticCanvas.width = canvasWidth;
+                staticCtx = staticCanvas.getContext('2d');
+                
                 // add listeners to parameters
-                var params = processor.getParameters();
+                let params = processor.getParameters();
                 params.position2d.addChangedCallback(updatePosition);
-            },
-            
-            draw = function(isDirty) {
-                if (isDirty) {
-                    
-                }
+                
+                // set drawing values
+                position2d = params.position2d.getValue();
+                redrawStaticCanvas();
             },
             
             /**
@@ -28,10 +36,20 @@ window.WH = window.WH || {};
              * @param  {Object} newValue New 2D position as object.
              */
             updatePosition = function(param, oldValue, newValue) {
+                position2d = newValue;
+                redrawStaticCanvas();
+                canvasDirtyCallback();
+            },
+            
+            redrawStaticCanvas = function() {
                 staticCtx.beginPath();
-                staticCtx.arc(newValue.x, newValue.y, 50, 0, Math.PI * 2, true);
+                staticCtx.arc(canvasWidth / 2, canvasHeight / 2, 50, 0, Math.PI * 2, true);
                 staticCtx.stroke();
             },
+            
+            getStaticImageData = function() {
+                return staticCtx.getImageData(0, 0, canvasWidth, canvasHeight);
+            }
             
             /**
              * Called before this view is deleted.
@@ -42,7 +60,7 @@ window.WH = window.WH || {};
         
         initialise();
         
-        that.draw = draw;
+        that.getStaticImageData = getStaticImageData;
         return that;
     }
 

@@ -140,11 +140,14 @@ window.WH = window.WH || {};
             draw = function() {
                 if (isDirty) {
                     staticCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
+                    for (let i = 0; i < numViews; i++) {
+                        staticCtx.putImageData(views[i].getStaticImageData(), 0, 0);
+                    }
                 }
                 dynamicCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
-                for (let i = 0; i < numViews; i++) {
-                    views[i].draw(isDirty);
-                }
+                // for (let i = 0; i < numViews; i++) {
+                //     views[i].draw(isDirty);
+                // }
                 isDirty = false;
             };
         
