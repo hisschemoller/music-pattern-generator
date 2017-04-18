@@ -1,5 +1,20 @@
 /**
  * 2D view.
+ *
+ * CanvasView draws the graphics for all processors.
+ * DynamicCanvas shows all elements that update each requestAnimationFrame.
+ * StaticCanvas shows all elements that update only infrequently.
+ * 
+ * Each processor has its own view.
+ * When a change happens to a processor that 
+ * requires the static canvas to be redrawn:
+ * - The processor's view receives a callback from a changed parameter.
+ * - The view redraws its static graphics on an off-screen canvas.
+ * - The view sets a dirty flag on the canvasView (this).
+ * - The canvasView receives the next draw request.
+ * - It clears the staticCanvas.
+ * - It draws each view's off-screen canvas on the staticCanvas.
+ * - It clears the dirty flag.
  * 
  * @namespace WH
  */
@@ -98,7 +113,8 @@ window.WH = window.WH || {};
                 let specs = {
                     processor: processor,
                     staticCtx: staticCtx,
-                    dynamicCtx: dynamicCtx
+                    dynamicCtx: dynamicCtx,
+                    canvasDirtyCallback: markDirty
                 }
                 switch (processor.getType()) {
                     case 'epg':
