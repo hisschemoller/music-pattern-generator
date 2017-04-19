@@ -31,7 +31,8 @@ document.addEventListener('DOMContentLoaded', function(e) {
         that: appView
     });
     WH.createCanvasView({
-        that: canvasView
+        that: canvasView,
+        midiNetwork: midiNetwork
     });
     WH.createControlsView({
         that: controlsView,

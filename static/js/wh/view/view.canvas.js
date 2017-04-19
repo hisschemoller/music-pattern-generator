@@ -24,6 +24,7 @@ window.WH = window.WH || {};
     
     function createCanvasView(specs) {
         var that,
+            midiNetwork = specs.midiNetwork,
             staticCanvas,
             dynamicCanvas,
             staticCtx,
@@ -55,6 +56,7 @@ window.WH = window.WH || {};
                 dynamicCtx = dynamicCanvas.getContext('2d');
                 
                 dynamicCanvas.addEventListener(eventType.click, onClick);
+                dynamicCanvas.addEventListener(eventType.start, onTouchStart);
                 window.addEventListener('resize', onWindowResize, false);
                 
                 onWindowResize();
@@ -96,13 +98,33 @@ window.WH = window.WH || {};
              */
             onDoubleClick = function(e) {
                 // create a new processor
-                ns.pubSub.fire('create.processor', {
+                midiNetwork.createProcessor({
                     type: 'epg',
                     position2d: {
                         x: e.pageX - e.target.offsetLeft,
                         y: e.pageY - e.target.offsetTop
                     }
                 });
+            },
+            
+            /**
+             * Select the object under the mouse.
+             * Start dragging the object.
+             */
+            onTouchStart = function(e) {
+                // find view under mouse, search from new to old
+                let rect = staticCanvas.getBoundingClientRect(),
+                    x = e.clientX - rect.left,
+                    y = e.clientY - rect.top;
+                for (var i = numViews - 1; i >= 0; i--) {
+                    if (views[i].intersectsWithPoint(x, y)) {
+                        // select the found view's processor
+                        midiNetwork.selectProcessor(views[i].getProcessor());
+                        // start dragging the view's graphic
+                        console.log('start drag');
+                        break;
+                    }
+                }
             },
             
             /**
@@ -141,7 +163,7 @@ window.WH = window.WH || {};
                 if (isDirty) {
                     staticCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
                     for (let i = 0; i < numViews; i++) {
-                        views[i].addStaticView(staticCtx);
+                        views[i].addToStaticView(staticCtx);
                     }
                 }
                 dynamicCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);

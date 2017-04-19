@@ -16,9 +16,9 @@ window.WH = window.WH || {};
             numProcessors = processors.length,
             
             init = function() {
-                ns.pubSub.on('create.processor', createProcessor);
-                ns.pubSub.on('delete.processor', deleteProcessor);
-                ns.pubSub.on('select.processor', selectProcessor);
+                // ns.pubSub.on('create.processor', createProcessor);
+                // ns.pubSub.on('delete.processor', deleteProcessor);
+                // ns.pubSub.on('select.processor', selectProcessor);
             },
             
             /**
@@ -335,6 +335,9 @@ window.WH = window.WH || {};
         
         init();
         
+        that.createProcessor = createProcessor;
+        that.deleteProcessor = deleteProcessor;
+        that.selectProcessor = selectProcessor;
         that.process = process;
         that.render = render;
         that.connectAllEPGToInput = connectAllEPGToInput;

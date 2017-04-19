@@ -8,17 +8,23 @@ window.WH = window.WH || {};
             processor = specs.processor,
             dynamicCtx = specs.dynamicCtx,
             canvasDirtyCallback = specs.canvasDirtyCallback,
+            staticCanvas,
             staticCtx,
-            canvasHeight = 300,
-            canvasWidth = 300,
+            radius = 50,
+            selectRadius = 10,
             position2d,
+            isSelected = false,
+            doublePI = Math.PI * 2,
             
             initialise = function() {
                 // offscreen canvas for static shapes
-                let staticCanvas = document.createElement('canvas');
-                staticCanvas.height = canvasHeight;
-                staticCanvas.width = canvasWidth;
+                staticCanvas = document.createElement('canvas');
+                staticCanvas.height = radius * 2;
+                staticCanvas.width = radius * 2;
                 staticCtx = staticCanvas.getContext('2d');
+                
+                // add callback to update before render.
+                processor.addSelectCallback(updateSelectCircle);
                 
                 // add listeners to parameters
                 let params = processor.getParameters();
@@ -27,6 +33,21 @@ window.WH = window.WH || {};
                 // set drawing values
                 position2d = params.position2d.getValue();
                 redrawStaticCanvas();
+            },
+            
+            /**
+             * Called before this view is deleted.
+             */
+            terminate = function() {},
+            
+            /**
+             * Show circle if the processor is selected, else hide.
+             * @param {Boolean} isSelectedView True if selected.
+             */
+            updateSelectCircle = function(isSelectedView) {
+                isSelected = isSelectedView;
+                redrawStaticCanvas();
+                canvasDirtyCallback();
             },
             
             /**
@@ -42,28 +63,40 @@ window.WH = window.WH || {};
             },
             
             redrawStaticCanvas = function() {
+                staticCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
                 staticCtx.beginPath();
-                staticCtx.arc(canvasWidth / 2, canvasHeight / 2, 50, 0, Math.PI * 2, true);
+                staticCtx.arc(radius, radius, 50, 0, doublePI, true);
+                // select circle
+                if (isSelected) {
+                    staticCtx.moveTo(radius + selectRadius, radius);
+                    staticCtx.arc(radius, radius, selectRadius, 0, doublePI, true);
+                }
                 staticCtx.stroke();
             },
             
-            addStaticView = function(mainStaticCtx) {
-                mainStaticCtx.putImageData(
-                    staticCtx.getImageData(0, 0, canvasWidth, canvasHeight),
-                    position2d.x - (canvasWidth / 2),
-                    position2d.y - (canvasHeight / 2));
-            }
+            addToStaticView = function(mainStaticCtx) {
+                mainStaticCtx.drawImage(
+                    staticCanvas,
+                    position2d.x - radius,
+                    position2d.y - radius);
+            },
             
-            /**
-             * Called before this view is deleted.
-             */
-            terminate = function() {};
+            intersectsWithPoint = function(x, y) {
+                let distance = Math.sqrt(Math.pow(x - position2d.x, 2) + Math.pow(y - position2d.y, 2));
+                return distance <= radius;
+            },
+            
+            getProcessor = function() {
+                return processor;
+            };
         
         that = specs.that || {};
         
         initialise();
         
-        that.addStaticView = addStaticView;
+        that.addToStaticView = addToStaticView;
+        that.intersectsWithPoint = intersectsWithPoint;
+        that.getProcessor = getProcessor;
         return that;
     }
 
