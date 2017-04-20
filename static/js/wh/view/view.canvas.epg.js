@@ -10,8 +10,13 @@ window.WH = window.WH || {};
             canvasDirtyCallback = specs.canvasDirtyCallback,
             staticCanvas,
             staticCtx,
-            radius = 50,
-            selectRadius = 10,
+            necklaceCanvas,
+            necklaceCtx,
+            radius = 100,
+            necklaceMinRadius = 50,
+            centreRadius = 30,
+            selectRadius = 25,
+            dotRadius = 8,
             position2d,
             isSelected = false,
             doublePI = Math.PI * 2,
@@ -23,15 +28,25 @@ window.WH = window.WH || {};
                 staticCanvas.width = radius * 2;
                 staticCtx = staticCanvas.getContext('2d');
                 
+                // offscreen canvas for dots ring and polygon
+                necklaceCanvas = document.createElement('canvas');
+                necklaceCanvas.height = radius * 2;
+                necklaceCanvas.width = radius * 2;
+                necklaceCtx = necklaceCanvas.getContext('2d');
+                
                 // add callback to update before render.
                 processor.addSelectCallback(updateSelectCircle);
                 
                 // add listeners to parameters
                 let params = processor.getParameters();
+                params.steps.addChangedCallback(updateNecklace);
+                params.pulses.addChangedCallback(updateNecklace);
+                params.rotation.addChangedCallback(updateNecklace);
                 params.position2d.addChangedCallback(updatePosition);
                 
                 // set drawing values
                 position2d = params.position2d.getValue();
+                updateNecklace();
                 redrawStaticCanvas();
             },
             
@@ -39,6 +54,47 @@ window.WH = window.WH || {};
              * Called before this view is deleted.
              */
             terminate = function() {},
+            
+            /**
+             * Update the pattern dots.
+             * If the steps, pulses or rotation properties have changed.
+             * If steps change it might invalidate the pointer.
+             */
+            updateNecklace = function() {
+                let steps = processor.getParamValue('steps'),
+                    rotation = processor.getParamValue('rotation'),
+                    euclid = processor.getEuclidPattern(),
+                    polygonPoints = [],
+                    rad, position2d, necklaceRadius;
+                    
+                necklaceCtx.strokeStyle = '#cccccc';
+                necklaceCtx.clearRect(0, 0, necklaceCanvas.width, necklaceCanvas.height);
+                necklaceCtx.beginPath();
+                    
+                necklaceRadius = necklaceMinRadius + (steps > 16 ? (steps - 16) * 3 : 0);
+                for (i = 0; i < steps; i++) {
+                    
+                    // calculate the dot positions
+                    rad = doublePI * (i / steps);
+                    position2d = {
+                        x: Math.sin(rad) * necklaceRadius,
+                        y: Math.cos(rad) * necklaceRadius
+                    }
+                    
+                    if (euclid[i]) {
+                        polygonPoints.push(position2d);
+                        // active dot
+                    } else {
+                        // passive dot
+                        necklaceCtx.moveTo(radius + position2d.x + dotRadius, radius + position2d.y);
+                        necklaceCtx.arc(radius + position2d.x, radius + position2d.y, dotRadius, 0, doublePI, true);
+                    }
+                }
+                
+                necklaceCtx.stroke();
+                redrawStaticCanvas();
+                canvasDirtyCallback();
+            },
             
             /**
              * Show circle if the processor is selected, else hide.
@@ -66,7 +122,14 @@ window.WH = window.WH || {};
                 staticCtx.strokeStyle = '#cccccc';
                 staticCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
                 staticCtx.beginPath();
-                staticCtx.arc(radius, radius, 50, 0, doublePI, true);
+                
+                // necklace
+                staticCtx.drawImage(necklaceCanvas, 0, 0);
+                
+                // centre ring
+                staticCtx.moveTo(radius + centreRadius, radius);
+                staticCtx.arc(radius, radius, centreRadius, 0, doublePI, true);
+                
                 // select circle
                 if (isSelected) {
                     staticCtx.moveTo(radius + selectRadius, radius);
