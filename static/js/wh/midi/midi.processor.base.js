@@ -62,6 +62,12 @@ window.WH = window.WH || {};
                 my['$' + parameter.getProperty('key')](newValue);
             },
             
+            setParamValue = function(key, value) {
+                if (my.params.hasOwnProperty(key)) {
+                    my.params[key].setValue(value);
+                }
+            },
+            
             getParamValue = function(key) {
                 if (my.params.hasOwnProperty(key)) {
                     return my.params[key].getValue();
@@ -140,6 +146,7 @@ window.WH = window.WH || {};
         
         that = specs.that || {};
         
+        that.setParamValue = setParamValue;
         that.getParamValue = getParamValue;
         that.getParameters = getParameters;
         that.hasParameter = hasParameter;

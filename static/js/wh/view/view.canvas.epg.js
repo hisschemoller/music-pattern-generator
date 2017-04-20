@@ -63,6 +63,7 @@ window.WH = window.WH || {};
             },
             
             redrawStaticCanvas = function() {
+                staticCtx.strokeStyle = '#cccccc';
                 staticCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
                 staticCtx.beginPath();
                 staticCtx.arc(radius, radius, 50, 0, doublePI, true);
@@ -88,6 +89,14 @@ window.WH = window.WH || {};
             
             getProcessor = function() {
                 return processor;
+            },
+            
+            setPosition2d = function(position2d) {
+                processor.setParamValue('position2d', position2d);
+            },
+            
+            getPosition2d = function() {
+                return processor.getParamValue('position2d');
             };
         
         that = specs.that || {};
@@ -97,6 +106,8 @@ window.WH = window.WH || {};
         that.addToStaticView = addToStaticView;
         that.intersectsWithPoint = intersectsWithPoint;
         that.getProcessor = getProcessor;
+        that.setPosition2d = setPosition2d;
+        that.getPosition2d = getPosition2d;
         return that;
     }
 

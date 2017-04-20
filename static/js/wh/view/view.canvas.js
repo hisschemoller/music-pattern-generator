@@ -29,6 +29,7 @@ window.WH = window.WH || {};
             dynamicCanvas,
             staticCtx,
             dynamicCtx,
+            canvasRect,
             views = [],
             numViews,
             isDirty = false,
@@ -36,6 +37,10 @@ window.WH = window.WH || {};
             doubleClickCounter = 0,
             doubleClickDelay = 300,
             doubleClickTimer,
+            isDragging = false,
+            draggedView,
+            dragOffsetX,
+            dragOffsetY,
         
             /**
              * Type of events to use, touch or mouse
@@ -57,6 +62,8 @@ window.WH = window.WH || {};
                 
                 dynamicCanvas.addEventListener(eventType.click, onClick);
                 dynamicCanvas.addEventListener(eventType.start, onTouchStart);
+                dynamicCanvas.addEventListener(eventType.move, dragMove);
+                dynamicCanvas.addEventListener(eventType.end, dragEnd);
                 window.addEventListener('resize', onWindowResize, false);
                 
                 onWindowResize();
@@ -70,6 +77,7 @@ window.WH = window.WH || {};
                 staticCanvas.height = window.innerHeight;
                 dynamicCanvas.width = window.innerWidth;
                 dynamicCanvas.height = window.innerHeight;
+                canvasRect = dynamicCanvas.getBoundingClientRect();
             },
             
             /**
@@ -113,18 +121,54 @@ window.WH = window.WH || {};
              */
             onTouchStart = function(e) {
                 // find view under mouse, search from new to old
-                let rect = staticCanvas.getBoundingClientRect(),
-                    x = e.clientX - rect.left,
-                    y = e.clientY - rect.top;
+                let x = e.clientX - canvasRect.left,
+                    y = e.clientY - canvasRect.top;
                 for (var i = numViews - 1; i >= 0; i--) {
                     if (views[i].intersectsWithPoint(x, y)) {
                         // select the found view's processor
-                        midiNetwork.selectProcessor(views[i].getProcessor());
+                        let processor = views[i].getProcessor();
+                        midiNetwork.selectProcessor(processor);
                         // start dragging the view's graphic
-                        console.log('start drag');
+                        dragStart(views[i], x, y);
                         break;
                     }
                 }
+            },
+            
+            /**
+             * Initialise object dragging.
+             */
+            dragStart = function(view, x, y) {
+                let position2d = view.getPosition2d();
+                draggedView = view;
+                dragOffsetX = x - position2d.x;
+                dragOffsetY = y - position2d.y;
+                isDragging = true;
+            },
+            
+            /**
+             * Drag a view.
+             * @param  {Object} e Event.
+             */
+            dragMove = function(e) {
+                e.preventDefault();
+                if (isDragging) {
+                    draggedView.setPosition2d({
+                        x: (e.clientX - canvasRect.left) - dragOffsetX,
+                        y: (e.clientY - canvasRect.top) - dragOffsetY
+                    });
+                }
+            },
+            
+            /**
+             * Dragging 3D object ended.
+             * @param  {Object} e Event.
+             */
+            dragEnd = function(e) {
+                e.preventDefault();
+                dragMove(e);
+                draggedView = null;
+                isDragging = false;
             },
             
             /**
