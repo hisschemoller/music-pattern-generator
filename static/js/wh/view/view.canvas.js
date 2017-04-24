@@ -126,8 +126,7 @@ window.WH = window.WH || {};
                 for (var i = numViews - 1; i >= 0; i--) {
                     if (views[i].intersectsWithPoint(x, y)) {
                         // select the found view's processor
-                        let processor = views[i].getProcessor();
-                        midiNetwork.selectProcessor(processor);
+                        midiNetwork.selectProcessor(views[i].getProcessor());
                         // start dragging the view's graphic
                         dragStart(views[i], x, y);
                         break;
@@ -211,9 +210,9 @@ window.WH = window.WH || {};
                     }
                 }
                 dynamicCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
-                // for (let i = 0; i < numViews; i++) {
-                //     views[i].draw(isDirty);
-                // }
+                for (let i = 0; i < numViews; i++) {
+                    views[i].addToDynamicView(dynamicCtx);
+                }
                 isDirty = false;
             };
         

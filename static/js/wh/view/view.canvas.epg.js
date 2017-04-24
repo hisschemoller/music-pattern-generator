@@ -12,8 +12,12 @@ window.WH = window.WH || {};
             staticCtx,
             necklaceCanvas,
             necklaceCtx,
+            pointerCanvas,
+            pointerCtx,
+            pointerRotation,
             radius = 100,
             necklaceMinRadius = 50,
+            necklaceRadius,
             centreRadius = 30,
             selectRadius = 25,
             dotRadius = 8,
@@ -34,7 +38,15 @@ window.WH = window.WH || {};
                 necklaceCanvas.width = radius * 2;
                 necklaceCtx = necklaceCanvas.getContext('2d');
                 
+                // offscreen canvas for the pointer
+                pointerCanvas = document.createElement('canvas');
+                pointerCanvas.height = radius * 2;
+                pointerCanvas.width = radius * 2;
+                pointerCtx = pointerCanvas.getContext('2d');
+                
                 // add callback to update before render.
+                processor.addRenderCallback(showPlaybackPosition);
+                processor.addProcessCallback(showNote);
                 processor.addSelectCallback(updateSelectCircle);
                 
                 // add listeners to parameters
@@ -42,6 +54,7 @@ window.WH = window.WH || {};
                 params.steps.addChangedCallback(updateNecklace);
                 params.pulses.addChangedCallback(updateNecklace);
                 params.rotation.addChangedCallback(updateNecklace);
+                params.is_mute.addChangedCallback(updatePointer);
                 params.position2d.addChangedCallback(updatePosition);
                 
                 // set drawing values
@@ -56,6 +69,26 @@ window.WH = window.WH || {};
             terminate = function() {},
             
             /**
+             * Show the playback position within the pattern.
+             * Indicated by the pointer's rotation.
+             * @param  {Number} position Position within pattern in ticks.
+             * @param  {Number} duration Pattern length in ticks.
+             */
+            showPlaybackPosition = function(position, duration) {
+                pointerRotation = doublePI * (position / duration);
+            },
+            
+            /**
+             * Show animation of the pattern dot that is about to play. 
+             * @param {Number} stepIndex Index of the step to play.
+             * @param {Number} noteStartDelay Delay from now until note start in ms.
+             * @param {Number} noteStopDelay Delay from now until note end in ms.
+             */
+            showNote = function(stepIndex, noteStartDelay, noteStopDelay) {
+                
+            },
+            
+            /**
              * Update the pattern dots.
              * If the steps, pulses or rotation properties have changed.
              * If steps change it might invalidate the pointer.
@@ -65,8 +98,9 @@ window.WH = window.WH || {};
                     rotation = processor.getParamValue('rotation'),
                     euclid = processor.getEuclidPattern(),
                     polygonPoints = [],
-                    rad, position2d, necklaceRadius;
+                    rad, position2d;
                     
+                necklaceCtx.fillStyle = '#cccccc';
                 necklaceCtx.strokeStyle = '#cccccc';
                 necklaceCtx.clearRect(0, 0, necklaceCanvas.width, necklaceCanvas.height);
                 necklaceCtx.beginPath();
@@ -84,14 +118,21 @@ window.WH = window.WH || {};
                     if (euclid[i]) {
                         polygonPoints.push(position2d);
                         // active dot
-                    } else {
-                        // passive dot
+                        necklaceCtx.beginPath();
                         necklaceCtx.moveTo(radius + position2d.x + dotRadius, radius + position2d.y);
                         necklaceCtx.arc(radius + position2d.x, radius + position2d.y, dotRadius, 0, doublePI, true);
+                        necklaceCtx.fill();
+                        necklaceCtx.stroke();
+                    } else {
+                        // passive dot
+                        necklaceCtx.beginPath();
+                        necklaceCtx.moveTo(radius + position2d.x + dotRadius, radius + position2d.y);
+                        necklaceCtx.arc(radius + position2d.x, radius + position2d.y, dotRadius, 0, doublePI, true);
+                        necklaceCtx.stroke();
                     }
                 }
                 
-                necklaceCtx.stroke();
+                updatePointer();
                 redrawStaticCanvas();
                 canvasDirtyCallback();
             },
@@ -116,6 +157,24 @@ window.WH = window.WH || {};
                 position2d = newValue;
                 redrawStaticCanvas();
                 canvasDirtyCallback();
+            },
+            
+            /**
+             * Update the pointer that connects the dots.
+             */
+            updatePointer = function() {
+                var isMute = processor.getParamValue('is_mute'),
+                    isNoteInControlled = false, /* processor.getProperty('isNoteInControlled'), */
+                    isMutedByNoteInControl = false, /* processor.getProperty('isMutedByNoteInControl'), */
+                    mutedRadius = 4.5,
+                    pointerRadius = (isMute || isMutedByNoteInControl) ? mutedRadius : radius;
+                
+                pointerCtx.strokeStyle = '#cccccc';
+                pointerCtx.clearRect(0, 0, pointerCanvas.width, pointerCanvas.height);
+                pointerCtx.beginPath();
+                pointerCtx.moveTo(radius, radius);
+                pointerCtx.lineTo(radius, radius - necklaceRadius);
+                pointerCtx.stroke();
             },
             
             redrawStaticCanvas = function() {
@@ -145,6 +204,14 @@ window.WH = window.WH || {};
                     position2d.y - radius);
             },
             
+            addToDynamicView = function(mainDynamicCtx) {
+                mainDynamicCtx.translate(position2d.x, position2d.y);
+                mainDynamicCtx.rotate(pointerRotation);
+                mainDynamicCtx.drawImage(pointerCanvas, -radius, -radius);
+                mainDynamicCtx.rotate(-pointerRotation);
+                mainDynamicCtx.translate(-position2d.x, -position2d.y);
+            },
+            
             intersectsWithPoint = function(x, y) {
                 let distance = Math.sqrt(Math.pow(x - position2d.x, 2) + Math.pow(y - position2d.y, 2));
                 return distance <= radius;
@@ -167,6 +234,7 @@ window.WH = window.WH || {};
         initialise();
         
         that.addToStaticView = addToStaticView;
+        that.addToDynamicView = addToDynamicView;
         that.intersectsWithPoint = intersectsWithPoint;
         that.getProcessor = getProcessor;
         that.setPosition2d = setPosition2d;
