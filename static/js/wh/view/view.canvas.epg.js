@@ -85,7 +85,21 @@ window.WH = window.WH || {};
              * @param {Number} noteStopDelay Delay from now until note end in ms.
              */
             showNote = function(stepIndex, noteStartDelay, noteStopDelay) {
+                // get the coordinates of the dot for this step
+                let steps = processor.getParamValue('steps'),
+                    position2d = {x: 0, y: 0}
+                calculateCoordinateForStepIndex(position2d, stepIndex, steps, necklaceRadius);
                 
+                // animate the necklace dot
+                new TWEEN.Tween({r: dotRadius * 1.5})
+                    .to({r: dotRadius}, 300)
+                    .onUpdate(function() {
+                            // draw dot
+                        })
+                    .delay(noteStartDelay)
+                    .start();
+                
+                console.log(position2d);
             },
             
             /**
@@ -98,7 +112,8 @@ window.WH = window.WH || {};
                     rotation = processor.getParamValue('rotation'),
                     euclid = processor.getEuclidPattern(),
                     polygonPoints = [],
-                    rad, position2d;
+                    position2d = {x: 0, y:0},
+                    rad;
                     
                 necklaceCtx.fillStyle = '#cccccc';
                 necklaceCtx.strokeStyle = '#cccccc';
@@ -109,11 +124,7 @@ window.WH = window.WH || {};
                 for (i = 0; i < steps; i++) {
                     
                     // calculate the dot positions
-                    rad = doublePI * (i / steps);
-                    position2d = {
-                        x: Math.sin(rad) * necklaceRadius,
-                        y: Math.cos(rad) * necklaceRadius
-                    }
+                    calculateCoordinateForStepIndex(position2d, i, steps, necklaceRadius);
                     
                     if (euclid[i]) {
                         polygonPoints.push(position2d);
@@ -216,6 +227,19 @@ window.WH = window.WH || {};
                 let distance = Math.sqrt(Math.pow(x - position2d.x, 2) + Math.pow(y - position2d.y, 2));
                 return distance <= radius;
             },
+            
+            /**
+             * Calculate the 2D coordinates of the dot for a certain step.
+             * @param  {Object} position2d 2D point vector to be set in this function.
+             * @param  {Number} stepIndex Index of the step within the pattern.
+             * @param  {Number} numSteps Number of steps in the pattern.
+             * @param  {Number} necklaceRadius Distance of the dots from the centre.
+             */
+            calculateCoordinateForStepIndex = function(position2d, stepIndex, numSteps, necklaceRadius) {
+                let rad = doublePI * (stepIndex / numSteps);
+                position2d.x = Math.sin(rad) * necklaceRadius;
+                position2d.y = Math.cos(rad) * necklaceRadius;
+            }
             
             getProcessor = function() {
                 return processor;
