@@ -109,7 +109,14 @@ window.WH = window.WH || {};
                     .to({currentRadius: dotRadius}, 300)
                     .onUpdate(function() {
                             // store new dot size
-                            dotAnimations[stepIndex].dotRadius = this.currentRadius;
+                            try {
+                                dotAnimations[stepIndex].dotRadius = this.currentRadius;
+                            } catch(errMsg) {
+                                console.log(errMsg);
+                                console.log(steps, stepIndex, dotAnimations);
+                                debugger
+                            }
+                            
                         })
                     .onComplete(function() {
                             // delete dot state object
@@ -161,34 +168,60 @@ window.WH = window.WH || {};
                 let steps = processor.getParamValue('steps'),
                     rotation = processor.getParamValue('rotation'),
                     euclid = processor.getEuclidPattern(),
-                    polygonPoints = [],
                     position2d = {x: 0, y:0},
-                    rad;
+                    rad, point,
+                    necklacePoints = [];
                     
+                // calculate the dot positions
+                necklaceRadius = necklaceMinRadius + (steps > 16 ? (steps - 16) * 3 : 0);
+                for (let i = 0; i < steps; i++) {
+                    point = {};
+                    calculateCoordinateForStepIndex(point, i, steps, necklaceRadius);
+                    necklacePoints.push(point);
+                }
+                
                 necklaceCtx.fillStyle = color;
                 necklaceCtx.strokeStyle = color;
                 necklaceCtx.clearRect(0, 0, necklaceCanvas.width, necklaceCanvas.height);
+                
+                
+                // draw polygon
                 necklaceCtx.beginPath();
-                    
-                necklaceRadius = necklaceMinRadius + (steps > 16 ? (steps - 16) * 3 : 0);
-                for (i = 0; i < steps; i++) {
-                    
-                    // calculate the dot positions
-                    calculateCoordinateForStepIndex(position2d, i, steps, necklaceRadius);
-                    
+                let isFirstPoint = true,
+                    firstPoint;
+                for (let i = 0; i < steps; i++) {
                     if (euclid[i]) {
-                        polygonPoints.push(position2d);
+                        if (isFirstPoint) {
+                            isFirstPoint = false;
+                            firstPoint = necklacePoints[i];
+                            necklaceCtx.moveTo(radius + firstPoint.x, radius - firstPoint.y);
+                        } else {
+                            necklaceCtx.lineTo(radius + necklacePoints[i].x, radius - necklacePoints[i].y);
+                        }
+                    }
+                }
+                necklaceCtx.lineTo(radius + firstPoint.x, radius - firstPoint.y);
+                necklaceCtx.stroke();
+                necklaceCtx.globalAlpha = 0.2;
+                necklaceCtx.fill();
+                necklaceCtx.globalAlpha = 1.0;
+                
+                // draw dots
+                for (let i = 0; i < steps; i++) {
+                    
+                    point = necklacePoints[i];
+                    if (euclid[i]) {
                         // active dot
                         necklaceCtx.beginPath();
-                        necklaceCtx.moveTo(radius + position2d.x + dotRadius, radius - position2d.y);
-                        necklaceCtx.arc(radius + position2d.x, radius - position2d.y, dotRadius, 0, doublePI, true);
+                        necklaceCtx.moveTo(radius + point.x + dotRadius, radius - point.y);
+                        necklaceCtx.arc(radius + point.x, radius - point.y, dotRadius, 0, doublePI, true);
                         necklaceCtx.fill();
                         necklaceCtx.stroke();
                     } else {
                         // passive dot
                         necklaceCtx.beginPath();
-                        necklaceCtx.moveTo(radius + position2d.x + dotRadius, radius - position2d.y);
-                        necklaceCtx.arc(radius + position2d.x, radius - position2d.y, dotRadius, 0, doublePI, true);
+                        necklaceCtx.moveTo(radius + point.x + dotRadius, radius - point.y);
+                        necklaceCtx.arc(radius + point.x, radius - point.y, dotRadius, 0, doublePI, true);
                         necklaceCtx.stroke();
                     }
                 }
@@ -242,6 +275,16 @@ window.WH = window.WH || {};
                 staticCtx.strokeStyle = color;
                 staticCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
                 staticCtx.beginPath();
+                // console.log(polygonPoints.length);
+                // // polygon
+                // if (polygonPoints.length > 1) {
+                //     staticCtx.moveTo(radius + polygonPoints[0].x, radius + polygonPoints[0].y);
+                //     let n = polygonPoints.length;
+                //     for (let i = 1; i < n; i++) {
+                //         staticCtx.lineTo(radius + polygonPoints[i].x, radius + polygonPoints[i].y);
+                //     }
+                //     staticCtx.lineTo(radius + polygonPoints[0].x, radius + polygonPoints[0].y);
+                // }
                 
                 // necklace
                 staticCtx.drawImage(necklaceCanvas, 0, 0);
