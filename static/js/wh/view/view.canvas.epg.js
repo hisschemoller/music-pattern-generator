@@ -24,6 +24,8 @@ window.WH = window.WH || {};
             position2d,
             isSelected = false,
             doublePI = Math.PI * 2,
+            dotAnimations = {},
+            color = '#eeeeee',
             
             initialise = function() {
                 // offscreen canvas for static shapes
@@ -87,19 +89,30 @@ window.WH = window.WH || {};
             showNote = function(stepIndex, noteStartDelay, noteStopDelay) {
                 // get the coordinates of the dot for this step
                 let steps = processor.getParamValue('steps'),
-                    position2d = {x: 0, y: 0}
+                    position2d = {};
+                
+                // fill position2d with the dot coordinate
                 calculateCoordinateForStepIndex(position2d, stepIndex, steps, necklaceRadius);
                 
+                // retain dot state in object
+                dotAnimations[stepIndex] = {
+                    position2d: position2d,
+                    dotRadius: 0
+                }
+                
                 // animate the necklace dot
-                new TWEEN.Tween({r: dotRadius * 1.5})
-                    .to({r: dotRadius}, 300)
+                let t = new TWEEN.Tween({currentRadius: dotRadius * 1.5})
+                    .to({currentRadius: dotRadius}, 300)
                     .onUpdate(function() {
-                            // draw dot
+                            // store new dot size
+                            dotAnimations[stepIndex].dotRadius = this.currentRadius;
+                        })
+                    .onComplete(function() {
+                            // delete dot state object
+                            delete dotAnimations[stepIndex];
                         })
                     .delay(noteStartDelay)
                     .start();
-                
-                console.log(position2d);
             },
             
             /**
@@ -115,8 +128,8 @@ window.WH = window.WH || {};
                     position2d = {x: 0, y:0},
                     rad;
                     
-                necklaceCtx.fillStyle = '#cccccc';
-                necklaceCtx.strokeStyle = '#cccccc';
+                necklaceCtx.fillStyle = color;
+                necklaceCtx.strokeStyle = color;
                 necklaceCtx.clearRect(0, 0, necklaceCanvas.width, necklaceCanvas.height);
                 necklaceCtx.beginPath();
                     
@@ -130,15 +143,15 @@ window.WH = window.WH || {};
                         polygonPoints.push(position2d);
                         // active dot
                         necklaceCtx.beginPath();
-                        necklaceCtx.moveTo(radius + position2d.x + dotRadius, radius + position2d.y);
-                        necklaceCtx.arc(radius + position2d.x, radius + position2d.y, dotRadius, 0, doublePI, true);
+                        necklaceCtx.moveTo(radius + position2d.x + dotRadius, radius - position2d.y);
+                        necklaceCtx.arc(radius + position2d.x, radius - position2d.y, dotRadius, 0, doublePI, true);
                         necklaceCtx.fill();
                         necklaceCtx.stroke();
                     } else {
                         // passive dot
                         necklaceCtx.beginPath();
-                        necklaceCtx.moveTo(radius + position2d.x + dotRadius, radius + position2d.y);
-                        necklaceCtx.arc(radius + position2d.x, radius + position2d.y, dotRadius, 0, doublePI, true);
+                        necklaceCtx.moveTo(radius + position2d.x + dotRadius, radius - position2d.y);
+                        necklaceCtx.arc(radius + position2d.x, radius - position2d.y, dotRadius, 0, doublePI, true);
                         necklaceCtx.stroke();
                     }
                 }
@@ -180,7 +193,7 @@ window.WH = window.WH || {};
                     mutedRadius = 4.5,
                     pointerRadius = (isMute || isMutedByNoteInControl) ? mutedRadius : radius;
                 
-                pointerCtx.strokeStyle = '#cccccc';
+                pointerCtx.strokeStyle = color;
                 pointerCtx.clearRect(0, 0, pointerCanvas.width, pointerCanvas.height);
                 pointerCtx.beginPath();
                 pointerCtx.moveTo(radius, radius);
@@ -189,7 +202,7 @@ window.WH = window.WH || {};
             },
             
             redrawStaticCanvas = function() {
-                staticCtx.strokeStyle = '#cccccc';
+                staticCtx.strokeStyle = color;
                 staticCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
                 staticCtx.beginPath();
                 
@@ -216,11 +229,32 @@ window.WH = window.WH || {};
             },
             
             addToDynamicView = function(mainDynamicCtx) {
+                // draw rotating pointer
                 mainDynamicCtx.translate(position2d.x, position2d.y);
                 mainDynamicCtx.rotate(pointerRotation);
                 mainDynamicCtx.drawImage(pointerCanvas, -radius, -radius);
                 mainDynamicCtx.rotate(-pointerRotation);
                 mainDynamicCtx.translate(-position2d.x, -position2d.y);
+                
+                // draw dot animations
+                mainDynamicCtx.fillStyle = color;
+                mainDynamicCtx.strokeStyle = color;
+                let n = dotAnimations.length,
+                    dotState, x, y;
+                for (let key in dotAnimations) {
+                    if (dotAnimations.hasOwnProperty(key)) {
+                        dotState = dotAnimations[key];
+                        x = position2d.x + dotState.position2d.x;
+                        y = position2d.y - dotState.position2d.y;
+                        mainDynamicCtx.beginPath();
+                        mainDynamicCtx.moveTo(x + dotState.dotRadius, y);
+                        mainDynamicCtx.arc(x, y, dotState.dotRadius, 0, doublePI, true);
+                        mainDynamicCtx.fill();
+                        mainDynamicCtx.stroke();
+                    }
+                }
+                mainDynamicCtx.fill();
+                mainDynamicCtx.stroke();
             },
             
             intersectsWithPoint = function(x, y) {

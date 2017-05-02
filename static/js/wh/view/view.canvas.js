@@ -203,6 +203,7 @@ window.WH = window.WH || {};
             },
             
             draw = function() {
+                TWEEN.update();
                 if (isDirty) {
                     staticCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
                     for (let i = 0; i < numViews; i++) {
