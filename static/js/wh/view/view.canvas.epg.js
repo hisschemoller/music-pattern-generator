@@ -26,6 +26,10 @@ window.WH = window.WH || {};
             doublePI = Math.PI * 2,
             dotAnimations = {},
             color = '#eeeeee',
+            centreDotEndTween,
+            centreDotFullRadius = 10,
+            centreDotRadius,
+            isNoteActive = false,
             
             initialise = function() {
                 // offscreen canvas for static shapes
@@ -94,7 +98,7 @@ window.WH = window.WH || {};
                 // fill position2d with the dot coordinate
                 calculateCoordinateForStepIndex(position2d, stepIndex, steps, necklaceRadius);
                 
-                // retain dot state in object
+                // retain necklace dot state in object
                 dotAnimations[stepIndex] = {
                     position2d: position2d,
                     dotRadius: 0
@@ -113,6 +117,39 @@ window.WH = window.WH || {};
                         })
                     .delay(noteStartDelay)
                     .start();
+                    
+                // stop centre dot animation, if any
+                if (centreDotEndTween) {
+                    centreDotEndTween.stop();
+                }
+                
+                // centre dot start animation
+                var startTween = new TWEEN.Tween({centreRadius: 0.01})
+                    .to({centreRadius: centreDotFullRadius}, 10)
+                    .onStart(function() {
+                            isNoteActive = true;
+                        })
+                    .onUpdate(function() {
+                            centreDotRadius = this.centreRadius;
+                        })
+                    .delay(noteStartDelay);
+                    
+                // centre dot end animation
+                var stopTween = new TWEEN.Tween({scale: centreDotFullRadius})
+                    .to({scale: 0.01}, 150)
+                    .onUpdate(function() {
+                            centreDotRadius = this.centreRadius;
+                        })
+                    .onComplete(function() {
+                            isNoteActive = false;
+                        })
+                    .delay(noteStopDelay - noteStartDelay);
+                
+                // start centre dot animation
+                startTween.chain(stopTween);
+                startTween.start();
+                
+                centreDotEndTween = stopTween;
             },
             
             /**
@@ -236,9 +273,11 @@ window.WH = window.WH || {};
                 mainDynamicCtx.rotate(-pointerRotation);
                 mainDynamicCtx.translate(-position2d.x, -position2d.y);
                 
-                // draw dot animations
                 mainDynamicCtx.fillStyle = color;
                 mainDynamicCtx.strokeStyle = color;
+                mainDynamicCtx.beginPath();
+                
+                // necklace dots
                 let n = dotAnimations.length,
                     dotState, x, y;
                 for (let key in dotAnimations) {
@@ -246,13 +285,17 @@ window.WH = window.WH || {};
                         dotState = dotAnimations[key];
                         x = position2d.x + dotState.position2d.x;
                         y = position2d.y - dotState.position2d.y;
-                        mainDynamicCtx.beginPath();
                         mainDynamicCtx.moveTo(x + dotState.dotRadius, y);
                         mainDynamicCtx.arc(x, y, dotState.dotRadius, 0, doublePI, true);
-                        mainDynamicCtx.fill();
-                        mainDynamicCtx.stroke();
                     }
                 }
+                
+                // centre dot
+                if (isNoteActive) {
+                    mainDynamicCtx.moveTo(position2d.x + centreDotRadius, position2d.y);
+                    mainDynamicCtx.arc(position2d.x, position2d.y, centreDotRadius, 0, doublePI, true);
+                }
+                
                 mainDynamicCtx.fill();
                 mainDynamicCtx.stroke();
             },
