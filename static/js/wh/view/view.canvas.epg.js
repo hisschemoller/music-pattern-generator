@@ -21,14 +21,15 @@ window.WH = window.WH || {};
             centreRadius = 30,
             selectRadius = 25,
             dotRadius = 8,
+            centreDotFullRadius = 10,
+            centreDotRadius,
+            zeroMarkerRadius = 3,
             position2d,
             isSelected = false,
             doublePI = Math.PI * 2,
             dotAnimations = {},
             color = '#eeeeee',
             centreDotEndTween,
-            centreDotFullRadius = 10,
-            centreDotRadius,
             isNoteActive = false,
             
             initialise = function() {
@@ -180,13 +181,14 @@ window.WH = window.WH || {};
                     necklacePoints.push(point);
                 }
                 
+                necklaceCtx.clearRect(0, 0, necklaceCanvas.width, necklaceCanvas.height);
                 necklaceCtx.fillStyle = color;
                 necklaceCtx.strokeStyle = color;
-                necklaceCtx.clearRect(0, 0, necklaceCanvas.width, necklaceCanvas.height);
                 
                 updatePolygon(steps, euclid, necklacePoints);
                 updateDots(steps, euclid, necklacePoints);
                 updatePointer();
+                updateZeroMarker(steps, rotation);
                 redrawStaticCanvas();
                 canvasDirtyCallback();
             },
@@ -262,7 +264,7 @@ window.WH = window.WH || {};
             updatePointer = function() {
                 var isMute = processor.getParamValue('is_mute'),
                     isNoteInControlled = false, /* processor.getProperty('isNoteInControlled'), */
-                    isMutedByNoteInControl = false, /* processor.getProperty('isMutedByNoteInControl'), */
+                    isMutedByNoteInControl = false,
                     mutedRadius = 4.5,
                     pointerRadius = (isMute || isMutedByNoteInControl) ? mutedRadius : radius;
                 
@@ -272,6 +274,18 @@ window.WH = window.WH || {};
                 pointerCtx.moveTo(radius, radius);
                 pointerCtx.lineTo(radius, radius - necklaceRadius);
                 pointerCtx.stroke();
+            },
+            
+            updateZeroMarker = function(steps, rotation) {
+                var rad = doublePI * (-rotation / steps),
+                    markerRadius = necklaceRadius + 15,
+                    x = radius + (Math.sin(rad) * markerRadius),
+                    y = radius - (Math.cos(rad) * markerRadius);
+                
+                necklaceCtx.beginPath();
+                necklaceCtx.moveTo(x, y + zeroMarkerRadius);
+                necklaceCtx.arc(x, y, zeroMarkerRadius, 0, doublePI, true);
+                necklaceCtx.stroke();
             },
             
             redrawStaticCanvas = function() {
