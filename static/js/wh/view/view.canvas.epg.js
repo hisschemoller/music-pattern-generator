@@ -189,6 +189,7 @@ window.WH = window.WH || {};
                 updateDots(steps, euclid, necklacePoints);
                 updatePointer();
                 updateZeroMarker(steps, rotation);
+                updateRotatedMarker(steps, rotation);
                 redrawStaticCanvas();
                 canvasDirtyCallback();
             },
@@ -276,6 +277,11 @@ window.WH = window.WH || {};
                 pointerCtx.stroke();
             },
             
+            /**
+             * Update the zero marker.
+             * @param {Number} steps Euclidean necklace node amount.
+             * @param {Number} rotation Euclidean necklace rotation.
+             */
             updateZeroMarker = function(steps, rotation) {
                 var rad = doublePI * (-rotation / steps),
                     markerRadius = necklaceRadius + 15,
@@ -286,6 +292,25 @@ window.WH = window.WH || {};
                 necklaceCtx.moveTo(x, y + zeroMarkerRadius);
                 necklaceCtx.arc(x, y, zeroMarkerRadius, 0, doublePI, true);
                 necklaceCtx.stroke();
+            },
+            
+            /**
+             * Update the marker that indicates if the pattern is rotated.
+             * @param {Number} steps Euclidean necklace node amount.
+             * @param {Number} rotation Euclidean necklace rotation.
+             */
+            updateRotatedMarker = function(steps, rotation) {
+                if (rotation !== 0) {
+                    var x = radius,
+                        y = radius - necklaceRadius - 10;
+                    
+                    necklaceCtx.beginPath();
+                    necklaceCtx.moveTo(x, y);
+                    necklaceCtx.lineTo(x, y - 10);
+                    necklaceCtx.lineTo(x + 6, y - 7);
+                    necklaceCtx.lineTo(x, y - 4);
+                    necklaceCtx.stroke();
+                }
             },
             
             redrawStaticCanvas = function() {
