@@ -184,48 +184,8 @@ window.WH = window.WH || {};
                 necklaceCtx.strokeStyle = color;
                 necklaceCtx.clearRect(0, 0, necklaceCanvas.width, necklaceCanvas.height);
                 
-                
-                // draw polygon
-                necklaceCtx.beginPath();
-                let isFirstPoint = true,
-                    firstPoint;
-                for (let i = 0; i < steps; i++) {
-                    if (euclid[i]) {
-                        if (isFirstPoint) {
-                            isFirstPoint = false;
-                            firstPoint = necklacePoints[i];
-                            necklaceCtx.moveTo(radius + firstPoint.x, radius - firstPoint.y);
-                        } else {
-                            necklaceCtx.lineTo(radius + necklacePoints[i].x, radius - necklacePoints[i].y);
-                        }
-                    }
-                }
-                necklaceCtx.lineTo(radius + firstPoint.x, radius - firstPoint.y);
-                necklaceCtx.stroke();
-                necklaceCtx.globalAlpha = 0.2;
-                necklaceCtx.fill();
-                necklaceCtx.globalAlpha = 1.0;
-                
-                // draw dots
-                for (let i = 0; i < steps; i++) {
-                    
-                    point = necklacePoints[i];
-                    if (euclid[i]) {
-                        // active dot
-                        necklaceCtx.beginPath();
-                        necklaceCtx.moveTo(radius + point.x + dotRadius, radius - point.y);
-                        necklaceCtx.arc(radius + point.x, radius - point.y, dotRadius, 0, doublePI, true);
-                        necklaceCtx.fill();
-                        necklaceCtx.stroke();
-                    } else {
-                        // passive dot
-                        necklaceCtx.beginPath();
-                        necklaceCtx.moveTo(radius + point.x + dotRadius, radius - point.y);
-                        necklaceCtx.arc(radius + point.x, radius - point.y, dotRadius, 0, doublePI, true);
-                        necklaceCtx.stroke();
-                    }
-                }
-                
+                updatePolygon(steps, euclid, necklacePoints);
+                updateDots(steps, euclid, necklacePoints);
                 updatePointer();
                 redrawStaticCanvas();
                 canvasDirtyCallback();
@@ -253,6 +213,49 @@ window.WH = window.WH || {};
                 canvasDirtyCallback();
             },
             
+            updatePolygon = function(steps, euclid, necklacePoints) {
+                // draw polygon
+                necklaceCtx.beginPath();
+                let isFirstPoint = true,
+                    firstPoint;
+                for (let i = 0; i < steps; i++) {
+                    if (euclid[i]) {
+                        if (isFirstPoint) {
+                            isFirstPoint = false;
+                            firstPoint = necklacePoints[i];
+                            necklaceCtx.moveTo(radius + firstPoint.x, radius - firstPoint.y);
+                        } else {
+                            necklaceCtx.lineTo(radius + necklacePoints[i].x, radius - necklacePoints[i].y);
+                        }
+                    }
+                }
+                necklaceCtx.lineTo(radius + firstPoint.x, radius - firstPoint.y);
+                necklaceCtx.stroke();
+                necklaceCtx.globalAlpha = 0.2;
+                necklaceCtx.fill();
+                necklaceCtx.globalAlpha = 1.0;
+            },
+            
+            updateDots = function(steps, euclid, necklacePoints) {
+                for (let i = 0; i < steps; i++) {
+                    point = necklacePoints[i];
+                    if (euclid[i]) {
+                        // active dot
+                        necklaceCtx.beginPath();
+                        necklaceCtx.moveTo(radius + point.x + dotRadius, radius - point.y);
+                        necklaceCtx.arc(radius + point.x, radius - point.y, dotRadius, 0, doublePI, true);
+                        necklaceCtx.fill();
+                        necklaceCtx.stroke();
+                    } else {
+                        // passive dot
+                        necklaceCtx.beginPath();
+                        necklaceCtx.moveTo(radius + point.x + dotRadius, radius - point.y);
+                        necklaceCtx.arc(radius + point.x, radius - point.y, dotRadius, 0, doublePI, true);
+                        necklaceCtx.stroke();
+                    }
+                }
+            },
+            
             /**
              * Update the pointer that connects the dots.
              */
@@ -275,16 +278,6 @@ window.WH = window.WH || {};
                 staticCtx.strokeStyle = color;
                 staticCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
                 staticCtx.beginPath();
-                // console.log(polygonPoints.length);
-                // // polygon
-                // if (polygonPoints.length > 1) {
-                //     staticCtx.moveTo(radius + polygonPoints[0].x, radius + polygonPoints[0].y);
-                //     let n = polygonPoints.length;
-                //     for (let i = 1; i < n; i++) {
-                //         staticCtx.lineTo(radius + polygonPoints[i].x, radius + polygonPoints[i].y);
-                //     }
-                //     staticCtx.lineTo(radius + polygonPoints[0].x, radius + polygonPoints[0].y);
-                // }
                 
                 // necklace
                 staticCtx.drawImage(necklaceCanvas, 0, 0);
