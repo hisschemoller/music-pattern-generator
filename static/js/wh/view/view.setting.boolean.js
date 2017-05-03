@@ -35,7 +35,6 @@
              },
              
              onChange = function(e) {
-                 console.log(e.target);
                  my.param.setValue(e.target.checked);
              },
              

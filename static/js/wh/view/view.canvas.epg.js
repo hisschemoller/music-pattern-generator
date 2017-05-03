@@ -18,12 +18,13 @@ window.WH = window.WH || {};
             radius = 100,
             necklaceMinRadius = 50,
             necklaceRadius,
-            centreRadius = 30,
-            selectRadius = 25,
-            dotRadius = 8,
             centreDotFullRadius = 10,
             centreDotRadius,
+            selectRadius = 15,
+            centreRadius = 20,
+            dotRadius = 8,
             zeroMarkerRadius = 3,
+            pointerMutedRadius = 30,
             position2d,
             isSelected = false,
             doublePI = Math.PI * 2,
@@ -263,17 +264,20 @@ window.WH = window.WH || {};
              * Update the pointer that connects the dots.
              */
             updatePointer = function() {
-                var isMute = processor.getParamValue('is_mute'),
+                let isMute = processor.getParamValue('is_mute'),
                     isNoteInControlled = false, /* processor.getProperty('isNoteInControlled'), */
                     isMutedByNoteInControl = false,
-                    mutedRadius = 4.5,
-                    pointerRadius = (isMute || isMutedByNoteInControl) ? mutedRadius : radius;
+                    isMutedSize = isMute || isMutedByNoteInControl,
+                    pointerRadius = isMutedSize ? pointerMutedRadius : necklaceRadius,
+                    pointerX = isMutedSize ? 15 : 19,
+                    pointerY = isMutedSize ? 15 : 6;
                 
-                pointerCtx.strokeStyle = color;
                 pointerCtx.clearRect(0, 0, pointerCanvas.width, pointerCanvas.height);
+                pointerCtx.strokeStyle = color;
                 pointerCtx.beginPath();
-                pointerCtx.moveTo(radius, radius);
-                pointerCtx.lineTo(radius, radius - necklaceRadius);
+                pointerCtx.moveTo(radius - pointerX, radius - pointerY);
+                pointerCtx.lineTo(radius, radius - pointerRadius);
+                pointerCtx.lineTo(radius + pointerX, radius - pointerY);
                 pointerCtx.stroke();
             },
             
