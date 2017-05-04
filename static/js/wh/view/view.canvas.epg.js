@@ -14,6 +14,8 @@ window.WH = window.WH || {};
             necklaceCtx,
             pointerCanvas,
             pointerCtx,
+            nameCanvas,
+            nameCtx,
             pointerRotation,
             radius = 100,
             necklaceMinRadius = 50,
@@ -52,6 +54,15 @@ window.WH = window.WH || {};
                 pointerCanvas.width = radius * 2;
                 pointerCtx = pointerCanvas.getContext('2d');
                 
+                // offscreen canvas for the name
+                nameCanvas = document.createElement('canvas');
+                nameCanvas.height = 40;
+                nameCanvas.width = radius * 2;
+                nameCtx = pointerCanvas.getContext('2d');
+                nameCtx.fillColor = color;
+                nameCtx.font = '16px sans-serif';
+                nameCtx.textAlign = 'center';
+                
                 // add callback to update before render.
                 processor.addRenderCallback(showPlaybackPosition);
                 processor.addProcessCallback(showNote);
@@ -64,9 +75,11 @@ window.WH = window.WH || {};
                 params.rotation.addChangedCallback(updateNecklace);
                 params.is_mute.addChangedCallback(updatePointer);
                 params.position2d.addChangedCallback(updatePosition);
+                params.name.addChangedCallback(updateName);
                 
                 // set drawing values
                 position2d = params.position2d.getValue();
+                updateName();
                 updateNecklace();
                 redrawStaticCanvas();
             },
@@ -317,6 +330,18 @@ window.WH = window.WH || {};
                 }
             },
             
+            updateName = function() {
+                let name = processor.getParamValue('name');
+                
+                nameCtx.clearRect(0, 0, nameCanvas.width, nameCanvas.height);
+                nameCtx.fillStyle = '#ffff00';
+                nameCtx.fillRect(0, 0, nameCanvas.width, nameCanvas.height);
+                nameCtx.fillStyle = '#000000';
+                nameCtx.fillText(name, nameCanvas.width / 2, nameCanvas.height / 2);
+                console.log(name);
+                canvasDirtyCallback();
+            },
+            
             redrawStaticCanvas = function() {
                 staticCtx.strokeStyle = color;
                 staticCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
@@ -342,6 +367,11 @@ window.WH = window.WH || {};
                     staticCanvas,
                     position2d.x - radius,
                     position2d.y - radius);
+                mainStaticCtx.drawImage(
+                    nameCanvas,
+                    position2d.x - radius,
+                    position2d.y - radius);
+                console.log('addToStaticView');
             },
             
             addToDynamicView = function(mainDynamicCtx) {
