@@ -78,6 +78,7 @@ window.WH = window.WH || {};
                 dynamicCanvas.width = window.innerWidth;
                 dynamicCanvas.height = window.innerHeight;
                 canvasRect = dynamicCanvas.getBoundingClientRect();
+                markDirty();
             },
             
             /**
