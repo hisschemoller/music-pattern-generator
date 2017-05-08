@@ -58,8 +58,8 @@ window.WH = window.WH || {};
                 nameCanvas = document.createElement('canvas');
                 nameCanvas.height = 40;
                 nameCanvas.width = radius * 2;
-                nameCtx = pointerCanvas.getContext('2d');
-                nameCtx.fillColor = color;
+                nameCtx = nameCanvas.getContext('2d');
+                nameCtx.fillStyle = color;
                 nameCtx.font = '16px sans-serif';
                 nameCtx.textAlign = 'center';
                 
@@ -332,13 +332,8 @@ window.WH = window.WH || {};
             
             updateName = function() {
                 let name = processor.getParamValue('name');
-                
                 nameCtx.clearRect(0, 0, nameCanvas.width, nameCanvas.height);
-                nameCtx.fillStyle = '#ffff00';
-                nameCtx.fillRect(0, 0, nameCanvas.width, nameCanvas.height);
-                nameCtx.fillStyle = '#000000';
                 nameCtx.fillText(name, nameCanvas.width / 2, nameCanvas.height / 2);
-                console.log(name);
                 canvasDirtyCallback();
             },
             
@@ -370,8 +365,7 @@ window.WH = window.WH || {};
                 mainStaticCtx.drawImage(
                     nameCanvas,
                     position2d.x - radius,
-                    position2d.y - radius);
-                console.log('addToStaticView');
+                    position2d.y + necklaceRadius + 4);
             },
             
             addToDynamicView = function(mainDynamicCtx) {
