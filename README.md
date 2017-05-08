@@ -22,9 +22,17 @@ There are a few keyboard shortcuts:
 | Space     | Toggle start / stop     |
 | Backspace | Delete selected pattern |
 
-## Saving projects
+## Saving and exporting projects
 
-Projects can't be exported yet to an external file, or imported from file. But that will certainly be implemented soon.
+Projects can be exported as a file to the local file system (the desktop for instance) by simply clicking the Export button (disk icon) in the header bar. This will present you with the computer's regular file save dialog.
+
+A regular 'save' option to automatically overwrite the current project file doesn't exist. This is because Javascript doesn't have this kind of direct access to the computer's file system.
+
+## Importing projects
+
+Project files can be imported by simply clicking the Import button (open folder icon) in the header bar. This will present you with the computer's regular file save open dialog.
+
+## Autosave
 
 All settings are saved however to the browser's LocalStorage when the page unloads, and restored from LocalStorage when the page is loaded again. So you can shut down your browser and start it up the next day, and your settings and preferences will be restored. 
 
