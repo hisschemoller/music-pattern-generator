@@ -27,11 +27,12 @@ window.WH = window.WH || {};
             dotRadius = 8,
             zeroMarkerRadius = 3,
             pointerMutedRadius = 30,
+            color = '#eeeeee',
+            lineWidth = 2,
             position2d,
             isSelected = false,
             doublePI = Math.PI * 2,
             dotAnimations = {},
-            color = '#eeeeee',
             centreDotEndTween,
             isNoteActive = false,
             
@@ -41,18 +42,25 @@ window.WH = window.WH || {};
                 staticCanvas.height = radius * 2;
                 staticCanvas.width = radius * 2;
                 staticCtx = staticCanvas.getContext('2d');
+                staticCtx.lineWidth = lineWidth;
+                staticCtx.strokeStyle = color;
                 
                 // offscreen canvas for dots ring and polygon
                 necklaceCanvas = document.createElement('canvas');
                 necklaceCanvas.height = radius * 2;
                 necklaceCanvas.width = radius * 2;
                 necklaceCtx = necklaceCanvas.getContext('2d');
+                necklaceCtx.fillStyle = color;
+                necklaceCtx.lineWidth = lineWidth;
+                necklaceCtx.strokeStyle = color;
                 
                 // offscreen canvas for the pointer
                 pointerCanvas = document.createElement('canvas');
                 pointerCanvas.height = radius * 2;
                 pointerCanvas.width = radius * 2;
                 pointerCtx = pointerCanvas.getContext('2d');
+                pointerCtx.lineWidth = lineWidth;
+                pointerCtx.strokeStyle = color;
                 
                 // offscreen canvas for the name
                 nameCanvas = document.createElement('canvas');
@@ -196,8 +204,6 @@ window.WH = window.WH || {};
                 }
                 
                 necklaceCtx.clearRect(0, 0, necklaceCanvas.width, necklaceCanvas.height);
-                necklaceCtx.fillStyle = color;
-                necklaceCtx.strokeStyle = color;
                 
                 updatePolygon(steps, euclid, necklacePoints);
                 updateDots(steps, euclid, necklacePoints);
@@ -286,7 +292,6 @@ window.WH = window.WH || {};
                     pointerY = isMutedSize ? 15 : 6;
                 
                 pointerCtx.clearRect(0, 0, pointerCanvas.width, pointerCanvas.height);
-                pointerCtx.strokeStyle = color;
                 pointerCtx.beginPath();
                 pointerCtx.moveTo(radius - pointerX, radius - pointerY);
                 pointerCtx.lineTo(radius, radius - pointerRadius);
@@ -338,7 +343,6 @@ window.WH = window.WH || {};
             },
             
             redrawStaticCanvas = function() {
-                staticCtx.strokeStyle = color;
                 staticCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
                 staticCtx.beginPath();
                 
