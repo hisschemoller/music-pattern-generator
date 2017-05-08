@@ -17,14 +17,15 @@ window.WH = window.WH || {};
             nameCanvas,
             nameCtx,
             pointerRotation,
-            radius = 100,
+            radius = 110,
             necklaceMinRadius = 50,
             necklaceRadius,
             centreDotFullRadius = 10,
             centreDotRadius,
             selectRadius = 15,
             centreRadius = 20,
-            dotRadius = 8,
+            dotMaxRadius = 8,
+            dotRadius,
             zeroMarkerRadius = 3,
             pointerMutedRadius = 30,
             color = '#eeeeee',
@@ -196,7 +197,9 @@ window.WH = window.WH || {};
                     necklacePoints = [];
                     
                 // calculate the dot positions
-                necklaceRadius = necklaceMinRadius + (steps > 16 ? (steps - 16) * 3 : 0);
+                // necklaceRadius = necklaceMinRadius + (steps > 16 ? (steps - 16) * 3 : 0);
+                necklaceRadius = necklaceMinRadius + (Math.max(0, steps - 16) * 0.8);
+                // MINIMUM_STEP_CIRCLE_RADIUS + ( Math.max ( 0, _numSteps - 16 ) * 0.6f )
                 for (let i = 0; i < steps; i++) {
                     point = {};
                     calculateCoordinateForStepIndex(point, i, steps, necklaceRadius);
@@ -260,6 +263,7 @@ window.WH = window.WH || {};
             },
             
             updateDots = function(steps, euclid, necklacePoints) {
+                dotRadius = dotMaxRadius - (Math.max(0, steps - 16) * 0.08);
                 for (let i = 0; i < steps; i++) {
                     point = necklacePoints[i];
                     if (euclid[i]) {
