@@ -13,6 +13,7 @@
     function createControlsView(specs) {
         var that,
             midiRemote = specs.midiRemote,
+            preferencesView = specs.preferencesView,
             transport = specs.transport
             controlsEl = document.querySelector('.controls'),
             controls = {
@@ -49,7 +50,7 @@
                     midiRemote.toggleMidiLearn(e.target.checked);
                 });
                 controls.prefs.input.addEventListener('change', function(e) {
-                    //midiRemote.toggleMidiLearn(e.target.checked);
+                    preferencesView.toggle(e.target.checked);
                 });
                 WH.pubSub.on('transport.start', function() {
                     controls.play.input.checked = true;

@@ -129,10 +129,6 @@ input[type='file'] + label {}
     background-color: var(--btn-bg-color);
     color: var(--btn-active-color);
 }
-.prefs.config {
-    display: none;
-    position: relative;
-}
 
 /************************
  * header
@@ -294,6 +290,22 @@ input[type='file'] + label {}
  * preferences
  ************************/
 
+.prefs {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    display: none;
+    position: relative;
+    width: 300px;
+}
+.prefs[data-show=true] {
+    display: block;
+}
+.prefs__label-text {
+    display: inline-block;
+    line-height: 32px;
+    padding-left: 8px;
+    width: 30%;
+}
 .prefs__inputs,
 .prefs__outputs {
     display: none;

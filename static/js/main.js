@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     WH.createControlsView({
         that: controlsView,
         midiRemote: midiRemote,
+        preferencesView: preferencesView,
         transport: transport
     });
     WH.createPreferencesView({

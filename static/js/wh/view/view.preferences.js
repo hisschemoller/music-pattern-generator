@@ -9,6 +9,7 @@ window.WH = window.WH || {};
     function createPreferencesView(specs) {
         var that,
             midi = specs.midi,
+            preferencesEl = document.querySelector('.prefs'),
             midiInputsEl = document.querySelector('.prefs__inputs'),
             midiOutputsEl = document.querySelector('.prefs__outputs'),
             midiPortViews = [],
@@ -126,6 +127,14 @@ window.WH = window.WH || {};
                         return false;
                     }
                 }
+            },
+            
+            /**
+             * Toggle to show or hide the preferences panel.
+             * @param  {Boolean} isVisible True to show the preferences.
+             */
+            toggle = function(isVisible) {
+                preferencesEl.dataset.show = isVisible;
             };
         
         that = specs.that;
@@ -138,6 +147,7 @@ window.WH = window.WH || {};
         that.setMidiNoteInEnabled = setMidiNoteInEnabled;
         that.createMIDIPortView = createMIDIPortView;
         that.deleteMIDIPortView = deleteMIDIPortView;
+        that.toggle = toggle;
         return that;
     }
 
