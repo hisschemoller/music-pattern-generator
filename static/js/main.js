@@ -71,6 +71,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         that: midiNetwork,
         appView: appView,
         midiRemote: midiRemote,
+        preferencesView: preferencesView,
         world: world
     });
     WH.createTransport({

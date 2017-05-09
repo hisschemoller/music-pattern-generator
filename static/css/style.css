@@ -289,3 +289,12 @@ input[type='file'] + label {}
     text-align: center;
     width: 32px;
 }
+
+/************************
+ * preferences
+ ************************/
+
+.prefs__inputs,
+.prefs__outputs {
+    display: none;
+}

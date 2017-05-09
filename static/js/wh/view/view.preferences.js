@@ -9,6 +9,9 @@ window.WH = window.WH || {};
     function createPreferencesView(specs) {
         var that,
             midi = specs.midi,
+            midiInputsEl = document.querySelector('.prefs__inputs'),
+            midiOutputsEl = document.querySelector('.prefs__outputs'),
+            midiPortViews = [],
             inputs = {
                 midiout: {
                     type: 'select',
@@ -85,6 +88,44 @@ window.WH = window.WH || {};
              */
             setMidiNoteInEnabled = function(isEnabled) {
                 inputs.notein.input.checked = isEnabled;
+            },
+            
+            /**
+             * Create view for a MIDI input ou output processor.
+             * @param  {Object} processor MIDI processor for a MIDI input or output.
+             */
+            createMIDIPortView = function(processor) {
+                var view;
+                switch (processor.getType()) {
+                    case 'input':
+                        view = ns.createMIDIInputView({
+                            processor: processor,
+                            parentEl: midiInputsEl
+                        });
+                        break;
+                    case 'output':
+                        view = ns.createMIDIOutputView({
+                            processor: processor,
+                            parentEl: midiOutputsEl
+                        });
+                        break;
+                }
+                midiPortViews.push(view);
+            },
+            
+            /**
+             * Delete view for a MIDI input ou output processor.
+             * @param  {Object} processor MIDI processor for a MIDI input or output.
+             */
+            deleteMIDIPortView = function(processor) {
+                var n = midiPortViews.length;
+                while (--n >= 0) {
+                    if (midiPortViews[n].hasProcessor(processor)) {
+                        midiPortViews[n].terminate();
+                        midiPortViews.splice(n, 1);
+                        return false;
+                    }
+                }
             };
         
         that = specs.that;
@@ -95,6 +136,8 @@ window.WH = window.WH || {};
         that.setSelectedMidiPort = setSelectedMidiPort;
         that.setMidiClockInEnabled = setMidiClockInEnabled;
         that.setMidiNoteInEnabled = setMidiNoteInEnabled;
+        that.createMIDIPortView = createMIDIPortView;
+        that.deleteMIDIPortView = deleteMIDIPortView;
         return that;
     }
 

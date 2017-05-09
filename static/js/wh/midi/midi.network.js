@@ -11,6 +11,7 @@ window.WH = window.WH || {};
         var that,
             appView = specs.appView,
             midiRemote = specs.midiRemote,
+            preferencesView = specs.preferencesView,
             world = specs.world,
             processors = [],
             numProcessors = processors.length,
@@ -40,7 +41,7 @@ window.WH = window.WH || {};
                     switch (specs.type) {
                         case 'input':
                         case 'output':
-                            appView.createMIDIPortView(processor);
+                            preferencesView.createMIDIPortView(processor);
                             break;
                         case 'epg':
                             appView.createSettingsView(processor);
@@ -87,7 +88,7 @@ window.WH = window.WH || {};
                 switch (processor.getType()) {
                     case 'input':
                     case 'output':
-                        appView.deleteMIDIPortView(processor);
+                        preferencesView.deleteMIDIPortView(processor);
                         break;
                     case 'epg':
                         appView.deleteSettingsView(processor);
