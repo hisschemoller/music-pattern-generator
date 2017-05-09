@@ -63,7 +63,7 @@ window.WH = window.WH || {};
              * @param {Object} midiAccessObj MidiAccess object.
              */
             onAccessSuccess = function(midiAccessObj) {
-                console.log('Midi enabled.');
+                console.log('MIDI enabled.');
                 midiAccess = midiAccessObj;
                 var inputs = midiAccess.inputs.values();
                 var outputs = midiAccess.outputs.values();
@@ -116,6 +116,7 @@ window.WH = window.WH || {};
              * @param {String} id ID of the input.
              */
             selectInputByID = function(id) {
+                selectedInputID = id;
                 if (midiAccess) {
                     selectedInput = null;
                     var portMap = midiAccess.inputs.values();
@@ -135,6 +136,7 @@ window.WH = window.WH || {};
              * @param {String} id ID of the output.
              */
             selectOutputByID = function(id) {
+                selectedOutputID = id;
                 if (midiAccess) {
                     selectedOutput = null;
                     var portMap = midiAccess.outputs.values();
@@ -185,6 +187,7 @@ window.WH = window.WH || {};
             
             /**
              * Save the preferences when the page unloads.
+             * @return {Object} Preferences data.
              */
             getData = function() {
                 return {
@@ -206,8 +209,7 @@ window.WH = window.WH || {};
         that.getData = getData;
         return that;
     }
-        
-
+    
     ns.createMIDI = createMIDI;
 
 })(WH);
