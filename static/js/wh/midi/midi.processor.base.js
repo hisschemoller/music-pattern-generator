@@ -32,8 +32,8 @@ window.WH = window.WH || {};
                         case 'string':
                             my.params[key] = ns.createStringParameter(paramSpecs[key]);
                             break;
-                        case 'vector3d':
-                            my.params[key] = ns.createVector3DParameter(paramSpecs[key]);
+                        case 'vector2d':
+                            my.params[key] = ns.createVector2DParameter(paramSpecs[key]);
                             break;
                     }
                     my.params[key].addChangedCallback(paramChangedCallback);
@@ -60,6 +60,12 @@ window.WH = window.WH || {};
             paramChangedCallback = function(parameter, oldValue, newValue) {
                 // call the plugin's handler for this parameter
                 my['$' + parameter.getProperty('key')](newValue);
+            },
+            
+            setParamValue = function(key, value) {
+                if (my.params.hasOwnProperty(key)) {
+                    my.params[key].setValue(value);
+                }
             },
             
             getParamValue = function(key) {
@@ -140,6 +146,7 @@ window.WH = window.WH || {};
         
         that = specs.that || {};
         
+        that.setParamValue = setParamValue;
         that.getParamValue = getParamValue;
         that.getParameters = getParameters;
         that.hasParameter = hasParameter;

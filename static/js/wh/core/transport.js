@@ -26,7 +26,7 @@ window.WH = window.WH || {};
     function createSequencer (specs, my) {
         var that,
             midiNetwork = specs.midiNetwork,
-            world = specs.world,
+            canvasView = specs.canvasView,
             ppqn = 480,
             bpm = 120,
             lastBpm = bpm,
@@ -54,7 +54,7 @@ window.WH = window.WH || {};
              */
             updateView = function(position) {
                 midiNetwork.render(msec2tick(position));
-                world.draw();
+                canvasView.draw();
             },
             
             /**

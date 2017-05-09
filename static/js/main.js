@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     
     // Create all objects that will be the modules of the app.
     var appView = {},
+        canvasView = {},
         controlsView = {},
         fileView = {},
         preferencesView = {},
@@ -21,14 +22,17 @@ document.addEventListener('DOMContentLoaded', function(e) {
         midi = {},
         midiRemote = {},
         midiNetwork = {},
-        transport = {},
-        world = {};
+        transport = {};
         
     WH.pubSub = WH.createPubSub();
     
     // Add functionality to the modules and inject dependencies.
     WH.createAppView({
         that: appView
+    });
+    WH.createCanvasView({
+        that: canvasView,
+        midiNetwork: midiNetwork
     });
     WH.createControlsView({
         that: controlsView,
@@ -71,22 +75,17 @@ document.addEventListener('DOMContentLoaded', function(e) {
     WH.createMIDINetwork({
         that: midiNetwork,
         appView: appView,
-        midiRemote: midiRemote,
-        preferencesView: preferencesView,
-        world: world
+        canvasView: canvasView,
+        midiRemote: midiRemote
     });
     WH.createTransport({
         that: transport,
-        midiNetwork: midiNetwork,
-        world: world
-    });
-    WH.createWorld({
-        that: world
+        canvasView: canvasView,
+        midiNetwork: midiNetwork
     });
     
     // initialise
     midi.setup();
-    world.setup();
     file.setup();
     transport.run();
 });

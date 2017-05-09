@@ -10,16 +10,15 @@ window.WH = window.WH || {};
     function createMIDINetwork(specs, my) {
         var that,
             appView = specs.appView,
+            canvasView = specs.canvasView,
             midiRemote = specs.midiRemote,
-            preferencesView = specs.preferencesView,
-            world = specs.world,
             processors = [],
             numProcessors = processors.length,
             
             init = function() {
-                ns.pubSub.on('create.processor', createProcessor);
-                ns.pubSub.on('delete.processor', deleteProcessor);
-                ns.pubSub.on('select.processor', selectProcessor);
+                // ns.pubSub.on('create.processor', createProcessor);
+                // ns.pubSub.on('delete.processor', deleteProcessor);
+                // ns.pubSub.on('select.processor', selectProcessor);
             },
             
             /**
@@ -45,9 +44,10 @@ window.WH = window.WH || {};
                             break;
                         case 'epg':
                             appView.createSettingsView(processor);
-                            world.createObject(processor);
+                            canvasView.createView(processor);
                             midiRemote.registerProcessor(processor);
                             selectProcessor(processor);
+                            canvasView.markDirty();
                             break;
                     }
                     
@@ -92,7 +92,7 @@ window.WH = window.WH || {};
                         break;
                     case 'epg':
                         appView.deleteSettingsView(processor);
-                        world.deleteObject(processor);
+                        canvasView.deleteView(processor);
                         midiRemote.unregisterProcessor(processor);
                         selectProcessor(processor);
                         break;
@@ -335,6 +335,9 @@ window.WH = window.WH || {};
         
         init();
         
+        that.createProcessor = createProcessor;
+        that.deleteProcessor = deleteProcessor;
+        that.selectProcessor = selectProcessor;
         that.process = process;
         that.render = render;
         that.connectAllEPGToInput = connectAllEPGToInput;
