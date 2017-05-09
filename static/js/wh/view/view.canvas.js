@@ -172,7 +172,7 @@ window.WH = window.WH || {};
             },
             
             /**
-             * Create world object if it exists for the type.
+             * Create canvas 2D object if it exists for the type.
              * @param  {Object} processor MIDI processor for which the 3D object will be a view.
              */
             createView = function(processor) {
@@ -192,7 +192,7 @@ window.WH = window.WH || {};
             },
             
             /**
-             * Delete world object when processor is deleted.
+             * Delete canvas 2D object when processor is deleted.
              * @param  {Object} processor MIDI processor for which the 3D object will be a view.
              */
             deleteView = function(processor) {
