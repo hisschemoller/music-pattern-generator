@@ -12,13 +12,14 @@ window.WH = window.WH || {};
             appView = specs.appView,
             canvasView = specs.canvasView,
             midiRemote = specs.midiRemote,
+            preferencesView = specs.preferencesView,
             processors = [],
             numProcessors = processors.length,
             
             init = function() {
-                // ns.pubSub.on('create.processor', createProcessor);
-                // ns.pubSub.on('delete.processor', deleteProcessor);
-                // ns.pubSub.on('select.processor', selectProcessor);
+                ns.pubSub.on('create.processor', createProcessor);
+                ns.pubSub.on('delete.processor', deleteProcessor);
+                ns.pubSub.on('select.processor', selectProcessor);
             },
             
             /**
