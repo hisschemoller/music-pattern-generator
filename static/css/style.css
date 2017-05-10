@@ -67,6 +67,7 @@
     --btn-bg-hover-color: #eee;
     --btn-border-color: #ccc;
     --font-size: 14px;
+    --input-height: 32px;
     --text-color: #ccc;
 }
 * {
@@ -185,9 +186,9 @@ select:focus {
     border: 1px solid var(--border-color);
 }
 .settings .btn {
-    height: 32px;
-    font-size: var(--font-size);;
-    line-height: 32px;
+    height: var(--input-height);
+    font-size: var(--font-size);
+    line-height: var(--input-height);
     width: 32px;
 }
 .settings button.btn {
@@ -200,7 +201,7 @@ select:focus {
     border: none;
 }
 .settings__legend {
-    line-height: 32px;
+    line-height: var(--input-height);
     padding-left: 8px;
 }
 .setting__integer {
@@ -208,7 +209,7 @@ select:focus {
 }
 .setting__label-text {
     display: inline-block;
-    line-height: 32px;
+    line-height: var(--input-height);
     padding-left: 8px;
     width: 30%;
 }
@@ -220,7 +221,7 @@ select:focus {
     border: none;
     display: inline-block;
     font-size: var(--font-size);
-    line-height: 32px;
+    line-height: var(--input-height);
     padding: 0 8px;
     text-align: right;
     width: 20%;
@@ -241,7 +242,7 @@ select:focus {
     border: 1px solid var(--border-color);
     color: var(--text-color);
     font-size: var(--font-size);;
-    height: 32px;
+    height: var(--input-height);
     padding: 0 6px;
     width: 50%;
 }
@@ -275,7 +276,7 @@ select:focus {
 }
 .remote__group-header {
     border-bottom: 1px solid var(--border-color);
-    line-height: 32px;
+    line-height: var(--input-height);
     padding-left: 10px;
 }
 .remote__item {
@@ -283,7 +284,7 @@ select:focus {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
-    line-height: 32px;
+    line-height: var(--input-height);
 }
 .remote__item-label {
     border-right: 1px solid var(--border-color);
@@ -302,7 +303,7 @@ select:focus {
 }
 .remote__item-remove {
     border: none;
-    height: 32px;
+    height: var(--input-height);
     text-align: center;
     width: 32px;
 }
@@ -319,7 +320,7 @@ select:focus {
     width: 300px;
 }
     .prefs .btn {
-        height: 32px;
+        height: var(--input-height);
         font-size: var(--font-size);
         line-height: 32px;
         width: 32px;
@@ -329,7 +330,7 @@ select:focus {
 }
 .prefs__label-text {
     display: inline-block;
-    line-height: 32px;
+    line-height: var(--input-height);
     padding-left: 8px;
     width: 30%;
 }
@@ -346,7 +347,7 @@ select:focus {
     border-radius: 0;
     color: var(--text-color);
     font-size: var(--font-size);
-    height: 32px;
+    height: var(--input-height);
     padding-left: 6px;
     position: relative;
     width: 50%;
