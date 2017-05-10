@@ -91,7 +91,12 @@ input[type='file'] {
     width: 0.1px;
 	z-index: -1;
 }
-input[type='file'] + label {}
+input[type='file'] + label {
+}
+input:focus,
+select:focus {
+    outline: none;
+}
 
 .webgl {
     height: 100vh;
@@ -315,7 +320,7 @@ input[type='file'] + label {}
 }
     .prefs .btn {
         height: 32px;
-        font-size: var(--font-size);;
+        font-size: var(--font-size);
         line-height: 32px;
         width: 32px;
     }
@@ -331,4 +336,18 @@ input[type='file'] + label {}
 .prefs__inputs,
 .prefs__outputs {
     display: none;
+}
+.prefs__select {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    -webkit-border-radius: 0;
+    border-radius: 0;
+    color: var(--text-color);
+    font-size: var(--font-size);
+    height: 32px;
+    padding-left: 6px;
+    position: relative;
+    width: 50%;
 }
