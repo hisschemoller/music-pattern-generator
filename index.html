@@ -81,7 +81,7 @@
     </app>
     
     <template id="template-settings-epg">
-        <form class="settings__epg">
+        <div class="settings__epg">
             <fieldset class="settings__fieldset">
                 <legend class="settings__legend">Euclidean</legend>
                 <div class="settings__row steps"></div>
@@ -105,9 +105,10 @@
             <fieldset class="settings__fieldset">
                 <legend>Other</legend>
                 <div class="settings__row name"></div>
-                <button class="settings__delete btn">Delete</button>
+                <span class="setting__label-text"></span>
+                <button type="button" class="settings__delete btn">Delete</button>
             </fieldset>
-        </form>
+        </div>
     </template><!-- /template-settings-epg -->
     <template id="template-setting-integer">
         <label class="setting__label setting__integer">

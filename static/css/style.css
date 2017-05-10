@@ -185,6 +185,9 @@ input[type='file'] + label {}
     line-height: 32px;
     width: 32px;
 }
+.settings button.btn {
+    width: 50%;
+}
 .settings__row {
     position: relative;
 }
