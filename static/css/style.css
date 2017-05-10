@@ -301,6 +301,12 @@ input[type='file'] + label {}
     position: relative;
     width: 300px;
 }
+    .prefs .btn {
+        height: 32px;
+        font-size: 14px;
+        line-height: 32px;
+        width: 32px;
+    }
 .prefs[data-show=true] {
     display: block;
 }
