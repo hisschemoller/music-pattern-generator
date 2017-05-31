@@ -21,13 +21,14 @@ window.WH = window.WH || {};
              */
             process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset) {
                 var inputData = my.getInputData(),
-                    origin = performance.now() - offset,
+                    origin = performance.now() - (offset * ticksToMsMultiplier),
                     n = inputData.length;
                 
                 if (midiOutput.state === 'connected') {
                     for (var i = 0; i < n; i++) {
                         var item = inputData[i],
-                            timestamp = (origin + item.timestampTicks) * ticksToMsMultiplier;
+                            // item.timestampTicks is time since transport play started
+                            timestamp = origin + (item.timestampTicks * ticksToMsMultiplier);
                         
                         switch (item.type) {
                             case 'noteon':
