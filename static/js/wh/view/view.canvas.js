@@ -122,27 +122,41 @@ window.WH = window.WH || {};
              */
             onTouchStart = function(e) {
                 // find view under mouse, search from new to old
-                let x = e.clientX - canvasRect.left,
+                let view,
+                    x = e.clientX - canvasRect.left,
                     y = e.clientY - canvasRect.top;
                 for (var i = numViews - 1; i >= 0; i--) {
                     if (views[i].intersectsWithPoint(x, y)) {
+                        view = views[i];
                         // select the found view's processor
-                        midiNetwork.selectProcessor(views[i].getProcessor());
+                        midiNetwork.selectProcessor(view.getProcessor());
                         // start dragging the view's graphic
-                        dragStart(views[i], x, y);
+                        dragStart(x, y, view);
                         break;
                     }
+                }
+                
+                // if there's no view under the mouse, drag the whole background
+                if (!view) {
+                    dragStart(x, y);
                 }
             },
             
             /**
              * Initialise object dragging.
              */
-            dragStart = function(view, x, y) {
-                let position2d = view.getPosition2d();
-                draggedView = view;
-                dragOffsetX = x - position2d.x;
-                dragOffsetY = y - position2d.y;
+            dragStart = function(x, y, view) {
+                if (view) {
+                    // drag a view
+                    let position2d = view.getPosition2d();
+                    draggedView = view;
+                    dragOffsetX = x - position2d.x;
+                    dragOffsetY = y - position2d.y;
+                } else {
+                    // drag background, so all views
+                    dragOffsetX = x;
+                    dragOffsetY = y;
+                }
                 isDragging = true;
             },
             
@@ -153,10 +167,29 @@ window.WH = window.WH || {};
             dragMove = function(e) {
                 e.preventDefault();
                 if (isDragging) {
-                    draggedView.setPosition2d({
-                        x: (e.clientX - canvasRect.left) - dragOffsetX,
-                        y: (e.clientY - canvasRect.top) - dragOffsetY
-                    });
+                    if (draggedView) {
+                        // drag a view
+                        draggedView.setPosition2d({
+                            x: (e.clientX - canvasRect.left) - dragOffsetX,
+                            y: (e.clientY - canvasRect.top) - dragOffsetY
+                        });
+                    } else {
+                        // drag background, so all views
+                        let view, 
+                            position2d,
+                            x = e.clientX - canvasRect.left - dragOffsetX,
+                            y = e.clientY - canvasRect.top - dragOffsetY;
+                        dragOffsetX = e.clientX - canvasRect.left;
+                        dragOffsetY = e.clientY - canvasRect.top;
+                        for (let i = 0; i < numViews; i++) {
+                            view = views[i];
+                            position2d = view.getPosition2d();
+                            views[i].setPosition2d({
+                                x: position2d.x + x,
+                                y: position2d.y + y
+                            });
+                        }
+                    }
                 }
             },
             
