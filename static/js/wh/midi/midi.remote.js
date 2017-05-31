@@ -57,8 +57,8 @@ window.WH = window.WH || {};
             onMIDIMessage = function(e) {
                 // only continuous controller message, 0xB == 11
                 if (e.data[0] >> 4 === 0xB) {
-                    var channelIndex = e.data[0] & 0xf,
-                        param = paramLookup[e.target.id][(e.data[0] & 0xf) + '_' + e.data[1]];
+                    var channel = (e.data[0] & 0xf) + 1,
+                        param = paramLookup[e.target.id][channel + '_' + e.data[1]];
                     if (param) {
                         param.setValueNormalized(e.data[2] / 127);
                     }
@@ -73,9 +73,9 @@ window.WH = window.WH || {};
                 if (selectedParameter) {
                     if (e.data[0] >> 4 === 0xB) {
                         var portId = e.target.id,
-                            channelIndex = e.data[0] & 0xf,
+                            channel = (e.data[0] & 0xf) + 1,
                             controller = e.data[1];
-                        assignParameter(selectedParameter, portId, channelIndex, controller);
+                        assignParameter(selectedParameter, portId, channel, controller);
                         deselectParameter();
                     }
                 }
@@ -125,13 +125,13 @@ window.WH = window.WH || {};
                 }
             },
             
-            assignParameter = function(param, portId, channelIndex, controller) {
+            assignParameter = function(param, portId, channel, controller) {
                 // add parameter to the lookup table
-                paramLookup[portId][channelIndex + '_' + controller] = param;
+                paramLookup[portId][channel + '_' + controller] = param;
                 
                 // update the parameter
                 param.setRemoteProperty('portId', portId);
-                param.setRemoteProperty('channel', channelIndex + 1);
+                param.setRemoteProperty('channel', channel);
                 param.setRemoteProperty('controller', controller);
                 param.setRemoteState('assigned');
                 
@@ -142,9 +142,9 @@ window.WH = window.WH || {};
             unassingParameter = function(param) {
                 // remove parameter from the lookup table
                 var portId = param.getRemoteProperty('portId'),
-                    channelIndex = param.getRemoteProperty('channel') - 1,
+                    channel = param.getRemoteProperty('channel'),
                     controller = param.getRemoteProperty('controller');
-                paramLookup[portId][channelIndex + '_ ' + controller] = null;
+                paramLookup[portId][channel + '_ ' + controller] = null;
                 
                 // update the parameter
                 param.setRemoteProperty('portId', null);
@@ -240,10 +240,10 @@ window.WH = window.WH || {};
                                                     m = params.length;
                                                 while (--m >= 0) {
                                                     if (params[m].getProperty('key') == paramsData[i].paramKey) {
-                                                        // found parameter, assign ti remote controller
-                                                        let channelIndex = paramsData[i].paramRemoteData.channel,
+                                                        // found parameter, assign to remote controller
+                                                        let channel = paramsData[i].paramRemoteData.channel,
                                                             controller = paramsData[i].paramRemoteData.controller;
-                                                        assignParameter(params[m], dataPortID, channelIndex, controller)
+                                                        assignParameter(params[m], dataPortID, channel, controller)
                                                         break;
                                                     }
                                                 }
