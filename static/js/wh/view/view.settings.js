@@ -72,8 +72,7 @@ window.WH = window.WH || {};
              */
             terminate = function() {
                 if (el && parentEl) {
-                    parentEl.removeChild(el);
-                    parentEl.style.display = 'none';
+                    show(false);
                 }
             },
             
@@ -84,7 +83,7 @@ window.WH = window.WH || {};
             show = function(isSelected)  {
                 if (isSelected) {
                     parentEl.appendChild(el);
-                } else {
+                } else if (el.parentNode === parentEl) {
                     parentEl.removeChild(el);
                 }
             },
