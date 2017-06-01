@@ -96,7 +96,15 @@ window.WH = window.WH || {};
             /**
              * Called before this view is deleted.
              */
-            terminate = function() {},
+            terminate = function() {
+                let params = processor.getParameters();
+                params.steps.removeChangedCallback(updateNecklace);
+                params.pulses.removeChangedCallback(updateNecklace);
+                params.rotation.removeChangedCallback(updateNecklace);
+                params.is_mute.removeChangedCallback(updatePointer);
+                params.position2d.removeChangedCallback(updatePosition);
+                params.name.removeChangedCallback(updateName);
+            },
             
             /**
              * Show the playback position within the pattern.
@@ -445,6 +453,7 @@ window.WH = window.WH || {};
         
         initialise();
         
+        that.terminate = terminate;
         that.addToStaticView = addToStaticView;
         that.addToDynamicView = addToDynamicView;
         that.intersectsWithPoint = intersectsWithPoint;

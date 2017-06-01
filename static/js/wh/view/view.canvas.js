@@ -225,11 +225,20 @@ window.WH = window.WH || {};
             },
             
             /**
-             * Delete canvas 2D object when processor is deleted.
+             * Delete canvas 2D object when the processor is deleted.
              * @param  {Object} processor MIDI processor for which the 3D object will be a view.
              */
             deleteView = function(processor) {
-                numViews = views.length;
+                let i = numViews;
+                while (--i >= 0) {
+                    if (views[i].getProcessor() === processor) {
+                        views[i].terminate();
+                        views.splice(i, 1);
+                        numViews = views.length;
+                        markDirty();
+                        return;
+                    }
+                }
             },
             
             markDirty = function() {
