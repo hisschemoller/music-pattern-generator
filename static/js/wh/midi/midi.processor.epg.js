@@ -40,6 +40,12 @@ window.WH = window.WH || {};
              */
             process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset) {
                 
+                // if the processor is muted only process remaining note offs.
+                if (my.params.is_mute.getValue()) {
+                    processNoteOffs(scanStart, scanEnd);
+                    return;
+                }
+                
                 // if the pattern loops during this timespan.
                 var localStart = scanStart % duration,
                     localEnd = scanEnd % duration,
@@ -100,8 +106,16 @@ window.WH = window.WH || {};
                 if (localStart2 !== false) {
                     localStart = localStart2;
                 }
-                    
-                // check for scheduled note off events
+                
+                processNoteOffs(scanStart, scanEnd);
+            },
+            
+            /**
+             * Check for scheduled note off events.
+             * @param {Number} scanStart Timespan start in ticks from timeline start.
+             * @param {Number} scanEnd   Timespan end in ticks from timeline start.
+             */
+            processNoteOffs = function(scanStart, scanEnd) {
                 var i = noteOffEvents.length;
                 while (--i > -1) {
                     var noteOffTime = noteOffEvents[i].timestampTicks;
