@@ -110,8 +110,8 @@ window.WH = window.WH || {};
                 midiNetwork.createProcessor({
                     type: 'epg',
                     position2d: {
-                        x: e.pageX - e.target.offsetLeft,
-                        y: e.pageY - e.target.offsetTop
+                        x: e.clientX - canvasRect.left + window.scrollX,
+                        y: e.clientY - canvasRect.top + window.scrollY
                     }
                 });
             },
@@ -123,8 +123,8 @@ window.WH = window.WH || {};
             onTouchStart = function(e) {
                 // find view under mouse, search from new to old
                 let view,
-                    x = e.clientX - canvasRect.left,
-                    y = e.clientY - canvasRect.top;
+                    x = e.clientX - canvasRect.left + window.scrollX,
+                    y = e.clientY - canvasRect.top + window.scrollY;
                 for (var i = numViews - 1; i >= 0; i--) {
                     if (views[i].intersectsWithPoint(x, y)) {
                         view = views[i];
@@ -167,20 +167,22 @@ window.WH = window.WH || {};
             dragMove = function(e) {
                 e.preventDefault();
                 if (isDragging) {
+                    let canvasX = e.clientX - canvasRect.left + window.scrollX,
+                        canvasY = e.clientY - canvasRect.top + window.scrollY
                     if (draggedView) {
                         // drag a view
                         draggedView.setPosition2d({
-                            x: (e.clientX - canvasRect.left) - dragOffsetX,
-                            y: (e.clientY - canvasRect.top) - dragOffsetY
+                            x: canvasX - dragOffsetX,
+                            y: canvasY - dragOffsetY
                         });
                     } else {
                         // drag background, so all views
                         let view, 
                             position2d,
-                            x = e.clientX - canvasRect.left - dragOffsetX,
-                            y = e.clientY - canvasRect.top - dragOffsetY;
-                        dragOffsetX = e.clientX - canvasRect.left;
-                        dragOffsetY = e.clientY - canvasRect.top;
+                            x = canvasX - dragOffsetX,
+                            y = canvasY - dragOffsetY;
+                        dragOffsetX = canvasX;
+                        dragOffsetY = canvasY;
                         for (let i = 0; i < numViews; i++) {
                             view = views[i];
                             position2d = view.getPosition2d();
