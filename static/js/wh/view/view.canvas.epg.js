@@ -198,6 +198,7 @@ window.WH = window.WH || {};
              */
             updateNecklace = function() {
                 let steps = processor.getParamValue('steps'),
+                    pulses = processor.getParamValue('pulses'),
                     rotation = processor.getParamValue('rotation'),
                     euclid = processor.getEuclidPattern(),
                     position2d = {x: 0, y:0},
@@ -216,7 +217,7 @@ window.WH = window.WH || {};
                 
                 necklaceCtx.clearRect(0, 0, necklaceCanvas.width, necklaceCanvas.height);
                 
-                updatePolygon(steps, euclid, necklacePoints);
+                updatePolygon(steps, pulses, euclid, necklacePoints);
                 updateDots(steps, euclid, necklacePoints);
                 updatePointer();
                 updateZeroMarker(steps, rotation);
@@ -247,27 +248,31 @@ window.WH = window.WH || {};
                 canvasDirtyCallback();
             },
             
-            updatePolygon = function(steps, euclid, necklacePoints) {
-                // draw polygon
-                necklaceCtx.beginPath();
-                let isFirstPoint = true,
-                    firstPoint;
-                for (let i = 0; i < steps; i++) {
-                    if (euclid[i]) {
-                        if (isFirstPoint) {
-                            isFirstPoint = false;
-                            firstPoint = necklacePoints[i];
-                            necklaceCtx.moveTo(radius + firstPoint.x, radius - firstPoint.y);
-                        } else {
-                            necklaceCtx.lineTo(radius + necklacePoints[i].x, radius - necklacePoints[i].y);
+            /**
+             * Draw polygon.
+             */
+            updatePolygon = function(steps, pulses, euclid, necklacePoints) {
+                if (pulses > 1) {
+                    necklaceCtx.beginPath();
+                    let isFirstPoint = true,
+                        firstPoint;
+                    for (let i = 0; i < steps; i++) {
+                        if (euclid[i]) {
+                            if (isFirstPoint) {
+                                isFirstPoint = false;
+                                firstPoint = necklacePoints[i];
+                                necklaceCtx.moveTo(radius + firstPoint.x, radius - firstPoint.y);
+                            } else {
+                                necklaceCtx.lineTo(radius + necklacePoints[i].x, radius - necklacePoints[i].y);
+                            }
                         }
                     }
+                    necklaceCtx.lineTo(radius + firstPoint.x, radius - firstPoint.y);
+                    necklaceCtx.stroke();
+                    necklaceCtx.globalAlpha = 0.2;
+                    necklaceCtx.fill();
+                    necklaceCtx.globalAlpha = 1.0;
                 }
-                necklaceCtx.lineTo(radius + firstPoint.x, radius - firstPoint.y);
-                necklaceCtx.stroke();
-                necklaceCtx.globalAlpha = 0.2;
-                necklaceCtx.fill();
-                necklaceCtx.globalAlpha = 1.0;
             },
             
             updateDots = function(steps, euclid, necklacePoints) {
