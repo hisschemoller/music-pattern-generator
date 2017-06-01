@@ -136,19 +136,14 @@ window.WH = window.WH || {};
                     dotRadius: 0
                 }
                 
+                let tweeningDot = dotAnimations[stepIndex];
+                
                 // animate the necklace dot
-                let t = new TWEEN.Tween({currentRadius: dotRadius * 1.5})
+                new TWEEN.Tween({currentRadius: dotRadius * 1.5})
                     .to({currentRadius: dotRadius}, 300)
                     .onUpdate(function() {
                             // store new dot size
-                            try {
-                                dotAnimations[stepIndex].dotRadius = this.currentRadius;
-                            } catch(errMsg) {
-                                console.log(errMsg);
-                                console.log(steps, stepIndex, dotAnimations);
-                                debugger
-                            }
-                            
+                            tweeningDot.dotRadius = this.currentRadius;
                         })
                     .onComplete(function() {
                             // delete dot state object
