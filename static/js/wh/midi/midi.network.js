@@ -6,7 +6,7 @@
 window.WH = window.WH || {};
 
 (function (ns) {
-    
+
     function createMIDINetwork(specs, my) {
         var that,
             appView = specs.appView,
@@ -15,17 +15,18 @@ window.WH = window.WH || {};
             preferencesView = specs.preferencesView,
             processors = [],
             numProcessors = processors.length,
-            
+            numInputProcessors = 0,
+
             init = function() {
                 ns.pubSub.on('create.processor', createProcessor);
                 ns.pubSub.on('delete.processor', deleteProcessor);
                 ns.pubSub.on('select.processor', selectProcessor);
             },
-            
+
             /**
              * Create a new processor in the network.
              * @param {Object} specs Processor specifications.
-             * @param {Boolean} isRestore True if this is called as part of restoring a project. 
+             * @param {Boolean} isRestore True if this is called as part of restoring a project.
              */
             createProcessor = function(specs, isRestore) {
                 if (ns.midiProcessors && ns.midiProcessors[specs.type]) {
@@ -33,10 +34,23 @@ window.WH = window.WH || {};
                     specs.that = {};
                     specs.id = specs.id || specs.type + performance.now() + '_' + Math.random();
                     var processor = ns.midiProcessors[specs.type].create(specs);
-                    processors.push(processor);
+
+                    // insert the processor at the right position
+                    switch (specs.type) {
+                        case 'input':
+                            processors.unshift(processor);
+                            numInputProcessors++;
+                            break;
+                        case 'output':
+                            processors.push(processor);
+                            break;
+                        default:
+                            processors.splice(numInputProcessors, 0, processor);
+                    }
+
                     console.log('Add processor ' + processor.getType() + ' (id ' + processor.getID() + ')');
                     numProcessors = processors.length;
-                    
+
                     // create the views for the processor
                     switch (specs.type) {
                         case 'input':
@@ -51,7 +65,7 @@ window.WH = window.WH || {};
                             canvasView.markDirty();
                             break;
                     }
-                    
+
                     // If the app is in EPG mode,
                     // and this is a newly created processor (not a project restore),
                     // then connect each EPG processor to the first input and output port.
@@ -72,7 +86,7 @@ window.WH = window.WH || {};
                     console.error('No MIDI processor found of type: ', specs.type);
                 }
             },
-            
+
             /**
              * Delete a processor.
              * @param {Object} processor Processor to delete.
@@ -84,10 +98,13 @@ window.WH = window.WH || {};
                         processors[i].disconnect(processor);
                     }
                 }
-                
+
                 // delete the views for the processor
                 switch (processor.getType()) {
                     case 'input':
+                        preferencesView.deleteMIDIPortView(processor);
+                        numInputProcessors--;
+                        break;
                     case 'output':
                         preferencesView.deleteMIDIPortView(processor);
                         break;
@@ -98,7 +115,7 @@ window.WH = window.WH || {};
                         selectProcessor(processor);
                         break;
                 }
-                
+
                 // disconnect this processor from its destinations
                 processor.disconnect();
                 selectNextProcessor(processor);
@@ -106,7 +123,7 @@ window.WH = window.WH || {};
                 processors.splice(processors.indexOf(processor), 1);
                 numProcessors = processors.length;
             },
-            
+
             /**
              * Select a processor.
              * @param  {Object} processor Processor to select.
@@ -119,7 +136,7 @@ window.WH = window.WH || {};
                     }
                 }
             },
-            
+
             /**
              * Select the next processor from the given.
              * @param  {Object} processor [description]
@@ -138,7 +155,7 @@ window.WH = window.WH || {};
                     }
                 }
             },
-            
+
             /**
              * Let all processors process their data.
              * @param {Number} start Start time in ticks of timespan to process.
@@ -152,7 +169,7 @@ window.WH = window.WH || {};
                     processors[i].process(start, end, nowToScanStart, ticksToMsMultiplier, offset);
                 }
             },
-            
+
             /**
              * Update view. At requestAnimationFrame speed.
              * @param  {Number} position Transport playback position in ticks.
@@ -164,7 +181,7 @@ window.WH = window.WH || {};
                     }
                 }
             },
-            
+
             /**
              * Connect all EPG processors to a MIDI input port.
              * @param {String} newPortID MIDI input to connect to.
@@ -192,7 +209,7 @@ window.WH = window.WH || {};
                     }
                 }
             },
-            
+
             /**
              * Connect all EPG processors to a MIDI output port.
              * @param {String} newPortID MIDI output to connect to.
@@ -220,14 +237,14 @@ window.WH = window.WH || {};
                     }
                 }
             },
-            
+
             /**
              * Clear the whole network.
              * Remove all processors except the inputs and outputs.
              * Remove all the connections.
              */
             clear = function() {
-                let type,   
+                let type,
                     n = numProcessors;
                 while (--n >= 0) {
                     type = processors[n].getType();
@@ -236,7 +253,7 @@ window.WH = window.WH || {};
                     }
                 }
             },
-            
+
             /**
              * Restore network from data object.
              * @param {Object} data Preferences data object.
@@ -254,13 +271,13 @@ window.WH = window.WH || {};
                         }, true);
                     }
                 }
-                
+
                 // find midi processors created for the detected midi ports,
                 // match them with the saved midi processor data,
                 // by comparing the midi port ids
                 // then give the matched processors the processor id from the saved data
                 // so that connections to input and output processors can be restored
-                var procType, 
+                var procType,
                     numProcessors = processors.length;
                 for (var i = 0; i < n; i++) {
                     if (pdata[i].type === 'input' || pdata[i].type === 'output') {
@@ -274,7 +291,7 @@ window.WH = window.WH || {};
                         }
                     }
                 }
-                
+
                 // restore state of the processor
                 for (var i = 0; i < n; i++) {
                     for (var j = 0; j < numProcessors; j++) {
@@ -283,7 +300,7 @@ window.WH = window.WH || {};
                         }
                     }
                 }
-                
+
                 // connect the processors
                 var sourceProcessor, numDestinations, destinationIDs;
                 for (var i = 0; i < n; i++) {
@@ -296,7 +313,7 @@ window.WH = window.WH || {};
                                 sourceProcessor = processors[j];
                             }
                         }
-                        
+
                         // find destination processor(s)
                         if (sourceProcessor) {
                             numDestinations = destinationIDs.length;
@@ -311,8 +328,8 @@ window.WH = window.WH || {};
                         }
                     }
                 }
-            }, 
-            
+            },
+
             /**
              * Write network settings to data object.
              * @return {Object} Data to store.
@@ -324,18 +341,18 @@ window.WH = window.WH || {};
                 for (var i = 0; i < numProcessors; i++) {
                     procData.push(processors[i].getData());
                 }
-                
+
                 return {
                     processors: procData
                 };
             };
-       
+
         my = my || {};
 
         that = specs.that || {};
-        
+
         init();
-        
+
         that.createProcessor = createProcessor;
         that.deleteProcessor = deleteProcessor;
         that.selectProcessor = selectProcessor;
