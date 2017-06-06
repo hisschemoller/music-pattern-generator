@@ -10,7 +10,7 @@
  * Application startup.
  */
 document.addEventListener('DOMContentLoaded', function(e) {
-    
+
     // Create all objects that will be the modules of the app.
     var appView = {},
         canvasView = {},
@@ -20,12 +20,13 @@ document.addEventListener('DOMContentLoaded', function(e) {
         remoteView = {},
         file = {},
         midi = {},
-        midiRemote = {},
         midiNetwork = {},
+        midiRemote = {},
+        midiSync = {},
         transport = {};
-        
+
     WH.pubSub = WH.createPubSub();
-    
+
     // Add functionality to the modules and inject dependencies.
     WH.createAppView({
         that: appView
@@ -66,11 +67,15 @@ document.addEventListener('DOMContentLoaded', function(e) {
         preferencesView: preferencesView,
         midiNetwork: midiNetwork,
         midiRemote: midiRemote,
+        midiSync: midiSync,
         transport: transport
     });
     WH.createMIDIRemote({
         that: midiRemote,
         remoteView: remoteView
+    });
+    WH.createMIDISync({
+        that: midiSync
     });
     WH.createMIDINetwork({
         that: midiNetwork,
@@ -84,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         canvasView: canvasView,
         midiNetwork: midiNetwork
     });
-    
+
     // initialise
     midi.setup();
     file.setup();

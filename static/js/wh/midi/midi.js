@@ -1,18 +1,19 @@
 /**
  * Handles MIDI, interfaces with the WebMIDI library.
- * 
+ *
  * @namespace WH
  */
 window.WH = window.WH || {};
 
 (function (ns) {
-    
+
     function createMIDI(specs) {
         var that,
             controlsView = specs.controlsView,
             preferencesView = specs.preferencesView,
             midiNetwork = specs.midiNetwork,
             midiRemote = specs.midiRemote,
+            midiSync = specs.midiSync,
             transport = specs.transport,
             midiAccess,
             selectedInput,
@@ -21,11 +22,11 @@ window.WH = window.WH || {};
             selectedOutputID,
             isClockInEnabled,
             isNoteInEnabled,
-            
+
             setup = function() {
                 requestAccess(onAccessSuccess, onAccessFailure, false);
             },
-            
+
             /**
              * Request system for access to MIDI ports.
              * @param {function} successCallback
@@ -49,15 +50,15 @@ window.WH = window.WH || {};
                     failureCallback('Web MIDI API not available.');
                 }
             },
-        
+
             /**
              * MIDI access request failed.
-             * @param {String} errorMessage 
+             * @param {String} errorMessage
              */
             onAccessFailure = function(errorMessage) {
                 console.log(errorMessage);
             },
-            
+
             /**
              * MIDI access request succeeded.
              * @param {Object} midiAccessObj MidiAccess object.
@@ -67,7 +68,7 @@ window.WH = window.WH || {};
                 midiAccess = midiAccessObj;
                 var inputs = midiAccess.inputs.values();
                 var outputs = midiAccess.outputs.values();
-                
+
                 // populate input dropdown with MIDI ports
                 var portInfos = [];
                 for (var port = inputs.next(); port && !port.done; port = inputs.next()) {
@@ -83,9 +84,11 @@ window.WH = window.WH || {};
                     });
                     // all midi inputs are available for remote MIDI control
                     midiRemote.addMidiInput(port.value);
+                    // all midi inputs are available for MIDI sync
+                    midiSync.addMidiInput(port.value);
                 }
                 preferencesView.setMidiPorts(portInfos, true);
-                
+
                 // populate output dropdown with MIDI ports
                 portInfos = [];
                 for (var port = outputs.next(); port && !port.done; port = outputs.next()) {
@@ -101,7 +104,7 @@ window.WH = window.WH || {};
                     });
                 }
                 preferencesView.setMidiPorts(portInfos, false);
-                
+
                 // select an input and output if they're already known
                 if (typeof selectedInputID === 'string' && selectedOutputID.length) {
                     selectInputByID(selectedInputID);
@@ -110,7 +113,7 @@ window.WH = window.WH || {};
                     selectOutputByID(selectedOutputID);
                 }
             },
-            
+
             /**
              * Select an input.
              * @param {String} id ID of the input.
@@ -130,7 +133,7 @@ window.WH = window.WH || {};
                     }
                 }
             },
-            
+
             /**
              * Select an output.
              * @param {String} id ID of the output.
@@ -150,7 +153,7 @@ window.WH = window.WH || {};
                     }
                 }
             },
-            
+
             /**
              * Toggle between internal clock and external MIDI clock sync.
              * @param {Boolean} isEnabled Sync to MIDI clock when true.
@@ -164,7 +167,7 @@ window.WH = window.WH || {};
                     transport.setExternalClockEnabled(isClockInEnabled, selectedInput);
                 }
             },
-            
+
             /**
              * Enable pattern play control by MIDI note on and off.
              * @param {Boolean} isEnabled Pattern play control enabled when true.
@@ -173,7 +176,7 @@ window.WH = window.WH || {};
                 isNoteInEnabled = isEnabled;
                 preferencesView.setMidiNoteInEnabled(isNoteInEnabled);
             },
-            
+
             /**
              * Set all preferences from a data object.
              * @param {Object} data Preferences data object.
@@ -183,8 +186,8 @@ window.WH = window.WH || {};
                 selectOutputByID(data.midiout);
                 setClockInEnabled(data.clockin);
                 setNoteInEnabled(data.notein);
-            }, 
-            
+            },
+
             /**
              * Save the preferences when the page unloads.
              * @return {Object} Preferences data.
@@ -197,9 +200,9 @@ window.WH = window.WH || {};
                     'notein': isNoteInEnabled
                 };
             };
-        
+
         that = specs.that;
-        
+
         that.setup = setup;
         that.selectInputByID = selectInputByID;
         that.selectOutputByID = selectOutputByID;
@@ -209,7 +212,7 @@ window.WH = window.WH || {};
         that.getData = getData;
         return that;
     }
-    
+
     ns.createMIDI = createMIDI;
 
 })(WH);
