@@ -9,7 +9,7 @@
     font-style: normal;
 }
 
-[class^="icon-"], 
+[class^="icon-"],
 [class*=" icon-"] {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'icomoon' !important;
@@ -336,7 +336,7 @@ select:focus {
 }
 .prefs__inputs,
 .prefs__outputs {
-    display: none;
+    /*display: none;*/
 }
 .prefs__select {
     -webkit-appearance: none;

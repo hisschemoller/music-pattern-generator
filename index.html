@@ -40,8 +40,24 @@
         </header>
         <div class="settings"></div>
         <div class="form prefs config">
-            <ul class="prefs__inputs"></ul>
-            <ul class="prefs__outputs"></ul>
+            <div class="prefs__midi-in">
+                <div class="prefs__header">
+                    <div class="prefs__header-title">MIDI Inputs</div>
+                    <div class="prefs__header-option">Network</div>
+                    <div class="prefs__header-option">Sync</div>
+                    <div class="prefs__header-option">Remote</div>
+                </div>
+                <ul class="prefs__inputs"></ul>
+            </div>
+            <div class="prefs__midi-out">
+                <div class="prefs__header">
+                    <div class="prefs__header-title">MIDI Outputs</div>
+                    <div class="prefs__header-option">Network</div>
+                    <div class="prefs__header-option">Sync</div>
+                    <div class="prefs__header-option">Remote</div>
+                </div>
+                <ul class="prefs__outputs"></ul>
+            </div>
             <div class="form__row">
                 <label for="inputs-select" class="prefs__label-text">midi in</label>
                 <select id="inputs-select" class="prefs__select">
@@ -79,7 +95,7 @@
             <ul class="remote__list"></ul>
         </div>
     </app>
-    
+
     <template id="template-settings-epg">
         <div class="settings__epg">
             <fieldset class="settings__fieldset">
@@ -160,14 +176,17 @@
     <template id="template-midi-input">
         <li class="midi-port">
             <span class="midi-port__label"></span>
-            <label><input type="checkbox" class="midi-port__track" />Track</label>
+            <label><input type="checkbox" class="midi-port__network" />Network</label>
+            <label><input type="checkbox" class="midi-port__sync" />Sync</label>
             <label><input type="checkbox" class="midi-port__remote" />Remote</label>
         </li>
     </template><!-- /template-midi-input -->
     <template id="template-midi-output">
         <li class="midi-port">
             <span class="midi-port__label"></span>
-            <label><input type="checkbox" class="midi-port__track" />Track</label>
+            <label><input type="checkbox" class="midi-port__network" />Network</label>
+            <label><input type="checkbox" class="midi-port__sync" />Sync</label>
+            <label><input type="checkbox" class="midi-port__remote" />Remote</label>
         </li>
     </template><!-- /template-midi-output -->
     <script src="static/js/lib/tween.js"></script>
