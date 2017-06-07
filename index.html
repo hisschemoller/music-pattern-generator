@@ -173,22 +173,23 @@
             <button class="remote__item-remove btn"><span class="icon-cancel"></span></button>
         </li>
     </template><!-- /template-remote-item -->
-    <template id="template-midi-input">
+    <template id="template-midi-port">
         <li class="midi-port">
             <span class="midi-port__label"></span>
-            <label><input type="checkbox" class="midi-port__network" />Network</label>
-            <label><input type="checkbox" class="midi-port__sync" />Sync</label>
-            <label><input type="checkbox" class="midi-port__remote" />Remote</label>
+            <label class="btn midi-port__btn midi-port__network" title="Network">
+                <input type="checkbox" class="midi-port__btn-check" />
+                <span data-on="On" data-off="Off" class="midi-port__btn-text"></span>
+            </label>
+            <label class="btn midi-port__btn midi-port__sync" title="Sync">
+                <input type="checkbox" class="midi-port__btn-check" />
+                <span data-on="On" data-off="Off" class="midi-port__btn-text"></span>
+            </label>
+            <label class="btn midi-port__btn midi-port__remote" title="Remote">
+                <input type="checkbox" class="midi-port__btn-check" />
+                <span data-on="On" data-off="Off" class="midi-port__btn-text"></span>
+            </label>
         </li>
-    </template><!-- /template-midi-input -->
-    <template id="template-midi-output">
-        <li class="midi-port">
-            <span class="midi-port__label"></span>
-            <label><input type="checkbox" class="midi-port__network" />Network</label>
-            <label><input type="checkbox" class="midi-port__sync" />Sync</label>
-            <label><input type="checkbox" class="midi-port__remote" />Remote</label>
-        </li>
-    </template><!-- /template-midi-output -->
+    </template><!-- /template-midi-port -->
     <script src="static/js/lib/tween.js"></script>
     <script src="static/js/main.js"></script>
     <script src="static/js/wh/core/conf.js"></script>
