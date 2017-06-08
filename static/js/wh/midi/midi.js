@@ -68,15 +68,9 @@ window.WH = window.WH || {};
                 midiAccess = midiAccessObj;
                 var inputs = midiAccess.inputs.values();
                 var outputs = midiAccess.outputs.values();
-
-                // populate input dropdown with MIDI ports
-                var portInfos = [];
+                
                 for (var port = inputs.next(); port && !port.done; port = inputs.next()) {
                     console.log('MIDI input port:', port.value.name + ' (' + port.value.manufacturer + ')');
-                    portInfos.push({
-                        name: port.value.name,
-                        id: port.value.id
-                    });
                     // create a MIDI input processor for each port
                     ns.pubSub.fire('create.processor', {
                         type: 'input',
@@ -87,23 +81,15 @@ window.WH = window.WH || {};
                     // all midi inputs are available for MIDI sync
                     midiSync.addMidiInput(port.value);
                 }
-                preferencesView.setMidiPorts(portInfos, true);
-
-                // populate output dropdown with MIDI ports
-                portInfos = [];
+                
                 for (var port = outputs.next(); port && !port.done; port = outputs.next()) {
                     console.log('MIDI output port:', port.value.name + ' (' + port.value.manufacturer + ')');
-                    portInfos.push({
-                        name: port.value.name,
-                        id: port.value.id
-                    });
                     // create a MIDI output processor for each port
                     ns.pubSub.fire('create.processor', {
                         type: 'output',
                         midiOutput: port.value
                     });
                 }
-                preferencesView.setMidiPorts(portInfos, false);
 
                 // select an input and output if they're already known
                 if (typeof selectedInputID === 'string' && selectedOutputID.length) {

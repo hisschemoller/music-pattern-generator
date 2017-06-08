@@ -14,14 +14,6 @@ window.WH = window.WH || {};
             midiOutputsEl = document.querySelector('.prefs__outputs'),
             midiPortViews = [],
             inputs = {
-                midiout: {
-                    type: 'select',
-                    select: document.getElementById('outputs-select')
-                },
-                midiin: {
-                    type: 'select',
-                    select: document.getElementById('inputs-select')
-                },
                 clockin: {
                     type: 'checkbox',
                     input: document.getElementById('clockin-check')
@@ -33,36 +25,12 @@ window.WH = window.WH || {};
             },
             
             init = function() {
-                inputs.midiout.select.addEventListener('change', function(e) {
-                    midi.selectOutputByID(e.target.value);
-                });
-                inputs.midiin.select.addEventListener('change', function(e) {
-                    midi.selectInputByID(e.target.value);
-                });
                 inputs.clockin.input.addEventListener('change', function(e) {
                     midi.setClockInEnabled(e.target.checked);
                 });
                 inputs.notein.input.addEventListener('change', function(e) {
                     midi.setNoteInEnabled(e.target.checked);
                 });
-            },
-            
-            /**
-             * Populate the MIDI inputs or outputs dropdown.
-             * @param {Array} midiPorts WebMidi.inputs or WebMidi.outputs
-             * @param {Boolean} isInputs True if inputs, else outputs.
-             */
-            setMidiPorts = function(midiPorts, isInputs) {
-                var port, optionEl, 
-                    selectEl = isInputs ? inputs.midiin.select : inputs.midiout.select,
-                    n = midiPorts.length;
-                for (var i = 0; i < n; i++) {
-                    port = midiPorts[i];
-                    optionEl = document.createElement('option');
-                    optionEl.text = port.name;
-                    optionEl.value = port.id;
-                    selectEl.add(optionEl);
-                }
             },
             
             /**
@@ -115,7 +83,7 @@ window.WH = window.WH || {};
             },
             
             /**
-             * Delete view for a MIDI input ou output processor.
+             * Delete view for a MIDI input or output processor.
              * @param  {Object} processor MIDI processor for a MIDI input or output.
              */
             deleteMIDIPortView = function(processor) {
@@ -141,7 +109,6 @@ window.WH = window.WH || {};
         
         init();
         
-        that.setMidiPorts = setMidiPorts;
         that.setSelectedMidiPort = setSelectedMidiPort;
         that.setMidiClockInEnabled = setMidiClockInEnabled;
         that.setMidiNoteInEnabled = setMidiNoteInEnabled;
