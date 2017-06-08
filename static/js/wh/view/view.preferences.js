@@ -60,24 +60,23 @@ window.WH = window.WH || {};
             },
             
             /**
-             * Create view for a MIDI input ou output processor.
-             * @param  {Object} processor MIDI processor for a MIDI input or output.
+             * Create view for a MIDI input or output port.
+             * @param  {Boolean} isInput True if the port in an input.
              */
-            createMIDIPortView = function(processor) {
+            createMIDIPortView = function(isInput, name, id) {
                 var view;
-                switch (processor.getType()) {
-                    case 'input':
-                        view = ns.createMIDIInputView({
-                            processor: processor,
-                            parentEl: midiInputsEl
-                        });
-                        break;
-                    case 'output':
-                        view = ns.createMIDIOutputView({
-                            processor: processor,
-                            parentEl: midiOutputsEl
-                        });
-                        break;
+                if (isInput) {
+                    view = ns.createMIDIInputView({
+                        parentEl: midiInputsEl,
+                        name: name,
+                        id: id
+                    });
+                } else {
+                    view = ns.createMIDIOutputView({
+                        parentEl: midiOutputsEl,
+                        name: name,
+                        id: id
+                    });
                 }
                 midiPortViews.push(view);
             },

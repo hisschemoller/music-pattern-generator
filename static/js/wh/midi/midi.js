@@ -71,24 +71,28 @@ window.WH = window.WH || {};
                 
                 for (var port = inputs.next(); port && !port.done; port = inputs.next()) {
                     console.log('MIDI input port:', port.value.name + ' (' + port.value.manufacturer + ')');
+                    // create a view for this port in the preferences panel
+                    preferencesView.createMIDIPortView(true, port.value.name, port.value.id);
                     // create a MIDI input processor for each port
-                    ns.pubSub.fire('create.processor', {
-                        type: 'input',
-                        midiInput: port.value
-                    });
+                    // ns.pubSub.fire('create.processor', {
+                    //     type: 'input',
+                    //     midiInput: port.value
+                    // });
                     // all midi inputs are available for remote MIDI control
-                    midiRemote.addMidiInput(port.value);
+                    // midiRemote.addMidiInput(port.value);
                     // all midi inputs are available for MIDI sync
-                    midiSync.addMidiInput(port.value);
+                    // midiSync.addMidiInput(port.value);
                 }
                 
                 for (var port = outputs.next(); port && !port.done; port = outputs.next()) {
                     console.log('MIDI output port:', port.value.name + ' (' + port.value.manufacturer + ')');
+                    // create a view for this port in the preferences panel
+                    preferencesView.createMIDIPortView(false, port.value.name, port.value.id);
                     // create a MIDI output processor for each port
-                    ns.pubSub.fire('create.processor', {
-                        type: 'output',
-                        midiOutput: port.value
-                    });
+                    // ns.pubSub.fire('create.processor', {
+                    //     type: 'output',
+                    //     midiOutput: port.value
+                    // });
                 }
 
                 // select an input and output if they're already known

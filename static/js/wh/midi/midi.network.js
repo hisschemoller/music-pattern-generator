@@ -55,7 +55,6 @@ window.WH = window.WH || {};
                     switch (specs.type) {
                         case 'input':
                         case 'output':
-                            preferencesView.createMIDIPortView(processor);
                             break;
                         case 'epg':
                             appView.createSettingsView(processor);
