@@ -1,5 +1,5 @@
 /**
- * Handles MIDI, interfaces with the WebMIDI library.
+ * Handles connection with soft- and hardware MIDI devices.
  *
  * @namespace WH
  */
@@ -16,6 +16,8 @@ window.WH = window.WH || {};
             midiSync = specs.midiSync,
             transport = specs.transport,
             midiAccess,
+            inputs = [],
+            outputs = [],
             selectedInput,
             selectedInputID,
             selectedOutput,
@@ -71,8 +73,7 @@ window.WH = window.WH || {};
                 
                 for (var port = inputs.next(); port && !port.done; port = inputs.next()) {
                     console.log('MIDI input port:', port.value.name + ' (' + port.value.manufacturer + ')');
-                    // create a view for this port in the preferences panel
-                    preferencesView.createMIDIPortView(true, port.value.name, port.value.id);
+                    createInput(port.value);
                     // create a MIDI input processor for each port
                     // ns.pubSub.fire('create.processor', {
                     //     type: 'input',
@@ -87,7 +88,7 @@ window.WH = window.WH || {};
                 for (var port = outputs.next(); port && !port.done; port = outputs.next()) {
                     console.log('MIDI output port:', port.value.name + ' (' + port.value.manufacturer + ')');
                     // create a view for this port in the preferences panel
-                    preferencesView.createMIDIPortView(false, port.value.name, port.value.id);
+                    // preferencesView.createMIDIPortView(false, port.value.name, port.value.id);
                     // create a MIDI output processor for each port
                     // ns.pubSub.fire('create.processor', {
                     //     type: 'output',
@@ -102,6 +103,19 @@ window.WH = window.WH || {};
                 if (typeof selectedOutputID === 'string' && selectedOutputID.length) {
                     selectOutputByID(selectedOutputID);
                 }
+            },
+            
+            /**
+             * Create a MIDI input model and view.
+             * @param  {Object} midiPort MIDIInput object.
+             */
+            createInput = function(midiPort) {
+                var input = ns.createMIDIPortInput({
+                    midiPort: midiPort
+                });
+                // create a view for this port in the preferences panel
+                preferencesView.createMIDIPortView(true, input);
+                inputs.push(input);
             },
 
             /**

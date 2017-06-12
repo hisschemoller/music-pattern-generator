@@ -61,21 +61,20 @@ window.WH = window.WH || {};
             
             /**
              * Create view for a MIDI input or output port.
-             * @param  {Boolean} isInput True if the port in an input.
+             * @param {Boolean} isInput True if the port in an input.
+             * @param {Object} port MIDI port object.
              */
-            createMIDIPortView = function(isInput, name, id) {
+            createMIDIPortView = function(isInput, port) {
                 var view;
                 if (isInput) {
                     view = ns.createMIDIInputView({
                         parentEl: midiInputsEl,
-                        name: name,
-                        id: id
+                        port: port
                     });
                 } else {
                     view = ns.createMIDIOutputView({
                         parentEl: midiOutputsEl,
-                        name: name,
-                        id: id
+                        port: port
                     });
                 }
                 midiPortViews.push(view);

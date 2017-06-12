@@ -10,6 +10,7 @@ window.WH = window.WH || {};
     function createMIDIBaseView(specs, my) {
         var that,
             parentEl = specs.parentEl,
+            port = specs.port,
             
             initialize = function() {
                 // find template, add clone to midi ports list
@@ -17,9 +18,8 @@ window.WH = window.WH || {};
                 let clone = template.content.cloneNode(true);
                 my.el = clone.firstElementChild;
                 parentEl.appendChild(my.el);
-                
                 // show label
-                my.el.querySelector('.midi-port__label').innerHTML = specs.name;
+                my.el.querySelector('.midi-port__label').innerHTML = port.getName();
             },
             
             /**
