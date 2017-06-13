@@ -114,6 +114,7 @@ window.WH = window.WH || {};
                 var input = ns.createMIDIPortInput({
                     midiPort: midiPort,
                     network: midiNetwork,
+                    sync: midiSync,
                     remote: midiRemote
                 });
                 // create a view for this port in the preferences panel
@@ -130,6 +131,7 @@ window.WH = window.WH || {};
                 var output = ns.createMIDIPortOutput({
                     midiPort: midiPort,
                     network: midiNetwork,
+                    sync: midiSync,
                     remote: midiRemote
                 });
                 // create a view for this port in the preferences panel

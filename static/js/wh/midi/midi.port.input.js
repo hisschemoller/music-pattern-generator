@@ -9,16 +9,25 @@ window.WH = window.WH || {};
     
     function createMIDIPortInput(specs, my) {
         var that,
+            isSyncEnabled = false,
             isRemoteEnabled = false,
             
-            init = function() {
-                
-            },
-            
+            /**
+             * Make input available as sync source.
+             */
             toggleSync = function() {
-                console.log('toggleSync');
+                if (isSyncEnabled) {
+                    my.sync.removeMidiInput(my.midiPort);
+                } else {
+                    my.sync.addMidiInput(my.midiPort);
+                }
+                isSyncEnabled = !isSyncEnabled;
+                my.viewCallback('sync', isSyncEnabled);
             },
             
+            /**
+             * Make input available as remote control source.
+             */
             toggleRemote = function() {
                 if (isRemoteEnabled) {
                     my.remote.removeMidiInput(my.midiPort);
@@ -32,8 +41,6 @@ window.WH = window.WH || {};
         my = my || {};
         
         that = ns.createMIDIPortBase(specs, my);
-        
-        init();
         
         that.toggleSync = toggleSync;
         that.toggleRemote = toggleRemote;
