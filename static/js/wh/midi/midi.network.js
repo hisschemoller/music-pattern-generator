@@ -42,7 +42,7 @@ window.WH = window.WH || {};
                             processors.splice(numInputProcessors, 0, processor);
                     }
 
-                    console.log('Add processor ' + processor.getType() + ' (id ' + processor.getID() + ')');
+                    console.log('Create processor ' + processor.getType() + ' (id ' + processor.getID() + ')');
                     numProcessors = processors.length;
 
                     // create the views for the processor
@@ -78,6 +78,8 @@ window.WH = window.WH || {};
                 } else {
                     console.error('No MIDI processor found of type: ', specs.type);
                 }
+                
+                return processor.getID();
             },
 
             /**
@@ -95,6 +97,8 @@ window.WH = window.WH || {};
                 }
                 
                 if (processor) {
+                    console.log('Delete processor ' + processor.getType() + ' (id ' + processor.getID() + ')');
+                    
                     // disconnect other processors that have this processor as destination
                     for (var i = 0; i < numProcessors; i++) {
                         if (typeof processors[i].disconnect === 'function') {
@@ -105,11 +109,9 @@ window.WH = window.WH || {};
                     // delete the views for the processor
                     switch (processor.getType()) {
                         case 'input':
-                            preferencesView.deleteMIDIPortView(processor);
                             numInputProcessors--;
                             break;
                         case 'output':
-                            preferencesView.deleteMIDIPortView(processor);
                             break;
                         case 'epg':
                             appView.deleteSettingsView(processor);
@@ -120,9 +122,16 @@ window.WH = window.WH || {};
                     }
 
                     // disconnect this processor from its destinations
-                    processor.disconnect();
+                    if (typeof processor.disconnect === 'function') {
+                        processor.disconnect();
+                    }
+                    
                     selectNextProcessor(processor);
-                    processor.terminate();
+                    
+                    if (typeof processor.terminate === 'function') {
+                        processor.terminate();
+                    }
+                    
                     processors.splice(processors.indexOf(processor), 1);
                     numProcessors = processors.length;
                 }

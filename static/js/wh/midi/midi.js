@@ -112,10 +112,12 @@ window.WH = window.WH || {};
              */
             createInput = function(midiPort) {
                 var input = ns.createMIDIPortInput({
-                    midiPort: midiPort
+                    midiPort: midiPort,
+                    network: midiNetwork
                 });
                 // create a view for this port in the preferences panel
                 preferencesView.createMIDIPortView(true, input);
+                // store port
                 inputs.push(input);
             },
             
@@ -125,10 +127,12 @@ window.WH = window.WH || {};
              */
             createOutput = function(midiPort) {
                 var output = ns.createMIDIPortOutput({
-                    midiPort: midiPort
+                    midiPort: midiPort,
+                    network: midiNetwork
                 });
                 // create a view for this port in the preferences panel
                 preferencesView.createMIDIPortView(false, output);
+                // store port
                 outputs.push(output);
             },
 

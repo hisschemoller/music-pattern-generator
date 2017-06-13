@@ -9,14 +9,33 @@ window.WH = window.WH || {};
     
     function createMIDIPortOutput(specs, my) {
         var that,
+            isNetworkEnabled = false,
+            networkProcessorID,
             
             init = function() {
                 
             },
             
+            /**
+             * Toggle a MIDI output processor in the network.
+             */
             toggleNetwork = function() {
-                console.log('toggleNetwork');
+                if (isNetworkEnabled) {
+                    if (networkProcessorID) {
+                        my.network.deleteProcessor(networkProcessorID);
+                        networkProcessorID = null;
+                        isNetworkEnabled = false;
+                    }
+                } else {
+                    networkProcessorID = my.network.createProcessor({
+                        type: 'output',
+                        midiOutput: my.midiPort.value
+                    });
+                    isNetworkEnabled = true;
+                }
             };
+        
+        my = my || {};
         
         that = ns.createMIDIPortBase(specs, my);
         
