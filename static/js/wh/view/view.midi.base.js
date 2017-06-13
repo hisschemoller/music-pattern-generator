@@ -13,6 +13,9 @@ window.WH = window.WH || {};
             port = specs.port,
             
             initialize = function() {
+                // set callback for the port to update the view
+                port.setViewCallback(updateView);
+                
                 // find template, add clone to midi ports list
                 let template = document.querySelector('#template-midi-port');
                 let clone = template.content.cloneNode(true);
@@ -24,8 +27,19 @@ window.WH = window.WH || {};
                 
                 // find checkboxes
                 my.networkEl = my.el.querySelector('.midi-port__network');
-                my.syncCheckEl = my.el.querySelector('.midi-port__sync > .midi-port__btn-check');
-                my.remoteCheckEl = my.el.querySelector('.midi-port__remote > .midi-port__btn-check');
+                my.syncEl = my.el.querySelector('.midi-port__sync');
+                my.remoteEl = my.el.querySelector('.midi-port__remote');
+                
+                // add DOM event listeners
+                my.networkEl.addEventListener('change', function(e) {
+                    port.toggleNetwork();
+                });
+                my.syncEl.addEventListener('change', function(e) {
+                    port.toggleSync();
+                });
+                my.remoteEl.addEventListener('change', function(e) {
+                    port.toggleRemote();
+                });
             },
             
             /**
@@ -35,13 +49,30 @@ window.WH = window.WH || {};
                 if (my.el && parentEl) {
                     parentEl.removeChild(my.el);
                 }
+            },
+            
+            /**
+             * Callback for port to update view.
+             */
+            updateView = function(key, value) {
+                switch (key) {
+                    case 'network':
+                        my.networkEl.querySelector('[type=checkbox]').checked = value;
+                        break;
+                    case 'sync':
+                        my.syncEl.querySelector('[type=checkbox]').checked = value;
+                        break;
+                    case 'remote':
+                        my.remoteEl.querySelector('[type=checkbox]').checked = value;
+                        break;
+                }
             };
             
         my = my || {};
         my.el;
         my.networkEl;
-        my.syncCheckEl;
-        my.remoteCheckEl;
+        my.syncEl;
+        my.remoteEl;
         
         that = that || {};
         

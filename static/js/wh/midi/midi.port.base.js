@@ -10,6 +10,10 @@ window.WH = window.WH || {};
     function createMIDIPortBase(specs, my) {
         var that,
             
+            setViewCallback = function(callback) {
+                my.viewCallback = callback;
+            },
+            
             getName = function() {
                 return my.midiPort.name;
             },
@@ -20,9 +24,11 @@ window.WH = window.WH || {};
         
         my = my || {};
         my.midiPort = specs.midiPort;
+        my.viewCallback;
         
         that = specs.that || {};
         
+        that.setViewCallback = setViewCallback;
         that.getName = getName;
         that.getID = getID;
         return that;

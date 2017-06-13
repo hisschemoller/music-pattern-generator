@@ -87,6 +87,7 @@ window.WH = window.WH || {};
                 
                 for (var port = outputs.next(); port && !port.done; port = outputs.next()) {
                     console.log('MIDI output port:', port.value.name + ' (' + port.value.manufacturer + ')');
+                    createOutput(port.value);
                     // create a view for this port in the preferences panel
                     // preferencesView.createMIDIPortView(false, port.value.name, port.value.id);
                     // create a MIDI output processor for each port
@@ -116,6 +117,19 @@ window.WH = window.WH || {};
                 // create a view for this port in the preferences panel
                 preferencesView.createMIDIPortView(true, input);
                 inputs.push(input);
+            },
+            
+            /**
+             * Create a MIDI output model and view.
+             * @param  {Object} midiPort MIDIOutput object.
+             */
+            createOutput = function(midiPort) {
+                var output = ns.createMIDIPortOutput({
+                    midiPort: midiPort
+                });
+                // create a view for this port in the preferences panel
+                preferencesView.createMIDIPortView(false, output);
+                outputs.push(output);
             },
 
             /**
