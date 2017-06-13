@@ -25,8 +25,9 @@ window.WH = window.WH || {};
      */
     function createSequencer (specs, my) {
         var that,
-            midiNetwork = specs.midiNetwork,
             canvasView = specs.canvasView,
+            controlsView = specs.controlsView,
+            midiNetwork = specs.midiNetwork,
             ppqn = 480,
             bpm = 120,
             lastBpm = bpm,
@@ -82,7 +83,7 @@ window.WH = window.WH || {};
                 // calculate change factor
                 var factor = lastBpm / bpm;
                 my.setLoopByFactor(factor);
-                WH.pubSub.fire('transport.bpm', bpm);
+                controlsView.setBPMValue(bpm);
             },
             
             /**
@@ -217,6 +218,7 @@ window.WH = window.WH || {};
      */
     function createTransport(specs, my) {
         var that,
+            controlsView = specs.controlsView,
             position = 0,
             origin = 0,
             scanStart = 0,
@@ -278,7 +280,7 @@ window.WH = window.WH || {};
                 setOrigin(position - offset);
                 setScanRange(position);
                 isRunning = true;
-                WH.pubSub.fire('transport.start');
+                controlsView.setPlayButtonState(isRunning);
             },
             
             /**
@@ -286,7 +288,7 @@ window.WH = window.WH || {};
              */
             pause = function () {
                 isRunning = false;
-                WH.pubSub.fire('transport.pause');
+                controlsView.setPlayButtonState(isRunning);
             },
             
             /**

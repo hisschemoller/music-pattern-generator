@@ -52,15 +52,6 @@
                 controls.prefs.input.addEventListener('change', function(e) {
                     preferencesView.toggle(e.target.checked);
                 });
-                WH.pubSub.on('transport.start', function() {
-                    controls.play.input.checked = true;
-                });
-                WH.pubSub.on('transport.pause', function() {
-                    controls.play.input.checked = false;
-                });
-                WH.pubSub.on('transport.bpm', function(data) {
-                    controls.bpm.input.value = data;
-                });
                 document.addEventListener('keyup', function(e) {
                     switch (e.keyCode) {
                         case 32:
@@ -77,6 +68,22 @@
             setControlsEnabled = function(isEnabled) {
                 controls.play.input.disabled = !isEnabled;
                 controls.bpm.input.disabled = !isEnabled;
+            },
+            
+            /**
+             * Display the transport BPM value.
+             * @param {String} value Beats Per Minute.
+             */
+            setBPMValue = function(value) {
+                controls.bpm.input.value = value;
+            },
+            
+            /**
+             * Set the play button state after change in transport.
+             * @param {Boolean} value True if transport runs.
+             */
+            setPlayButtonState = function(value) {
+                controls.play.input.checked = value;
             };
         
         that = specs.that;
@@ -84,6 +91,8 @@
         init();
         
         that.setControlsEnabled = setControlsEnabled;
+        that.setBPMValue = setBPMValue;
+        that.setPlayButtonState = setPlayButtonState;
         return that;
     }
 

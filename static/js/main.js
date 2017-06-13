@@ -25,8 +25,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
         midiSync = {},
         transport = {};
 
-    WH.pubSub = WH.createPubSub();
-
     // Add functionality to the modules and inject dependencies.
     WH.createAppView({
         that: appView,
@@ -88,6 +86,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     WH.createTransport({
         that: transport,
         canvasView: canvasView,
+        controlsView: controlsView,
         midiNetwork: midiNetwork
     });
 

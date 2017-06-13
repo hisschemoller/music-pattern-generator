@@ -17,12 +17,6 @@ window.WH = window.WH || {};
             numProcessors = processors.length,
             numInputProcessors = 0,
 
-            init = function() {
-                ns.pubSub.on('create.processor', createProcessor);
-                ns.pubSub.on('delete.processor', deleteProcessor);
-                ns.pubSub.on('select.processor', selectProcessor);
-            },
-
             /**
              * Create a new processor in the network.
              * @param {Object} specs Processor specifications.
@@ -360,8 +354,6 @@ window.WH = window.WH || {};
         my = my || {};
 
         that = specs.that || {};
-
-        init();
 
         that.createProcessor = createProcessor;
         that.deleteProcessor = deleteProcessor;
