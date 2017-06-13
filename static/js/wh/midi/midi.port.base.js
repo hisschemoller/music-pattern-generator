@@ -25,6 +25,7 @@ window.WH = window.WH || {};
         my = my || {};
         my.midiPort = specs.midiPort;
         my.network = specs.network;
+        my.remote = specs.remote;
         my.viewCallback;
         
         that = specs.that || {};

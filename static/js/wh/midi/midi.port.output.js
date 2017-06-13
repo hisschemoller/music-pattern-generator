@@ -12,10 +12,6 @@ window.WH = window.WH || {};
             isNetworkEnabled = false,
             networkProcessorID,
             
-            init = function() {
-                
-            },
-            
             /**
              * Toggle a MIDI output processor in the network.
              */
@@ -29,17 +25,16 @@ window.WH = window.WH || {};
                 } else {
                     networkProcessorID = my.network.createProcessor({
                         type: 'output',
-                        midiOutput: my.midiPort.value
+                        midiOutput: my.midiPort
                     });
                     isNetworkEnabled = true;
                 }
+                my.viewCallback('network', isNetworkEnabled);
             };
         
         my = my || {};
         
         that = ns.createMIDIPortBase(specs, my);
-        
-        init();
         
         that.toggleNetwork = toggleNetwork;
         return that;

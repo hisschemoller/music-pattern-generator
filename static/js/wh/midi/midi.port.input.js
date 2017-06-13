@@ -9,6 +9,7 @@ window.WH = window.WH || {};
     
     function createMIDIPortInput(specs, my) {
         var that,
+            isRemoteEnabled = false,
             
             init = function() {
                 
@@ -19,8 +20,16 @@ window.WH = window.WH || {};
             },
             
             toggleRemote = function() {
-                console.log('toggleRemote');
+                if (isRemoteEnabled) {
+                    my.remote.removeMidiInput(my.midiPort);
+                } else {
+                    my.remote.addMidiInput(my.midiPort);
+                }
+                isRemoteEnabled = !isRemoteEnabled;
+                my.viewCallback('remote', isRemoteEnabled);
             };
+        
+        my = my || {};
         
         that = ns.createMIDIPortBase(specs, my);
         
