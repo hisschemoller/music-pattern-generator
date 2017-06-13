@@ -29,7 +29,8 @@ document.addEventListener('DOMContentLoaded', function(e) {
 
     // Add functionality to the modules and inject dependencies.
     WH.createAppView({
-        that: appView
+        that: appView,
+        midiNetwork: midiNetwork
     });
     WH.createCanvasView({
         that: canvasView,

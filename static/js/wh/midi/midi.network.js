@@ -88,39 +88,50 @@ window.WH = window.WH || {};
 
             /**
              * Delete a processor.
-             * @param {Object} processor Processor to delete.
+             * @param {String} processorID ID of processor to delete.
              */
-            deleteProcessor = function(processor) {
-                // disconnect other processors that have this processor as destination
+            deleteProcessor = function(processorID) {
+                // find the processor
+                var processor;
                 for (var i = 0; i < numProcessors; i++) {
-                    if (typeof processors[i].disconnect === 'function') {
-                        processors[i].disconnect(processor);
+                    if (processors[i].getID() === processorID) {
+                        processor = processors[i];
+                        break;
                     }
                 }
+                
+                if (processor) {
+                    // disconnect other processors that have this processor as destination
+                    for (var i = 0; i < numProcessors; i++) {
+                        if (typeof processors[i].disconnect === 'function') {
+                            processors[i].disconnect(processor);
+                        }
+                    }
+                    
+                    // delete the views for the processor
+                    switch (processor.getType()) {
+                        case 'input':
+                            preferencesView.deleteMIDIPortView(processor);
+                            numInputProcessors--;
+                            break;
+                        case 'output':
+                            preferencesView.deleteMIDIPortView(processor);
+                            break;
+                        case 'epg':
+                            appView.deleteSettingsView(processor);
+                            canvasView.deleteView(processor);
+                            midiRemote.unregisterProcessor(processor);
+                            selectProcessor(processor);
+                            break;
+                    }
 
-                // delete the views for the processor
-                switch (processor.getType()) {
-                    case 'input':
-                        preferencesView.deleteMIDIPortView(processor);
-                        numInputProcessors--;
-                        break;
-                    case 'output':
-                        preferencesView.deleteMIDIPortView(processor);
-                        break;
-                    case 'epg':
-                        appView.deleteSettingsView(processor);
-                        canvasView.deleteView(processor);
-                        midiRemote.unregisterProcessor(processor);
-                        selectProcessor(processor);
-                        break;
+                    // disconnect this processor from its destinations
+                    processor.disconnect();
+                    selectNextProcessor(processor);
+                    processor.terminate();
+                    processors.splice(processors.indexOf(processor), 1);
+                    numProcessors = processors.length;
                 }
-
-                // disconnect this processor from its destinations
-                processor.disconnect();
-                selectNextProcessor(processor);
-                processor.terminate();
-                processors.splice(processors.indexOf(processor), 1);
-                numProcessors = processors.length;
             },
 
             /**

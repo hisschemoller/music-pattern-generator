@@ -9,6 +9,7 @@ window.WH = window.WH || {};
     
     function createAppView(specs, my) {
         var that,
+            midiNetwork = specs.midiNetwork,
             rootEl = document.querySelector('#app'),
             settingsEl = document.querySelector('.settings'),
             settingsViews = [],
@@ -19,6 +20,7 @@ window.WH = window.WH || {};
              */
             createSettingsView = function(processor) {
                 var settingsView = ns.createSettingsView({
+                    midiNetwork: midiNetwork,
                     processor: processor,
                     parentEl: settingsEl
                 });

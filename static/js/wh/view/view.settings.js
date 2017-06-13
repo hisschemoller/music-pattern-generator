@@ -9,6 +9,7 @@ window.WH = window.WH || {};
     
     function createSettingsView(specs, my) {
         var that,
+            midiNetwork = specs.midiNetwork,
             processor = specs.processor,
             parentEl = specs.parentEl,
             settingViews = [],
@@ -62,7 +63,7 @@ window.WH = window.WH || {};
                 if (el) {
                     el.querySelector('.settings__delete').addEventListener('click', function(e) {
                         e.preventDefault();
-                        ns.pubSub.fire('delete.processor', processor);
+                        midiNetwork.deleteProcessor(processor.getID());
                     });
                 }
             },
