@@ -32,13 +32,19 @@ window.WH = window.WH || {};
                 
                 // add DOM event listeners
                 my.networkEl.addEventListener('change', function(e) {
-                    port.toggleNetwork();
+                    if (!e.currentTarget.dataset.disabled) {
+                        port.toggleNetwork();
+                    }
                 });
                 my.syncEl.addEventListener('change', function(e) {
-                    port.toggleSync();
+                    if (!e.currentTarget.dataset.disabled) {
+                        port.toggleSync();
+                    }
                 });
                 my.remoteEl.addEventListener('change', function(e) {
-                    port.toggleRemote();
+                    if (!e.currentTarget.dataset.disabled) {
+                        port.toggleRemote();
+                    }
                 });
             },
             
