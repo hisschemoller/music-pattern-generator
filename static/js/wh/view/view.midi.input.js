@@ -10,7 +10,13 @@ window.WH = window.WH || {};
     function createMIDIInputView(specs, my) {
         var that,
             
-            init = function() {};
+            /**
+             * This init function is called after the base view's initialise function,
+             * so properties of on 'my' are available.
+             */
+            init = function() {
+                my.networkEl.dataset.disabled = 'true';
+            };
             
         my = my || {};
         

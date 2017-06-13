@@ -64,6 +64,7 @@
     --btn-hover-color: #ccc;
     --btn-active-color: #999;
     --btn-bg-color: #fff;
+    --btn-bg-disabled-color: #f7f7f7;
     --btn-bg-hover-color: #eee;
     --btn-border-color: #ccc;
     --font-size: 14px;
@@ -382,4 +383,12 @@ select:focus {
 }
 .midi-port__btn-check:checked + .midi-port__btn-text:before {
     content: attr(data-on);
+}
+.midi-port__btn[data-disabled='true'],
+.midi-port__btn[data-disabled='true']:hover {
+    background-color: var(--btn-bg-disabled-color);
+    cursor: default;
+}
+.midi-port__btn[data-disabled='true'] .midi-port__btn-check + .midi-port__btn-text:before {
+    content: ' ';
 }
