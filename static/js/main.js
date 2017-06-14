@@ -41,8 +41,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         transport: transport
     });
     WH.createPreferencesView({
-        that: preferencesView,
-        midi: midi
+        that: preferencesView
     });
     WH.createRemoteView({
         that: remoteView,

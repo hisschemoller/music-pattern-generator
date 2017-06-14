@@ -74,27 +74,11 @@ window.WH = window.WH || {};
                 for (var port = inputs.next(); port && !port.done; port = inputs.next()) {
                     console.log('MIDI input port:', port.value.name + ' (' + port.value.manufacturer + ')');
                     createInput(port.value);
-                    // create a MIDI input processor for each port
-                    // ns.pubSub.fire('create.processor', {
-                    //     type: 'input',
-                    //     midiInput: port.value
-                    // });
-                    // all midi inputs are available for remote MIDI control
-                    // midiRemote.addMidiInput(port.value);
-                    // all midi inputs are available for MIDI sync
-                    // midiSync.addMidiInput(port.value);
                 }
                 
                 for (var port = outputs.next(); port && !port.done; port = outputs.next()) {
                     console.log('MIDI output port:', port.value.name + ' (' + port.value.manufacturer + ')');
                     createOutput(port.value);
-                    // create a view for this port in the preferences panel
-                    // preferencesView.createMIDIPortView(false, port.value.name, port.value.id);
-                    // create a MIDI output processor for each port
-                    // ns.pubSub.fire('create.processor', {
-                    //     type: 'output',
-                    //     midiOutput: port.value
-                    // });
                 }
 
                 // select an input and output if they're already known
@@ -187,20 +171,10 @@ window.WH = window.WH || {};
             setClockInEnabled = function(isEnabled) {
                 isClockInEnabled = isEnabled;
                 controlsView.setControlsEnabled(!isClockInEnabled);
-                preferencesView.setMidiClockInEnabled(isClockInEnabled);
                 // only enable if there is a MIDI input port
                 if ((isClockInEnabled && selectedInput) || !isClockInEnabled) {
                     transport.setExternalClockEnabled(isClockInEnabled, selectedInput);
                 }
-            },
-
-            /**
-             * Enable pattern play control by MIDI note on and off.
-             * @param {Boolean} isEnabled Pattern play control enabled when true.
-             */
-            setNoteInEnabled = function(isEnabled) {
-                isNoteInEnabled = isEnabled;
-                preferencesView.setMidiNoteInEnabled(isNoteInEnabled);
             },
 
             /**
@@ -211,7 +185,6 @@ window.WH = window.WH || {};
                 selectInputByID(data.midiin);
                 selectOutputByID(data.midiout);
                 setClockInEnabled(data.clockin);
-                setNoteInEnabled(data.notein);
             },
 
             /**
@@ -222,8 +195,7 @@ window.WH = window.WH || {};
                 return {
                     'midiin': selectedInput ? selectedInput.id : '',
                     'midiout': selectedOutput ? selectedOutput.id : '',
-                    'clockin': isClockInEnabled,
-                    'notein': isNoteInEnabled
+                    'clockin': isClockInEnabled
                 };
             };
 
@@ -233,7 +205,6 @@ window.WH = window.WH || {};
         that.selectInputByID = selectInputByID;
         that.selectOutputByID = selectOutputByID;
         that.setClockInEnabled = setClockInEnabled;
-        that.setNoteInEnabled = setNoteInEnabled;
         that.setData = setData;
         that.getData = getData;
         return that;

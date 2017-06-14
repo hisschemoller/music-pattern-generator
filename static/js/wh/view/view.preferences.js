@@ -8,56 +8,10 @@ window.WH = window.WH || {};
     
     function createPreferencesView(specs) {
         var that,
-            midi = specs.midi,
             preferencesEl = document.querySelector('.prefs'),
             midiInputsEl = document.querySelector('.prefs__inputs'),
             midiOutputsEl = document.querySelector('.prefs__outputs'),
             midiPortViews = [],
-            inputs = {
-                clockin: {
-                    type: 'checkbox',
-                    input: document.getElementById('clockin-check')
-                },
-                notein: {
-                    type: 'checkbox',
-                    input: document.getElementById('notein-check')
-                }
-            },
-            
-            init = function() {
-                inputs.clockin.input.addEventListener('change', function(e) {
-                    midi.setClockInEnabled(e.target.checked);
-                });
-                inputs.notein.input.addEventListener('change', function(e) {
-                    midi.setNoteInEnabled(e.target.checked);
-                });
-            },
-            
-            /**
-             * Show the selected output in the dropdown.
-             * @param {String} output WebMidi output ID.
-             * @param {Boolean} isInput True if input, else output.
-             */
-            setSelectedMidiPort = function(id, isInput) {
-                var selectEl = isInput ? inputs.midiin.select : inputs.midiout.select;
-                selectEl.value = id;
-            },
-            
-            /**
-             * Show if external MIDI clock sync is selected.
-             * @param {Boolean} isEnabled True if external clock is selected.
-             */
-            setMidiClockInEnabled = function(isEnabled) {
-                inputs.clockin.input.checked = isEnabled;
-            },
-            
-            /**
-             * Show if pattern control by MIDI note is selected.
-             * @param {Boolean} isEnabled True if pattern control is selected.
-             */
-            setMidiNoteInEnabled = function(isEnabled) {
-                inputs.notein.input.checked = isEnabled;
-            },
             
             /**
              * Create view for a MIDI input or output port.
@@ -105,11 +59,6 @@ window.WH = window.WH || {};
         
         that = specs.that;
         
-        init();
-        
-        that.setSelectedMidiPort = setSelectedMidiPort;
-        that.setMidiClockInEnabled = setMidiClockInEnabled;
-        that.setMidiNoteInEnabled = setMidiNoteInEnabled;
         that.createMIDIPortView = createMIDIPortView;
         that.deleteMIDIPortView = deleteMIDIPortView;
         that.toggle = toggle;
