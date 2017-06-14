@@ -13,9 +13,17 @@ window.WH = window.WH || {};
             networkProcessorID,
             
             /**
-             * Toggle a MIDI output processor in the network.
+             * Create a MIDI output processor in the network,
+             * or delete it from the network.
+             * @param {Boolean} isEnabled State to switch to.
              */
-            toggleNetwork = function() {
+            toggleNetwork = function(isEnabled) {
+                if (isEnabled === true || isEnabled === false) {
+                    if (isEnabled === isNetworkEnabled) {
+                        return;
+                    } 
+                }
+                
                 if (isNetworkEnabled) {
                     if (networkProcessorID) {
                         my.network.deleteProcessor(networkProcessorID);
@@ -28,6 +36,7 @@ window.WH = window.WH || {};
                         midiOutput: my.midiPort
                     });
                     isNetworkEnabled = true;
+                    ns.EPGMode.selectMIDIOutPort(networkProcessorID, toggleNetwork);
                 }
                 my.viewCallback('network', isNetworkEnabled);
             };

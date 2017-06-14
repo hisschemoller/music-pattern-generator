@@ -58,22 +58,12 @@ window.WH = window.WH || {};
                             canvasView.markDirty();
                             break;
                     }
-
+                    
                     // If the app is in EPG mode,
                     // and this is a newly created processor (not a project restore),
                     // then connect each EPG processor to the first input and output port.
-                    var epgMode = true;
-                    if (epgMode && isRestore !== true) {
-                        if (specs.type == 'epg') {
-                            for (var i = 0; i < numProcessors; i++) {
-                                if (processors[i].getType() == 'input') {
-                                    processors[i].connect(processor);
-                                }
-                                if (processors[i].getType() == 'output') {
-                                    processor.connect(processors[i]);
-                                }
-                            }
-                        }
+                    if (isRestore !== true) {
+                        ns.EPGMode.addProcessor(processor);
                     }
                 } else {
                     console.error('No MIDI processor found of type: ', specs.type);
@@ -105,6 +95,8 @@ window.WH = window.WH || {};
                             processors[i].disconnect(processor);
                         }
                     }
+                    
+                    ns.EPGMode.removeProcessor(processor);
                     
                     // delete the views for the processor
                     switch (processor.getType()) {
