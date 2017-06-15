@@ -15,7 +15,7 @@ window.WH = window.WH || {};
             
             addProcessor = function(processor) {
                 processors.push(processor);
-                console.debug('%c EPGMode addProcessor num processors: ' + processors.length, 'color:#090;');
+                console.debug('%c EPGMode addProcessor processors: ' + processors.length, 'color:#090;');
                 
                 // add the processor to the selected output
                 if (processor.getType() == 'epg' && selectedOutputProcessor) {
@@ -30,7 +30,7 @@ window.WH = window.WH || {};
                         break;
                     }
                 }
-                console.debug('%c EPGMode removeProcessor num processors: ' + processors.length, 'color:#090;');
+                console.debug('%c EPGMode removeProcessor processors: ' + processors.length, 'color:#090;');
             },
             
             selectMIDIOutPort = function(processorID, midiPortCallback) {
@@ -46,10 +46,11 @@ window.WH = window.WH || {};
                     // }
                 }
                 
+                // reset selected output
                 selectedOutputProcessor = null;
                 selectedOutputPortCallback = null;
                 
-                // find the new output processor
+                // find the new output processor and set as selected
                 if (processorID) {
                     for (var i = 0, n = processors.length; i < n; i++) {
                         if (processors[i].getID() == processorID) {
