@@ -9,7 +9,6 @@ window.WH = window.WH || {};
     
     function createMIDIPortOutput(specs, my) {
         var that,
-            isNetworkEnabled = false,
             networkProcessorID,
             
             /**
@@ -19,26 +18,26 @@ window.WH = window.WH || {};
              */
             toggleNetwork = function(isEnabled) {
                 if (isEnabled === true || isEnabled === false) {
-                    if (isEnabled === isNetworkEnabled) {
+                    if (isEnabled === my.isNetworkEnabled) {
                         return;
                     } 
                 }
                 
-                if (isNetworkEnabled) {
+                if (my.isNetworkEnabled) {
                     if (networkProcessorID) {
                         my.network.deleteProcessor(networkProcessorID);
                         networkProcessorID = null;
-                        isNetworkEnabled = false;
+                        my.isNetworkEnabled = false;
                     }
                 } else {
                     networkProcessorID = my.network.createProcessor({
                         type: 'output',
                         midiOutput: my.midiPort
                     });
-                    isNetworkEnabled = true;
+                    my.isNetworkEnabled = true;
                     ns.EPGMode.selectMIDIOutPort(networkProcessorID, toggleNetwork);
                 }
-                my.viewCallback('network', isNetworkEnabled);
+                my.viewCallback('network', my.isNetworkEnabled);
             };
         
         my = my || {};

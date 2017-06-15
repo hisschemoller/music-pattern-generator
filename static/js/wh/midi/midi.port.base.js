@@ -24,6 +24,9 @@ window.WH = window.WH || {};
         
         my = my || {};
         my.midiPort = specs.midiPort;
+        my.isNetworkEnabled = false;
+        my.isSyncEnabled = false;
+        my.isRemoteEnabled = false;
         my.network = specs.network;
         my.sync = specs.sync;
         my.remote = specs.remote;
