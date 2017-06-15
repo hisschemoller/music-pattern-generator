@@ -35,6 +35,26 @@ window.WH = window.WH || {};
                 my.isRemoteEnabled = !my.isRemoteEnabled;
                 my.viewCallback('remote', my.isRemoteEnabled);
             },
+            
+            /**
+             * Restore state from data object.
+             * @param {Object} data Preferences data object.
+             */
+            setData = function(data) {
+                
+            }, 
+            
+            /**
+             * Write state to data object.
+             * @return {Object} Data object.
+             */
+            getData = function() {
+                return {
+                    midiPortID: my.midiPort.id,
+                    isNetworkEnabled: my.isNetworkEnabled,
+                    isSyncEnabled: my.isSyncEnabled,
+                    isRemoteEnabled: my.isRemoteEnabled
+                };
             };
         
         my = my || {};
@@ -43,6 +63,8 @@ window.WH = window.WH || {};
         
         that.toggleSync = toggleSync;
         that.toggleRemote = toggleRemote;
+        that.setData = setData;
+        that.getData = getData;
         return that;
     }
 

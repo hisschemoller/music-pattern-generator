@@ -58,7 +58,7 @@ window.WH = window.WH || {};
                 var data = localStorage.getItem(preferencesName);
                 if (data) {
                     data = JSON.parse(data);
-                    midi.setData(data.midi);
+                    // midi.setData(data.midi);
                 } else {
                     console.log('No data in LocalStorage with name "' + preferencesName + '".');
                 }
@@ -70,7 +70,7 @@ window.WH = window.WH || {};
              */
             savePreferences = function() {
                 var data = {
-                    midi: midi.getData()
+                    // midi: midi.getData()
                 };
                 localStorage.setItem(preferencesName, JSON.stringify(data));
             },
@@ -145,6 +145,7 @@ window.WH = window.WH || {};
             setData = function(data) {
                 console.log(data);
                 transport.setBPM(data.bpm);
+                midi.setData(data.midi);
                 midiNetwork.setData(data.network);
                 midiRemote.setData(data.remote);
             },

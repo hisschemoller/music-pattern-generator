@@ -178,25 +178,53 @@ window.WH = window.WH || {};
             },
 
             /**
-             * Set all preferences from a data object.
+             * Restore MIDI port object settings from data object.
              * @param {Object} data Preferences data object.
              */
             setData = function(data) {
-                selectInputByID(data.midiin);
-                selectOutputByID(data.midiout);
-                setClockInEnabled(data.clockin);
+                // selectInputByID(data.midiin);
+                // selectOutputByID(data.midiout);
+                // setClockInEnabled(data.clockin);
+                
+                if (data.inputs) {
+                    let inputData;
+                    for (let i = 0, n = data.inputs.length; i < n; i++) {
+                        inputData = data.inputs[i];
+                        // find the input port by MIDIInput ID
+                        for (let j = 0, nn = inputs.length; j < nn; j++) {
+                            if (inputData.midiPortID == inputs[j].getID()) {
+                                inputs[j].setData(inputData);
+                            }
+                        }
+                    }
+                }
             },
 
             /**
-             * Save the preferences when the page unloads.
-             * @return {Object} Preferences data.
+             * Write MIDI port object settings to data object.
+             * @return {Object} MIDI port object data.
              */
             getData = function() {
-                return {
-                    'midiin': selectedInput ? selectedInput.id : '',
-                    'midiout': selectedOutput ? selectedOutput.id : '',
-                    'clockin': isClockInEnabled
+                // return {
+                //     'midiin': selectedInput ? selectedInput.id : '',
+                //     'midiout': selectedOutput ? selectedOutput.id : '',
+                //     'clockin': isClockInEnabled
+                // };
+                
+                const data = {
+                    inputs: [],
+                    outputs: []
                 };
+                
+                for (let i = 0, n = inputs.length; i < n; i++) {
+                    data.inputs.push(inputs[i].getData());
+                }
+                
+                for (let i = 0, n = outputs.length; i < n; i++) {
+                    data.outputs.push(outputs[i].getData());
+                }
+                
+                return data;
             };
 
         that = specs.that;
