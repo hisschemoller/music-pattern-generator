@@ -12,8 +12,15 @@ window.WH = window.WH || {};
             
             /**
              * Make input available as sync source.
+             * @param {Boolean} isEnabled State to switch to.
              */
-            toggleSync = function() {
+            toggleSync = function(isEnabled) {
+                if (isEnabled === true || isEnabled === false) {
+                    if (isEnabled === my.isNetworkEnabled) {
+                        return;
+                    } 
+                }
+                
                 if (my.isSyncEnabled) {
                     my.sync.removeMidiInput(my.midiPort);
                 } else {
@@ -25,8 +32,15 @@ window.WH = window.WH || {};
             
             /**
              * Make input available as remote control source.
+             * @param {Boolean} isEnabled State to switch to.
              */
-            toggleRemote = function() {
+            toggleRemote = function(isEnabled) {
+                if (isEnabled === true || isEnabled === false) {
+                    if (isEnabled === my.isNetworkEnabled) {
+                        return;
+                    } 
+                }
+                
                 if (my.isRemoteEnabled) {
                     my.remote.removeMidiInput(my.midiPort);
                 } else {
@@ -41,7 +55,8 @@ window.WH = window.WH || {};
              * @param {Object} data Preferences data object.
              */
             setData = function(data) {
-                
+                toggleSync(data.isSyncEnabled);
+                toggleRemote(data.isRemoteEnabled);
             }, 
             
             /**

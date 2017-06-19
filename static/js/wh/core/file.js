@@ -133,6 +133,7 @@ window.WH = window.WH || {};
             getData = function() {
                 return {
                     bpm: transport.getBPM(),
+                    midi: midi.getData(),
                     network: midiNetwork.getData(),
                     remote: midiRemote.getData()
                 };

@@ -198,6 +198,19 @@ window.WH = window.WH || {};
                         }
                     }
                 }
+                
+                if (data.outputs) {
+                    let outputData;
+                    for (let i = 0, n = data.outputs.length; i < n; i++) {
+                        outputData = data.outputs[i];
+                        // find the output port by MIDIOutput ID
+                        for (let j = 0, nn = outputs.length; j < nn; j++) {
+                            if (outputData.midiPortID == outputs[j].getID()) {
+                                outputs[j].setData(outputData);
+                            }
+                        }
+                    }
+                }
             },
 
             /**
