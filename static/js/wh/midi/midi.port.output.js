@@ -45,7 +45,8 @@ window.WH = window.WH || {};
              * @param {Object} data Preferences data object.
              */
             setData = function(data) {
-                toggleNetwork(data.isNetworkEnabled);
+                my.isNetworkEnabled = data.isNetworkEnabled;
+                my.viewCallback('network', my.isNetworkEnabled);
             }, 
             
             /**

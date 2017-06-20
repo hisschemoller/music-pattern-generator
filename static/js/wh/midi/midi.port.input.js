@@ -55,8 +55,10 @@ window.WH = window.WH || {};
              * @param {Object} data Preferences data object.
              */
             setData = function(data) {
-                toggleSync(data.isSyncEnabled);
-                toggleRemote(data.isRemoteEnabled);
+                my.isSyncEnabled = data.isSyncEnabled;
+                my.viewCallback('sync', my.isSyncEnabled);
+                my.isRemoteEnabled = data.isRemoteEnabled;
+                my.viewCallback('remote', my.isRemoteEnabled);
             }, 
             
             /**
