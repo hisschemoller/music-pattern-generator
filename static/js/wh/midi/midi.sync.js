@@ -1,4 +1,9 @@
 /**
+ * MIDISync listens to incoming sync data.
+ * 11111000 timing clock
+ * 11111010 start
+ * 11111011 continue
+ * 11111100 stop
  *
  * @namespace WH
  */
@@ -43,7 +48,7 @@ window.WH = window.WH || {};
             onMIDIMessage = function(e) {
                 // only continuous controller message, 0xB == 11
                 // console.log(e.data, e.data[0] >> 4, e.data[0] & 0xf);
-
+                
             };
 
         that = specs.that;

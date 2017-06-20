@@ -141,7 +141,21 @@ window.WH = window.WH || {};
             
             /**
              * Restore project from data object.
-             * @param {Object} Project data.
+             *
+             * Order is important:
+             * 1. MIDI devices have already been detected and input and output objects created.
+             * 2. midi.setData() restores state of the input and output objects. As a result:
+             *   2a. Input ports are added to the remote object for external control.
+             *   2b. Input ports are added to the sync object for external sync.
+             *   2c. Output ports are added to the network which creates output processors for them.
+             * 3. network.setData restores the processors. And:
+             *   3a. Registers the processor with the remote object so they can be controlled.
+             *   3b. Restores the output processor IDs, to identify the for connections.
+             *   3c. Restores all connections between processors.
+             * 4. midiRemote.setData() restores all assignments from MIDI inputs to processor parameters.
+             * 5. midiSync.setData() ? 
+             * 
+             * @param {Object} data Project data.
              */
             setData = function(data) {
                 console.log(data);

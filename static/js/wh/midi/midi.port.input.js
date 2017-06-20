@@ -1,5 +1,12 @@
 /**
  * MIDI input port.
+ * 
+ * Each hard- or software MIDI device's input port is represented by a MIDI input port object.
+ *
+ * This object lets the user select:
+ * Remote: The MIDI input is available as a source for external Note and CC control.
+ * Sync: The MIDI input is available as a source for sync data like start, stop and MIDI clock.
+ * 
  * @namespace WH
  */
 
