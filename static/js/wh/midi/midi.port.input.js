@@ -16,6 +16,52 @@ window.WH = window.WH || {};
     
     function createMIDIPortInput(specs, my) {
         var that,
+            midiMessageCallbacks = [],
+            numMidiMessageCallbacks = 0,
+            
+            init = function() {
+                my.midiPort.onmidimessage = function(e) {
+                    if (midiMessageCallbacks.length) {
+                        for (var i = 0; i < numMidiMessageCallbacks; i++) {
+                            midiMessageCallbacks[i](e);
+                        }
+                    }
+                }
+            },
+            
+            /**
+             * Add a listener for MIDI messages received on this input.
+             * Typically from the MIDI remote and sync objects.
+             * @param {Function} callback Callback function.
+             */
+            addMIDIMessageListener = function(callback) {
+                var exists = false;
+                for (var i = 0, n = midiMessageCallbacks.length; i < n; i++) {
+                    if (midiMessageCallbacks[i] === callback) {
+                        exists = true;
+                    }
+                }
+                
+                if (!exists) {
+                    midiMessageCallbacks.push(callback);
+                    numMidiMessageCallbacks = midiMessageCallbacks.length;
+                }
+            },
+            
+            /**
+             * Remove a listener for MIDI messages received on this input.
+             * Typically from the MIDI remote and sync objects.
+             * @param {Function} callback Callback function to remove.
+             */
+            removeMIDIMessageListener = function(callback) {
+                for (var i = 0, n = midiMessageCallbacks.length; i < n; i++) {
+                    if (midiMessageCallbacks[i] === callback) {
+                        midiMessageCallbacks.splice(i, 1);
+                        numMidiMessageCallbacks = midiMessageCallbacks.length;
+                        break;
+                    }
+                }
+            },
             
             /**
              * Make input available as sync source.
@@ -49,9 +95,9 @@ window.WH = window.WH || {};
                 }
                 
                 if (my.isRemoteEnabled) {
-                    my.remote.removeMidiInput(my.midiPort);
+                    my.remote.removeMidiInput(that);
                 } else {
-                    my.remote.addMidiInput(my.midiPort);
+                    my.remote.addMidiInput(that);
                 }
                 my.isRemoteEnabled = !my.isRemoteEnabled;
                 my.viewCallback('remote', my.isRemoteEnabled);
@@ -62,10 +108,8 @@ window.WH = window.WH || {};
              * @param {Object} data Preferences data object.
              */
             setData = function(data) {
-                my.isSyncEnabled = data.isSyncEnabled;
-                my.viewCallback('sync', my.isSyncEnabled);
-                my.isRemoteEnabled = data.isRemoteEnabled;
-                my.viewCallback('remote', my.isRemoteEnabled);
+                toggleSync(data.isSyncEnabled);
+                toggleRemote(data.isRemoteEnabled);
             }, 
             
             /**
@@ -85,6 +129,10 @@ window.WH = window.WH || {};
         
         that = ns.createMIDIPortBase(specs, my);
         
+        init();
+        
+        that.addMIDIMessageListener = addMIDIMessageListener;
+        that.removeMIDIMessageListener = removeMIDIMessageListener;
         that.toggleSync = toggleSync;
         that.toggleRemote = toggleRemote;
         that.setData = setData;

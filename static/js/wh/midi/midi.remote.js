@@ -21,28 +21,35 @@ window.WH = window.WH || {};
             
             /**
              * Add a MIDI Input port only if it dosn't yet exist.
-             * @param {Object} midiInput Web MIDI input port object.
+             * The port is the object created in midi.port.input.js,
+             * not a Web MIDI API MIDIInput. 
+             * @param {Object} midiInputPort MIDI input port object.
              */
-            addMidiInput = function(midiInput) {
+            addMidiInput = function(midiInputPort) {
                 var exists = false,
-                    n = midiInputs.length;
-                for (var i = 0; i < n; i++) {
-                    if (midiInputs[i].port === midiInput) {
+                    midiInputPortID = midiInputPort.getID();
+                for (var i = 0, n = midiInputs.length; i < n; i++) {
+                    if (midiInputs[i].portID === midiInputPortID) {
                         exists = true;
                         break;
                     }
                 }
                 
                 if (!exists) {
+                    // 
                     midiInputs.push({
-                        port: midiInput,
+                        port: midiInputPort,
                         params: []
                     });
-                    paramLookup[midiInput.id] = [];
-                    midiInput.onmidimessage = onMIDIMessage;
+                    
+                    // quick lookup of assigned parameters
+                    paramLookup[midiInputPortID] = [];
+                    
+                    // subscribe to receive messages from this MIDI input
+                    midiInputPort.addMIDIMessageListener(onMIDIMessage);
                 }
             },
-                
+            
             removeMidiInput = function(midiInput) {
                 var n = midiInputs.length;
                 for (var i = 0; i < n; i++) {
@@ -55,6 +62,7 @@ window.WH = window.WH || {};
             },
             
             onMIDIMessage = function(e) {
+                console.log(e.data);
                 // only continuous controller message, 0xB == 11
                 if (e.data[0] >> 4 === 0xB) {
                     var channel = (e.data[0] & 0xf) + 1,
@@ -96,17 +104,20 @@ window.WH = window.WH || {};
                 }
                 
                 // midi listener switches with learn mode
-                var midimessageListener;
+                var midimessageListener, 
+                    oldMidimessageListener;
                 if (isInLearnMode) {
+                    oldMidimessageListener = onMIDIMessage;
                     midiMessageListener = onMIDILearnMessage;
                 } else {
+                    oldMidimessageListener = onMIDILearnMessage;
                     midiMessageListener = onMIDIMessage;
                 }
                 
                 // set listener on all midi ports
-                var n = midiInputs.length;
-                for (var i = 0; i < n; i++) {
-                    midiInputs[i].port.onmidimessage = midiMessageListener;
+                for (var i = 0, n = midiInputs.length; i < n; i++) {
+                    midiInputs[i].port.removeMIDIMessageListener(oldMidimessageListener);
+                    midiInputs[i].port.addMIDIMessageListener(midiMessageListener);
                 }
             },
             
