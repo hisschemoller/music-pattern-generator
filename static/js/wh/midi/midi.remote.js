@@ -29,14 +29,15 @@ window.WH = window.WH || {};
                 var exists = false,
                     midiInputPortID = midiInputPort.getID();
                 for (var i = 0, n = midiInputs.length; i < n; i++) {
-                    if (midiInputs[i].portID === midiInputPortID) {
+                    if (midiInputs[i].port.getID() === midiInputPortID) {
                         exists = true;
                         break;
                     }
                 }
                 
                 if (!exists) {
-                    // 
+                    // keep reference to midiInputPort
+                    // TODO: params array doesn't seem to be used
                     midiInputs.push({
                         port: midiInputPort,
                         params: []
@@ -50,12 +51,22 @@ window.WH = window.WH || {};
                 }
             },
             
-            removeMidiInput = function(midiInput) {
+            /**
+             * Remove a MIDI output from 
+             * @param  {[type]} midiInputPort [description]
+             * @return [type]                 [description]
+             */
+            removeMidiInput = function(midiInputPort) {
                 var n = midiInputs.length;
                 for (var i = 0; i < n; i++) {
                     if (midiInputs[i] === midiInput) {
+                        // remove reference to midiInputPort
                         midiInputs.splice(i, 1);
+                        // remove parameter lookups
                         paramLookup[midiInput.id] = null;
+                        // unsubscribe from receiving messages from the MIDI input.
+                        midiInputPort.removeMIDIMessageListener(onMIDIMessage);
+                        // and we're done
                         break;
                     }
                 }

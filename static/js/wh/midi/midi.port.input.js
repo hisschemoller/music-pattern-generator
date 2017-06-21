@@ -89,7 +89,7 @@ window.WH = window.WH || {};
              */
             toggleRemote = function(isEnabled) {
                 if (isEnabled === true || isEnabled === false) {
-                    if (isEnabled === my.isNetworkEnabled) {
+                    if (isEnabled === my.isRemoteEnabled) {
                         return;
                     } 
                 }
