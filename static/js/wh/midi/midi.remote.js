@@ -20,7 +20,7 @@ window.WH = window.WH || {};
             processors = [],
             
             /**
-             * Add a MIDI Input port only if it dosn't yet exist.
+             * Add a MIDI Input port only if it doesn't yet exist.
              * The port is the object created in midi.port.input.js,
              * not a Web MIDI API MIDIInput. 
              * @param {Object} midiInputPort MIDI input port object.
@@ -52,9 +52,8 @@ window.WH = window.WH || {};
             },
             
             /**
-             * Remove a MIDI output from 
-             * @param  {[type]} midiInputPort [description]
-             * @return [type]                 [description]
+             * Remove a MIDI input port from being a remote source.
+             * @param {Object} midiInputPort MIDI input port object.
              */
             removeMidiInput = function(midiInputPort) {
                 var n = midiInputs.length;
@@ -72,6 +71,11 @@ window.WH = window.WH || {};
                 }
             },
             
+            /**
+             * Eventlistener for incoming MIDI messages.
+             * @see https://www.w3.org/TR/webmidi/#idl-def-MIDIMessageEvent
+             * @param  {Object} e MIDIMessageEvent event.
+             */
             onMIDIMessage = function(e) {
                 console.log(e.data);
                 // only continuous controller message, 0xB == 11
@@ -86,7 +90,8 @@ window.WH = window.WH || {};
             
             /**
              * Listener for MIDI events in case the app is in MIDI learn mode.
-             * @param  {Object} e MIDI message.
+             * @see https://www.w3.org/TR/webmidi/#idl-def-MIDIMessageEvent
+             * @param  {Object} e MIDIMessageEvent event.
              */
             onMIDILearnMessage = function(e) {
                 if (selectedParameter) {
@@ -100,6 +105,11 @@ window.WH = window.WH || {};
                 }
             },
             
+            /**
+             * Toggle MIDI learn mode, so incoming MIDI messages are used to
+             * assign a selected parameter to the incoming message type.
+             * @param {Boolean} isEnabled True to enable MIDI learn mode.
+             */
             toggleMidiLearn = function(isEnabled) {
                 isInLearnMode = isEnabled;
                 deselectParameter();
@@ -132,6 +142,10 @@ window.WH = window.WH || {};
                 }
             },
             
+            /**
+             * Set a parameter as selected to be assigned.
+             * @param {Object} param Processor parameter.
+             */
             selectParameter = function(param) {
                 if (selectedParameter) {
                     deselectParameter();
@@ -140,6 +154,9 @@ window.WH = window.WH || {};
                 selectedParameter.setRemoteState('selected');
             },
             
+            /**
+             * Unselect the selected parameter so it can't be assigned anymore.
+             */
             deselectParameter = function() {
                 if (selectedParameter) {
                     selectedParameter.setRemoteState('deselected');
@@ -147,6 +164,13 @@ window.WH = window.WH || {};
                 }
             },
             
+            /**
+             * Assign a MIDI controller to a parameter.
+             * @param  {Object} param Processor parameter to be assigned a MIDI control.
+             * @param  {String} portId MIDI input ID. 
+             * @param  {Number} channel MIDI channel.
+             * @param  {Number} controller MIDI CC number.
+             */
             assignParameter = function(param, portId, channel, controller) {
                 // add parameter to the lookup table
                 paramLookup[portId][channel + '_' + controller] = param;
