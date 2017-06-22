@@ -3,13 +3,13 @@
  *
  * If a CC is assigned and that CC was already assigned, the old assignment is removed.
  * If a parameter is assigned and it is then reassigned to a different CC, the old assignment is removed.
- * 
+ *
  * @namespace WH
  */
 window.WH = window.WH || {};
 
 (function (ns) {
-    
+
     function createMIDIRemote(specs) {
         var that,
             remoteView = specs.remoteView,
@@ -18,11 +18,11 @@ window.WH = window.WH || {};
             selectedParameter,
             isInLearnMode = false,
             processors = [],
-            
+
             /**
              * Add a MIDI Input port only if it doesn't yet exist.
              * The port is the object created in midi.port.input.js,
-             * not a Web MIDI API MIDIInput. 
+             * not a Web MIDI API MIDIInput.
              * @param {Object} midiInputPort MIDI input port object.
              */
             addMidiInput = function(midiInputPort) {
@@ -34,7 +34,7 @@ window.WH = window.WH || {};
                         break;
                     }
                 }
-                
+
                 if (!exists) {
                     // keep reference to midiInputPort
                     // TODO: params array doesn't seem to be used
@@ -42,15 +42,15 @@ window.WH = window.WH || {};
                         port: midiInputPort,
                         params: []
                     });
-                    
+
                     // quick lookup of assigned parameters
                     paramLookup[midiInputPortID] = [];
-                    
+
                     // subscribe to receive messages from this MIDI input
                     midiInputPort.addMIDIMessageListener(onMIDIMessage);
                 }
             },
-            
+
             /**
              * Remove a MIDI input port from being a remote source.
              * @param {Object} midiInputPort MIDI input port object.
@@ -61,6 +61,14 @@ window.WH = window.WH || {};
                     if (midiInputs[i] === midiInput) {
                         // remove reference to midiInputPort
                         midiInputs.splice(i, 1);
+                        // unassign all processor parameters controlled by this input
+                        if (paramLookup.hasOwnProperty(midiInputPort.getID())) {
+                            let params = paramLookup[midiInputPort.getID()],
+                                n = params.length;
+                            while (--n >= 0) {
+                                unassingParameter(params[n]);
+                            }
+                        }
                         // remove parameter lookups
                         paramLookup[midiInput.id] = null;
                         // unsubscribe from receiving messages from the MIDI input.
@@ -70,7 +78,7 @@ window.WH = window.WH || {};
                     }
                 }
             },
-            
+
             /**
              * Eventlistener for incoming MIDI messages.
              * @see https://www.w3.org/TR/webmidi/#idl-def-MIDIMessageEvent
@@ -87,7 +95,7 @@ window.WH = window.WH || {};
                     }
                 }
             },
-            
+
             /**
              * Listener for MIDI events in case the app is in MIDI learn mode.
              * @see https://www.w3.org/TR/webmidi/#idl-def-MIDIMessageEvent
@@ -104,7 +112,7 @@ window.WH = window.WH || {};
                     }
                 }
             },
-            
+
             /**
              * Toggle MIDI learn mode, so incoming MIDI messages are used to
              * assign a selected parameter to the incoming message type.
@@ -114,7 +122,7 @@ window.WH = window.WH || {};
                 isInLearnMode = isEnabled;
                 deselectParameter();
                 remoteView.toggleVisibility(isInLearnMode);
-                
+
                 // set learn mode on all parameters
                 var remoteState = isInLearnMode ? 'enter' : 'exit';
                 for (var i = 0; i < processors.length; i++) {
@@ -123,9 +131,9 @@ window.WH = window.WH || {};
                         processor.params[j].setRemoteState(remoteState, selectParameter);
                     }
                 }
-                
+
                 // midi listener switches with learn mode
-                var midimessageListener, 
+                var midimessageListener,
                     oldMidimessageListener;
                 if (isInLearnMode) {
                     oldMidimessageListener = onMIDIMessage;
@@ -134,14 +142,14 @@ window.WH = window.WH || {};
                     oldMidimessageListener = onMIDILearnMessage;
                     midiMessageListener = onMIDIMessage;
                 }
-                
+
                 // set listener on all midi ports
                 for (var i = 0, n = midiInputs.length; i < n; i++) {
                     midiInputs[i].port.removeMIDIMessageListener(oldMidimessageListener);
                     midiInputs[i].port.addMIDIMessageListener(midiMessageListener);
                 }
             },
-            
+
             /**
              * Set a parameter as selected to be assigned.
              * @param {Object} param Processor parameter.
@@ -153,7 +161,7 @@ window.WH = window.WH || {};
                 selectedParameter = param;
                 selectedParameter.setRemoteState('selected');
             },
-            
+
             /**
              * Unselect the selected parameter so it can't be assigned anymore.
              */
@@ -163,49 +171,53 @@ window.WH = window.WH || {};
                     selectedParameter = null;
                 }
             },
-            
+
             /**
              * Assign a MIDI controller to a parameter.
              * @param  {Object} param Processor parameter to be assigned a MIDI control.
-             * @param  {String} portId MIDI input ID. 
+             * @param  {String} portId MIDI input ID.
              * @param  {Number} channel MIDI channel.
              * @param  {Number} controller MIDI CC number.
              */
             assignParameter = function(param, portId, channel, controller) {
                 // add parameter to the lookup table
                 paramLookup[portId][channel + '_' + controller] = param;
-                
+
                 // update the parameter
                 param.setRemoteProperty('portId', portId);
                 param.setRemoteProperty('channel', channel);
                 param.setRemoteProperty('controller', controller);
                 param.setRemoteState('assigned');
-                
+
                 // add parameter to the view
                 remoteView.addParameter(param);
             },
-            
+
+            /**
+             * Unassign a parameter from being MIDI controlled.
+             * @param  {Object} param Processor parameter to be unassigned.
+             */
             unassingParameter = function(param) {
                 // remove parameter from the lookup table
                 var portId = param.getRemoteProperty('portId'),
                     channel = param.getRemoteProperty('channel'),
                     controller = param.getRemoteProperty('controller');
                 paramLookup[portId][channel + '_ ' + controller] = null;
-                
+
                 // update the parameter
                 param.setRemoteProperty('portId', null);
                 param.setRemoteProperty('channel', null);
                 param.setRemoteProperty('controller', null);
                 param.setRemoteState('unassigned');
-                
+
                 // remove parameter from the view
                 remoteView.removeParameter(param);
             },
-            
+
             registerProcessor = function(processor) {
                 var params = processor.getParameters(),
                     controllableParams = [];
-                
+
                 // create array of all controllable parameters of the processor
                 for (var key in params) {
                     if (params.hasOwnProperty(key)) {
@@ -214,7 +226,7 @@ window.WH = window.WH || {};
                         }
                     }
                 }
-                
+
                 if (controllableParams.length) {
                     // add data to processors list
                     processors.push({
@@ -225,7 +237,7 @@ window.WH = window.WH || {};
                     remoteView.createRemoteGroup(processor);
                 }
             },
-            
+
             unregisterProcessor = function(processor) {
                 var n = processors.length;
                 while (--n >= 0) {
@@ -237,7 +249,7 @@ window.WH = window.WH || {};
                     }
                 }
             },
-            
+
             /**
              * Clear all assignments.
              * Unassign all parameters.
@@ -259,7 +271,7 @@ window.WH = window.WH || {};
                     unregisterProcessor(processors[i]);
                 }
             },
-            
+
             /**
              * Restore assigned parameters from data object.
              * @param {Object} data  data object.
@@ -303,10 +315,10 @@ window.WH = window.WH || {};
                     }
                 }
             },
-            
+
             /**
              * Write assigned parameters to data object.
-             * @return {Object} Contains 
+             * @return {Object} Contains
              */
             getData = function() {
                 let lookupPort, param, processorID,
@@ -346,9 +358,9 @@ window.WH = window.WH || {};
                 }
                 return data;
             };
-        
+
         that = specs.that;
-        
+
         that.addMidiInput = addMidiInput;
         that.removeMidiInput = removeMidiInput;
         that.toggleMidiLearn = toggleMidiLearn;
@@ -360,9 +372,8 @@ window.WH = window.WH || {};
         that.getData = getData;
         return that;
     }
-        
+
 
     ns.createMIDIRemote = createMIDIRemote;
 
 })(WH);
-        
