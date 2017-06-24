@@ -1,24 +1,24 @@
 /**
  * MIDI input port.
- * 
+ *
  * Each hard- or software MIDI device's input port is represented by a MIDI input port object.
  *
  * This object lets the user select:
  * Remote: The MIDI input is available as a source for external Note and CC control.
  * Sync: The MIDI input is available as a source for sync data like start, stop and MIDI clock.
- * 
+ *
  * @namespace WH
  */
 
 window.WH = window.WH || {};
 
 (function (ns) {
-    
+
     function createMIDIPortInput(specs, my) {
         var that,
             midiMessageCallbacks = [],
             numMidiMessageCallbacks = 0,
-            
+
             init = function() {
                 my.midiPort.onmidimessage = function(e) {
                     if (midiMessageCallbacks.length) {
@@ -28,7 +28,7 @@ window.WH = window.WH || {};
                     }
                 }
             },
-            
+
             /**
              * Add a listener for MIDI messages received on this input.
              * Typically from the MIDI remote and sync objects.
@@ -41,13 +41,13 @@ window.WH = window.WH || {};
                         exists = true;
                     }
                 }
-                
+
                 if (!exists) {
                     midiMessageCallbacks.push(callback);
                     numMidiMessageCallbacks = midiMessageCallbacks.length;
                 }
             },
-            
+
             /**
              * Remove a listener for MIDI messages received on this input.
              * Typically from the MIDI remote and sync objects.
@@ -62,7 +62,7 @@ window.WH = window.WH || {};
                     }
                 }
             },
-            
+
             /**
              * Make input available as sync source.
              * @param {Boolean} isEnabled State to switch to.
@@ -71,18 +71,18 @@ window.WH = window.WH || {};
                 if (isEnabled === true || isEnabled === false) {
                     if (isEnabled === my.isNetworkEnabled) {
                         return;
-                    } 
+                    }
                 }
-                
+
                 if (my.isSyncEnabled) {
-                    my.sync.removeMidiInput(my.midiPort);
+                    my.sync.removeMidiInput(that);
                 } else {
-                    my.sync.addMidiInput(my.midiPort);
+                    my.sync.addMidiInput(that);
                 }
                 my.isSyncEnabled = !my.isSyncEnabled;
                 my.viewCallback('sync', my.isSyncEnabled);
             },
-            
+
             /**
              * Make input available as remote control source.
              * @param {Boolean} isEnabled State to switch to.
@@ -91,9 +91,9 @@ window.WH = window.WH || {};
                 if (isEnabled === true || isEnabled === false) {
                     if (isEnabled === my.isRemoteEnabled) {
                         return;
-                    } 
+                    }
                 }
-                
+
                 if (my.isRemoteEnabled) {
                     my.remote.removeMidiInput(that);
                 } else {
@@ -102,7 +102,7 @@ window.WH = window.WH || {};
                 my.isRemoteEnabled = !my.isRemoteEnabled;
                 my.viewCallback('remote', my.isRemoteEnabled);
             },
-            
+
             /**
              * Restore state from data object.
              * @param {Object} data Preferences data object.
@@ -110,8 +110,8 @@ window.WH = window.WH || {};
             setData = function(data) {
                 toggleSync(data.isSyncEnabled);
                 toggleRemote(data.isRemoteEnabled);
-            }, 
-            
+            },
+
             /**
              * Write state to data object.
              * @return {Object} Data object.
@@ -124,13 +124,13 @@ window.WH = window.WH || {};
                     isRemoteEnabled: my.isRemoteEnabled
                 };
             };
-        
+
         my = my || {};
-        
+
         that = ns.createMIDIPortBase(specs, my);
-        
+
         init();
-        
+
         that.addMIDIMessageListener = addMIDIMessageListener;
         that.removeMIDIMessageListener = removeMIDIMessageListener;
         that.toggleSync = toggleSync;
