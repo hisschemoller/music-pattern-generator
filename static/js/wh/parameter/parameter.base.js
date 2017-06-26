@@ -20,8 +20,8 @@ window.WH = window.WH || {};
         		if (oldValue == my.props.value) {
                     return;
                 }
-                var n = changedCallbacks.length;
-    			for (var i = 0; i < n; i++) {
+                
+    			for (var i = 0, n = changedCallbacks.length; i < n; i++) {
                     changedCallbacks[i](that, oldValue, my.props.value);
                 }
         	},

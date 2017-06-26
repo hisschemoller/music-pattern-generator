@@ -85,7 +85,6 @@ window.WH = window.WH || {};
              * @param  {Object} e MIDIMessageEvent event.
              */
             onMIDIMessage = function(e) {
-                console.log(e.data);
                 // only continuous controller message, 0xB == 11
                 if (e.data[0] >> 4 === 0xB) {
                     var channel = (e.data[0] & 0xf) + 1,
@@ -213,7 +212,11 @@ window.WH = window.WH || {};
                 // remove parameter from the view
                 remoteView.removeParameter(param);
             },
-
+            
+            /**
+             * Register a processor of which parameters might be remote controlled.
+             * @param {Object} processor Network processor.
+             */
             registerProcessor = function(processor) {
                 var params = processor.getParameters(),
                     controllableParams = [];
@@ -237,7 +240,11 @@ window.WH = window.WH || {};
                     remoteView.createRemoteGroup(processor);
                 }
             },
-
+            
+            /**
+             * Unregister a processor of which parameters might be remote controlled.
+             * @param {Object} processor Network processor.
+             */
             unregisterProcessor = function(processor) {
                 var n = processors.length;
                 while (--n >= 0) {
@@ -321,7 +328,7 @@ window.WH = window.WH || {};
 
             /**
              * Write assigned parameters to data object.
-             * @return {Object} Contains
+             * @return {Object} Contains port and parameter data.
              */
             getData = function() {
                 let lookupPort, param, processorID,
@@ -329,7 +336,6 @@ window.WH = window.WH || {};
                 // loop through midi ports lookup
                 for (var portKey in paramLookup) {
                     if (paramLookup.hasOwnProperty(portKey)) {
-                        console.log('port id ', portKey);
                         lookupPort = paramLookup[portKey];
                         data[portKey] = [];
                         // loop through parameters listening to this port
@@ -340,7 +346,6 @@ window.WH = window.WH || {};
                                 processorID = null;
                                 let n = processors.length;
                                 while (--n >= 0) {
-                                    console.log('processors[n] ', processors[n]);
                                     let m = processors[n].params.length;
                                     while (--m >= 0) {
                                         if (param === processors[n].params[m]) {
@@ -375,8 +380,7 @@ window.WH = window.WH || {};
         that.getData = getData;
         return that;
     }
-
-
+    
     ns.createMIDIRemote = createMIDIRemote;
 
 })(WH);
