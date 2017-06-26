@@ -306,8 +306,8 @@ window.WH = window.WH || {};
             toggleStartStop = function() {
                 if (isRunning) {
                     pause();
-                    rewind();
                 } else {
+                    rewind();
                     start();
                 }
             },

@@ -60,16 +60,30 @@ window.WH = window.WH || {};
             /**
              * Eventlistener for incoming MIDI messages.
              * @see https://www.w3.org/TR/webmidi/#idl-def-MIDIMessageEvent
+             * @see https://www.midi.org/specifications/item/table-1-summary-of-midi-message
              * @param  {Object} e MIDIMessageEvent event.
              */
             onMIDIMessage = function(e) {
-                console.log(e.data[0] >> 4, e.data[0] & 0xf, e.data[0], e.data[1], e.data[2]);
                 // data[1] and data[2] are undefined,
                 // for e.data[0] & 0xf:
-                //  8 = clock
+                //  8 = clock, 248 (11110000 | 00000100)
                 // 10 = start
                 // 11 = continue
                 // 12 = stop
+                switch (e.data[0]) {
+                    case 248:
+                        break;
+                    case 250:
+                        transport.rewind();
+                        transport.start();
+                        break;
+                    case 251:
+                        transport.start();
+                        break;
+                    case 252:
+                        transport.pause();
+                        break;
+                }
             };
 
         that = specs.that;

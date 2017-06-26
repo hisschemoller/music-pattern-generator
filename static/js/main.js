@@ -73,7 +73,8 @@ document.addEventListener('DOMContentLoaded', function(e) {
         remoteView: remoteView
     });
     WH.createMIDISync({
-        that: midiSync
+        that: midiSync,
+        transport: transport
     });
     WH.createMIDINetwork({
         that: midiNetwork,
