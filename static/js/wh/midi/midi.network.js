@@ -254,7 +254,7 @@ window.WH = window.WH || {};
                 while (--n >= 0) {
                     type = processors[n].getType();
                     if (type !== 'input' && type !== 'output') {
-                        deleteProcessor(processors[n]);
+                        deleteProcessor(processors[n].getID());
                     }
                 }
             },
@@ -264,6 +264,9 @@ window.WH = window.WH || {};
              * @param {Object} data Preferences data object.
              */
             setData = function(data) {
+                // clear all old data
+                clear();
+                
                 // create the processors
                 var pdata = data.processors,
                     n = pdata.length;
