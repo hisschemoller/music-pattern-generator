@@ -277,6 +277,9 @@ window.WH = window.WH || {};
              * @param {Object} data  data object.
              */
             setData = function(data) {
+                // clear all old data
+                clear();
+                
                 // loop through midi ports data
                 for (let dataPortID in data) {
                     if (data.hasOwnProperty(dataPortID)) {
