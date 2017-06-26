@@ -407,7 +407,7 @@ window.WH = window.WH || {};
                 label: 'Mute',
                 type: 'boolean',
                 default: false,
-                isMidiControllable: false
+                isMidiControllable: true
             },
             name: {
                 label: 'Name',
