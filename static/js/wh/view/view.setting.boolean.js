@@ -39,7 +39,7 @@
              },
              
              changedCallback = function(parameter, oldValue, newValue) {
-                 checkEl.value = newValue;
+                 checkEl.checked = newValue;
              };
          
          my = my || {};
