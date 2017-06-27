@@ -303,7 +303,6 @@ window.WH = window.WH || {};
             updatePattern(false);
         }
         my.$is_mute = function(value, timestamp) {}
-        my.$is_solo = function(value, timestamp) {}
         my.$channel_out = function(value, timestamp) {}
         my.$pitch_out = function(value, timestamp) {}
         my.$velocity_out = function(value, timestamp) {}
@@ -395,12 +394,6 @@ window.WH = window.WH || {};
                     {label: '1/16', value: 0.25},
                     {label: '1/32', value: 0.125}
                 ],
-                isMidiControllable: false
-            },
-            is_solo: {
-                label: 'Solo',
-                type: 'boolean',
-                default: false,
                 isMidiControllable: false
             },
             is_mute: {
