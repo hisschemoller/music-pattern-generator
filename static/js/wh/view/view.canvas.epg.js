@@ -169,8 +169,8 @@ window.WH = window.WH || {};
                     .delay(noteStartDelay);
                     
                 // centre dot end animation
-                var stopTween = new TWEEN.Tween({scale: centreDotFullRadius})
-                    .to({scale: 0.01}, 150)
+                var stopTween = new TWEEN.Tween({centreRadius: centreDotFullRadius})
+                    .to({centreRadius: 0.01}, 150)
                     .onUpdate(function() {
                             centreDotRadius = this.centreRadius;
                         })
