@@ -22,8 +22,8 @@ window.WH = window.WH || {};
                 
                 // add the radio buttons
                 let radioTemplate = document.querySelector('#template-setting-itemized-item'),
-                    model = my.param.getModel(),
-                    numInputs = model.length;
+                    model = my.param.getModel();
+                numInputs = model.length;
                 for (var i = 0; i < numInputs; i++) {
                     let id = getTemporaryInputAndLabelId();
                     
@@ -64,7 +64,7 @@ window.WH = window.WH || {};
             
             changedCallback = function(parameter, oldValue, newValue) {
                 for (i = 0; i < numInputs; i++) {
-                    radioInputs[i].checked = (radioInputs[i].value === newValue);
+                    radioInputs[i].checked = (radioInputs[i].value == newValue);
                 }
             };
          
