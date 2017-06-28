@@ -58,7 +58,7 @@ window.WH = window.WH || {};
             removeMidiInput = function(midiInputPort) {
                 var n = midiInputs.length;
                 for (var i = 0; i < n; i++) {
-                    if (midiInputs[i] === midiInput) {
+                    if (midiInputs[i].port === midiInputPort) {
                         // remove reference to midiInputPort
                         midiInputs.splice(i, 1);
                         // unassign all processor parameters controlled by this input
@@ -70,7 +70,7 @@ window.WH = window.WH || {};
                             }
                         }
                         // remove parameter lookups
-                        paramLookup[midiInput.id] = null;
+                        paramLookup[midiInputPort.getID()] = null;
                         // unsubscribe from receiving messages from the MIDI input.
                         midiInputPort.removeMIDIMessageListener(onMIDIMessage);
                         // and we're done
