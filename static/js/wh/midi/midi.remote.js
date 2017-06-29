@@ -27,20 +27,15 @@ window.WH = window.WH || {};
              */
             addMidiInput = function(midiInputPort) {
                 var exists = false,
-                    midiInputPortID = midiInputPort.getID();
-                for (var i = 0, n = midiInputs.length; i < n; i++) {
-                    if (midiInputs[i].port.getID() === midiInputPortID) {
-                        exists = true;
-                        break;
-                    }
-                }
+                    midiInputPortID = midiInputPort.getID(),
+                    existingMidiInputPort = getMIDIInputByID(midiInputPortID);
 
-                if (!exists) {
+                if (!existingMidiInputPort) {
                     // keep reference to midiInputPort
                     // TODO: params array doesn't seem to be used
                     midiInputs.push({
                         port: midiInputPort,
-                        params: []
+                        assignments: []
                     });
 
                     // quick lookup of assigned parameters
@@ -75,6 +70,19 @@ window.WH = window.WH || {};
                         midiInputPort.removeMIDIMessageListener(onMIDIMessage);
                         // and we're done
                         break;
+                    }
+                }
+            },
+            
+            /**
+             * Find midiInputPort from list of added inputs by ID.
+             * @param {String} midiInputPortID [description]
+             * @return {Object|undefined} MidiInputPort object or undefined if not found.
+             */
+            getMIDIInputByID = function(midiInputPortID) {
+                for (var i = 0, n = midiInputs.length; i < n; i++) {
+                    if (midiInputs[i].port.getID() === midiInputPortID) {
+                        return midiInputs[i];
                     }
                 }
             },
