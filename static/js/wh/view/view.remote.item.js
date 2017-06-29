@@ -29,7 +29,7 @@ window.WH = window.WH || {};
                 el.querySelector('.remote__item-remove').addEventListener('click', onUnregisterClick);
                 
                 // set callback on parameter
-                my.param.addRemoteStateCallback(changeRemoteState);
+                param.addRemoteStateCallback(changeRemoteState);
             },
             
             /**

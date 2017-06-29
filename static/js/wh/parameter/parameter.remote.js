@@ -21,7 +21,7 @@ window.WH = window.WH || {};
              */
             setRemoteState = function(state, callback) {
                 for (var i = 0, n = remoteStateChangeCallbacks.length; i < n; i++) {
-                    remoteStateChangeCallbacks[i](that, oldValue, my.props.value);
+                    remoteStateChangeCallbacks[i](state, callback);
                 }
             },
             
