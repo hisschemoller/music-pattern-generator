@@ -187,6 +187,24 @@ window.WH = window.WH || {};
              * @param  {Number} controller MIDI CC number.
              */
             assignParameter = function(param, portId, channel, controller) {
+                
+                // don't assign if the assignment already exists
+                var midiInput = getMIDIInputByID(portId),
+                    n = midiInput.assignments.length;
+                while (--n >= 0) {
+                    var a = midiInput.assignments[n];
+                    if (a.param == param && a.channel == channel && a.controller == controller) {
+                        return;
+                    }
+                }
+                
+                // add the assignment to the model
+                midiInput.assignments.push({
+                    param: param,
+                    channel: channel,
+                    controller: controller
+                });
+                
                 // add parameter to the lookup table
                 paramLookup[portId][channel + '_' + controller] = param;
 
@@ -205,10 +223,22 @@ window.WH = window.WH || {};
              * @param  {Object} param Processor parameter to be unassigned.
              */
             unassingParameter = function(param) {
-                // remove parameter from the lookup table
                 var portId = param.getRemoteProperty('portId'),
                     channel = param.getRemoteProperty('channel'),
-                    controller = param.getRemoteProperty('controller');
+                    controller = param.getRemoteProperty('controller'),
+                    midiInput = getMIDIInputByID(portId);
+                    
+                // remove the assignment from the model
+                var n = midiInput.assignments.length;
+                while (--n >= 0) {
+                    var a = midiInput.assignments[n];
+                    if (a.param == param && a.channel == channel && a.controller == controller) {
+                        midiInput.assignments.splice(n, 0);
+                        break;
+                    }
+                }
+                
+                // remove parameter from the lookup table;
                 paramLookup[portId][channel + '_ ' + controller] = null;
 
                 // update the parameter
