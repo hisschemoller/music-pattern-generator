@@ -16,7 +16,7 @@ window.WH = window.WH || {};
                 if (my.param.getProperty('isMidiControllable')) {
                     
                     // set callback on parameter
-                    my.param.setRemoteStateCallback(changeRemoteState);
+                    my.param.addRemoteStateCallback(changeRemoteState);
                     
                     let template = document.querySelector('#template-setting-learnmode');
                     let clone = template.content.cloneNode(true);

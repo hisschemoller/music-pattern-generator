@@ -10,7 +10,7 @@ window.WH = window.WH || {};
     
     function createRemoteParameter(specs, my) {
         var that,
-            remoteStateChangeCallback,
+            remoteStateChangeCallbacks = [],
             
             /**
              * Set the remote state of the parameter.
@@ -20,8 +20,8 @@ window.WH = window.WH || {};
              * @param {Function} callback Function to call when in learn mode (ugly, improve some day)
              */
             setRemoteState = function(state, callback) {
-                if (remoteStateChangeCallback) {
-                    remoteStateChangeCallback(state, callback);
+                for (var i = 0, n = remoteStateChangeCallbacks.length; i < n; i++) {
+                    remoteStateChangeCallbacks[i](that, oldValue, my.props.value);
                 }
             },
             
@@ -29,11 +29,23 @@ window.WH = window.WH || {};
              * Add a callback function to update the remote overlay on the
              * parameter's setting view, so that the setting view can go
              * into learn mode, or show that it's selected or assigned.
+             * It also updates the remote view entries of assigned parameters.
              * @param {Function} callback Callback function.
              */
-            setRemoteStateCallback = function(callback) {
-                remoteStateChangeCallback = callback;
+            addRemoteStateCallback = function(callback) {
+                remoteStateChangeCallbacks.push(callback);
             },
+
+    		/**
+    		 * Removes a callback function.
+    		 * @param {Function} callback The function that will be removed.
+    		 */
+    		removeRemoteStateCallback = function(callback) {
+    			var index = remoteStateChangeCallbacks.indexOf(callback);
+    			if (index > -1) {
+                    remoteStateChangeCallbacks.splice(index, 1);
+                }
+    		},
             
             setRemoteProperty = function(key, value) {
                 if (my.remoteProps.hasOwnProperty(key)) {
@@ -61,7 +73,8 @@ window.WH = window.WH || {};
         that = specs.that || {};
         
         that.setRemoteState = setRemoteState;
-        that.setRemoteStateCallback = setRemoteStateCallback;
+        that.addRemoteStateCallback = addRemoteStateCallback;
+        that.removeRemoteStateCallback = removeRemoteStateCallback;
         that.setRemoteProperty = setRemoteProperty;
         that.getRemoteProperty = getRemoteProperty;
         that.getRemoteData = getRemoteData;
