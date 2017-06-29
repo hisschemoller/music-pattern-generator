@@ -29,20 +29,34 @@ window.WH = window.WH || {};
                 var exists = false,
                     midiInputPortID = midiInputPort.getID(),
                     existingMidiInputPort = getMIDIInputByID(midiInputPortID);
+                
+                // quick lookup of assigned parameters
+                paramLookup[midiInputPortID] = [];
 
                 if (!existingMidiInputPort) {
                     // keep reference to midiInputPort
-                    // TODO: params array doesn't seem to be used
                     midiInputs.push({
                         port: midiInputPort,
-                        assignments: []
+                        assignments: [],
+                        active: true
                     });
-
-                    // quick lookup of assigned parameters
-                    paramLookup[midiInputPortID] = [];
-
+                    
                     // subscribe to receive messages from this MIDI input
                     midiInputPort.addMIDIMessageListener(onMIDIMessage);
+                } else {
+                    // set active
+                    existingMidiInputPort.active = true;
+                    
+                    let assignment;
+                    for (var i = 0, n = midiInput.assignments.length; i < n; i++) {
+                        assignment = midiInput.assignments[i];
+                        
+                        // add assignments to paramLookup
+                        paramLookup[midiInputPortID][assignment.channel + '_' + assignment.controller] = assignment.param;
+                        
+                        // set the assigned parameters' state to 'inactive'
+                        assignment[i].param.setRemoteState('assigned');
+                    }
                 }
             },
 
@@ -51,24 +65,20 @@ window.WH = window.WH || {};
              * @param {Object} midiInputPort MIDI input port object.
              */
             removeMidiInput = function(midiInputPort) {
-                var n = midiInputs.length;
-                for (var i = 0; i < n; i++) {
-                    if (midiInputs[i].port === midiInputPort) {
-                        // remove reference to midiInputPort
-                        midiInputs.splice(i, 1);
-                        // unassign all processor parameters controlled by this input
-                        if (paramLookup.hasOwnProperty(midiInputPort.getID())) {
-                            let params = paramLookup[midiInputPort.getID()],
-                                n = params.length;
-                            while (--n >= 0) {
-                                unassingParameter(params[n]);
-                            }
+                var midiInput;
+                for (var i = 0,  n = midiInputs.length; i < n; i++) {
+                    midiInput = midiInputs[i];
+                    if (midiInput.port === midiInputPort) {
+                        // set inactive
+                        midiInput.active = false;
+                        
+                        // remove assignments from paramLookup
+                        paramLookup[midiInput.port.getID()] = null;
+                        
+                        // set the assigned parameters' state to 'inactive'
+                        for (var i = 0, n = midiInput.assignments.length; i < n; i++) {
+                            midiInput.assignments[i].param.setRemoteState('inactive');
                         }
-                        // remove parameter lookups
-                        paramLookup[midiInputPort.getID()] = null;
-                        // unsubscribe from receiving messages from the MIDI input.
-                        midiInputPort.removeMIDIMessageListener(onMIDIMessage);
-                        // and we're done
                         break;
                     }
                 }
@@ -187,7 +197,6 @@ window.WH = window.WH || {};
              * @param  {Number} controller MIDI CC number.
              */
             assignParameter = function(param, portId, channel, controller) {
-                
                 // don't assign if the assignment already exists
                 var midiInput = getMIDIInputByID(portId),
                     n = midiInput.assignments.length;

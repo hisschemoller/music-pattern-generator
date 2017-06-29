@@ -25,7 +25,11 @@ window.WH = window.WH || {};
                 el.querySelector('.remote__item-cc').innerHTML = param.getRemoteProperty('controller');
                 parentEl.appendChild(el);
                 
+                // add DOM event listeners
                 el.querySelector('.remote__item-remove').addEventListener('click', onUnregisterClick);
+                
+                // set callback on parameter
+                my.param.addRemoteStateCallback(changeRemoteState);
             },
             
             /**
@@ -36,6 +40,23 @@ window.WH = window.WH || {};
                 parentEl.removeChild(el);
                 param = null;
                 parentEl = null;
+            },
+            
+            /**
+             * State of the parameter in the assignment process changed,
+             * the element will show this visually.
+             * @param {String} state New state of the parameter.
+             * @param {Function} callback Not used here.
+             */
+            changeRemoteState = function(state, callback) {
+                switch (state) {
+                    case 'assigned':
+                        // TODO: normale tekst
+                        break;
+                    case 'inactive':
+                        // TODO: tekst grijs of zoiets
+                        break;
+                }
             },
             
             /**

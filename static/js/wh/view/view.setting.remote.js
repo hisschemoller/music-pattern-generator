@@ -24,6 +24,12 @@ window.WH = window.WH || {};
                 }
             },
             
+            /**
+             * State of the parameter in the assignment process changed,
+             * the element will show this visually.
+             * @param {String} state New state of the parameter.
+             * @param {Function} callback In learn mode, the function to call on click.
+             */
             changeRemoteState = function(state, callback) {
                 switch (state) {
                     case 'enter':
