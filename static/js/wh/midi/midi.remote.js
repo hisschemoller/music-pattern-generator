@@ -73,8 +73,8 @@ window.WH = window.WH || {};
                         midiInput.active = false;
                         
                         // remove assignments from paramLookup
-                        paramLookup[midiInput.port.getID()] = null;
                         
+                        delete paramLookup[midiInput.port.getID()];
                         // set the assigned parameters' state to 'inactive'
                         for (var i = 0, n = midiInput.assignments.length; i < n; i++) {
                             midiInput.assignments[i].param.setRemoteState('inactive');
