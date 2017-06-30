@@ -29,9 +29,6 @@ window.WH = window.WH || {};
                 var exists = false,
                     midiInputPortID = midiInputPort.getID(),
                     existingMidiInputPort = getMIDIInputByID(midiInputPortID);
-                
-                // quick lookup of assigned parameters
-                paramLookup[midiInputPortID] = [];
 
                 if (!existingMidiInputPort) {
                     // keep reference to midiInputPort
@@ -48,12 +45,12 @@ window.WH = window.WH || {};
                     existingMidiInputPort.active = true;
                     
                     let assignment;
-                    for (var i = 0, n = midiInput.assignments.length; i < n; i++) {
-                        assignment = midiInput.assignments[i];
                         
+                    for (var i = 0, n = existingMidiInputPort.assignments.length; i < n; i++) {
+                        assignment = existingMidiInputPort.assignments[i];
                         // add assignments to paramLookup
-                        paramLookup[midiInputPortID][assignment.channel + '_' + assignment.controller] = assignment.param;
                         
+                        paramLookup[assignment.channel + '_' + assignment.controller] = assignment.param;
                         // set the assigned parameters' state to 'inactive'
                         assignment[i].param.setRemoteState('assigned');
                     }
@@ -71,10 +68,7 @@ window.WH = window.WH || {};
                     if (midiInput.port === midiInputPort) {
                         // set inactive
                         midiInput.active = false;
-                        
-                        // remove assignments from paramLookup
-                        
-                        delete paramLookup[midiInput.port.getID()];
+
                         // set the assigned parameters' state to 'inactive'
                         for (var i = 0, n = midiInput.assignments.length; i < n; i++) {
                             midiInput.assignments[i].param.setRemoteState('inactive');
@@ -106,7 +100,7 @@ window.WH = window.WH || {};
                 // only continuous controller message, 0xB == 11
                 if (e.data[0] >> 4 === 0xB) {
                     var channel = (e.data[0] & 0xf) + 1,
-                        param = paramLookup[e.target.id][channel + '_' + e.data[1]];
+                        param = paramLookup[channel + '_' + e.data[1]];
                     if (param) {
                         param.setValueNormalized(e.data[2] / 127);
                     }
@@ -215,7 +209,7 @@ window.WH = window.WH || {};
                 });
                 
                 // add parameter to the lookup table
-                paramLookup[portId][channel + '_' + controller] = param;
+                paramLookup[channel + '_' + controller] = param;
 
                 // update the parameter
                 param.setRemoteProperty('portId', portId);
@@ -248,7 +242,7 @@ window.WH = window.WH || {};
                 }
                 
                 // remove parameter from the lookup table;
-                paramLookup[portId][channel + '_ ' + controller] = null;
+                paramLookup[channel + '_ ' + controller] = null;
 
                 // update the parameter
                 param.setRemoteProperty('portId', null);
@@ -311,15 +305,13 @@ window.WH = window.WH || {};
              */
             clear = function() {
                 // Unassign all parameters.
-                for (let lookupPortID in paramLookup) {
-                    if (paramLookup.hasOwnProperty(lookupPortID)) {
-                        let params = paramLookup[lookupPortID],
-                            n = params.length;
-                        while (--n >= 0) {
-                            unassingParameter(params[n]);
-                        }
+                for (let key in paramLookup) {
+                    if (paramLookup.hasOwnProperty(key)) {
+                        unassingParameter(paramLookup[key]);
                     }
                 }
+                paramLookup = {};
+                
                 // Unregister all processors.
                 for (var i = 0; i < processors.length; i++) {
                     unregisterProcessor(processors[i]);
