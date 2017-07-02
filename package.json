@@ -17,7 +17,7 @@
     "percussion"
   ],
   "author": "Wouter Hisschemoller",
-  "licence": "",
+  "licence": "LGPL-3.0",
   "devDependencies": {
     "electron": "^1.6.11",
     "electron-packager": "^8.7.2"
