@@ -88,6 +88,32 @@ window.WH = window.WH || {};
                 if (typeof selectedOutputID === 'string' && selectedOutputID.length) {
                     selectOutputByID(selectedOutputID);
                 }
+
+                midiAccess.onstatechange = onAccessStateChange;
+            },
+
+            /**
+             * MIDIAccess object statechange handler.
+             * If the change is the addition of a new port, create a port object.
+             * @param {Object} e MIDIConnectionEvent object.
+             */
+            onAccessStateChange = function(e) {
+                console.log('onAccessStateChange', e.port.type, e.port.state, e.port.name, e);
+                let ports = (e.port.type == 'input') ? inputs : outputs,
+                    exists = false,
+                    n = ports.length;
+
+                while (--n >= 0 && exists == false) {
+                    exists = (e.port.id == ports[n].getID());
+                }
+
+                if (!exists) {
+                    if (e.port.type == 'input') {
+                        createInput(e.port);
+                    } else {
+                        createOutput(e.port);
+                    }
+                }
             },
             
             /**

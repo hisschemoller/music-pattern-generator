@@ -11,6 +11,12 @@ window.WH = window.WH || {};
         var that,
             networkProcessorID,
             
+            init = function() {
+                my.midiPort.onstatechange = function(e) {
+                    console.log('input onstatechange', e);
+                };
+            },
+
             /**
              * Create a MIDI output processor in the network,
              * or delete it from the network.
@@ -65,6 +71,8 @@ window.WH = window.WH || {};
         
         that = ns.createMIDIPortBase(specs, my);
         
+        init();
+
         that.toggleNetwork = toggleNetwork;
         that.setData = setData;
         that.getData = getData;

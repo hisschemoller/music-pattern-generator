@@ -26,7 +26,11 @@ window.WH = window.WH || {};
                             midiMessageCallbacks[i](e);
                         }
                     }
-                }
+                };
+
+                my.midiPort.onstatechange = function(e) {
+                    console.log('input onstatechange', e);
+                };
             },
 
             /**
