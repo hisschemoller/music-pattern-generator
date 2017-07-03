@@ -12,9 +12,24 @@ window.WH = window.WH || {};
             networkProcessorID,
             
             init = function() {
-                my.midiPort.onstatechange = function(e) {
-                    console.log('input onstatechange', e);
-                };
+                my.midiPort.onstatechange = onPortStateChange;
+            },
+            
+            /**
+             * MIDI device was connected or disconnected.
+             * The first time a MIDI device is connected is handled by the midi module.
+             * This handles disconnected or reconnected ports.
+             * @param {Object} e MIDIConnectionEvent object.
+             */
+            onPortStateChange = function(e) {
+                switch (e.port.state) {
+                    case 'connected':
+                        toggleNetwork(true);
+                        break;
+                    case 'disconnected':
+                        toggleNetwork(false);
+                        break;
+                }
             },
 
             /**
