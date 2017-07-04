@@ -65,7 +65,6 @@ window.WH = window.WH || {};
         
         my = my || {};
         my.remoteProps = {
-            portId: null,
             channel: null,
             controller: null
         };

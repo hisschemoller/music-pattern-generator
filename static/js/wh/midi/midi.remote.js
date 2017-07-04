@@ -14,6 +14,7 @@ window.WH = window.WH || {};
         var that,
             remoteView = specs.remoteView,
             midiInputs = [],
+            assignments = [],
             paramLookup = {},
             selectedParameter,
             isInLearnMode = false,
@@ -21,40 +22,21 @@ window.WH = window.WH || {};
 
             /**
              * Add a MIDI Input port only if it doesn't yet exist.
-             * The port is the object created in midi.port.input.js,
+             * The port is the module created in midi.port.input.js,
              * not a Web MIDI API MIDIInput.
-             * @param {Object} midiInputPort MIDI input port object.
+             * @param {Object} midiInputPort MIDI input port module.
              */
             addMidiInput = function(midiInputPort) {
-                var exists = false,
-                    midiInputPortID = midiInputPort.getID(),
+                var midiInputPortID = midiInputPort.getID(),
                     existingMidiInputPort = getMIDIInputByID(midiInputPortID);
 
                 if (!existingMidiInputPort) {
-                    // keep reference to midiInputPort
-                    midiInputs.push({
-                        port: midiInputPort,
-                        assignments: [],
-                        active: true
-                    });
-                    
-                    // subscribe to receive messages from this MIDI input
-                    midiInputPort.addMIDIMessageListener(onMIDIMessage);
-                } else {
-                    // set active
-                    existingMidiInputPort.active = true;
-                    
-                    let assignment;
-                        
-                    for (var i = 0, n = existingMidiInputPort.assignments.length; i < n; i++) {
-                        assignment = existingMidiInputPort.assignments[i];
-                        // add assignments to paramLookup
-                        
-                        paramLookup[assignment.channel + '_' + assignment.controller] = assignment.param;
-                        // set the assigned parameters' state to 'inactive'
-                        assignment[i].param.setRemoteState('assigned');
-                    }
+                    // store reference to midiInputPort module
+                    midiInputs.push(midiInputPort);
                 }
+                
+                // subscribe to receive messages from this MIDI input
+                midiInputPort.addMIDIMessageListener(onMIDIMessage);
             },
 
             /**
@@ -62,20 +44,8 @@ window.WH = window.WH || {};
              * @param {Object} midiInputPort MIDI input port object.
              */
             removeMidiInput = function(midiInputPort) {
-                var midiInput;
-                for (var i = 0,  n = midiInputs.length; i < n; i++) {
-                    midiInput = midiInputs[i];
-                    if (midiInput.port === midiInputPort) {
-                        // set inactive
-                        midiInput.active = false;
-
-                        // set the assigned parameters' state to 'inactive'
-                        for (var i = 0, n = midiInput.assignments.length; i < n; i++) {
-                            midiInput.assignments[i].param.setRemoteState('inactive');
-                        }
-                        break;
-                    }
-                }
+                // unsubscribe from receiving messages from this MIDI input
+                midiInputPort.removeMIDIMessageListener(onMIDIMessage);
             },
             
             /**
@@ -85,7 +55,7 @@ window.WH = window.WH || {};
              */
             getMIDIInputByID = function(midiInputPortID) {
                 for (var i = 0, n = midiInputs.length; i < n; i++) {
-                    if (midiInputs[i].port.getID() === midiInputPortID) {
+                    if (midiInputs[i].getID() === midiInputPortID) {
                         return midiInputs[i];
                     }
                 }
@@ -115,10 +85,9 @@ window.WH = window.WH || {};
             onMIDILearnMessage = function(e) {
                 if (selectedParameter) {
                     if (e.data[0] >> 4 === 0xB) {
-                        var portId = e.target.id,
-                            channel = (e.data[0] & 0xf) + 1,
+                        var channel = (e.data[0] & 0xf) + 1,
                             controller = e.data[1];
-                        assignParameter(selectedParameter, portId, channel, controller);
+                        assignParameter(selectedParameter, channel, controller);
                         deselectParameter();
                     }
                 }
@@ -155,9 +124,13 @@ window.WH = window.WH || {};
                 }
 
                 // set listener on all midi ports
+                let midiInput;
                 for (var i = 0, n = midiInputs.length; i < n; i++) {
-                    midiInputs[i].port.removeMIDIMessageListener(oldMidimessageListener);
-                    midiInputs[i].port.addMIDIMessageListener(midiMessageListener);
+                    midiInput = midiInputs[i];
+                    if (midiInput.getConnected()) {
+                        midiInput.removeMIDIMessageListener(oldMidimessageListener);
+                        midiInput.addMIDIMessageListener(midiMessageListener);
+                    }
                 }
             },
 
@@ -186,23 +159,21 @@ window.WH = window.WH || {};
             /**
              * Assign a MIDI controller to a parameter.
              * @param  {Object} param Processor parameter to be assigned a MIDI control.
-             * @param  {String} portId MIDI input ID.
              * @param  {Number} channel MIDI channel.
              * @param  {Number} controller MIDI CC number.
              */
-            assignParameter = function(param, portId, channel, controller) {
+            assignParameter = function(param, channel, controller) {
                 // don't assign if the assignment already exists
-                var midiInput = getMIDIInputByID(portId),
-                    n = midiInput.assignments.length;
+                let n = assignments.length;
                 while (--n >= 0) {
-                    var a = midiInput.assignments[n];
+                    var a = assignments[n];
                     if (a.param == param && a.channel == channel && a.controller == controller) {
                         return;
                     }
                 }
                 
                 // add the assignment to the model
-                midiInput.assignments.push({
+                assignments.push({
                     param: param,
                     channel: channel,
                     controller: controller
@@ -212,7 +183,6 @@ window.WH = window.WH || {};
                 paramLookup[channel + '_' + controller] = param;
 
                 // update the parameter
-                param.setRemoteProperty('portId', portId);
                 param.setRemoteProperty('channel', channel);
                 param.setRemoteProperty('controller', controller);
                 param.setRemoteState('assigned');
@@ -232,11 +202,11 @@ window.WH = window.WH || {};
                     midiInput = getMIDIInputByID(portId);
                     
                 // remove the assignment from the model
-                var n = midiInput.assignments.length;
+                var n = assignments.length;
                 while (--n >= 0) {
-                    var a = midiInput.assignments[n];
+                    var a = assignments[n];
                     if (a.param == param && a.channel == channel && a.controller == controller) {
-                        midiInput.assignments.splice(n, 0);
+                        assignments.splice(n, 0);
                         break;
                     }
                 }
@@ -245,7 +215,6 @@ window.WH = window.WH || {};
                 paramLookup[channel + '_ ' + controller] = null;
 
                 // update the parameter
-                param.setRemoteProperty('portId', null);
                 param.setRemoteProperty('channel', null);
                 param.setRemoteProperty('controller', null);
                 param.setRemoteState('unassigned');
@@ -326,81 +295,63 @@ window.WH = window.WH || {};
                 // clear all old data
                 clear();
                 
-                // loop through midi ports data
-                for (let dataPortID in data) {
-                    if (data.hasOwnProperty(dataPortID)) {
-                        // find MIDI port with this ID
-                        for (let lookupPortID in paramLookup) {
-                            if (paramLookup.hasOwnProperty(lookupPortID)) {
-                                if (dataPortID == lookupPortID) {
-                                    // the stored port exists, params can be assigned
-                                    let paramsData = data[dataPortID],
-                                        numParams = paramsData.length;
-                                    for (let i = 0; i < numParams; i++) {
-                                        // find processor
-                                        let processorID = paramsData[i].processorID;
-                                        let n = processors.length;
-                                        while (--n >= 0) {
-                                            if (processors[n].processor.getID() == processorID) {
-                                                // processor found, find parameter
-                                                let params = processors[n].params,
-                                                    m = params.length;
-                                                while (--m >= 0) {
-                                                    if (params[m].getProperty('key') == paramsData[i].paramKey) {
-                                                        // found parameter, assign to remote controller
-                                                        let channel = paramsData[i].paramRemoteData.channel,
-                                                            controller = paramsData[i].paramRemoteData.controller;
-                                                        assignParameter(params[m], dataPortID, channel, controller)
-                                                        break;
-                                                    }
-                                                }
-                                                break;
-                                            }
-                                        }
-                                    }
+                // set new data
+                let item;
+                for (let i = 0, n = data.length; i < n; i++) {
+                    item = data[i];
+                    // find processor
+                    let processorID = item.processorID;
+                    let n = processors.length;
+                    while (--n >= 0) {
+                        if (processors[n].processor.getID() == processorID) {
+                            // processor found, find parameter
+                            let params = processors[n].params,
+                                m = params.length;
+                            while (--m >= 0) {
+                                if (params[m].getProperty('key') == item.paramKey) {
+                                    // found parameter, assign to remote controller
+                                    let channel = item.paramRemoteData.channel,
+                                        controller = item.paramRemoteData.controller;
+                                    assignParameter(params[m], channel, controller)
+                                    break;
                                 }
                             }
+                            break;
                         }
                     }
+                    assignParameter(param, channel, controller);
                 }
             },
 
             /**
              * Write assigned parameters to data object.
+             * Data object structure:
+             * data: [{}]
              * @return {Object} Contains port and parameter data.
              */
             getData = function() {
-                let lookupPort, param, processorID,
-                    data = {};
                 // loop through midi ports lookup
-                for (var portKey in paramLookup) {
-                    if (paramLookup.hasOwnProperty(portKey)) {
-                        lookupPort = paramLookup[portKey];
-                        data[portKey] = [];
-                        // loop through parameters listening to this port
-                        for (var paramKey in lookupPort) {
-                            if (lookupPort.hasOwnProperty(paramKey)) {
-                                param = lookupPort[paramKey];
-                                // find processor for the parameter to get its id
-                                processorID = null;
-                                let n = processors.length;
-                                while (--n >= 0) {
-                                    let m = processors[n].params.length;
-                                    while (--m >= 0) {
-                                        if (param === processors[n].params[m]) {
-                                            processorID = processors[n].processor.getID();
-                                            break;
-                                        }
-                                    }
+                let param, processorID, data = [];
+                for (let key in paramLookup) {
+                    if (paramLookup.hasOwnProperty(key)) {
+                        param = paramLookup[key];
+                        // find processor for the parameter to get its id
+                        processorID = null;
+                        let n = processors.length;
+                        while (--n >= 0) {
+                            let m = processors[n].params.length;
+                            while (--m >= 0) {
+                                if (param === processors[n].params[m]) {
+                                    processorID = processors[n].processor.getID();
+                                    break;
                                 }
-                                // create the parameter's data entry
-                                data[portKey].push({
-                                    processorID: processorID,
-                                    paramKey: param.getProperty('key'),
-                                    paramRemoteData: param.getRemoteData()
-                                });
                             }
                         }
+                        data.push({
+                            processorID: processorID,
+                            paramKey: param.getProperty('key'),
+                            paramRemoteData: param.getRemoteData()
+                        });
                     }
                 }
                 return data;

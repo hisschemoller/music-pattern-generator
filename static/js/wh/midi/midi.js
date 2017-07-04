@@ -94,7 +94,9 @@ window.WH = window.WH || {};
 
             /**
              * MIDIAccess object statechange handler.
-             * If the change is the addition of a new port, create a port object.
+             * If the change is the addition of a new port, create a port module.
+             * This handles MIDI devices that are connected after the app initialisation.
+             * Disconnected or reconnected ports are handled by the port modules.
              * @param {Object} e MIDIConnectionEvent object.
              */
             onAccessStateChange = function(e) {

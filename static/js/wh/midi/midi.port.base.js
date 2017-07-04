@@ -14,6 +14,14 @@ window.WH = window.WH || {};
                 my.viewCallback = callback;
             },
             
+            /**
+             * Check if the MIDI port is still connected.
+             * @return {Boolean} True if the MIDI port is connected.
+             */
+            getConnected = function() {
+                return my.midiPort.state === 'connected';
+            },
+            
             getName = function() {
                 return my.midiPort.name;
             },
@@ -35,6 +43,7 @@ window.WH = window.WH || {};
         that = specs.that || {};
         
         that.setViewCallback = setViewCallback;
+        that.getConnected = getConnected;
         that.getName = getName;
         that.getID = getID;
         return that;
