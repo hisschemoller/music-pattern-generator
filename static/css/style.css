@@ -331,7 +331,7 @@ select:focus {
         height: var(--input-height);
         font-size: var(--font-size);
         line-height: 32px;
-        width: 32px;
+        /*width: 32px;*/
     }
 .prefs[data-show=true] {
     display: block;
@@ -371,31 +371,43 @@ select:focus {
 .prefs__header-option {
     width: 60px;
 }
+.prefs__setting,
 .midi-port {
     display: flex;
 }
+.prefs__label,
 .midi-port__label {
     flex-grow: 1;
 }
+.prefs__input {
+    width: 180px;
+}
+.prefs__btn,
 .btn.midi-port__btn {
     width: 60px;
 }
+.prefs__btn-check,
 .midi-port__btn-check {
     position: absolute;
     margin-left: -9999px;
     visibility: hidden;
 }
+.prefs__btn-check + .prefs__btn-text:before,
 .midi-port__btn-check + .midi-port__btn-text:before {
     content: attr(data-off);
 }
+.prefs__btn-check:checked + .prefs__btn-text:before,
 .midi-port__btn-check:checked + .midi-port__btn-text:before {
     content: attr(data-on);
 }
+.prefs__btn[data-disabled='true'],
+.prefs__btn[data-disabled='true']:hover,
 .midi-port__btn[data-disabled='true'],
 .midi-port__btn[data-disabled='true']:hover {
     background-color: var(--btn-bg-disabled-color);
     cursor: default;
 }
+.prefs__btn[data-disabled='true'] .prefs__btn-check + .prefs__btn-text:before,
 .midi-port__btn[data-disabled='true'] .midi-port__btn-check + .midi-port__btn-text:before {
     content: ' ';
 }
