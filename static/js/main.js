@@ -72,13 +72,10 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     WH.createMIDI({
         that: midi,
-        app: app,
-        controlsView: controlsView,
         preferencesView: preferencesView,
         midiNetwork: midiNetwork,
         midiRemote: midiRemote,
-        midiSync: midiSync,
-        transport: transport
+        midiSync: midiSync
     });
     WH.createMIDIRemote({
         that: midiRemote,

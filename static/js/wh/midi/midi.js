@@ -9,7 +9,6 @@ window.WH = window.WH || {};
 
     function createMIDI(specs) {
         var that,
-            controlsView = specs.controlsView,
             preferencesView = specs.preferencesView,
             midiNetwork = specs.midiNetwork,
             midiRemote = specs.midiRemote,
@@ -18,12 +17,6 @@ window.WH = window.WH || {};
             midiAccess,
             inputs = [],
             outputs = [],
-            selectedInput,
-            selectedInputID,
-            selectedOutput,
-            selectedOutputID,
-            isClockInEnabled,
-            isNoteInEnabled,
 
             setup = function() {
                 requestAccess(onAccessSuccess, onAccessFailure, false);
@@ -81,14 +74,6 @@ window.WH = window.WH || {};
                     createOutput(port.value);
                 }
 
-                // select an input and output if they're already known
-                if (typeof selectedInputID === 'string' && selectedOutputID.length) {
-                    selectInputByID(selectedInputID);
-                }
-                if (typeof selectedOutputID === 'string' && selectedOutputID.length) {
-                    selectOutputByID(selectedOutputID);
-                }
-
                 midiAccess.onstatechange = onAccessStateChange;
             },
 
@@ -100,7 +85,6 @@ window.WH = window.WH || {};
              * @param {Object} e MIDIConnectionEvent object.
              */
             onAccessStateChange = function(e) {
-                console.log('onAccessStateChange', e.port.type, e.port.state, e.port.name, e);
                 let ports = (e.port.type == 'input') ? inputs : outputs,
                     exists = false,
                     n = ports.length;
@@ -120,7 +104,7 @@ window.WH = window.WH || {};
             
             /**
              * Create a MIDI input model and view.
-             * @param  {Object} midiPort MIDIInput object.
+             * @param  {Object} midiPort MIDIInput module.
              */
             createInput = function(midiPort) {
                 var input = ns.createMIDIPortInput({
@@ -137,7 +121,7 @@ window.WH = window.WH || {};
             
             /**
              * Create a MIDI output model and view.
-             * @param  {Object} midiPort MIDIOutput object.
+             * @param  {Object} midiPort MIDIOutput module.
              */
             createOutput = function(midiPort) {
                 var output = ns.createMIDIPortOutput({
@@ -153,67 +137,10 @@ window.WH = window.WH || {};
             },
 
             /**
-             * Select an input.
-             * @param {String} id ID of the input.
-             */
-            selectInputByID = function(id) {
-                selectedInputID = id;
-                if (midiAccess) {
-                    selectedInput = null;
-                    var portMap = midiAccess.inputs.values();
-                    for (port = portMap.next(); port && !port.done; port = portMap.next()) {
-                        if (port.value.id === id) {
-                            selectedInput = port.value;
-                            preferencesView.setSelectedMidiPort(id, true);
-                            midiNetwork.connectAllEPGToInput(id, selectedInputID);
-                            selectedInputID = id;
-                        }
-                    }
-                }
-            },
-
-            /**
-             * Select an output.
-             * @param {String} id ID of the output.
-             */
-            selectOutputByID = function(id) {
-                selectedOutputID = id;
-                if (midiAccess) {
-                    selectedOutput = null;
-                    var portMap = midiAccess.outputs.values();
-                    for (port = portMap.next(); port && !port.done; port = portMap.next()) {
-                        if (port.value.id === id) {
-                            selectedOutput = port.value;
-                            preferencesView.setSelectedMidiPort(id, false);
-                            midiNetwork.connectAllEPGToOutput(id, selectedOutputID);
-                            selectedOutputID = id;
-                        }
-                    }
-                }
-            },
-
-            /**
-             * Toggle between internal clock and external MIDI clock sync.
-             * @param {Boolean} isEnabled Sync to MIDI clock when true.
-             */
-            setClockInEnabled = function(isEnabled) {
-                isClockInEnabled = isEnabled;
-                controlsView.setControlsEnabled(!isClockInEnabled);
-                // only enable if there is a MIDI input port
-                if ((isClockInEnabled && selectedInput) || !isClockInEnabled) {
-                    transport.setExternalClockEnabled(isClockInEnabled, selectedInput);
-                }
-            },
-
-            /**
              * Restore MIDI port object settings from data object.
              * @param {Object} data Preferences data object.
              */
             setData = function(data) {
-                // selectInputByID(data.midiin);
-                // selectOutputByID(data.midiout);
-                // setClockInEnabled(data.clockin);
-                
                 if (data.inputs) {
                     let inputData;
                     for (let i = 0, n = data.inputs.length; i < n; i++) {
@@ -246,12 +173,6 @@ window.WH = window.WH || {};
              * @return {Object} MIDI port object data.
              */
             getData = function() {
-                // return {
-                //     'midiin': selectedInput ? selectedInput.id : '',
-                //     'midiout': selectedOutput ? selectedOutput.id : '',
-                //     'clockin': isClockInEnabled
-                // };
-                
                 const data = {
                     inputs: [],
                     outputs: []
@@ -271,9 +192,6 @@ window.WH = window.WH || {};
         that = specs.that;
 
         that.setup = setup;
-        that.selectInputByID = selectInputByID;
-        that.selectOutputByID = selectOutputByID;
-        that.setClockInEnabled = setClockInEnabled;
         that.setData = setData;
         that.getData = getData;
         return that;
