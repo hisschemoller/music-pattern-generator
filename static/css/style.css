@@ -71,6 +71,13 @@
     --input-height: 32px;
     --text-color: #ccc;
 }
+div[data-theme='dark'] {
+    --bg-color: #000;
+    --border-color: #ccc;
+    --btn-bg-color: #000;
+    --btn-bg-disabled-color: #030303;
+    --text-color: #333;
+}
 * {
     box-sizing: border-box;
     margin: 0;
