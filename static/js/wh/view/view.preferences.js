@@ -5,14 +5,45 @@
 window.WH = window.WH || {};
 
 (function (ns) {
-    
+
     function createPreferencesView(specs) {
         var that,
+            preferences = specs.preferences,
             preferencesEl = document.querySelector('.prefs'),
             midiInputsEl = document.querySelector('.prefs__inputs'),
             midiOutputsEl = document.querySelector('.prefs__outputs'),
             midiPortViews = [],
-            
+            controls = {
+                darkTheme: {
+                    type: 'checkbox',
+                    input: document.querySelector('.prefs__dark-theme')
+                }
+            },
+
+            init = function() {
+                preferences.setViewCallback(updateControl);
+
+                controls.darkTheme.input.addEventListener('change', function(e) {
+                    preferences.enableDarkTheme(e.target.checked);
+                });
+            },
+
+            /**
+             * Callback function to update one of the controls after if the
+             * preference's state changed.
+             * @param {String} key Key that indicates the control.
+             * @param {Boolean} value Value of the control.
+             */
+            updateControl = function(key, value) {
+                console.log(key, value)
+                switch (key) {
+                    case 'dark-theme':
+                        controls.darkTheme.input.checked = value;
+                        document.querySelector('#app').dataset.theme = value ? 'dark' : '';
+                        break;
+                }
+            },
+
             /**
              * Create view for a MIDI input or output port.
              * @param {Boolean} isInput True if the port in an input.
@@ -33,7 +64,7 @@ window.WH = window.WH || {};
                 }
                 midiPortViews.push(view);
             },
-            
+
             /**
              * Delete view for a MIDI input or output processor.
              * @param  {Object} processor MIDI processor for a MIDI input or output.
@@ -48,7 +79,7 @@ window.WH = window.WH || {};
                     }
                 }
             },
-            
+
             /**
              * Toggle to show or hide the preferences panel.
              * @param  {Boolean} isVisible True to show the preferences.
@@ -56,9 +87,11 @@ window.WH = window.WH || {};
             toggle = function(isVisible) {
                 preferencesEl.dataset.show = isVisible;
             };
-        
+
         that = specs.that;
-        
+
+        init();
+
         that.createMIDIPortView = createMIDIPortView;
         that.deleteMIDIPortView = deleteMIDIPortView;
         that.toggle = toggle;

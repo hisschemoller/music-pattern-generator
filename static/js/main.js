@@ -27,14 +27,15 @@ document.addEventListener('DOMContentLoaded', function(e) {
     var appView = {},
         canvasView = {},
         controlsView = {},
-        fileView = {},
-        preferencesView = {},
-        remoteView = {},
         file = {},
+        fileView = {},
         midi = {},
         midiNetwork = {},
         midiRemote = {},
         midiSync = {},
+        preferences = {},
+        preferencesView = {},
+        remoteView = {},
         transport = {};
 
     // Add functionality to the modules and inject dependencies.
@@ -52,8 +53,12 @@ document.addEventListener('DOMContentLoaded', function(e) {
         preferencesView: preferencesView,
         transport: transport
     });
+    WH.createPreferences({
+        that: preferences
+    });
     WH.createPreferencesView({
-        that: preferencesView
+        that: preferencesView,
+        preferences: preferences
     });
     WH.createRemoteView({
         that: remoteView,
