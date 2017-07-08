@@ -69,6 +69,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         midi: midi,
         midiNetwork: midiNetwork,
         midiRemote: midiRemote,
+        preferences: preferences,
         transport: transport
     });
     WH.createFileView({

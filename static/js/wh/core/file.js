@@ -1,13 +1,13 @@
 /**
  * Saves state to - or restores it from localstorage.
  * Saves state to file, opens external files.
- * 
+ *
  * @namespace WH
  */
 window.WH = window.WH || {};
 
 (function (ns) {
-    
+
     /**
      * @description Creates a transport object.
      */
@@ -16,6 +16,7 @@ window.WH = window.WH || {};
             midi = specs.midi,
             midiNetwork = specs.midiNetwork,
             midiRemote = specs.midiRemote,
+            preferences = specs.preferences,
             transport = specs.transport,
             projectName = 'project',
             preferencesName = 'preferences',
@@ -25,7 +26,7 @@ window.WH = window.WH || {};
              * @type {Boolean}
              */
             autoSaveEnabled = false,
-            
+
             init = function() {
                 window.addEventListener('beforeunload', onBeforeUnload);
                 document.addEventListener('keyup', function(e) {
@@ -40,7 +41,7 @@ window.WH = window.WH || {};
                     }
                 });
             },
-            
+
             /**
              * Setup on application start.
              */
@@ -50,7 +51,7 @@ window.WH = window.WH || {};
                 //     createNew();
                 // }
             },
-            
+
             /**
              * Get the stored preferences, if any.
              */
@@ -58,23 +59,21 @@ window.WH = window.WH || {};
                 var data = localStorage.getItem(preferencesName);
                 if (data) {
                     data = JSON.parse(data);
-                    // midi.setData(data.midi);
+                    preferences.setData(data);
                 } else {
                     console.log('No data in LocalStorage with name "' + preferencesName + '".');
                 }
             },
-            
+
             /**
              * Save application preferences to localStorage.
              * @param {Object} data Object with preferences data to save.
              */
             savePreferences = function() {
-                var data = {
-                    // midi: midi.getData()
-                };
+                var data = preferences.getData();
                 localStorage.setItem(preferencesName, JSON.stringify(data));
             },
-            
+
             /**
              * Create new empty default project.
              * Clear all settings and set default values..
@@ -116,8 +115,8 @@ window.WH = window.WH || {};
             save = function() {
                 let data = getData();
                 localStorage.setItem(projectName, JSON.stringify(data));
-            }, 
-            
+            },
+
             /**
              * Save the preferences when the page unloads.
              */
@@ -125,7 +124,7 @@ window.WH = window.WH || {};
                 savePreferences();
                 autoSave();
             },
-            
+
             /**
              * Collect project data to save.
              * @return {Object} Project data.
@@ -138,7 +137,7 @@ window.WH = window.WH || {};
                     remote: midiRemote.getData()
                 };
             },
-            
+
             /**
              * Restore project from data object.
              *
@@ -153,8 +152,8 @@ window.WH = window.WH || {};
              *   3b. Restores the output processor IDs, to identify the for connections.
              *   3c. Restores all connections between processors.
              * 4. midiRemote.setData() restores all assignments from MIDI inputs to processor parameters.
-             * 5. midiSync.setData() ? 
-             * 
+             * 5. midiSync.setData() ?
+             *
              * @param {Object} data Project data.
              */
             setData = function(data) {
@@ -164,7 +163,7 @@ window.WH = window.WH || {};
                 midiNetwork.setData(data.network);
                 midiRemote.setData(data.remote);
             },
-            
+
             /**
              * Import project data from filesystem JSON file.
              * @param {Object} file File object.
@@ -184,7 +183,7 @@ window.WH = window.WH || {};
                 })(file);
                 fileReader.readAsText(file);
             },
-            
+
             /**
              * Export project data to filesystem JSON file.
              */
@@ -196,11 +195,11 @@ window.WH = window.WH || {};
                 a.href = URL.createObjectURL(blob);
                 a.click();
             };
-        
+
         that = specs.that;
-        
+
         init();
-        
+
         that.setup = setup;
         that.createNew = createNew;
         that.autoSave = autoSave;
@@ -209,7 +208,7 @@ window.WH = window.WH || {};
         that.exportFile = exportFile;
         return that;
     }
-    
+
     ns.createFile = createFile;
 
 })(WH);

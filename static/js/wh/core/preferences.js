@@ -28,12 +28,32 @@ window.WH = window.WH || {};
                 if (viewCallback) {
                     viewCallback('dark-theme', isDarkTheme);
                 }
+            },
+
+            /**
+             * Restore preferences from data object.
+             * @param {Object} data Data object.
+             */
+            setData = function(data) {
+                enableDarkTheme(data.isDarkTheme || false);
+            },
+
+            /**
+             * Write preferences to data object.
+             * @return {Object} Data object.
+             */
+            getData = function() {
+                return {
+                    isDarkTheme: isDarkTheme
+                };
             };
 
         that = specs.that;
 
         that.setViewCallback = setViewCallback;
         that.enableDarkTheme = enableDarkTheme;
+        that.setData = setData;
+        that.getData = getData;
         return that;
     }
 
