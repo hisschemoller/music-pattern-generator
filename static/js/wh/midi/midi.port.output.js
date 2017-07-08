@@ -11,7 +11,7 @@ window.WH = window.WH || {};
         var that,
             networkProcessorID,
             
-            init = function() {
+            setup = function() {
                 my.midiPort.onstatechange = onPortStateChange;
             },
             
@@ -85,9 +85,8 @@ window.WH = window.WH || {};
         my = my || {};
         
         that = ns.createMIDIPortBase(specs, my);
-        
-        init();
 
+        that.setup = setup;
         that.toggleNetwork = toggleNetwork;
         that.setData = setData;
         that.getData = getData;

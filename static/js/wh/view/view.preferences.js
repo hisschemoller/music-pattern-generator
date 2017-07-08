@@ -35,7 +35,6 @@ window.WH = window.WH || {};
              * @param {Boolean} value Value of the control.
              */
             updateControl = function(key, value) {
-                console.log(key, value)
                 switch (key) {
                     case 'dark-theme':
                         controls.darkTheme.input.checked = value;

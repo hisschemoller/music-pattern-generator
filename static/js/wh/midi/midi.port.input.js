@@ -19,7 +19,7 @@ window.WH = window.WH || {};
             midiMessageCallbacks = [],
             numMidiMessageCallbacks = 0,
 
-            init = function() {
+            setup = function() {
                 my.midiPort.onmidimessage = function(e) {
                     if (midiMessageCallbacks.length) {
                         for (var i = 0; i < numMidiMessageCallbacks; i++) {
@@ -150,8 +150,7 @@ window.WH = window.WH || {};
 
         that = ns.createMIDIPortBase(specs, my);
 
-        init();
-
+        that.setup = setup;
         that.addMIDIMessageListener = addMIDIMessageListener;
         that.removeMIDIMessageListener = removeMIDIMessageListener;
         that.toggleSync = toggleSync;

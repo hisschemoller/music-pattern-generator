@@ -65,12 +65,10 @@ window.WH = window.WH || {};
                 var outputs = midiAccess.outputs.values();
                 
                 for (var port = inputs.next(); port && !port.done; port = inputs.next()) {
-                    console.log('MIDI input port:', port.value.name + ' (' + port.value.manufacturer + ')');
                     createInput(port.value);
                 }
                 
                 for (var port = outputs.next(); port && !port.done; port = outputs.next()) {
-                    console.log('MIDI output port:', port.value.name + ' (' + port.value.manufacturer + ')');
                     createOutput(port.value);
                 }
 
@@ -107,6 +105,7 @@ window.WH = window.WH || {};
              * @param  {Object} midiPort MIDIInput module.
              */
             createInput = function(midiPort) {
+                console.log('MIDI input port:', midiPort.name + ' (' + midiPort.manufacturer + ')', midiPort.id);
                 var input = ns.createMIDIPortInput({
                     midiPort: midiPort,
                     network: midiNetwork,
@@ -117,6 +116,8 @@ window.WH = window.WH || {};
                 preferencesView.createMIDIPortView(true, input);
                 // store port
                 inputs.push(input);
+                // port initialisation last
+                input.setup();
             },
             
             /**
@@ -124,6 +125,7 @@ window.WH = window.WH || {};
              * @param  {Object} midiPort MIDIOutput module.
              */
             createOutput = function(midiPort) {
+                console.log('MIDI output port:', midiPort.name + ' (' + midiPort.manufacturer + ')', midiPort.id);
                 var output = ns.createMIDIPortOutput({
                     midiPort: midiPort,
                     network: midiNetwork,
@@ -134,6 +136,8 @@ window.WH = window.WH || {};
                 preferencesView.createMIDIPortView(false, output);
                 // store port
                 outputs.push(output);
+                // port initialisation last
+                output.setup();
             },
 
             /**
