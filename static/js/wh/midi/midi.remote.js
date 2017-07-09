@@ -319,7 +319,6 @@ window.WH = window.WH || {};
                             break;
                         }
                     }
-                    assignParameter(param, channel, controller);
                 }
             },
 
