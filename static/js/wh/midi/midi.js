@@ -39,7 +39,7 @@ window.WH = window.WH || {};
                             successCallback(_midiAccess);
                         }
                     }, function() {
-                        failureCallback('RequestMIDIAccess failed. Error message: ', errorMsg);
+                        failureCallback('RequestMIDIAccess failed.');
                     });
                 } else {
                     failureCallback('Web MIDI API not available.');
