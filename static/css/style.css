@@ -375,6 +375,12 @@ select:focus {
 .midi-port {
     display: flex;
 }
+.midi-port[data-connected] {
+    display: none;
+}
+.midi-port[data-connected=true] {
+    display: flex;
+}
 .prefs__label,
 .midi-port__label {
     flex-grow: 1;

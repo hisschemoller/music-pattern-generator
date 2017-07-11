@@ -42,10 +42,12 @@ window.WH = window.WH || {};
                     case 'connected':
                         toggleSync(true);
                         toggleRemote(true);
+                        my.viewCallback('connected', true);
                         break;
                     case 'disconnected':
                         toggleSync(false);
                         toggleRemote(false);
+                        my.viewCallback('connected', false);
                         break;
                 }
             },

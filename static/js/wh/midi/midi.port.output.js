@@ -25,9 +25,11 @@ window.WH = window.WH || {};
                 switch (e.port.state) {
                     case 'connected':
                         toggleNetwork(true);
+                        my.viewCallback('connected', true);
                         break;
                     case 'disconnected':
                         toggleNetwork(false);
+                        my.viewCallback('connected', false);
                         break;
                 }
             },

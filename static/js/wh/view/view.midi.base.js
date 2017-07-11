@@ -22,6 +22,9 @@ window.WH = window.WH || {};
                 my.el = clone.firstElementChild;
                 parentEl.appendChild(my.el);
                 
+                // set data-connected="true" to make the element visible
+                my.el.dataset.connected = true;
+                
                 // show label
                 my.el.querySelector('.midi-port__label').innerHTML = port.getName();
                 
@@ -70,6 +73,9 @@ window.WH = window.WH || {};
                         break;
                     case 'remote':
                         my.remoteEl.querySelector('[type=checkbox]').checked = value;
+                        break;
+                    case 'connected':
+                        my.el.dataset.connected = value;
                         break;
                 }
             };
