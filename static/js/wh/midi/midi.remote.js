@@ -165,12 +165,20 @@ window.WH = window.WH || {};
              * @param  {Number} controller MIDI CC number.
              */
             assignParameter = function(param, channel, controller) {
-                // don't assign if the assignment already exists
+                // find if this parameter is already assigned
                 let n = assignments.length;
                 while (--n >= 0) {
                     var a = assignments[n];
-                    if (a.param == param && a.channel == channel && a.controller == controller) {
-                        return;
+                    if (a.param == param) {
+                        if (a.channel == channel && a.controller == controller) {
+                            // the parameter is assigned to this channel / cc,
+                            // don't assign it again
+                            return;
+                        } else {
+                            // the parameter is assigned to another channel / cc,
+                            // first remove that assignment
+                            unassingParameter(param);
+                        }
                     }
                 }
                 
