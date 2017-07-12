@@ -70,9 +70,11 @@ window.WH = window.WH || {};
                 // only continuous controller message, 0xB == 11
                 if (e.data[0] >> 4 === 0xB) {
                     var channel = (e.data[0] & 0xf) + 1,
-                        param = paramLookup[channel + '_' + e.data[1]];
-                    if (param) {
-                        param.setValueNormalized(e.data[2] / 127);
+                        params = paramLookup[channel + '_' + e.data[1]];
+                    if (params) {
+                        for (let i = 0, n = params.length; i < n; i++) {
+                            params[i].setValueNormalized(e.data[2] / 127);
+                        }
                     }
                 }
             },
@@ -179,8 +181,12 @@ window.WH = window.WH || {};
                     controller: controller
                 });
                 
+                // create lookup for this MIDI controller
+                if (!paramLookup[channel + '_' + controller]) {
+                    paramLookup[channel + '_' + controller] = [];
+                }
                 // add parameter to the lookup table
-                paramLookup[channel + '_' + controller] = param;
+                paramLookup[channel + '_' + controller].push(param);
 
                 // update the parameter
                 param.setRemoteProperty('channel', channel);
@@ -212,7 +218,21 @@ window.WH = window.WH || {};
                 }
                 
                 // remove parameter from the lookup table;
-                paramLookup[channel + '_ ' + controller] = null;
+                var params = paramLookup[channel + '_' + controller];
+                if (params) {
+                    if (params.length == 1) {
+                        // remove whole array if this is the only parameter
+                        delete paramLookup[channel + '_ ' + controller];
+                    } else {
+                        // remove parameter from array
+                        var n = params.length;
+                        while (--n >= 0) {
+                            if (params[n] == param) {
+                                params.splice(n, 1);
+                            } 
+                        }
+                    }
+                }
 
                 // update the parameter
                 param.setRemoteProperty('channel', null);
@@ -333,24 +353,28 @@ window.WH = window.WH || {};
                 let param, processorID, data = [];
                 for (let key in paramLookup) {
                     if (paramLookup.hasOwnProperty(key)) {
-                        param = paramLookup[key];
-                        // find processor for the parameter to get its id
-                        processorID = null;
-                        let n = processors.length;
-                        while (--n >= 0) {
-                            let m = processors[n].params.length;
-                            while (--m >= 0) {
-                                if (param === processors[n].params[m]) {
-                                    processorID = processors[n].processor.getID();
-                                    break;
+                        params = paramLookup[key];
+                        // loop through all parameters assigned to this channel and cc
+                        for (let i = 0, n = params.length; i < n; i++) {
+                            param = params[i];
+                            // find processor for the parameter to get its id
+                            processorID = null;
+                            let n = processors.length;
+                            while (--n >= 0) {
+                                let m = processors[n].params.length;
+                                while (--m >= 0) {
+                                    if (param === processors[n].params[m]) {
+                                        processorID = processors[n].processor.getID();
+                                        break;
+                                    }
                                 }
                             }
+                            data.push({
+                                processorID: processorID,
+                                paramKey: param.getProperty('key'),
+                                paramRemoteData: param.getRemoteData()
+                            });
                         }
-                        data.push({
-                            processorID: processorID,
-                            paramKey: param.getProperty('key'),
-                            paramRemoteData: param.getRemoteData()
-                        });
                     }
                 }
                 return data;
