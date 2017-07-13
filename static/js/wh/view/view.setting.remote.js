@@ -38,9 +38,11 @@ window.WH = window.WH || {};
                         learnClickLayer.addEventListener('click', onLearnLayerClick);
                         break;
                     case 'exit':
-                        my.el.removeChild(learnClickLayer);
-                        learnCallback = null;
-                        learnClickLayer.removeEventListener('click', onLearnLayerClick);
+                        if (my.el.contains(learnClickLayer)) {
+                            my.el.removeChild(learnClickLayer);
+                            learnCallback = null;
+                            learnClickLayer.removeEventListener('click', onLearnLayerClick);
+                        }
                         break;
                     case 'selected':
                         learnClickLayer.dataset.selected = true;
