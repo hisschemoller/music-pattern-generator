@@ -19,6 +19,11 @@ window.WH = window.WH || {};
             selectedParameter,
             isInLearnMode = false,
             processors = [],
+            midiMessageListener,
+
+            init = function() {
+                midiMessageListener = onMIDIMessage;
+            },
 
             /**
              * Add a MIDI Input port only if it doesn't yet exist.
@@ -36,7 +41,7 @@ window.WH = window.WH || {};
                 }
                 
                 // subscribe to receive messages from this MIDI input
-                midiInputPort.addMIDIMessageListener(onMIDIMessage);
+                midiInputPort.addMIDIMessageListener(midiMessageListener);
             },
 
             /**
@@ -45,7 +50,7 @@ window.WH = window.WH || {};
              */
             removeMidiInput = function(midiInputPort) {
                 // unsubscribe from receiving messages from this MIDI input
-                midiInputPort.removeMIDIMessageListener(onMIDIMessage);
+                midiInputPort.removeMIDIMessageListener(midiMessageListener);
             },
             
             /**
@@ -115,8 +120,7 @@ window.WH = window.WH || {};
                 }
 
                 // midi listener switches with learn mode
-                var midimessageListener,
-                    oldMidimessageListener;
+                var oldMidimessageListener;
                 if (isInLearnMode) {
                     oldMidimessageListener = onMIDIMessage;
                     midiMessageListener = onMIDILearnMessage;
@@ -389,6 +393,8 @@ window.WH = window.WH || {};
             };
 
         that = specs.that;
+
+        init();
 
         that.addMidiInput = addMidiInput;
         that.removeMidiInput = removeMidiInput;
