@@ -9,7 +9,7 @@
     <div id="app" data-theme="">
         <canvas class="canvas-static"></canvas>
         <canvas class="canvas-dynamic"></canvas>
-        <header class="header file controls">
+        <div class="controls file">
             <button class="file__new btn" title="New project">
                 <span class="icon-new"></span>
             </button>
@@ -37,9 +37,12 @@
             <label for="help-check" class="toggle__label btn" title="Help">
                 <span class="icon-help" data-on="&#xf128;" data-off="&#xf128;"></span>
             </label>
-        </header>
+        </div>
         <div class="settings"></div>
-        <div class="form prefs config">
+        <div class="prefs">
+            <div class="header">
+                <span class="header__label">Preferences</span>
+            </div>
             <div class="prefs__midi-in">
                 <div class="prefs__header">
                     <div class="prefs__header-title">MIDI Inputs</div>
@@ -69,6 +72,9 @@
             </div>
         </div>
         <div class="remote">
+            <div class="header">
+                <span class="header__label">Assignments</span>
+            </div>
             <div class="remote__item">
                 <span class="remote__item-label">Name</span>
                 <span class="remote__item-channel">Ch.</span>
@@ -81,27 +87,38 @@
 
     <template id="template-settings-epg">
         <div class="settings__epg">
+            <div class="header header">
+                <span class="header__label">Euclidean Processor</span>
+            </div>
+            <div class="header header--sub">
+                <span class="header__label">Euclidean</span>
+            </div>
             <fieldset class="settings__fieldset">
-                <legend class="settings__legend">Euclidean</legend>
                 <div class="settings__row steps"></div>
                 <div class="settings__row pulses"></div>
                 <div class="settings__row rotation"></div>
             </fieldset>
+            <div class="header header--sub">
+                <span class="header__label">Playback</span>
+            </div>
             <fieldset class="settings__fieldset">
-                <legend class="settings__legend">Playback</legend>
                 <div class="settings__row rate"></div>
                 <div class="settings__row note_length"></div>
                 <div class="settings__row is_triplets"></div>
                 <div class="settings__row is_mute"></div>
             </fieldset>
+            <div class="header header--sub">
+                <span class="header__label">MIDI Out</span>
+            </div>
             <fieldset class="settings__fieldset">
-                <legend class="settings__legend">MIDI out</legend>
                 <div class="settings__row channel_out"></div>
                 <div class="settings__row pitch_out"></div>
                 <div class="settings__row velocity_out"></div>
             </fieldset>
+            <div class="header header--sub">
+                <span class="header__label">Other</span>
+            </div>
             <fieldset class="settings__fieldset">
-                <legend>Other</legend>
                 <div class="settings__row name"></div>
                 <span class="setting__label-text"></span>
                 <button type="button" class="settings__delete btn">Delete</button>
