@@ -199,6 +199,24 @@ select:focus {
     outline: none;
     text-align: center;
     width: 80px;
+/************************
+ * panel header
+ ************************/
+
+.header {
+    background-color: var(--header-bg-color);
+    height: 25px;
+    padding-left: 10px;
+}
+.header__label {
+    color: var(--header-color);
+    vertical-align: middle;
+}
+.header--sub {
+    background-color: var(--subheader-bg-color);
+}
+.header--sub .header__label {
+    font-size: 14px;
 }
 
 /************************
