@@ -44,22 +44,25 @@
                 <span class="header__label">Preferences</span>
             </div>
             <div class="prefs__midi-in">
-                <div class="prefs__header">
-                    <div class="prefs__header-title">MIDI Inputs</div>
-                    <div class="prefs__header-option">Network</div>
-                    <div class="prefs__header-option">Sync</div>
-                    <div class="prefs__header-option">Remote</div>
+                <div class="prefs__subheader header header--sub">
+                    <div class="prefs__subheader-title header__label">MIDI Inputs</div>
+                    <div class="prefs__subheader-network header__label">Network</div>
+                    <div class="prefs__subheader-sync header__label">Sync</div>
+                    <div class="prefs__subheader-remote header__label">Remote</div>
                 </div>
                 <ul class="prefs__inputs"></ul>
             </div>
             <div class="prefs__midi-out">
-                <div class="prefs__header">
-                    <div class="prefs__header-title">MIDI Outputs</div>
-                    <div class="prefs__header-option">Network</div>
-                    <div class="prefs__header-option">Sync</div>
-                    <div class="prefs__header-option">Remote</div>
+                <div class="prefs__subheader header header--sub">
+                    <div class="prefs__subheader-title header__label">MIDI Outputs</div>
+                    <div class="prefs__subheader-network header__label">Network</div>
+                    <div class="prefs__subheader-sync header__label">Sync</div>
+                    <div class="prefs__subheader-remote header__label">Remote</div>
                 </div>
                 <ul class="prefs__outputs"></ul>
+            </div>
+            <div class="header header--sub">
+                <span class="header__label">Interface</span>
             </div>
             <div class="prefs__setting">
                 <span class="prefs__label">Dark theme</span>
@@ -74,12 +77,6 @@
         <div class="remote">
             <div class="header">
                 <span class="header__label">Assignments</span>
-            </div>
-            <div class="remote__item">
-                <span class="remote__item-label">Name</span>
-                <span class="remote__item-channel">Ch.</span>
-                <span class="remote__item-cc">CC</span>
-                <span class="remote__item-remove">Del.</span>
             </div>
             <ul class="remote__list"></ul>
         </div>
@@ -177,15 +174,15 @@
             <span class="midi-port__label"></span>
             <label class="btn midi-port__btn midi-port__network" title="Network">
                 <input type="checkbox" class="midi-port__btn-check" />
-                <span data-on="On" data-off="Off" class="midi-port__btn-text"></span>
+                <span data-on="On" data-off="Off" data-disabled="-" class="midi-port__btn-text"></span>
             </label>
             <label class="btn midi-port__btn midi-port__sync" title="Sync">
                 <input type="checkbox" class="midi-port__btn-check" />
-                <span data-on="On" data-off="Off" class="midi-port__btn-text"></span>
+                <span data-on="On" data-off="Off" data-disabled="-" class="midi-port__btn-text"></span>
             </label>
             <label class="btn midi-port__btn midi-port__remote" title="Remote">
                 <input type="checkbox" class="midi-port__btn-check" />
-                <span data-on="On" data-off="Off" class="midi-port__btn-text"></span>
+                <span data-on="On" data-off="Off" data-disabled="-" class="midi-port__btn-text"></span>
             </label>
         </li>
     </template><!-- /template-midi-port -->
