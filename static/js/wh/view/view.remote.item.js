@@ -22,11 +22,11 @@ window.WH = window.WH || {};
                 el = clone.firstElementChild;
                 el.querySelector('.remote__item-label').innerHTML = param.getProperty('label');
                 el.querySelector('.remote__item-channel').innerHTML = param.getRemoteProperty('channel');
-                el.querySelector('.remote__item-cc').innerHTML = param.getRemoteProperty('controller');
+                el.querySelector('.remote__item-control').innerHTML = param.getRemoteProperty('controller');
                 parentEl.appendChild(el);
                 
                 // add DOM event listeners
-                el.querySelector('.remote__item-remove').addEventListener('click', onUnregisterClick);
+                el.querySelector('.remote__item-delete').addEventListener('click', onUnregisterClick);
                 
                 // set callback on parameter
                 param.addRemoteStateCallback(changeRemoteState);
@@ -36,7 +36,7 @@ window.WH = window.WH || {};
              * Called before this view is deleted.
              */
             terminate = function() {
-                el.querySelector('.remote__item-remove').removeEventListener('click', onUnregisterClick);
+                el.querySelector('.remote__item-delete').removeEventListener('click', onUnregisterClick);
                 parentEl.removeChild(el);
                 param = null;
                 parentEl = null;

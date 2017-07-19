@@ -16,7 +16,9 @@ window.WH = window.WH || {};
              */
             init = function() {
                 my.syncEl.dataset.disabled = 'true';
+                my.syncEl.querySelector('input').setAttribute('disabled', 'disabled');
                 my.remoteEl.dataset.disabled = 'true';
+                my.remoteEl.querySelector('input').setAttribute('disabled', 'disabled');
             };
             
         my = my || {};

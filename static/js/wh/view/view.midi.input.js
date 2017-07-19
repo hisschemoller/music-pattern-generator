@@ -16,6 +16,7 @@ window.WH = window.WH || {};
              */
             init = function() {
                 my.networkEl.dataset.disabled = 'true';
+                my.networkEl.querySelector('input').setAttribute('disabled', 'disabled');
             };
             
         my = my || {};

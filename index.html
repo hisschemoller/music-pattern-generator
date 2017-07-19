@@ -133,7 +133,7 @@
         <span class="setting__label"><span class="setting__label-text"></span>
             <input type="checkbox" id="" class="setting__check toggle__check" />
             <label for="" class="toggle__label btn" title="">
-                <span class="icon-" data-on="&#xe806;" data-off="&#0127;"></span>
+                <span class="" data-on="On" data-off="Off"></span>
             </label>
         </span>
     </template><!-- /template-setting-boolean -->
@@ -157,7 +157,12 @@
     </template><!-- /template-setting-learnmode -->
     <template id="template-remote-group">
         <li class="remote__group">
-            <div class="remote__group-header"></div>
+            <div class="remote__group-header header header--sub">
+                <div class="remote__group-header-label header__label"></div>
+                <div class="remote__group-header-channel header__label">Channel</div>
+                <div class="remote__group-header-control header__label">Control</div>
+                <div class="remote__group-header-delete header__label"></div>
+            </div>
             <ul class="remote__group-list"></ul>
         </li>
     </template><!-- /template-remote-group -->
@@ -165,8 +170,8 @@
         <li class="remote__item">
             <span class="remote__item-label"></span>
             <span class="remote__item-channel"></span>
-            <span class="remote__item-cc"></span>
-            <button class="remote__item-remove btn"><span class="icon-cancel"></span></button>
+            <span class="remote__item-control"></span>
+            <button class="remote__item-delete btn"><span class="icon-cancel"></span></button>
         </li>
     </template><!-- /template-remote-item -->
     <template id="template-midi-port">

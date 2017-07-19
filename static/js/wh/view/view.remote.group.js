@@ -100,7 +100,7 @@ window.WH = window.WH || {};
              * @param {Object} nameParam Processor's name parameter.
              */
             setName = function(nameParam) {
-                el.querySelector('.remote__group-header').innerHTML = nameParam.getValue();
+                el.querySelector('.remote__group-header-label').innerHTML = nameParam.getValue();
             };
         
         that = specs.that || {};
