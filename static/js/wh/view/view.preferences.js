@@ -39,6 +39,9 @@ window.WH = window.WH || {};
                     case 'dark-theme':
                         controls.darkTheme.input.checked = value;
                         document.querySelector('#app').dataset.theme = value ? 'dark' : '';
+                        var themeStyles = window.getComputedStyle(document.querySelector('[data-theme]'))
+                        console.log(themeStyles.color);
+                        console.log(themeStyles.getPropertyValue('--text-color'));
                         break;
                 }
             },

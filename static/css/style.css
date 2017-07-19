@@ -90,11 +90,11 @@
     --header-bg-color: #ccc;
     --header-color: #fff;
     --header-height: 25px;
-    --input-bg-color: #ddd;
+    --input-bg-color: #fff;
     --input-height: 30px;
     --panel-bg-color: #eee;
     --subheader-bg-color: #ddd;
-    --text-color: #ccc;
+    --text-color: #bbb;
 }
 div[data-theme='dev'] {
     --bg-color: #fff;
@@ -105,10 +105,10 @@ div[data-theme='dev'] {
     --btn-bg-hover-color: #eee;
     --header-bg-color: #ccc;
     --header-color: #fff;
-    --input-bg-color: #ddd;
+    --input-bg-color: #fff;
     --panel-bg-color: #eee;
     --subheader-bg-color: #ddd;
-    --text-color: #ccc;
+    --text-color: #bbb;
 }
 div[data-theme='dark'] {
     --bg-color: #000;
@@ -158,6 +158,8 @@ select:focus {
     outline: none;
 }
 
+div[data-theme] {
+    color: var(--text-color);
 }
 
 .background {
