@@ -78,30 +78,51 @@
 }
 
 :root {
+    --bg-color: #fff;
+    --border-color: #ddd;
+    --btn-active-color: #999;
+    --btn-bg-color: #eee;
+    --btn-bg-hover-color: #eee;
+    --btn-hover-color: #ccc;
     --default-font-family: 'Alte-DIN-1451-Mittelschrift', sans-serif;
+    --font-size: 16px;
+    --font-size-subheader: 14px;
+    --header-bg-color: #ccc;
+    --header-color: #fff;
+    --header-height: 25px;
+    --input-bg-color: #ddd;
+    --input-height: 30px;
+    --panel-bg-color: #eee;
+    --subheader-bg-color: #ddd;
+    --text-color: #ccc;
+}
+div[data-theme='dev'] {
     --bg-color: #fff;
     --border-color: #ddd;
     --btn-hover-color: #ccc;
     --btn-active-color: #999;
     --btn-bg-color: #eee;
     --btn-bg-hover-color: #eee;
-    --btn-border-color: #ccc;
-    --font-size: 16px;
-    --font-size-subheader: 14px;
-    --input-height: 30px;
-    --text-color: #ccc;
-    --panel-bg-color: #eee;
-    --header-height: 25px;
     --header-bg-color: #ccc;
     --header-color: #fff;
+    --input-bg-color: #ddd;
+    --panel-bg-color: #eee;
     --subheader-bg-color: #ddd;
+    --text-color: #ccc;
 }
 div[data-theme='dark'] {
     --bg-color: #000;
-    --border-color: #ccc;
-    --btn-bg-color: #000;
-    --btn-bg-disabled-color: #030303;
-    --text-color: #333;
+    --border-color: #ddd;
+    --btn-hover-color: #ccc;
+    --btn-active-color: #fff;
+    --btn-bg-color: #333;
+    --btn-bg-hover-color: #333;
+    --input-bg-color: #666;
+    --header-bg-color: #999;
+    --header-color: #000;
+    --panel-bg-color: #333;
+    --subheader-bg-color: #666;
+    --text-color: #ccc;
 }
 * {
     box-sizing: border-box;
@@ -114,9 +135,13 @@ body {
     font-family: var(--default-font-family);
     font-size: var(--font-size);
 }
-input[type='number'] {
+input[type='number'],
+input[type='text'] {
+    background-color: var(--input-bg-color);
+    border: none;
     color: var(--text-color);
     font-family: var(--default-font-family);
+    outline: none;
 }
 input[type='file'] {
 	height: 0.1px;
@@ -182,7 +207,6 @@ select:focus {
 .controls {
     align-items: flex-start;
     background-color: var(--panel-bg-color);
-    /*border-bottom: 1px solid var(--border-color);*/
     display: flex;
     position: relative;
 }
@@ -197,11 +221,9 @@ select:focus {
     width: 40px;
 }
 .controls .bpm {
-    border: none;
     display: inline-block;
     font-size: 18px;
     height: 30px;
-    outline: none;
     margin: 5px;
     text-align: right;
     width: 50px;
@@ -279,7 +301,7 @@ select:focus {
     display: inline-block;
     width: 55%;
 }
-.setting__number {
+input.setting__number {
     background-color: var(--panel-bg-color);
     border: none;
     display: inline-block;
@@ -303,8 +325,7 @@ select:focus {
 }
 .setting__text {
     border: none;
-    color: var(--text-color);
-    font-size: var(--font-size);;
+    font-size: var(--font-size);
     height: var(--input-height);
     padding: 0 6px;
     width: 55%;
