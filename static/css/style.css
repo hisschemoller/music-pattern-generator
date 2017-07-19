@@ -158,13 +158,16 @@ select:focus {
     outline: none;
 }
 
-.webgl {
-    height: 100vh;
-    position: absolute;
-    width: 100vw;
 }
-.webgl > canvas {
-    display: block;
+
+.background {
+    background-color: var(--bg-color);
+    bottom: 0;
+    color: var(--text-color);
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
 }
 .canvas-static,
 .canvas-dynamic {
