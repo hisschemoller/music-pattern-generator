@@ -260,6 +260,7 @@ div[data-theme] {
 
 .settings {
     float: right;
+    position: relative;
     width: 360px;
 }
 .settings > * {
