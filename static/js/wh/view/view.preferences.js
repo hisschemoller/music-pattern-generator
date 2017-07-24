@@ -8,6 +8,7 @@ window.WH = window.WH || {};
 
     function createPreferencesView(specs) {
         var that,
+            canvasView = specs.canvasView,
             preferences = specs.preferences,
             preferencesEl = document.querySelector('.prefs'),
             midiInputsEl = document.querySelector('.prefs__inputs'),
@@ -40,8 +41,9 @@ window.WH = window.WH || {};
                         controls.darkTheme.input.checked = value;
                         document.querySelector('#app').dataset.theme = value ? 'dark' : '';
                         var themeStyles = window.getComputedStyle(document.querySelector('[data-theme]'))
-                        console.log(themeStyles.color);
-                        console.log(themeStyles.getPropertyValue('--text-color'));
+                        canvasView.setTheme({
+                            color: themeStyles.getPropertyValue('--text-color')
+                        });
                         break;
                 }
             },

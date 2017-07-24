@@ -58,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     WH.createPreferencesView({
         that: preferencesView,
+        canvasView: canvasView,
         preferences: preferences
     });
     WH.createRemoteView({

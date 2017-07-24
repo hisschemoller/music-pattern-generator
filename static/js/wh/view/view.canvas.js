@@ -243,6 +243,19 @@ window.WH = window.WH || {};
                 }
             },
             
+            /**
+             * Set the theme colours of the processor canvas views.
+             * @param {Object} theme Theme settings object.
+             */
+            setTheme = function(theme) {
+                for (let i = 0, n = views.length; i < n; i++) {
+                    if (views[i].setTheme instanceof Function) {
+                        views[i].setTheme(theme);
+                    }
+                }
+                markDirty();
+            },
+            
             markDirty = function() {
                 isDirty = true;
             },
@@ -268,6 +281,7 @@ window.WH = window.WH || {};
         
         that.createView = createView;
         that.deleteView = deleteView;
+        that.setTheme = setTheme;
         that.markDirty = markDirty;
         that.draw = draw;
         return that;

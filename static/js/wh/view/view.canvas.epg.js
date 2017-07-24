@@ -447,6 +447,22 @@ window.WH = window.WH || {};
             
             getPosition2d = function() {
                 return processor.getParamValue('position2d');
+            },
+            
+            /**
+             * Set the theme colours of the processor view.
+             * @param {Object} theme Theme settings object.
+             */
+            setTheme = function(theme) {
+                color = theme.color;
+                console.log('epg setTheme: ', theme);
+                staticCtx.strokeStyle = color;
+                necklaceCtx.fillStyle = color;
+                necklaceCtx.strokeStyle = color;
+                pointerCtx.strokeStyle = color;
+                nameCtx.fillStyle = color;
+                updateName();
+                updateNecklace();
             };
         
         that = specs.that || {};
@@ -460,6 +476,7 @@ window.WH = window.WH || {};
         that.getProcessor = getProcessor;
         that.setPosition2d = setPosition2d;
         that.getPosition2d = getPosition2d;
+        that.setTheme = setTheme;
         return that;
     }
 
