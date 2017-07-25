@@ -23,7 +23,7 @@
     src:  url('../fonts/Alte-DIN-1451-Mittelschrift.ttf.woff') format('woff'),
     url('../fonts/Alte-DIN-1451-Mittelschrift.ttf.svg#Alte-DIN-1451-Mittelschrift') format('svg'),
     url('../fonts/Alte-DIN-1451-Mittelschrift.ttf.eot'),
-    url('../fonts/Alte-DIN-1451-Mittelschrift.eot?#iefix') format('embedded-opentype'); 
+    url('../fonts/Alte-DIN-1451-Mittelschrift.eot?#iefix') format('embedded-opentype');
     font-weight: normal;
     font-style: normal;
 }
@@ -79,24 +79,26 @@
 
 :root {
     --bg-color: #fff;
-    --border-color: #ddd;
-    --btn-active-color: #999;
-    --btn-bg-color: #eee;
+    --border-color: #999;
+    --btn-color: #999;
+    --btn-active-color: #333;
+    --btn-bg-color: #ccc;
     --default-font-family: 'Alte-DIN-1451-Mittelschrift', sans-serif;
     --font-size: 16px;
     --font-size-subheader: 14px;
-    --header-bg-color: #ccc;
+    --header-bg-color: #666;
     --header-color: #fff;
     --header-height: 25px;
     --input-bg-color: #fff;
     --input-height: 30px;
-    --panel-bg-color: #eee;
-    --subheader-bg-color: #ddd;
-    --text-color: #bbb;
+    --panel-bg-color: #ccc;
+    --subheader-bg-color: #999;
+    --text-color: #333;
 }
 div[data-theme='dev'] {
     --bg-color: #fff;
     --border-color: #ddd;
+    --btn-color: #bbb;
     --btn-active-color: #999;
     --btn-bg-color: #eee;
     --header-bg-color: #ccc;
@@ -109,6 +111,7 @@ div[data-theme='dev'] {
 div[data-theme='dark'] {
     --bg-color: #000;
     --border-color: #ddd;
+    --btn-color: #ccc;
     --btn-active-color: #fff;
     --btn-bg-color: #333;
     --input-bg-color: #666;
@@ -184,7 +187,7 @@ div[data-theme] {
     background-color: var(--btn-bg-color);
     border: none;
     border-radius: 0;
-    color: var(--text-color);
+    color: var(--btn-color);
     cursor: pointer;
     display: inline-block;
     outline: none;
