@@ -82,8 +82,6 @@
     --border-color: #ddd;
     --btn-active-color: #999;
     --btn-bg-color: #eee;
-    --btn-bg-hover-color: #eee;
-    --btn-hover-color: #ccc;
     --default-font-family: 'Alte-DIN-1451-Mittelschrift', sans-serif;
     --font-size: 16px;
     --font-size-subheader: 14px;
@@ -99,10 +97,8 @@
 div[data-theme='dev'] {
     --bg-color: #fff;
     --border-color: #ddd;
-    --btn-hover-color: #ccc;
     --btn-active-color: #999;
     --btn-bg-color: #eee;
-    --btn-bg-hover-color: #eee;
     --header-bg-color: #ccc;
     --header-color: #fff;
     --input-bg-color: #fff;
@@ -113,10 +109,8 @@ div[data-theme='dev'] {
 div[data-theme='dark'] {
     --bg-color: #000;
     --border-color: #ddd;
-    --btn-hover-color: #ccc;
     --btn-active-color: #fff;
     --btn-bg-color: #333;
-    --btn-bg-hover-color: #333;
     --input-bg-color: #666;
     --header-bg-color: #999;
     --header-color: #000;
@@ -195,10 +189,6 @@ div[data-theme] {
     display: inline-block;
     outline: none;
     text-align: center;
-}
-.btn:hover {
-    background-color: var(--btn-bg-hover-color);
-    color: var(--btn-hover-color);
 }
 .toggle__check {
     position: absolute;
