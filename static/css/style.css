@@ -158,6 +158,17 @@ select:focus {
     outline: none;
 }
 
+#app {
+    bottom: 0;
+    left: 0;
+    min-height: 600px;
+    min-width: 800px;
+    overflow: scroll;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
 div[data-theme] {
     color: var(--text-color);
 }
