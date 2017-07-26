@@ -22,7 +22,7 @@ window.WH = window.WH || {};
             },
 
             init = function() {
-                preferences.setViewCallback(updateControl);
+                preferences.addThemeCallback(updateControl);
 
                 controls.darkTheme.input.addEventListener('change', function(e) {
                     preferences.enableDarkTheme(e.target.checked);

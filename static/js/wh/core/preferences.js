@@ -8,15 +8,15 @@ window.WH = window.WH || {};
 
     function createPreferences(specs) {
         var that,
-            viewCallback,
+            themeCallbacks = [],
             isDarkTheme = false,
 
             /**
-             * Set callback function to update the view.
+             * Set callback function to update after theme change.
              * @param {Function} callback Callback function.
              */
-            setViewCallback = function(callback) {
-                viewCallback = callback;
+            addThemeCallback = function(callback) {
+                themeCallbacks.push(callback);
             },
 
             /**
@@ -25,8 +25,8 @@ window.WH = window.WH || {};
              */
             enableDarkTheme = function(isEnabled) {
                 isDarkTheme = isEnabled;
-                if (viewCallback) {
-                    viewCallback('dark-theme', isDarkTheme);
+                for (let i = 0, n = themeCallbacks.length; i < n; i++) {
+                    themeCallbacks[i]('dark-theme', isDarkTheme);
                 }
             },
 
@@ -50,7 +50,7 @@ window.WH = window.WH || {};
 
         that = specs.that;
 
-        that.setViewCallback = setViewCallback;
+        that.addThemeCallback = addThemeCallback;
         that.enableDarkTheme = enableDarkTheme;
         that.setData = setData;
         that.getData = getData;
