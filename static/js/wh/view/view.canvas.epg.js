@@ -69,7 +69,7 @@ window.WH = window.WH || {};
                 nameCanvas.width = radius * 2;
                 nameCtx = nameCanvas.getContext('2d');
                 nameCtx.fillStyle = color;
-                nameCtx.font = '16px sans-serif';
+                nameCtx.font = '14px sans-serif';
                 nameCtx.textAlign = 'center';
                 
                 // add callback to update before render.
