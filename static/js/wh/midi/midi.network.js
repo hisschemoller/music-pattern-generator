@@ -44,6 +44,8 @@ window.WH = window.WH || {};
 
                     console.log('Create processor ' + processor.getType() + ' (id ' + processor.getID() + ')');
                     numProcessors = processors.length;
+                    
+                    setProcessorDefaultName(processor);
 
                     // create the views for the processor
                     switch (specs.type) {
@@ -144,7 +146,7 @@ window.WH = window.WH || {};
 
             /**
              * Select the next processor from the given.
-             * @param  {Object} processor [description]
+             * @param  {Object} processor Processor to select.
              */
             selectNextProcessor = function(processor) {
                 let processorIndex = processors.indexOf(processor),
@@ -159,6 +161,28 @@ window.WH = window.WH || {};
                         break;
                     }
                 }
+            },
+            
+            /**
+             * Set default processor name.
+             * @param {Object} processor Processor to name.
+             */
+            setProcessorDefaultName = function(processor) {
+                let name, number, numberStart, 
+                    highestNumber = 0;
+                for (let i = 0; i < numProcessors; i++) {
+                    name = processors[i].getParamValue('name');
+                    if (name) {
+                        numberStart = name.lastIndexOf(' ');
+                        if (numberStart != -1) {
+                             number = parseInt(name.substr(numberStart), 10);
+                             if (!isNaN(number)) {
+                                 highestNumber = Math.max(highestNumber, number);
+                             }
+                        }
+                    }
+                }
+                processor.setParamValue('name', 'Processor ' + (highestNumber + 1));
             },
 
             /**
