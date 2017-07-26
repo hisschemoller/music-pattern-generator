@@ -41,6 +41,7 @@ window.WH = window.WH || {};
             draggedView,
             dragOffsetX,
             dragOffsetY,
+            theme,
         
             /**
              * Type of events to use, touch or mouse
@@ -224,6 +225,11 @@ window.WH = window.WH || {};
                 }
                 views.push(view);
                 numViews = views.length;
+                
+                // set theme on the new view
+                if (theme && view.setTheme) {
+                    view.setTheme(theme);
+                }
             },
             
             /**
@@ -247,7 +253,8 @@ window.WH = window.WH || {};
              * Set the theme colours of the processor canvas views.
              * @param {Object} theme Theme settings object.
              */
-            setTheme = function(theme) {
+            setTheme = function(newTheme) {
+                theme = newTheme;
                 for (let i = 0, n = views.length; i < n; i++) {
                     if (views[i].setTheme instanceof Function) {
                         views[i].setTheme(theme);
