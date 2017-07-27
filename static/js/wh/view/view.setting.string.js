@@ -26,7 +26,11 @@
              },
              
              changedCallback = function(parameter, oldValue, newValue) {
-                 textEl.value = newValue;
+                 // only update if the text input doesn't have focus,
+                 // else value gets refreshed and cursor jumps to end
+                 if (textEl != document.activeElement) {
+                     textEl.value = newValue;
+                 }
              };
          
          my = my || {};
