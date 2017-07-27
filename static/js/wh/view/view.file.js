@@ -22,6 +22,7 @@
                 });
                 fileEl.querySelector('.file__import').addEventListener('change', function(e) {
                     file.importFile(e.target.files[0]);
+                    this.value = null;
                 });
                 fileEl.querySelector('.file__export').addEventListener('click', function(e) {
                     file.exportFile();
