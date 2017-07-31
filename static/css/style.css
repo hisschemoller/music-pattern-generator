@@ -482,13 +482,19 @@ input.setting__number {
 .midi-port__label {
     flex-grow: 1;
     line-height: var(--input-height);
+    overflow: hidden;
     padding-left: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .prefs__input {
-    width: 165px;
+    flex-basis: 165px;
+    flex-shrink: 0;
 }
 .prefs__btn,
 .btn.midi-port__btn {
+    flex-basis: 55px;
+    flex-shrink: 0;
     width: 55px;
 }
 .prefs__btn-check,
