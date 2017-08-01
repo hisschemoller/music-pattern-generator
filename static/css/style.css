@@ -111,7 +111,7 @@ div[data-theme='dev'] {
 div[data-theme='dark'] {
     --bg-color: #000;
     --border-color: #ddd;
-    --btn-color: #ccc;
+    --btn-color: #999;
     --btn-active-color: #fff;
     --btn-bg-color: #333;
     --input-bg-color: #666;
