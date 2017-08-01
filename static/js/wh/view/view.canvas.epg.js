@@ -34,6 +34,7 @@ window.WH = window.WH || {};
             isSelected = false,
             doublePI = Math.PI * 2,
             dotAnimations = {},
+            centreDotStartTween,
             centreDotEndTween,
             isNoteActive = false,
             
@@ -151,14 +152,19 @@ window.WH = window.WH || {};
                         })
                     .delay(noteStartDelay)
                     .start();
-                    
+                
                 // stop centre dot animation, if any
+                if (centreDotStartTween) {
+                    centreDotStartTween.stop();
+                    centreDotStartTween = null;
+                }
                 if (centreDotEndTween) {
                     centreDotEndTween.stop();
+                    centreDotEndTween = null;
                 }
                 
                 // centre dot start animation
-                var startTween = new TWEEN.Tween({centreRadius: 0.01})
+                centreDotStartTween = new TWEEN.Tween({centreRadius: 0.01})
                     .to({centreRadius: centreDotFullRadius}, 10)
                     .onStart(function() {
                             isNoteActive = true;
@@ -169,7 +175,7 @@ window.WH = window.WH || {};
                     .delay(noteStartDelay);
                     
                 // centre dot end animation
-                var stopTween = new TWEEN.Tween({centreRadius: centreDotFullRadius})
+                centreDotEndTween = new TWEEN.Tween({centreRadius: centreDotFullRadius})
                     .to({centreRadius: 0.01}, 150)
                     .onUpdate(function() {
                             centreDotRadius = this.centreRadius;
@@ -180,10 +186,8 @@ window.WH = window.WH || {};
                     .delay(noteStopDelay - noteStartDelay);
                 
                 // start centre dot animation
-                startTween.chain(stopTween);
-                startTween.start();
-                
-                centreDotEndTween = stopTween;
+                centreDotStartTween.chain(centreDotEndTween);
+                centreDotStartTween.start();
             },
             
             /**
