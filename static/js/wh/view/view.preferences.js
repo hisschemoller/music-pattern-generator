@@ -42,7 +42,9 @@ window.WH = window.WH || {};
                         document.querySelector('#app').dataset.theme = value ? 'dark' : '';
                         var themeStyles = window.getComputedStyle(document.querySelector('[data-theme]'))
                         canvasView.setTheme({
-                            color: themeStyles.getPropertyValue('--text-color')
+                            colorHigh: themeStyles.getPropertyValue('--text-color'),
+                            colorMid: themeStyles.getPropertyValue('--border-color'),
+                            colorLow: themeStyles.getPropertyValue('--panel-bg-color')
                         });
                         break;
                 }

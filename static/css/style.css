@@ -110,7 +110,7 @@ div[data-theme='dev'] {
 }
 div[data-theme='dark'] {
     --bg-color: #000;
-    --border-color: #ddd;
+    --border-color: #999;
     --btn-color: #999;
     --btn-active-color: #fff;
     --btn-bg-color: #333;

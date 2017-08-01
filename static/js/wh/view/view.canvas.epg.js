@@ -28,7 +28,9 @@ window.WH = window.WH || {};
             dotRadius,
             zeroMarkerRadius = 3,
             pointerMutedRadius = 30,
-            color = '#eeeeee',
+            colorHigh = '#cccccc',
+            colorMid = '#dddddd',
+            colorLow = '#eeeeee',
             lineWidth = 2,
             position2d,
             isSelected = false,
@@ -45,16 +47,16 @@ window.WH = window.WH || {};
                 staticCanvas.width = radius * 2;
                 staticCtx = staticCanvas.getContext('2d');
                 staticCtx.lineWidth = lineWidth;
-                staticCtx.strokeStyle = color;
+                staticCtx.strokeStyle = colorHigh;
                 
                 // offscreen canvas for dots ring and polygon
                 necklaceCanvas = document.createElement('canvas');
                 necklaceCanvas.height = radius * 2;
                 necklaceCanvas.width = radius * 2;
                 necklaceCtx = necklaceCanvas.getContext('2d');
-                necklaceCtx.fillStyle = color;
+                necklaceCtx.fillStyle = colorHigh;
                 necklaceCtx.lineWidth = lineWidth;
-                necklaceCtx.strokeStyle = color;
+                necklaceCtx.strokeStyle = colorHigh;
                 
                 // offscreen canvas for the pointer
                 pointerCanvas = document.createElement('canvas');
@@ -62,14 +64,14 @@ window.WH = window.WH || {};
                 pointerCanvas.width = radius * 2;
                 pointerCtx = pointerCanvas.getContext('2d');
                 pointerCtx.lineWidth = lineWidth;
-                pointerCtx.strokeStyle = color;
+                pointerCtx.strokeStyle = colorHigh;
                 
                 // offscreen canvas for the name
                 nameCanvas = document.createElement('canvas');
                 nameCanvas.height = 40;
                 nameCanvas.width = radius * 2;
                 nameCtx = nameCanvas.getContext('2d');
-                nameCtx.fillStyle = color;
+                nameCtx.fillStyle = colorMid;
                 nameCtx.font = '14px sans-serif';
                 nameCtx.textAlign = 'center';
                 
@@ -252,6 +254,8 @@ window.WH = window.WH || {};
              */
             updatePolygon = function(steps, pulses, euclid, necklacePoints) {
                 if (pulses > 1) {
+                    necklaceCtx.fillStyle = colorLow;
+                    necklaceCtx.strokeStyle = colorLow;
                     necklaceCtx.beginPath();
                     let isFirstPoint = true,
                         firstPoint;
@@ -268,7 +272,7 @@ window.WH = window.WH || {};
                     }
                     necklaceCtx.lineTo(radius + firstPoint.x, radius - firstPoint.y);
                     necklaceCtx.stroke();
-                    necklaceCtx.globalAlpha = 0.2;
+                    necklaceCtx.globalAlpha = 0.6;
                     necklaceCtx.fill();
                     necklaceCtx.globalAlpha = 1.0;
                 }
@@ -276,6 +280,9 @@ window.WH = window.WH || {};
             
             updateDots = function(steps, euclid, necklacePoints) {
                 dotRadius = dotMaxRadius - (Math.max(0, steps - 16) * 0.08);
+                
+                necklaceCtx.fillStyle = colorHigh;
+                necklaceCtx.strokeStyle = colorHigh;
                 for (let i = 0; i < steps; i++) {
                     point = necklacePoints[i];
                     if (euclid[i]) {
@@ -396,8 +403,8 @@ window.WH = window.WH || {};
                 mainDynamicCtx.rotate(-pointerRotation);
                 mainDynamicCtx.translate(-position2d.x, -position2d.y);
                 
-                mainDynamicCtx.fillStyle = color;
-                mainDynamicCtx.strokeStyle = color;
+                mainDynamicCtx.fillStyle = colorHigh;
+                mainDynamicCtx.strokeStyle = colorHigh;
                 mainDynamicCtx.beginPath();
                 
                 // necklace dots
@@ -458,13 +465,15 @@ window.WH = window.WH || {};
              * @param {Object} theme Theme settings object.
              */
             setTheme = function(theme) {
-                color = theme.color;
+                colorHigh = theme.colorHigh;
+                colorMid = theme.colorMid;
+                colorLow = theme.colorLow;
                 console.log('epg setTheme: ', theme);
-                staticCtx.strokeStyle = color;
-                necklaceCtx.fillStyle = color;
-                necklaceCtx.strokeStyle = color;
-                pointerCtx.strokeStyle = color;
-                nameCtx.fillStyle = color;
+                staticCtx.strokeStyle = colorHigh;
+                necklaceCtx.fillStyle = colorHigh;
+                necklaceCtx.strokeStyle = colorHigh;
+                pointerCtx.strokeStyle = colorHigh;
+                nameCtx.fillStyle = colorMid;
                 updateName();
                 updateNecklace();
             };
