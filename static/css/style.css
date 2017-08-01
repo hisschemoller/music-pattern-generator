@@ -279,8 +279,10 @@ div[data-theme] {
     width: 32px;
 }
 .settings button.btn {
-    text-align: left;
-    width: 50%;
+    background-color: var(--btn-color);
+    color: var(--input-bg-color);
+    padding: 0 16px;
+    width: auto;
 }
 .settings__row {
     position: relative;
