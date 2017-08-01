@@ -24,7 +24,7 @@ window.WH = window.WH || {};
             centreDotRadius,
             selectRadius = 15,
             centreRadius = 20,
-            dotMaxRadius = 8,
+            dotMaxRadius = 7,
             dotRadius,
             zeroMarkerRadius = 3,
             pointerMutedRadius = 30,
@@ -279,7 +279,7 @@ window.WH = window.WH || {};
             },
             
             updateDots = function(steps, euclid, necklacePoints) {
-                dotRadius = dotMaxRadius - (Math.max(0, steps - 16) * 0.08);
+                dotRadius = dotMaxRadius - (Math.max(0, steps - 16) * 0.09);
                 
                 necklaceCtx.fillStyle = colorHigh;
                 necklaceCtx.strokeStyle = colorHigh;
