@@ -38,12 +38,14 @@ window.WH = window.WH || {};
                 
                 // disconnect all EPG processors from the old selected processor
                 if (selectedOutputProcessor && selectedOutputPortCallback) {
+                    // do nothing if the old and new output are the same,
+                    // for example when a MIDI device was disconnected and reconnected
+                    console.log(selectedOutputProcessor.getID(), processorID);
+                    if (selectedOutputProcessor.getID() == processorID) {
+                        return;
+                    }
+                    
                     selectedOutputPortCallback(false);
-                    // for (var i = 0, n = processors.length; i < n; i++) {
-                    //     if (processors[i].getType() == 'epg') {
-                    //         processors[i].disconnect(selectedOutputProcessor);
-                    //     }
-                    // }
                 }
                 
                 // reset selected output
