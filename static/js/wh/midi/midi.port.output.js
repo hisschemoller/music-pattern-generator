@@ -24,10 +24,11 @@ window.WH = window.WH || {};
             onPortStateChange = function(e) {
                 switch (e.port.state) {
                     case 'connected':
-                        toggleNetwork(true);
+                        toggleNetwork(my.wasNetworkEnabled);
                         my.viewCallback('connected', true);
                         break;
                     case 'disconnected':
+                        my.wasNetworkEnabled = my.isNetworkEnabled
                         toggleNetwork(false);
                         my.viewCallback('connected', false);
                         break;

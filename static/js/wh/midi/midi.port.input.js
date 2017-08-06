@@ -40,11 +40,13 @@ window.WH = window.WH || {};
             onPortStateChange = function(e) {
                 switch (e.port.state) {
                     case 'connected':
-                        toggleSync(true);
-                        toggleRemote(true);
+                        toggleSync(my.wasSyncEnabled);
+                        toggleRemote(my.wasRemoteEnabled);
                         my.viewCallback('connected', true);
                         break;
                     case 'disconnected':
+                        my.wasSyncEnabled = my.isSyncEnabled;
+                        my.wasRemoteEnabled = my.isRemoteEnabled;
                         toggleSync(false);
                         toggleRemote(false);
                         my.viewCallback('connected', false);
