@@ -9,7 +9,7 @@ window.WH = window.WH || {};
     
     function createMIDIPortOutput(specs, my) {
         var that,
-            networkProcessorID,
+            networkOutputProcessor,
             
             setup = function() {
                 my.midiPort.onstatechange = onPortStateChange;
@@ -38,9 +38,16 @@ window.WH = window.WH || {};
             /**
              * Create a MIDI output processor in the network,
              * or delete it from the network.
-             * @param {Boolean} isEnabled State to switch to.
+             *
+             * Toggle this MIDI port as output for the network.
+             * When toggled off, disable the processor if it has any processors 
+             * connected to it, or delete it if it hasn't any.
+             * When toggled on, enable the processor if it is disabled, or 
+             * create a new processor if it doesn't exist.
+             * @param {Boolean} isEnabled (Optional) state to switch to.
              */
             toggleNetwork = function(isEnabled) {
+                // handle the optional isEnabled argument
                 if (isEnabled === true || isEnabled === false) {
                     if (isEnabled === my.isNetworkEnabled) {
                         return;
@@ -48,19 +55,28 @@ window.WH = window.WH || {};
                 }
                 
                 if (my.isNetworkEnabled) {
-                    if (networkProcessorID) {
-                        my.network.deleteProcessor(networkProcessorID);
-                        networkProcessorID = null;
-                        my.isNetworkEnabled = false;
+                    if (networkOutputProcessor) {
+                        if (networkOutputProcessor.hasInputConnections()) {
+                            networkOutputProcessor.setEnabled(false);
+                        } else {
+                            my.network.deleteProcessor(networkOutputProcessor);
+                            networkOutputProcessor = null;
+                        }
                     }
+                    my.isNetworkEnabled = false;
                 } else {
-                    networkProcessorID = my.network.createProcessor({
-                        type: 'output',
-                        midiOutput: my.midiPort
-                    });
+                    if (networkOutputProcessor) {
+                        networkOutputProcessor.setEnabled(true);
+                    } else {
+                        networkOutputProcessor = my.network.createProcessor({
+                            type: 'output',
+                            midiOutput: my.midiPort
+                        });
+                    }
                     my.isNetworkEnabled = true;
-                    ns.EPGMode.selectMIDIOutPort(networkProcessorID, toggleNetwork);
+                    ns.EPGMode.selectMIDIOutPort(networkOutputProcessor.getID(), toggleNetwork);
                 }
+                
                 my.viewCallback('network', my.isNetworkEnabled);
             },
             

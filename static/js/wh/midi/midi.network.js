@@ -21,6 +21,7 @@ window.WH = window.WH || {};
              * Create a new processor in the network.
              * @param {Object} specs Processor specifications.
              * @param {Boolean} isRestore True if this is called as part of restoring a project.
+             * @return {Object} The new processor.
              */
             createProcessor = function(specs, isRestore) {
                 if (ns.midiProcessors && ns.midiProcessors[specs.type]) {
@@ -71,7 +72,7 @@ window.WH = window.WH || {};
                     console.error('No MIDI processor found of type: ', specs.type);
                 }
                 
-                return processor.getID();
+                return processor;
             },
 
             /**

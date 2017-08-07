@@ -41,6 +41,10 @@ window.WH = window.WH || {};
                     }
                 }
             },
+            
+            setEnabled = function(isEnabled) {
+                my.isEnabled = isEnabled;
+            },
 
             getPort = function() {
                 return midiOutput;
@@ -52,12 +56,14 @@ window.WH = window.WH || {};
 
 
         my = my || {};
+        my.isEnabled = true;
         my.getProcessorSpecificData = getProcessorSpecificData;
 
         that = ns.createMIDIProcessorBase(specs, my);
         that = ns.createMIDIConnectorIn(specs, my);
 
         that.process = process;
+        that.setEnabled = setEnabled;
         that.getPort = getPort;
         return that;
     };

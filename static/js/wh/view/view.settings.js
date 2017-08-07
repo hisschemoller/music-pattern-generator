@@ -63,7 +63,7 @@ window.WH = window.WH || {};
                 if (el) {
                     el.querySelector('.settings__delete').addEventListener('click', function(e) {
                         e.preventDefault();
-                        midiNetwork.deleteProcessor(processor.getID());
+                        midiNetwork.deleteProcessor(processor);
                     });
                 }
             },

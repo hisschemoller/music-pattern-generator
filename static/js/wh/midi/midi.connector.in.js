@@ -51,6 +51,15 @@ window.WH = window.WH || {};
                         break;
                     }
                 }
+            },
+            
+            /**
+             * Get number of connections.
+             * Used by the output port module to determine if 
+             * @return {Number} Number of connections to this output processor.
+             */
+            hasInputConnections = function() {
+                return numSources > 0;
             };
        
         my = my || {};
@@ -59,6 +68,7 @@ window.WH = window.WH || {};
         that = specs.that || {};
         that.addConnection = addConnection;
         that.removeConnection = removeConnection;
+        that.hasInputConnections = hasInputConnections;
         return that;
     };
     
