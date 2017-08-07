@@ -111,12 +111,8 @@ window.WH = window.WH || {};
                 remoteView.toggleVisibility(isInLearnMode);
 
                 // set learn mode on all parameters
-                var remoteState = isInLearnMode ? 'enter' : 'exit';
                 for (var i = 0; i < processors.length; i++) {
-                    var processor = processors[i];
-                    for (var j = 0; j < processor.params.length; j++) {
-                        processor.params[j].setRemoteState(remoteState, selectParameter);
-                    }
+                    setProcessorLearnMode(processors[i]);
                 }
 
                 // midi listener switches with learn mode
@@ -137,6 +133,17 @@ window.WH = window.WH || {};
                         midiInput.removeMIDIMessageListener(oldMidimessageListener);
                         midiInput.addMIDIMessageListener(midiMessageListener);
                     }
+                }
+            },
+            
+            /**
+             * Set remote state of a processor's remote capable parameters.
+             * @param {Object} processor Processor to enter or exit learn mode.
+             */
+            setProcessorLearnMode = function(processor) {
+                var remoteState = isInLearnMode ? 'enter' : 'exit';
+                for (var i = 0; i < processor.params.length; i++) {
+                    processor.params[i].setRemoteState(remoteState, selectParameter);
                 }
             },
 
@@ -261,7 +268,8 @@ window.WH = window.WH || {};
              */
             registerProcessor = function(processor) {
                 var params = processor.getParameters(),
-                    controllableParams = [];
+                    controllableParams = [],
+                    processorObject = {};
 
                 // create array of all controllable parameters of the processor
                 for (var key in params) {
@@ -274,12 +282,16 @@ window.WH = window.WH || {};
 
                 if (controllableParams.length) {
                     // add data to processors list
-                    processors.push({
-                        processor: processor,
-                        params: controllableParams
-                    });
+                    processorObject.processor = processor;
+                    processorObject.params = controllableParams;
+                    processors.push(processorObject);
                     // update view
                     remoteView.createRemoteGroup(processor);
+                }
+                
+                // set processor's parameters in learn mode, if necessary
+                if (isInLearnMode) {
+                    setProcessorLearnMode(processorObject);
                 }
             },
             
