@@ -78,6 +78,7 @@ window.WH = window.WH || {};
                     unregisterCallback: unregisterCallback
                 });
                 itemViews.push(itemView);
+                updateGroupVisibility();
             },
             
             /**
@@ -93,6 +94,14 @@ window.WH = window.WH || {};
                         break;
                     }
                 }
+                updateGroupVisibility();
+            },
+            
+            /**
+             * If a group has no assignments its header is hidden.
+             */
+            updateGroupVisibility = function() {
+                el.dataset.hasAssignments = (itemViews.length > 0);
             },
             
             /**

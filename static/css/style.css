@@ -375,6 +375,9 @@ input.setting__number {
     display: block;
 }
 .remote__group-header {
+    display: none;
+}
+.remote__group[data-has-assignments=true] .remote__group-header {
     display: flex;
 }
 .remote__group-header-label {
