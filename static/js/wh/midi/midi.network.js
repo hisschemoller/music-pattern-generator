@@ -77,13 +77,13 @@ window.WH = window.WH || {};
 
             /**
              * Delete a processor.
-             * @param {String} processorID ID of processor to delete.
+             * @param {String} processor Processor to delete.
              */
-            deleteProcessor = function(processorID) {
+            deleteProcessor = function(processor) {
                 // find the processor
                 var processor;
                 for (var i = 0; i < numProcessors; i++) {
-                    if (processors[i].getID() === processorID) {
+                    if (processors[i] === processor) {
                         processor = processors[i];
                         break;
                     }
