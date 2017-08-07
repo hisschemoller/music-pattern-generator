@@ -430,6 +430,10 @@ window.WH = window.WH || {};
                 mainDynamicCtx.stroke();
             },
             
+            clearFromDynamicView = function(mainDynamicCtx) {
+                
+            },
+            
             intersectsWithPoint = function(x, y) {
                 let distance = Math.sqrt(Math.pow(x - position2d.x, 2) + Math.pow(y - position2d.y, 2));
                 return distance <= necklaceRadius + dotRadius;
@@ -485,6 +489,7 @@ window.WH = window.WH || {};
         that.terminate = terminate;
         that.addToStaticView = addToStaticView;
         that.addToDynamicView = addToDynamicView;
+        that.clearFromDynamicView = clearFromDynamicView;
         that.intersectsWithPoint = intersectsWithPoint;
         that.getProcessor = getProcessor;
         that.setPosition2d = setPosition2d;
