@@ -138,12 +138,10 @@ window.WH = window.WH || {};
                 // get the coordinates of the dot for this step
                 let steps = processor.getParamValue('steps');
                 
-                // fill position2d with the dot coordinate
-                let position2d = necklace[stepIndex];
-                
                 // retain necklace dot state in object
                 dotAnimations[stepIndex] = {
-                    position2d: position2d,
+                    position2d: necklace[stepIndex].center,
+                    boundingBox: necklace[stepIndex].rect,
                     dotRadius: 0
                 }
                 
@@ -210,19 +208,26 @@ window.WH = window.WH || {};
                     pulses = processor.getParamValue('pulses'),
                     rotation = processor.getParamValue('rotation'),
                     euclid = processor.getEuclidPattern(),
-                    position2d = {x: 0, y:0},
-                    rad;
+                    rad, x, y;
                 
                 necklace = [];
-                    
+                
                 // calculate the dot positions
                 necklaceRadius = necklaceMinRadius + (Math.max(0, steps - 16) * 0.8);
                 for (let i = 0; i < steps; i++) {
                     rad = doublePI * (i / steps);
+                    x = Math.sin(rad) * necklaceRadius;
+                    y = Math.cos(rad) * necklaceRadius;
                     necklace.push({
                         center: {
-                            x: Math.sin(rad) * necklaceRadius,
-                            y: Math.cos(rad) * necklaceRadius
+                            x: x,
+                            y: y
+                        },
+                        rect: {
+                            x: position2d.x + x - dotMaxRadius * 2,
+                            y: position2d.y - y - dotMaxRadius * 2,
+                            height: dotMaxRadius * 4,
+                            width: dotMaxRadius * 4
                         }
                     });
                 }
@@ -294,7 +299,7 @@ window.WH = window.WH || {};
             },
             
             updateDots = function(steps, euclid, necklace) {
-                dotRadius = dotMaxRadius - (Math.max(0, steps - 16) * 0.09);
+                dotRadius = dotMaxRadius - 3 - (Math.max(0, steps - 16) * 0.09);
                 
                 necklaceCtx.fillStyle = colorHigh;
                 necklaceCtx.strokeStyle = colorHigh;
@@ -451,9 +456,18 @@ window.WH = window.WH || {};
              * @param  {Object} mainDynamicCtx 2D canvas context.
              */
             clearFromDynamicView = function(mainDynamicCtx) {
-                // clear center dot
+                // center dot
                 if (isNoteActive) {
                     mainDynamicCtx.clearRect(centerDotX, centerDotY, centerDotSize, centerDotSize);
+                }
+                
+                // necklace dots
+                let rect;
+                for (let key in dotAnimations) {
+                    if (dotAnimations.hasOwnProperty(key)) {
+                        rect = dotAnimations[key].boundingBox;
+                        mainDynamicCtx.clearRect(rect.x, rect.y, rect.height, rect.width);
+                    }
                 }
             },
             
