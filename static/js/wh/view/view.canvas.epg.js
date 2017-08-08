@@ -3,6 +3,8 @@ window.WH = window.WH || {};
 
 (function (ns) {
     
+    let centerDotSize;
+    
     function createCanvasEPGView(specs) {
         let that,
             processor = specs.processor,
@@ -22,6 +24,8 @@ window.WH = window.WH || {};
             necklaceRadius,
             centreDotFullRadius = 10,
             centreDotRadius,
+            centerDotX,
+            centerDotY,
             selectRadius = 15,
             centreRadius = 20,
             dotMaxRadius = 7,
@@ -74,6 +78,9 @@ window.WH = window.WH || {};
                 nameCtx.fillStyle = colorMid;
                 nameCtx.font = '14px sans-serif';
                 nameCtx.textAlign = 'center';
+                
+                // width and height to clear center dot 
+                centerDotSize = (centreDotFullRadius + 1) * 2;
                 
                 // add callback to update before render.
                 processor.addRenderCallback(showPlaybackPosition);
@@ -245,6 +252,8 @@ window.WH = window.WH || {};
              */
             updatePosition = function(param, oldValue, newValue) {
                 position2d = newValue;
+                centerDotX = position2d.x - centreDotFullRadius - 1;
+                centerDotY = position2d.y - centreDotFullRadius - 1;
                 redrawStaticCanvas();
                 canvasDirtyCallback();
             },
@@ -430,8 +439,16 @@ window.WH = window.WH || {};
                 mainDynamicCtx.stroke();
             },
             
+            /**
+             * Clear all this pattern's elements from the dynamic context.
+             * These are the center dot, necklace dots and pointer.
+             * @param  {Object} mainDynamicCtx 2D canvas context.
+             */
             clearFromDynamicView = function(mainDynamicCtx) {
-                
+                // clear center dot
+                if (isNoteActive) {
+                    mainDynamicCtx.clearRect(centerDotX, centerDotY, centerDotSize, centerDotSize);
+                }
             },
             
             intersectsWithPoint = function(x, y) {
