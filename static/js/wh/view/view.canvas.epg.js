@@ -43,6 +43,7 @@ window.WH = window.WH || {};
             centreDotStartTween,
             centreDotEndTween,
             isNoteActive = false,
+            necklace = [],
             
             initialise = function() {
                 // offscreen canvas for static shapes
@@ -97,7 +98,8 @@ window.WH = window.WH || {};
                 params.name.addChangedCallback(updateName);
                 
                 // set drawing values
-                position2d = params.position2d.getValue();
+                const position = params.position2d.getValue();
+                updatePosition(params.position2d, position, position)
                 updateName();
                 updateNecklace();
                 redrawStaticCanvas();
@@ -134,11 +136,10 @@ window.WH = window.WH || {};
              */
             showNote = function(stepIndex, noteStartDelay, noteStopDelay) {
                 // get the coordinates of the dot for this step
-                let steps = processor.getParamValue('steps'),
-                    position2d = {};
+                let steps = processor.getParamValue('steps');
                 
                 // fill position2d with the dot coordinate
-                calculateCoordinateForStepIndex(position2d, stepIndex, steps, necklaceRadius);
+                let position2d = necklace[stepIndex];
                 
                 // retain necklace dot state in object
                 dotAnimations[stepIndex] = {
@@ -210,23 +211,21 @@ window.WH = window.WH || {};
                     rotation = processor.getParamValue('rotation'),
                     euclid = processor.getEuclidPattern(),
                     position2d = {x: 0, y:0},
-                    rad, point,
-                    necklacePoints = [];
+                    rad, point;
+                
+                necklace = [];
                     
                 // calculate the dot positions
-                // necklaceRadius = necklaceMinRadius + (steps > 16 ? (steps - 16) * 3 : 0);
                 necklaceRadius = necklaceMinRadius + (Math.max(0, steps - 16) * 0.8);
-                // MINIMUM_STEP_CIRCLE_RADIUS + ( Math.max ( 0, _numSteps - 16 ) * 0.6f )
                 for (let i = 0; i < steps; i++) {
-                    point = {};
-                    calculateCoordinateForStepIndex(point, i, steps, necklaceRadius);
-                    necklacePoints.push(point);
+                    point = calculateCoordinateForStepIndex(i, steps, necklaceRadius);
+                    necklace.push(point);
                 }
                 
                 necklaceCtx.clearRect(0, 0, necklaceCanvas.width, necklaceCanvas.height);
                 
-                updatePolygon(steps, pulses, euclid, necklacePoints);
-                updateDots(steps, euclid, necklacePoints);
+                updatePolygon(steps, pulses, euclid, necklace);
+                updateDots(steps, euclid, necklace);
                 updatePointer();
                 updateZeroMarker(steps, rotation);
                 updateRotatedMarker(steps, rotation);
@@ -458,15 +457,17 @@ window.WH = window.WH || {};
             
             /**
              * Calculate the 2D coordinates of the dot for a certain step.
-             * @param  {Object} position2d 2D point vector to be set in this function.
              * @param  {Number} stepIndex Index of the step within the pattern.
              * @param  {Number} numSteps Number of steps in the pattern.
              * @param  {Number} necklaceRadius Distance of the dots from the centre.
+             * @return {Object} x, y coordinate of a necklace dot.
              */
-            calculateCoordinateForStepIndex = function(position2d, stepIndex, numSteps, necklaceRadius) {
+            calculateCoordinateForStepIndex = function(stepIndex, numSteps, necklaceRadius) {
                 let rad = doublePI * (stepIndex / numSteps);
-                position2d.x = Math.sin(rad) * necklaceRadius;
-                position2d.y = Math.cos(rad) * necklaceRadius;
+                return {
+                    x: Math.sin(rad) * necklaceRadius,
+                    y: Math.cos(rad) * necklaceRadius
+                };
             }
             
             getProcessor = function() {
