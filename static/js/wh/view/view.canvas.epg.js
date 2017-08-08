@@ -3,6 +3,7 @@ window.WH = window.WH || {};
 
 (function (ns) {
     
+    const dotMaxRadius = 10;
     let centerDotSize;
     
     function createCanvasEPGView(specs) {
@@ -28,7 +29,6 @@ window.WH = window.WH || {};
             centerDotY,
             selectRadius = 15,
             centreRadius = 20,
-            dotMaxRadius = 7,
             dotRadius,
             zeroMarkerRadius = 3,
             pointerMutedRadius = 30,
@@ -150,7 +150,7 @@ window.WH = window.WH || {};
                 let tweeningDot = dotAnimations[stepIndex];
                 
                 // animate the necklace dot
-                new TWEEN.Tween({currentRadius: dotRadius * 1.5})
+                new TWEEN.Tween({currentRadius: dotRadius * 2})
                     .to({currentRadius: dotRadius}, 300)
                     .onUpdate(function() {
                             // store new dot size
