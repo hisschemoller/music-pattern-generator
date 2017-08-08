@@ -276,7 +276,7 @@ window.WH = window.WH || {};
                         views[i].addToStaticView(staticCtx);
                     }
                 }
-                // dynamicCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
+                
                 for (i = 0; i < numViews; i++) {
                     views[i].clearFromDynamicView(dynamicCtx);
                 }
