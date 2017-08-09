@@ -24,6 +24,7 @@ window.WH = window.WH || {};
             pointerRotation,
             pointerMutedRadius = 30,
             pointerRect = {};
+            pointerCanvasCenter,
             radius = 110,
             necklaceMinRadius = 50,
             necklaceRadius,
@@ -69,11 +70,12 @@ window.WH = window.WH || {};
                 
                 // offscreen canvas for the pointer
                 pointerCanvas = document.createElement('canvas');
-                pointerCanvas.height = radius * 2;
-                pointerCanvas.width = radius * 2;
+                pointerCanvas.height = radius + centerRadius;
+                pointerCanvas.width = centerRadius + 4;
                 pointerCtx = pointerCanvas.getContext('2d');
                 pointerCtx.lineWidth = lineWidth;
                 pointerCtx.strokeStyle = colorHigh;
+                pointerCanvasCenter = pointerCanvas.width / 2;
                 
                 // offscreen canvas for the name
                 nameCanvas = document.createElement('canvas');
@@ -340,9 +342,9 @@ window.WH = window.WH || {};
                 
                 pointerCtx.clearRect(0, 0, pointerCanvas.width, pointerCanvas.height);
                 pointerCtx.beginPath();
-                pointerCtx.moveTo(radius - pointerX, radius - pointerY);
-                pointerCtx.lineTo(radius, radius - pointerRadius);
-                pointerCtx.lineTo(radius + pointerX, radius - pointerY);
+                pointerCtx.moveTo(pointerCanvasCenter - pointerX, pointerCanvas.height - pointerCanvasCenter + pointerY);
+                pointerCtx.lineTo(pointerCanvasCenter, pointerCanvas.height - pointerCanvasCenter - pointerRadius);
+                pointerCtx.lineTo(pointerCanvasCenter + pointerX, pointerCanvas.height - pointerCanvasCenter + pointerY);
                 pointerCtx.stroke();
             },
             
@@ -421,11 +423,11 @@ window.WH = window.WH || {};
             
             addToDynamicView = function(mainDynamicCtx) {
                 // draw rotating pointer
+                mainDynamicCtx.save();
                 mainDynamicCtx.translate(position2d.x, position2d.y);
                 mainDynamicCtx.rotate(pointerRotation);
-                mainDynamicCtx.drawImage(pointerCanvas, -radius, -radius);
-                mainDynamicCtx.rotate(-pointerRotation);
-                mainDynamicCtx.translate(-position2d.x, -position2d.y);
+                mainDynamicCtx.drawImage(pointerCanvas, -pointerCanvasCenter, pointerCanvasCenter - pointerCanvas.height);
+                mainDynamicCtx.restore();
                 
                 mainDynamicCtx.fillStyle = colorHigh;
                 mainDynamicCtx.strokeStyle = colorHigh;
