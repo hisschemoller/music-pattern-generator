@@ -71,8 +71,8 @@ window.WH = window.WH || {};
                 
                 // offscreen canvas for the pointer
                 pointerCanvas = document.createElement('canvas');
-                pointerCanvas.height = radius + centerRadius;
-                pointerCanvas.width = centerRadius + 4;
+                pointerCanvas.height = radius;
+                pointerCanvas.width = centerRadius * 2;
                 pointerCtx = pointerCanvas.getContext('2d');
                 pointerCtx.lineWidth = lineWidth;
                 pointerCtx.strokeStyle = colorHigh;
@@ -344,9 +344,9 @@ window.WH = window.WH || {};
                 
                 pointerCtx.clearRect(0, 0, pointerCanvas.width, pointerCanvas.height);
                 pointerCtx.beginPath();
-                pointerCtx.moveTo(pointerCanvasCenter - pointerX, pointerCanvas.height - pointerCanvasCenter + pointerY);
-                pointerCtx.lineTo(pointerCanvasCenter, pointerCanvas.height - pointerCanvasCenter - pointerRadius);
-                pointerCtx.lineTo(pointerCanvasCenter + pointerX, pointerCanvas.height - pointerCanvasCenter + pointerY);
+                pointerCtx.moveTo(pointerCanvasCenter - pointerX, pointerCanvas.height - pointerY);
+                pointerCtx.lineTo(pointerCanvasCenter, pointerCanvas.height - pointerRadius);
+                pointerCtx.lineTo(pointerCanvasCenter + pointerX, pointerCanvas.height - pointerY);
                 pointerCtx.stroke();
             },
             
@@ -428,7 +428,7 @@ window.WH = window.WH || {};
                 mainDynamicCtx.save();
                 mainDynamicCtx.translate(position2d.x, position2d.y);
                 mainDynamicCtx.rotate(pointerRotation);
-                mainDynamicCtx.drawImage(pointerCanvas, -pointerCanvasCenter, pointerCanvasCenter - pointerCanvas.height);
+                mainDynamicCtx.drawImage(pointerCanvas, -pointerCanvasCenter, -pointerCanvas.height);
                 mainDynamicCtx.restore();
                 
                 mainDynamicCtx.fillStyle = colorHigh;
@@ -482,7 +482,7 @@ window.WH = window.WH || {};
                 mainDynamicCtx.save();
                 mainDynamicCtx.translate(position2d.x, position2d.y);
                 mainDynamicCtx.rotate(pointerRotationPrevious);
-                mainDynamicCtx.clearRect(-pointerCanvasCenter, pointerCanvasCenter - pointerCanvas.height, pointerCanvas.width, pointerCanvas.height);
+                mainDynamicCtx.clearRect(-pointerCanvasCenter, -pointerCanvas.height, pointerCanvas.width, pointerCanvas.height);
                 mainDynamicCtx.restore();
             },
             
