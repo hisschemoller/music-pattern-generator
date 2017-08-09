@@ -193,6 +193,7 @@ window.WH = window.WH || {};
                             });
                         }
                     }
+                    markDirty();
                 }
             },
             
@@ -205,6 +206,7 @@ window.WH = window.WH || {};
                 dragMove(e);
                 draggedView = null;
                 isDragging = false;
+                markDirty();
             },
             
             /**
@@ -271,7 +273,9 @@ window.WH = window.WH || {};
                 TWEEN.update();
                 let i;
                 if (isDirty) {
+                    isDirty = false;
                     staticCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
+                    dynamicCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
                     for (i = 0; i < numViews; i++) {
                         views[i].addToStaticView(staticCtx);
                     }
@@ -283,7 +287,6 @@ window.WH = window.WH || {};
                 for (i = 0; i < numViews; i++) {
                     views[i].addToDynamicView(dynamicCtx);
                 }
-                isDirty = false;
             };
         
         that = specs.that || {};
