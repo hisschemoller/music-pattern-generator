@@ -19,16 +19,17 @@ window.WH = window.WH || {};
             necklaceCtx,
             nameCanvas,
             nameCtx,
+            
             pointerCanvas,
             pointerCtx,
             pointerRotation,
+            pointerRotationPrevious = 0,
             pointerMutedRadius = 30,
-            pointerRect = {};
             pointerCanvasCenter,
+            
             radius = 110,
             necklaceMinRadius = 50,
             necklaceRadius,
-            
             centerDotFullRadius = 10,
             centerDotRadius,
             centerDotX,
@@ -131,6 +132,7 @@ window.WH = window.WH || {};
              * @param  {Number} duration Pattern length in ticks.
              */
             showPlaybackPosition = function(position, duration) {
+                pointerRotationPrevious = pointerRotation;
                 pointerRotation = doublePI * (position / duration);
             },
             
@@ -333,7 +335,7 @@ window.WH = window.WH || {};
              */
             updatePointer = function() {
                 let isMute = processor.getParamValue('is_mute'),
-                    isNoteInControlled = false, /* processor.getProperty('isNoteInControlled'), */
+                    isNoteInControlled = false,
                     isMutedByNoteInControl = false,
                     isMutedSize = isMute || isMutedByNoteInControl,
                     pointerRadius = isMutedSize ? pointerMutedRadius : necklaceRadius,
@@ -475,6 +477,13 @@ window.WH = window.WH || {};
                         mainDynamicCtx.clearRect(rect.x, rect.y, rect.height, rect.width);
                     }
                 }
+                
+                // pointer
+                mainDynamicCtx.save();
+                mainDynamicCtx.translate(position2d.x, position2d.y);
+                mainDynamicCtx.rotate(pointerRotationPrevious);
+                mainDynamicCtx.clearRect(-pointerCanvasCenter, pointerCanvasCenter - pointerCanvas.height, pointerCanvas.width, pointerCanvas.height);
+                mainDynamicCtx.restore();
             },
             
             intersectsWithPoint = function(x, y) {
