@@ -3,7 +3,9 @@ window.WH = window.WH || {};
 
 (function (ns) {
     
-    const dotMaxRadius = 10;
+    const dotMaxRadius = 10,
+        centerRadius = 20;
+    
     let centerDotSize;
     
     function createCanvasEPGView(specs) {
@@ -15,23 +17,27 @@ window.WH = window.WH || {};
             staticCtx,
             necklaceCanvas,
             necklaceCtx,
-            pointerCanvas,
-            pointerCtx,
             nameCanvas,
             nameCtx,
+            pointerCanvas,
+            pointerCtx,
             pointerRotation,
+            pointerMutedRadius = 30,
+            pointerRect = {};
             radius = 110,
             necklaceMinRadius = 50,
             necklaceRadius,
-            centreDotFullRadius = 10,
-            centreDotRadius,
+            
+            centerDotFullRadius = 10,
+            centerDotRadius,
             centerDotX,
             centerDotY,
+            centerDotStartTween,
+            centerDotEndTween,
+            
             selectRadius = 15,
-            centreRadius = 20,
             dotRadius,
             zeroMarkerRadius = 3,
-            pointerMutedRadius = 30,
             colorHigh = '#cccccc',
             colorMid = '#dddddd',
             colorLow = '#eeeeee',
@@ -40,8 +46,6 @@ window.WH = window.WH || {};
             isSelected = false,
             doublePI = Math.PI * 2,
             dotAnimations = {},
-            centreDotStartTween,
-            centreDotEndTween,
             isNoteActive = false,
             necklace = [],
             
@@ -81,7 +85,7 @@ window.WH = window.WH || {};
                 nameCtx.textAlign = 'center';
                 
                 // width and height to clear center dot 
-                centerDotSize = (centreDotFullRadius + 1) * 2;
+                centerDotSize = (centerDotFullRadius + 1) * 2;
                 
                 // add callback to update before render.
                 processor.addRenderCallback(showPlaybackPosition);
@@ -161,41 +165,41 @@ window.WH = window.WH || {};
                     .delay(noteStartDelay)
                     .start();
                 
-                // stop centre dot animation, if any
-                if (centreDotStartTween) {
-                    centreDotStartTween.stop();
-                    centreDotStartTween = null;
+                // stop center dot animation, if any
+                if (centerDotStartTween) {
+                    centerDotStartTween.stop();
+                    centerDotStartTween = null;
                 }
-                if (centreDotEndTween) {
-                    centreDotEndTween.stop();
-                    centreDotEndTween = null;
+                if (centerDotEndTween) {
+                    centerDotEndTween.stop();
+                    centerDotEndTween = null;
                 }
                 
-                // centre dot start animation
-                centreDotStartTween = new TWEEN.Tween({centreRadius: 0.01})
-                    .to({centreRadius: centreDotFullRadius}, 10)
+                // center dot start animation
+                centerDotStartTween = new TWEEN.Tween({centerRadius: 0.01})
+                    .to({centerRadius: centerDotFullRadius}, 10)
                     .onStart(function() {
                             isNoteActive = true;
                         })
                     .onUpdate(function() {
-                            centreDotRadius = this.centreRadius;
+                            centerDotRadius = this.centerRadius;
                         })
                     .delay(noteStartDelay);
                     
-                // centre dot end animation
-                centreDotEndTween = new TWEEN.Tween({centreRadius: centreDotFullRadius})
-                    .to({centreRadius: 0.01}, 150)
+                // center dot end animation
+                centerDotEndTween = new TWEEN.Tween({centerRadius: centerDotFullRadius})
+                    .to({centerRadius: 0.01}, 150)
                     .onUpdate(function() {
-                            centreDotRadius = this.centreRadius;
+                            centerDotRadius = this.centerRadius;
                         })
                     .onComplete(function() {
                             isNoteActive = false;
                         })
                     .delay(noteStopDelay - noteStartDelay);
                 
-                // start centre dot animation
-                centreDotStartTween.chain(centreDotEndTween);
-                centreDotStartTween.start();
+                // start center dot animation
+                centerDotStartTween.chain(centerDotEndTween);
+                centerDotStartTween.start();
             },
             
             /**
@@ -261,8 +265,8 @@ window.WH = window.WH || {};
              */
             updatePosition = function(param, oldValue, newValue) {
                 position2d = newValue;
-                centerDotX = position2d.x - centreDotFullRadius - 1;
-                centerDotY = position2d.y - centreDotFullRadius - 1;
+                centerDotX = position2d.x - centerDotFullRadius - 1;
+                centerDotY = position2d.y - centerDotFullRadius - 1;
                 redrawStaticCanvas();
                 canvasDirtyCallback();
             },
@@ -392,9 +396,9 @@ window.WH = window.WH || {};
                 // necklace
                 staticCtx.drawImage(necklaceCanvas, 0, 0);
                 
-                // centre ring
-                staticCtx.moveTo(radius + centreRadius, radius);
-                staticCtx.arc(radius, radius, centreRadius, 0, doublePI, true);
+                // center ring
+                staticCtx.moveTo(radius + centerRadius, radius);
+                staticCtx.arc(radius, radius, centerRadius, 0, doublePI, true);
                 
                 // select circle
                 if (isSelected) {
@@ -440,10 +444,10 @@ window.WH = window.WH || {};
                     }
                 }
                 
-                // centre dot
+                // center dot
                 if (isNoteActive) {
-                    mainDynamicCtx.moveTo(position2d.x + centreDotRadius, position2d.y);
-                    mainDynamicCtx.arc(position2d.x, position2d.y, centreDotRadius, 0, doublePI, true);
+                    mainDynamicCtx.moveTo(position2d.x + centerDotRadius, position2d.y);
+                    mainDynamicCtx.arc(position2d.x, position2d.y, centerDotRadius, 0, doublePI, true);
                 }
                 
                 mainDynamicCtx.fill();
@@ -496,7 +500,6 @@ window.WH = window.WH || {};
                 colorHigh = theme.colorHigh;
                 colorMid = theme.colorMid;
                 colorLow = theme.colorLow;
-                console.log('epg setTheme: ', theme);
                 staticCtx.strokeStyle = colorHigh;
                 necklaceCtx.fillStyle = colorHigh;
                 necklaceCtx.strokeStyle = colorHigh;
