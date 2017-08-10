@@ -35,6 +35,7 @@ window.WH = window.WH || {};
             audioContextOffset = 0,
             timelineOffset = 0,
             playbackQueue = [],
+            renderThrottleCounter = 0,
             
             /**
              * Scan the arrangement for events and send them to concerned components.
@@ -54,8 +55,10 @@ window.WH = window.WH || {};
              * @param {Number} position Timing position, equal to performance.now(). 
              */
             updateView = function(position) {
-                midiNetwork.render(msec2tick(position));
-                canvasView.draw();
+                if (renderThrottleCounter % 2 === 0) {
+                    midiNetwork.render(msec2tick(position));
+                    canvasView.draw();
+                }
             },
             
             /**
