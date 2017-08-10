@@ -59,6 +59,7 @@ window.WH = window.WH || {};
                     midiNetwork.render(msec2tick(position));
                     canvasView.draw();
                 }
+                renderThrottleCounter++;
             },
             
             /**
