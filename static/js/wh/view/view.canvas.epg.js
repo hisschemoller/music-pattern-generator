@@ -335,12 +335,9 @@ window.WH = window.WH || {};
              */
             updatePointer = function() {
                 let isMute = processor.getParamValue('is_mute'),
-                    isNoteInControlled = false,
-                    isMutedByNoteInControl = false,
-                    isMutedSize = isMute || isMutedByNoteInControl,
-                    pointerRadius = isMutedSize ? pointerMutedRadius : necklaceRadius,
-                    pointerX = isMutedSize ? 15 : 19,
-                    pointerY = isMutedSize ? 15 : 6;
+                    pointerRadius = isMute ? pointerMutedRadius : necklaceRadius,
+                    pointerX = isMute ? 15 : 19,
+                    pointerY = isMute ? 15 : 6;
                 
                 pointerCtx.clearRect(0, 0, pointerCanvas.width, pointerCanvas.height);
                 pointerCtx.beginPath();
