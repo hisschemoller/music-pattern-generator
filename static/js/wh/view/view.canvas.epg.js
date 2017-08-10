@@ -105,8 +105,8 @@ window.WH = window.WH || {};
                 params.name.addChangedCallback(updateName);
                 
                 // set drawing values
-                const position = params.position2d.getValue();
-                updatePosition(params.position2d, position, position)
+                position2d = params.position2d.getValue();
+                updatePosition(params.position2d, position2d, position2d)
                 updateName();
                 updateNecklace();
                 redrawStaticCanvas();
@@ -232,8 +232,10 @@ window.WH = window.WH || {};
                             y: y
                         },
                         rect: {
-                            x: position2d.x + x - dotMaxRadius * 2,
-                            y: position2d.y - y - dotMaxRadius * 2,
+                            x: x - dotMaxRadius * 2,
+                            y: y + dotMaxRadius * 2,
+                            xAbs: 0,
+                            yAbs: 0,
                             height: dotMaxRadius * 4,
                             width: dotMaxRadius * 4
                         }
@@ -242,6 +244,7 @@ window.WH = window.WH || {};
                 
                 necklaceCtx.clearRect(0, 0, necklaceCanvas.width, necklaceCanvas.height);
                 
+                updateNecklaceAbsolute();
                 updatePolygon(steps, pulses, euclid, necklace);
                 updateDots(steps, euclid, necklace);
                 updatePointer();
@@ -249,6 +252,18 @@ window.WH = window.WH || {};
                 updateRotatedMarker(steps, rotation);
                 redrawStaticCanvas();
                 canvasDirtyCallback();
+            },
+            
+            /**
+             * Update the coordinates of the necklace nodes relative to the main canvas.
+             */
+            updateNecklaceAbsolute = function() {
+                let rect;
+                for (let i = 0, n = necklace.length; i < n; i++) {
+                    rect = necklace[i].rect;
+                    rect.xAbs = position2d.x + rect.x;
+                    rect.yAbs = position2d.y - rect.y;
+                }
             },
             
             /**
@@ -271,6 +286,7 @@ window.WH = window.WH || {};
                 position2d = newValue;
                 centerDotX = position2d.x - centerDotFullRadius - 1;
                 centerDotY = position2d.y - centerDotFullRadius - 1;
+                updateNecklaceAbsolute();
                 redrawStaticCanvas();
                 canvasDirtyCallback();
             },
@@ -471,7 +487,7 @@ window.WH = window.WH || {};
                 for (let key in dotAnimations) {
                     if (dotAnimations.hasOwnProperty(key)) {
                         rect = dotAnimations[key].boundingBox;
-                        mainDynamicCtx.clearRect(rect.x, rect.y, rect.height, rect.width);
+                        mainDynamicCtx.clearRect(rect.xAbs, rect.yAbs, rect.height, rect.width);
                     }
                 }
                 
