@@ -62,12 +62,9 @@ window.WH = window.WH || {};
                             break;
                     }
                     
-                    // If the app is in EPG mode,
-                    // and this is a newly created processor (not a project restore),
-                    // then connect each EPG processor to the first input and output port.
-                    if (isRestore !== true) {
-                        ns.EPGMode.addProcessor(processor);
-                    }
+                    // If the app is in EPG mode connect each EPG processor
+                    // to the selected output port.
+                    ns.EPGMode.addProcessor(processor);
                 } else {
                     console.error('No MIDI processor found of type: ', specs.type);
                 }
