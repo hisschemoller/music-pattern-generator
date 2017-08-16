@@ -53,7 +53,7 @@
     display: inline-block;
     width: 55%;
 }
-input.setting__number {
+input[type='number'].setting__number {
     background-color: var(--panel-bg-color);
     border: none;
     display: inline-block;
