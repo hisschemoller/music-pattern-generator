@@ -11,6 +11,14 @@
     position: relative;
     width: 300px;
 }
+.remote__viewport {
+    max-height: 300px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.remote__list {
+    
+}
 .remote__group {
     display: block;
 }
