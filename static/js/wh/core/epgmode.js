@@ -17,7 +17,7 @@ window.WH = window.WH || {};
                 processors.push(processor);
                 console.debug('%c EPGMode addProcessor processors: ' + processors.length, 'color:#090;');
                 
-                // add the processor to the selected output
+                // connect the processor to the selected output
                 if (processor.getType() == 'epg' && selectedOutputProcessor) {
                     processor.connect(selectedOutputProcessor);
                 }

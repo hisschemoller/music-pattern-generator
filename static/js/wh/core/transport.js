@@ -35,7 +35,7 @@ window.WH = window.WH || {};
             audioContextOffset = 0,
             timelineOffset = 0,
             playbackQueue = [],
-            renderThrottleCounter = 0;
+            renderThrottleCounter = 0,
             
             /**
              * Scan the arrangement for events and send them to concerned components.
@@ -59,6 +59,7 @@ window.WH = window.WH || {};
                     midiNetwork.render(msec2tick(position));
                     canvasView.draw();
                 }
+                renderThrottleCounter++;
             },
             
             /**

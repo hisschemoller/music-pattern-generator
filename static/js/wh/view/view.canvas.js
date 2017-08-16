@@ -193,6 +193,7 @@ window.WH = window.WH || {};
                             });
                         }
                     }
+                    markDirty();
                 }
             },
             
@@ -205,6 +206,7 @@ window.WH = window.WH || {};
                 dragMove(e);
                 draggedView = null;
                 isDragging = false;
+                markDirty();
             },
             
             /**
@@ -269,17 +271,22 @@ window.WH = window.WH || {};
             
             draw = function() {
                 TWEEN.update();
+                let i;
                 if (isDirty) {
+                    isDirty = false;
                     staticCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
-                    for (let i = 0; i < numViews; i++) {
+                    dynamicCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
+                    for (i = 0; i < numViews; i++) {
                         views[i].addToStaticView(staticCtx);
                     }
                 }
-                dynamicCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
-                for (let i = 0; i < numViews; i++) {
+                
+                for (i = 0; i < numViews; i++) {
+                    views[i].clearFromDynamicView(dynamicCtx);
+                }
+                for (i = 0; i < numViews; i++) {
                     views[i].addToDynamicView(dynamicCtx);
                 }
-                isDirty = false;
             };
         
         that = specs.that || {};

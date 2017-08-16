@@ -3,6 +3,11 @@ window.WH = window.WH || {};
 
 (function (ns) {
     
+    const dotMaxRadius = 10,
+        centerRadius = 20;
+    
+    let centerDotSize;
+    
     function createCanvasEPGView(specs) {
         let that,
             processor = specs.processor,
@@ -12,22 +17,29 @@ window.WH = window.WH || {};
             staticCtx,
             necklaceCanvas,
             necklaceCtx,
-            pointerCanvas,
-            pointerCtx,
             nameCanvas,
             nameCtx,
+            
+            pointerCanvas,
+            pointerCtx,
             pointerRotation,
+            pointerRotationPrevious = 0,
+            pointerMutedRadius = 30,
+            pointerCanvasCenter,
+            
             radius = 110,
             necklaceMinRadius = 50,
             necklaceRadius,
-            centreDotFullRadius = 10,
-            centreDotRadius,
+            centerDotFullRadius = 10,
+            centerDotRadius,
+            centerDotX,
+            centerDotY,
+            centerDotStartTween,
+            centerDotEndTween,
+            
             selectRadius = 15,
-            centreRadius = 20,
-            dotMaxRadius = 7,
             dotRadius,
             zeroMarkerRadius = 3,
-            pointerMutedRadius = 30,
             colorHigh = '#cccccc',
             colorMid = '#dddddd',
             colorLow = '#eeeeee',
@@ -36,9 +48,8 @@ window.WH = window.WH || {};
             isSelected = false,
             doublePI = Math.PI * 2,
             dotAnimations = {},
-            centreDotStartTween,
-            centreDotEndTween,
             isNoteActive = false,
+            necklace = [],
             
             initialise = function() {
                 // offscreen canvas for static shapes
@@ -60,11 +71,12 @@ window.WH = window.WH || {};
                 
                 // offscreen canvas for the pointer
                 pointerCanvas = document.createElement('canvas');
-                pointerCanvas.height = radius * 2;
-                pointerCanvas.width = radius * 2;
+                pointerCanvas.height = radius;
+                pointerCanvas.width = centerRadius * 2;
                 pointerCtx = pointerCanvas.getContext('2d');
                 pointerCtx.lineWidth = lineWidth;
                 pointerCtx.strokeStyle = colorHigh;
+                pointerCanvasCenter = pointerCanvas.width / 2;
                 
                 // offscreen canvas for the name
                 nameCanvas = document.createElement('canvas');
@@ -74,6 +86,9 @@ window.WH = window.WH || {};
                 nameCtx.fillStyle = colorMid;
                 nameCtx.font = '14px sans-serif';
                 nameCtx.textAlign = 'center';
+                
+                // width and height to clear center dot 
+                centerDotSize = (centerDotFullRadius + 1) * 2;
                 
                 // add callback to update before render.
                 processor.addRenderCallback(showPlaybackPosition);
@@ -91,6 +106,7 @@ window.WH = window.WH || {};
                 
                 // set drawing values
                 position2d = params.position2d.getValue();
+                updatePosition(params.position2d, position2d, position2d)
                 updateName();
                 updateNecklace();
                 redrawStaticCanvas();
@@ -116,6 +132,7 @@ window.WH = window.WH || {};
              * @param  {Number} duration Pattern length in ticks.
              */
             showPlaybackPosition = function(position, duration) {
+                pointerRotationPrevious = pointerRotation;
                 pointerRotation = doublePI * (position / duration);
             },
             
@@ -127,22 +144,19 @@ window.WH = window.WH || {};
              */
             showNote = function(stepIndex, noteStartDelay, noteStopDelay) {
                 // get the coordinates of the dot for this step
-                let steps = processor.getParamValue('steps'),
-                    position2d = {};
-                
-                // fill position2d with the dot coordinate
-                calculateCoordinateForStepIndex(position2d, stepIndex, steps, necklaceRadius);
+                let steps = processor.getParamValue('steps');
                 
                 // retain necklace dot state in object
                 dotAnimations[stepIndex] = {
-                    position2d: position2d,
+                    position2d: necklace[stepIndex].center,
+                    boundingBox: necklace[stepIndex].rect,
                     dotRadius: 0
                 }
                 
                 let tweeningDot = dotAnimations[stepIndex];
                 
                 // animate the necklace dot
-                new TWEEN.Tween({currentRadius: dotRadius * 1.5})
+                new TWEEN.Tween({currentRadius: dotRadius * 2})
                     .to({currentRadius: dotRadius}, 300)
                     .onUpdate(function() {
                             // store new dot size
@@ -155,41 +169,41 @@ window.WH = window.WH || {};
                     .delay(noteStartDelay)
                     .start();
                 
-                // stop centre dot animation, if any
-                if (centreDotStartTween) {
-                    centreDotStartTween.stop();
-                    centreDotStartTween = null;
+                // stop center dot animation, if any
+                if (centerDotStartTween) {
+                    centerDotStartTween.stop();
+                    centerDotStartTween = null;
                 }
-                if (centreDotEndTween) {
-                    centreDotEndTween.stop();
-                    centreDotEndTween = null;
+                if (centerDotEndTween) {
+                    centerDotEndTween.stop();
+                    centerDotEndTween = null;
                 }
                 
-                // centre dot start animation
-                centreDotStartTween = new TWEEN.Tween({centreRadius: 0.01})
-                    .to({centreRadius: centreDotFullRadius}, 10)
+                // center dot start animation
+                centerDotStartTween = new TWEEN.Tween({centerRadius: 0.01})
+                    .to({centerRadius: centerDotFullRadius}, 10)
                     .onStart(function() {
                             isNoteActive = true;
                         })
                     .onUpdate(function() {
-                            centreDotRadius = this.centreRadius;
+                            centerDotRadius = this.centerRadius;
                         })
                     .delay(noteStartDelay);
                     
-                // centre dot end animation
-                centreDotEndTween = new TWEEN.Tween({centreRadius: centreDotFullRadius})
-                    .to({centreRadius: 0.01}, 150)
+                // center dot end animation
+                centerDotEndTween = new TWEEN.Tween({centerRadius: centerDotFullRadius})
+                    .to({centerRadius: 0.01}, 150)
                     .onUpdate(function() {
-                            centreDotRadius = this.centreRadius;
+                            centerDotRadius = this.centerRadius;
                         })
                     .onComplete(function() {
                             isNoteActive = false;
                         })
                     .delay(noteStopDelay - noteStartDelay);
                 
-                // start centre dot animation
-                centreDotStartTween.chain(centreDotEndTween);
-                centreDotStartTween.start();
+                // start center dot animation
+                centerDotStartTween.chain(centerDotEndTween);
+                centerDotStartTween.start();
             },
             
             /**
@@ -202,29 +216,54 @@ window.WH = window.WH || {};
                     pulses = processor.getParamValue('pulses'),
                     rotation = processor.getParamValue('rotation'),
                     euclid = processor.getEuclidPattern(),
-                    position2d = {x: 0, y:0},
-                    rad, point,
-                    necklacePoints = [];
-                    
+                    rad, x, y;
+                
+                necklace = [];
+                
                 // calculate the dot positions
-                // necklaceRadius = necklaceMinRadius + (steps > 16 ? (steps - 16) * 3 : 0);
                 necklaceRadius = necklaceMinRadius + (Math.max(0, steps - 16) * 0.8);
-                // MINIMUM_STEP_CIRCLE_RADIUS + ( Math.max ( 0, _numSteps - 16 ) * 0.6f )
                 for (let i = 0; i < steps; i++) {
-                    point = {};
-                    calculateCoordinateForStepIndex(point, i, steps, necklaceRadius);
-                    necklacePoints.push(point);
+                    rad = doublePI * (i / steps);
+                    x = Math.sin(rad) * necklaceRadius;
+                    y = Math.cos(rad) * necklaceRadius;
+                    necklace.push({
+                        center: {
+                            x: x,
+                            y: y
+                        },
+                        rect: {
+                            x: x - dotMaxRadius * 2,
+                            y: y + dotMaxRadius * 2,
+                            xAbs: 0,
+                            yAbs: 0,
+                            height: dotMaxRadius * 4,
+                            width: dotMaxRadius * 4
+                        }
+                    });
                 }
                 
                 necklaceCtx.clearRect(0, 0, necklaceCanvas.width, necklaceCanvas.height);
                 
-                updatePolygon(steps, pulses, euclid, necklacePoints);
-                updateDots(steps, euclid, necklacePoints);
+                updateNecklaceAbsolute();
+                updatePolygon(steps, pulses, euclid, necklace);
+                updateDots(steps, euclid, necklace);
                 updatePointer();
                 updateZeroMarker(steps, rotation);
                 updateRotatedMarker(steps, rotation);
                 redrawStaticCanvas();
                 canvasDirtyCallback();
+            },
+            
+            /**
+             * Update the coordinates of the necklace nodes relative to the main canvas.
+             */
+            updateNecklaceAbsolute = function() {
+                let rect;
+                for (let i = 0, n = necklace.length; i < n; i++) {
+                    rect = necklace[i].rect;
+                    rect.xAbs = position2d.x + rect.x;
+                    rect.yAbs = position2d.y - rect.y;
+                }
             },
             
             /**
@@ -245,6 +284,9 @@ window.WH = window.WH || {};
              */
             updatePosition = function(param, oldValue, newValue) {
                 position2d = newValue;
+                centerDotX = position2d.x - centerDotFullRadius - 1;
+                centerDotY = position2d.y - centerDotFullRadius - 1;
+                updateNecklaceAbsolute();
                 redrawStaticCanvas();
                 canvasDirtyCallback();
             },
@@ -252,21 +294,23 @@ window.WH = window.WH || {};
             /**
              * Draw polygon.
              */
-            updatePolygon = function(steps, pulses, euclid, necklacePoints) {
+            updatePolygon = function(steps, pulses, euclid, necklace) {
                 if (pulses > 1) {
                     necklaceCtx.fillStyle = colorLow;
                     necklaceCtx.strokeStyle = colorLow;
                     necklaceCtx.beginPath();
                     let isFirstPoint = true,
-                        firstPoint;
+                        firstPoint,
+                        dotCenter;
                     for (let i = 0; i < steps; i++) {
                         if (euclid[i]) {
+                            dotCenter = necklace[i].center;
                             if (isFirstPoint) {
                                 isFirstPoint = false;
-                                firstPoint = necklacePoints[i];
+                                firstPoint = dotCenter;
                                 necklaceCtx.moveTo(radius + firstPoint.x, radius - firstPoint.y);
                             } else {
-                                necklaceCtx.lineTo(radius + necklacePoints[i].x, radius - necklacePoints[i].y);
+                                necklaceCtx.lineTo(radius + dotCenter.x, radius - dotCenter.y);
                             }
                         }
                     }
@@ -278,13 +322,13 @@ window.WH = window.WH || {};
                 }
             },
             
-            updateDots = function(steps, euclid, necklacePoints) {
-                dotRadius = dotMaxRadius - (Math.max(0, steps - 16) * 0.09);
+            updateDots = function(steps, euclid, necklace) {
+                dotRadius = dotMaxRadius - 3 - (Math.max(0, steps - 16) * 0.09);
                 
                 necklaceCtx.fillStyle = colorHigh;
                 necklaceCtx.strokeStyle = colorHigh;
                 for (let i = 0; i < steps; i++) {
-                    point = necklacePoints[i];
+                    point = necklace[i].center;
                     if (euclid[i]) {
                         // active dot
                         necklaceCtx.beginPath();
@@ -307,18 +351,15 @@ window.WH = window.WH || {};
              */
             updatePointer = function() {
                 let isMute = processor.getParamValue('is_mute'),
-                    isNoteInControlled = false, /* processor.getProperty('isNoteInControlled'), */
-                    isMutedByNoteInControl = false,
-                    isMutedSize = isMute || isMutedByNoteInControl,
-                    pointerRadius = isMutedSize ? pointerMutedRadius : necklaceRadius,
-                    pointerX = isMutedSize ? 15 : 19,
-                    pointerY = isMutedSize ? 15 : 6;
+                    pointerRadius = isMute ? pointerMutedRadius : necklaceRadius,
+                    pointerX = isMute ? 15 : 19,
+                    pointerY = isMute ? 15 : 6;
                 
                 pointerCtx.clearRect(0, 0, pointerCanvas.width, pointerCanvas.height);
                 pointerCtx.beginPath();
-                pointerCtx.moveTo(radius - pointerX, radius - pointerY);
-                pointerCtx.lineTo(radius, radius - pointerRadius);
-                pointerCtx.lineTo(radius + pointerX, radius - pointerY);
+                pointerCtx.moveTo(pointerCanvasCenter - pointerX, pointerCanvas.height - pointerY);
+                pointerCtx.lineTo(pointerCanvasCenter, pointerCanvas.height - pointerRadius);
+                pointerCtx.lineTo(pointerCanvasCenter + pointerX, pointerCanvas.height - pointerY);
                 pointerCtx.stroke();
             },
             
@@ -372,9 +413,9 @@ window.WH = window.WH || {};
                 // necklace
                 staticCtx.drawImage(necklaceCanvas, 0, 0);
                 
-                // centre ring
-                staticCtx.moveTo(radius + centreRadius, radius);
-                staticCtx.arc(radius, radius, centreRadius, 0, doublePI, true);
+                // center ring
+                staticCtx.moveTo(radius + centerRadius, radius);
+                staticCtx.arc(radius, radius, centerRadius, 0, doublePI, true);
                 
                 // select circle
                 if (isSelected) {
@@ -397,11 +438,11 @@ window.WH = window.WH || {};
             
             addToDynamicView = function(mainDynamicCtx) {
                 // draw rotating pointer
+                mainDynamicCtx.save();
                 mainDynamicCtx.translate(position2d.x, position2d.y);
                 mainDynamicCtx.rotate(pointerRotation);
-                mainDynamicCtx.drawImage(pointerCanvas, -radius, -radius);
-                mainDynamicCtx.rotate(-pointerRotation);
-                mainDynamicCtx.translate(-position2d.x, -position2d.y);
+                mainDynamicCtx.drawImage(pointerCanvas, -pointerCanvasCenter, -pointerCanvas.height);
+                mainDynamicCtx.restore();
                 
                 mainDynamicCtx.fillStyle = colorHigh;
                 mainDynamicCtx.strokeStyle = colorHigh;
@@ -420,33 +461,48 @@ window.WH = window.WH || {};
                     }
                 }
                 
-                // centre dot
+                // center dot
                 if (isNoteActive) {
-                    mainDynamicCtx.moveTo(position2d.x + centreDotRadius, position2d.y);
-                    mainDynamicCtx.arc(position2d.x, position2d.y, centreDotRadius, 0, doublePI, true);
+                    mainDynamicCtx.moveTo(position2d.x + centerDotRadius, position2d.y);
+                    mainDynamicCtx.arc(position2d.x, position2d.y, centerDotRadius, 0, doublePI, true);
                 }
                 
                 mainDynamicCtx.fill();
                 mainDynamicCtx.stroke();
             },
             
+            /**
+             * Clear all this pattern's elements from the dynamic context.
+             * These are the center dot, necklace dots and pointer.
+             * @param  {Object} mainDynamicCtx 2D canvas context.
+             */
+            clearFromDynamicView = function(mainDynamicCtx) {
+                // center dot
+                if (isNoteActive) {
+                    mainDynamicCtx.clearRect(centerDotX, centerDotY, centerDotSize, centerDotSize);
+                }
+                
+                // necklace dots
+                let rect;
+                for (let key in dotAnimations) {
+                    if (dotAnimations.hasOwnProperty(key)) {
+                        rect = dotAnimations[key].boundingBox;
+                        mainDynamicCtx.clearRect(rect.xAbs, rect.yAbs, rect.height, rect.width);
+                    }
+                }
+                
+                // pointer
+                mainDynamicCtx.save();
+                mainDynamicCtx.translate(position2d.x, position2d.y);
+                mainDynamicCtx.rotate(pointerRotationPrevious);
+                mainDynamicCtx.clearRect(-pointerCanvasCenter, -pointerCanvas.height, pointerCanvas.width, pointerCanvas.height);
+                mainDynamicCtx.restore();
+            },
+            
             intersectsWithPoint = function(x, y) {
                 let distance = Math.sqrt(Math.pow(x - position2d.x, 2) + Math.pow(y - position2d.y, 2));
                 return distance <= necklaceRadius + dotRadius;
             },
-            
-            /**
-             * Calculate the 2D coordinates of the dot for a certain step.
-             * @param  {Object} position2d 2D point vector to be set in this function.
-             * @param  {Number} stepIndex Index of the step within the pattern.
-             * @param  {Number} numSteps Number of steps in the pattern.
-             * @param  {Number} necklaceRadius Distance of the dots from the centre.
-             */
-            calculateCoordinateForStepIndex = function(position2d, stepIndex, numSteps, necklaceRadius) {
-                let rad = doublePI * (stepIndex / numSteps);
-                position2d.x = Math.sin(rad) * necklaceRadius;
-                position2d.y = Math.cos(rad) * necklaceRadius;
-            }
             
             getProcessor = function() {
                 return processor;
@@ -468,7 +524,6 @@ window.WH = window.WH || {};
                 colorHigh = theme.colorHigh;
                 colorMid = theme.colorMid;
                 colorLow = theme.colorLow;
-                console.log('epg setTheme: ', theme);
                 staticCtx.strokeStyle = colorHigh;
                 necklaceCtx.fillStyle = colorHigh;
                 necklaceCtx.strokeStyle = colorHigh;
@@ -485,6 +540,7 @@ window.WH = window.WH || {};
         that.terminate = terminate;
         that.addToStaticView = addToStaticView;
         that.addToDynamicView = addToDynamicView;
+        that.clearFromDynamicView = clearFromDynamicView;
         that.intersectsWithPoint = intersectsWithPoint;
         that.getProcessor = getProcessor;
         that.setPosition2d = setPosition2d;
