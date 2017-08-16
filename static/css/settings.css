@@ -1,0 +1,99 @@
+/************************
+ * settings
+ ************************/
+
+.settings {
+    float: right;
+    position: relative;
+    width: 360px;
+}
+.settings > * {
+    background-color: var(--panel-bg-color);
+    margin: 2px;
+    padding-bottom: 10px;
+}
+.settings .btn {
+    height: var(--input-height);
+    font-size: var(--font-size);
+    line-height: var(--input-height);
+    width: 32px;
+}
+.settings button.btn {
+    background-color: var(--btn-color);
+    color: var(--input-bg-color);
+    padding: 0 16px;
+    width: auto;
+}
+.settings__row {
+    position: relative;
+}
+.settings__row:first-of-type {
+    padding-top: 10px;
+}
+.settings__row:last-of-type {
+    padding-bottom: 10px;
+}
+.settings__fieldset {
+    border: none;
+}
+.settings__legend {
+    line-height: var(--input-height);
+    padding-left: 8px;
+}
+.setting__integer {
+    display: flex;
+}
+.setting__label-text {
+    display: inline-block;
+    line-height: var(--input-height);
+    padding-left: 8px;
+    width: 30%;
+}
+.setting__range {
+    display: inline-block;
+    width: 55%;
+}
+input.setting__number {
+    background-color: var(--panel-bg-color);
+    border: none;
+    display: inline-block;
+    font-size: var(--font-size);
+    line-height: var(--input-height);
+    padding: 0 8px;
+    text-align: right;
+    width: 15%;
+}
+.setting__radio {
+    position: absolute;
+    margin-left: -9999px;
+    visibility: hidden;
+}
+.setting__radio + .setting__label-radio-text {
+    /*font-size: 16px;*/
+}
+.setting__radio:checked + .setting__label-radio-text {
+    background-color: var(--btn-bg-color);
+    color: var(--btn-active-color);
+}
+.setting__text {
+    border: none;
+    font-size: var(--font-size);
+    height: var(--input-height);
+    padding: 0 6px;
+    width: 55%;
+}
+.setting__learnmode {
+    background-color: rgba(255, 180, 100, 0.3);
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.setting__learnmode[data-selected='true'] {
+    background-color: rgba(255, 180, 100, 0.6);
+    border: 1px solid rgba(255, 180, 100, 1.0);
+}
+.setting__learnmode[data-assigned='true'] {
+    background-color: rgba(255, 200, 200, 0.4);
+}
