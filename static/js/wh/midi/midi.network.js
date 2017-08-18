@@ -277,7 +277,7 @@ window.WH = window.WH || {};
                 while (--n >= 0) {
                     type = processors[n].getType();
                     if (type !== 'input' && type !== 'output') {
-                        deleteProcessor(processors[n].getID());
+                        deleteProcessor(processors[n]);
                     }
                 }
             },
