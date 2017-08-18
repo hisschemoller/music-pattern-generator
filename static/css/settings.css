@@ -49,7 +49,7 @@
     padding-left: 8px;
     width: 30%;
 }
-.setting__range {
+input[type=range].setting__range {
     display: inline-block;
     width: 55%;
 }
