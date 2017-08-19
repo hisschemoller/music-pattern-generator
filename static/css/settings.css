@@ -27,14 +27,9 @@
 .settings__row {
     position: relative;
 }
-.settings__row:first-of-type {
-    padding-top: 10px;
-}
-.settings__row:last-of-type {
-    padding-bottom: 10px;
-}
 .settings__fieldset {
     border: none;
+    padding: 10px 0;
 }
 .settings__legend {
     line-height: var(--input-height);
@@ -83,17 +78,18 @@ input[type='number'].setting__number {
     width: 55%;
 }
 .setting__learnmode {
-    background-color: rgba(255, 180, 100, 0.3);
+    border: 3px dashed var(--assign-border-color);
     bottom: 0;
     left: 0;
+    margin: 1px;
     position: absolute;
     right: 0;
     top: 0;
 }
 .setting__learnmode[data-selected='true'] {
-    background-color: rgba(255, 180, 100, 0.6);
-    border: 1px solid rgba(255, 180, 100, 1.0);
+    background-color: var(--assign-bg-color);
 }
 .setting__learnmode[data-assigned='true'] {
-    background-color: rgba(255, 200, 200, 0.4);
+    border-color: var(--assign-border-assigned-color);
+    border-style: solid;
 }

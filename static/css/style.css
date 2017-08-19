@@ -73,6 +73,9 @@
 }
 
 :root {
+    --assign-bg-color: rgba(0, 0, 0, 0.2);
+    --assign-border-color: #666;
+    --assign-border-assigned-color: #333;
     --bg-color: #fff;
     --border-color: #999;
     --btn-color: #999;
@@ -94,6 +97,9 @@
     --text-color: #333;
 }
 div[data-theme='dev'] {
+    --assign-bg-color: rgba(0, 0, 0, 0.1);
+    --assign-border-color: #ccc;
+    --assign-border-assigned-color: #999;
     --bg-color: #fff;
     --border-color: #ddd;
     --btn-color: #bbb;
@@ -107,6 +113,9 @@ div[data-theme='dev'] {
     --text-color: #bbb;
 }
 div[data-theme='dark'] {
+    --assign-bg-color: rgba(255, 255, 255, 0.2);
+    --assign-border-color: #999;
+    --assign-border-assigned-color: #ccc;
     --bg-color: #000;
     --border-color: #999;
     --btn-color: #999;
