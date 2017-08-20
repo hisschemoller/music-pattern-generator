@@ -265,3 +265,13 @@ div[data-theme] {
 .header--sub .header__label {
     font-size: var(--font-size-subheader);
 }
+
+
+/************************
+ * help
+ ************************/
+
+.help {
+    display: none;
+    width: 300px;
+}
