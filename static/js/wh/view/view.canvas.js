@@ -74,10 +74,11 @@ window.WH = window.WH || {};
              * Window resize event handler.
              */
             onWindowResize = function() {
-                staticCanvas.width = window.innerWidth;
-                staticCanvas.height = window.innerHeight;
-                dynamicCanvas.width = window.innerWidth;
-                dynamicCanvas.height = window.innerHeight;
+                const parentEl = staticCanvas.parentElement;
+                staticCanvas.width = parentEl.clientWidth;
+                staticCanvas.height = parentEl.clientHeight;
+                dynamicCanvas.width = parentEl.clientWidth;
+                dynamicCanvas.height = parentEl.clientHeight;
                 canvasRect = dynamicCanvas.getBoundingClientRect();
                 markDirty();
             },

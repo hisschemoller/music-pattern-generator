@@ -7,10 +7,7 @@
 </head>
 <body>
     <div id="app" data-theme="dev">
-        <div class="background">
-        <canvas class="canvas-static"></canvas>
-        <canvas class="canvas-dynamic"></canvas>
-        <div class="controls file">
+        <header class="controls file">
             <button class="file__new btn" title="New project">
                 <span class="icon-new"></span>
             </button>
@@ -38,56 +35,63 @@
             <label for="help-check" class="toggle__label btn" title="Help">
                 <span class="icon-help" data-on="&#xf128;" data-off="&#xf128;"></span>
             </label>
-        </div>
-        <div class="settings"></div>
-        <div class="prefs">
-            <div class="header">
-                <span class="header__label">Preferences</span>
-            </div>
-            <div class="prefs__midi-in">
-                <div class="prefs__subheader header header--sub">
-                    <div class="prefs__subheader-title header__label">MIDI Inputs</div>
-                    <div class="prefs__subheader-network header__label">Network</div>
-                    <div class="prefs__subheader-sync header__label">Sync</div>
-                    <div class="prefs__subheader-remote header__label">Remote</div>
+        </header>
+        <main class="main">
+            <canvas class="canvas-static"></canvas>
+            <canvas class="canvas-dynamic"></canvas>
+            <div class="">
+                <div class="prefs">
+                <div class="header">
+                    <span class="header__label">Preferences</span>
                 </div>
-                <ul class="prefs__inputs"></ul>
-            </div>
-            <div class="prefs__midi-out">
-                <div class="prefs__subheader header header--sub">
-                    <div class="prefs__subheader-title header__label">MIDI Outputs</div>
-                    <div class="prefs__subheader-network header__label">Network</div>
-                    <div class="prefs__subheader-sync header__label">Sync</div>
-                    <div class="prefs__subheader-remote header__label">Remote</div>
+                <div class="prefs__midi-in">
+                    <div class="prefs__subheader header header--sub">
+                        <div class="prefs__subheader-title header__label">MIDI Inputs</div>
+                        <div class="prefs__subheader-network header__label">Network</div>
+                        <div class="prefs__subheader-sync header__label">Sync</div>
+                        <div class="prefs__subheader-remote header__label">Remote</div>
+                    </div>
+                    <ul class="prefs__inputs"></ul>
                 </div>
-                <ul class="prefs__outputs"></ul>
-            </div>
-            <div class="header header--sub">
-                <span class="header__label">Interface</span>
-            </div>
-            <div class="prefs__setting">
-                <span class="prefs__label">Dark theme</span>
-                <div class="prefs__input">
-                    <label class="btn prefs__btn" title="Dark theme">
-                        <input type="checkbox" class="prefs__btn-check prefs__dark-theme" />
-                        <span data-on="On" data-off="Off" class="prefs__btn-text"></span>
-                    </label>
+                <div class="prefs__midi-out">
+                    <div class="prefs__subheader header header--sub">
+                        <div class="prefs__subheader-title header__label">MIDI Outputs</div>
+                        <div class="prefs__subheader-network header__label">Network</div>
+                        <div class="prefs__subheader-sync header__label">Sync</div>
+                        <div class="prefs__subheader-remote header__label">Remote</div>
+                    </div>
+                    <ul class="prefs__outputs"></ul>
+                </div>
+                <div class="header header--sub">
+                    <span class="header__label">Interface</span>
+                </div>
+                <div class="prefs__setting">
+                    <span class="prefs__label">Dark theme</span>
+                    <div class="prefs__input">
+                        <label class="btn prefs__btn" title="Dark theme">
+                            <input type="checkbox" class="prefs__btn-check prefs__dark-theme" />
+                            <span data-on="On" data-off="Off" class="prefs__btn-text"></span>
+                        </label>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="remote">
-            <div class="header">
-                <span class="header__label">Assignments</span>
-            </div>
-            <div class="remote__viewport">
-                <ul class="remote__list"></ul>
-            </div>
-        </div>
-        <div class="help">
-            <div class="header">
-                <span class="header__label">Help</span>
-            </div>
-        </help>
+                <div class="remote">
+                    <div class="header">
+                        <span class="header__label">Assignments</span>
+                    </div>
+                    <div class="remote__viewport">
+                        <ul class="remote__list"></ul>
+                    </div>
+                </div>
+            </div><!-- / -->
+            <div class="settings"></div>
+            <div class="help">
+                <div class="header">
+                    <span class="header__label">Help</span>
+                </div>
+                <div class="panel__viewport"></div>
+            </help>
+        </main>
     </app>
 
     <template id="template-settings-epg">

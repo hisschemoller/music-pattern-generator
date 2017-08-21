@@ -81,6 +81,7 @@
     --btn-color: #999;
     --btn-active-color: #333;
     --btn-bg-color: #ccc;
+    --control-bar-height: 40px;
     --default-font-family: 'Alte-DIN-1451-Mittelschrift', sans-serif;
     --font-size: 16px;
     --font-size-subheader: 14px;
@@ -163,6 +164,14 @@ select:focus {
     outline: none;
 }
 
+div[data-theme] {
+    color: var(--text-color);
+}
+
+/************************
+ * layout
+ ************************/
+
 #app {
     bottom: 0;
     left: 0;
@@ -174,23 +183,26 @@ select:focus {
     top: 0;
 }
 
-div[data-theme] {
-    color: var(--text-color);
-}
-
-.background {
-    background-color: var(--bg-color);
-    bottom: 0;
-    color: var(--text-color);
-    left: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-}
 .canvas-static,
 .canvas-dynamic {
     position: absolute;
 }
+
+.main {
+    background-color: var(--bg-color);
+    bottom: 0;
+    color: var(--text-color);
+    display: flex;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: var(--control-bar-height);
+}
+
+/************************
+ * UI
+ ************************/
+ 
 .btn {
     background-color: var(--btn-bg-color);
     border: none;
@@ -225,6 +237,7 @@ div[data-theme] {
     align-items: flex-start;
     background-color: var(--panel-bg-color);
     display: flex;
+    height: var(--control-bar-height);
     position: relative;
 }
 .controls .btn,
