@@ -51,7 +51,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
         that: controlsView,
         appView: appView,
         midiRemote: midiRemote,
-        preferencesView: preferencesView,
         transport: transport
     });
     WH.createPreferences({
@@ -64,6 +63,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     WH.createRemoteView({
         that: remoteView,
+        appView: appView,
         midiRemote: midiRemote
     });
     WH.createFile({

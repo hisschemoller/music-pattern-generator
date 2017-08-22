@@ -5,7 +5,6 @@
 .prefs {
     background-color: var(--panel-bg-color);
     display: none;
-    float: left;
     margin: 2px;
     position: relative;
     width: 340px;
@@ -15,9 +14,6 @@
         font-size: var(--font-size);
         line-height: 32px;
     }
-.prefs[data-show=true] {
-    display: block;
-}
 .prefs__label-text {
     display: inline-block;
     line-height: var(--input-height);

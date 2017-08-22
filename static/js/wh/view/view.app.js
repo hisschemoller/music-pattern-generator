@@ -12,6 +12,8 @@ window.WH = window.WH || {};
             midiNetwork = specs.midiNetwork,
             rootEl = document.querySelector('#app'),
             helpEl = document.querySelector('.help'),
+            prefsEl = document.querySelector('.prefs'),
+            remoteEl = document.querySelector('.remote'),
             settingsEl = document.querySelector('.settings'),
             settingsViews = [],
             
@@ -45,6 +47,18 @@ window.WH = window.WH || {};
             
             toggleHelp = function(isVisible) {
                 helpEl.dataset.show = isVisible;;
+            },
+            
+            togglePreferences = function(isVisible) {
+                prefsEl.dataset.show = isVisible;;
+            },
+            
+            toggleRemote = function(isVisible) {
+                remoteEl.dataset.show = isVisible;;
+            },
+            
+            toggleSettings = function(isVisible) {
+                // remoteEl.dataset.show = isVisible;;
             };
         
         that = specs.that || {};
@@ -52,6 +66,9 @@ window.WH = window.WH || {};
         that.createSettingsView = createSettingsView;
         that.deleteSettingsView = deleteSettingsView;
         that.toggleHelp = toggleHelp;
+        that.togglePreferences = togglePreferences;
+        that.toggleRemote = toggleRemote;
+        that.toggleSettings = toggleSettings;
         return that;
     };
 

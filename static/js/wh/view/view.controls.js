@@ -14,7 +14,6 @@
         var that,
             appView = specs.appView,
             midiRemote = specs.midiRemote,
-            preferencesView = specs.preferencesView,
             transport = specs.transport
             controlsEl = document.querySelector('.controls'),
             controls = {
@@ -55,10 +54,10 @@
                     midiRemote.toggleMidiLearn(e.target.checked);
                 });
                 controls.prefs.input.addEventListener('change', function(e) {
-                    preferencesView.toggle(e.target.checked);
+                    appView.togglePreferences(e.target.checked);
                 });
                 controls.settings.input.addEventListener('change', function(e) {
-                    // TODO
+                    appView.toggleSettings(e.target.checked);
                 });
                 controls.help.input.addEventListener('change', function(e) {
                     appView.toggleHelp(e.target.checked);
