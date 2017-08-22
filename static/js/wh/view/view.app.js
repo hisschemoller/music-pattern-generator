@@ -13,8 +13,8 @@ window.WH = window.WH || {};
             rootEl = document.querySelector('#app'),
             helpEl = document.querySelector('.help'),
             prefsEl = document.querySelector('.prefs'),
-            remoteEl = document.querySelector('.remote'),
             settingsEl = document.querySelector('.settings'),
+            remoteEl = document.querySelector('.remote'),
             settingsViews = [],
             
             /**
@@ -58,7 +58,7 @@ window.WH = window.WH || {};
             },
             
             toggleSettings = function(isVisible) {
-                // remoteEl.dataset.show = isVisible;;
+                settingsEl.dataset.show = isVisible;;
             };
         
         that = specs.that || {};

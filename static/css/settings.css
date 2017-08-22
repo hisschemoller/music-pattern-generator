@@ -4,6 +4,7 @@
 
 .settings {
     float: right;
+    display: none;
     position: relative;
     width: 360px;
 }
