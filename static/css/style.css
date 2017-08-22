@@ -186,11 +186,6 @@ div[data-theme] {
     top: 0;
 }
 
-.canvas-static,
-.canvas-dynamic {
-    position: absolute;
-}
-
 .main {
     background-color: var(--bg-color);
     bottom: 0;
@@ -200,6 +195,51 @@ div[data-theme] {
     position: absolute;
     right: 0;
     top: var(--control-bar-height);
+}
+
+.canvas-static,
+.canvas-dynamic {
+    position: absolute;
+}
+
+.panels {
+    bottom: 0;
+    display: flex;
+    left: 0;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.panels__left {
+    display: flex;
+    flex-basis: 340px;
+    flex-shrink: 0;
+    flex-wrap: nowrap;
+}
+.panels__right {
+    flex-basis: 360px;
+    flex-direction: column;
+    flex-grow: 1;
+}
+.panels__left .prefs {
+    flex-shrink: 1;
+}
+.panels__left .remote {
+    flex-shrink: 1;
+}
+.panels > * {
+    pointer-events: none;
+}
+.panels > * * {
+    pointer-events: auto;
+}
+.panel__viewport {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.panel[data-show=true] {
+    display: block;
 }
 
 /************************
@@ -290,7 +330,4 @@ div[data-theme] {
 .help {
     display: none;
     width: 360px;
-}
-.help[data-show=true] {
-    display: block;
 }

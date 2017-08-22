@@ -11,11 +11,21 @@ window.WH = window.WH || {};
         var that,
             midiNetwork = specs.midiNetwork,
             rootEl = document.querySelector('#app'),
+            panelsEl = document.querySelector('.panels'),
             helpEl = document.querySelector('.help'),
             prefsEl = document.querySelector('.prefs'),
             settingsEl = document.querySelector('.settings'),
             remoteEl = document.querySelector('.remote'),
             settingsViews = [],
+            panelHeaderHeight,
+            
+            init = function() {
+                var style = getComputedStyle(document.body);
+                panelHeaderHeight = parseInt(style.getPropertyValue('--header-height'), 10);
+                
+                window.addEventListener('resize', renderLayout, false);
+                renderLayout();
+            },
             
             /**
              * Create settings controls view for a processor.
@@ -45,23 +55,36 @@ window.WH = window.WH || {};
                 }
             },
             
+            renderLayout = function() {
+                const panelsHeight = panelsEl.clientHeight,
+                    prefsHeight = prefsEl.querySelector('.panel__content').clientHeight,
+                    remoteHeight = remoteEl.querySelector('.panel__content').clientHeight;
+                console.log(panelsHeight, prefsHeight, remoteHeight);
+            },
+            
             toggleHelp = function(isVisible) {
-                helpEl.dataset.show = isVisible;;
+                helpEl.dataset.show = isVisible;
+                renderLayout();
             },
             
             togglePreferences = function(isVisible) {
-                prefsEl.dataset.show = isVisible;;
+                prefsEl.dataset.show = isVisible;
+                renderLayout();
             },
             
             toggleRemote = function(isVisible) {
-                remoteEl.dataset.show = isVisible;;
+                remoteEl.dataset.show = isVisible;
+                renderLayout();
             },
             
             toggleSettings = function(isVisible) {
-                settingsEl.dataset.show = isVisible;;
+                settingsEl.dataset.show = isVisible;
+                renderLayout();
             };
         
         that = specs.that || {};
+        
+        init();
         
         that.createSettingsView = createSettingsView;
         that.deleteSettingsView = deleteSettingsView;
