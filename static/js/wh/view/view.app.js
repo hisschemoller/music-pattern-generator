@@ -11,6 +11,7 @@ window.WH = window.WH || {};
         var that,
             midiNetwork = specs.midiNetwork,
             rootEl = document.querySelector('#app'),
+            helpEl = document.querySelector('.help'),
             settingsEl = document.querySelector('.settings'),
             settingsViews = [],
             
@@ -40,12 +41,17 @@ window.WH = window.WH || {};
                         return false;
                     }
                 }
+            },
+            
+            toggleHelp = function(isVisible) {
+                helpEl.dataset.show = isVisible;;
             };
         
         that = specs.that || {};
         
         that.createSettingsView = createSettingsView;
         that.deleteSettingsView = deleteSettingsView;
+        that.toggleHelp = toggleHelp;
         return that;
     };
 

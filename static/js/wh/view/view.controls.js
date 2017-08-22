@@ -12,6 +12,7 @@
     
     function createControlsView(specs) {
         var that,
+            appView = specs.appView,
             midiRemote = specs.midiRemote,
             preferencesView = specs.preferencesView,
             transport = specs.transport
@@ -60,7 +61,7 @@
                     // TODO
                 });
                 controls.help.input.addEventListener('change', function(e) {
-                    // TODO
+                    appView.toggleHelp(e.target.checked);
                 });
                 document.addEventListener('keyup', function(e) {
                     switch (e.keyCode) {

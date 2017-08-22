@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     WH.createControlsView({
         that: controlsView,
+        appView: appView,
         midiRemote: midiRemote,
         preferencesView: preferencesView,
         transport: transport

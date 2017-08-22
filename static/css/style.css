@@ -289,5 +289,8 @@ div[data-theme] {
 
 .help {
     display: none;
-    width: 300px;
+    width: 360px;
+}
+.help[data-show=true] {
+    display: block;
 }
