@@ -71,6 +71,9 @@
 .icon-cancel:before {
   content: "\e807";
 }
+.icon-wrench:before {
+  content: "\e808";
+}
 
 :root {
     --assign-bg-color: rgba(0, 0, 0, 0.2);

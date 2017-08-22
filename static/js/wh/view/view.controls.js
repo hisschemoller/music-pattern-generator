@@ -33,6 +33,10 @@
                     type: 'checkbox',
                     input: document.getElementById('prefs-check')
                 },
+                settings: {
+                    type: 'checkbox',
+                    input: document.getElementById('settings-check')
+                },
                 help: {
                     type: 'checkbox',
                     input: document.getElementById('help-check')
@@ -51,6 +55,12 @@
                 });
                 controls.prefs.input.addEventListener('change', function(e) {
                     preferencesView.toggle(e.target.checked);
+                });
+                controls.settings.input.addEventListener('change', function(e) {
+                    // TODO
+                });
+                controls.help.input.addEventListener('change', function(e) {
+                    // TODO
                 });
                 document.addEventListener('keyup', function(e) {
                     switch (e.keyCode) {

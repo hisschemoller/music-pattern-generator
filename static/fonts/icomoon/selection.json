@@ -22,15 +22,15 @@
         {}
       ],
       "properties": {
-        "order": 24,
+        "order": 27,
         "id": 20,
         "name": "cancel",
         "ligatures": "",
         "prevSize": 32,
         "code": 59399
       },
-      "setIdx": 0,
-      "setId": 0,
+      "setIdx": 1,
+      "setId": 1,
       "iconIdx": 0
     },
     {
@@ -53,15 +53,15 @@
         {}
       ],
       "properties": {
-        "order": 23,
+        "order": 28,
         "id": 19,
         "name": "ok",
         "ligatures": "",
         "prevSize": 32,
         "code": 59398
       },
-      "setIdx": 0,
-      "setId": 0,
+      "setIdx": 1,
+      "setId": 1,
       "iconIdx": 1
     },
     {
@@ -101,14 +101,14 @@
         {}
       ],
       "properties": {
-        "order": 22,
+        "order": 29,
         "id": 18,
         "name": "midi",
         "prevSize": 32,
         "code": 59648
       },
-      "setIdx": 0,
-      "setId": 0,
+      "setIdx": 1,
+      "setId": 1,
       "iconIdx": 2
     },
     {
@@ -129,14 +129,14 @@
       "attrs": [],
       "properties": {
         "id": 16,
-        "order": 13,
+        "order": 30,
         "ligatures": "",
         "prevSize": 32,
         "code": 59397,
         "name": "cog"
       },
-      "setIdx": 0,
-      "setId": 0,
+      "setIdx": 1,
+      "setId": 1,
       "iconIdx": 3
     },
     {
@@ -157,14 +157,14 @@
       "attrs": [],
       "properties": {
         "id": 17,
-        "order": 14,
+        "order": 31,
         "ligatures": "",
         "prevSize": 32,
         "code": 61736,
         "name": "help"
       },
-      "setIdx": 0,
-      "setId": 0,
+      "setIdx": 1,
+      "setId": 1,
       "iconIdx": 4
     },
     {
@@ -185,14 +185,14 @@
       "attrs": [],
       "properties": {
         "id": 10,
-        "order": 16,
+        "order": 32,
         "ligatures": "",
         "prevSize": 32,
         "name": "new",
         "code": 59392
       },
-      "setIdx": 0,
-      "setId": 0,
+      "setIdx": 1,
+      "setId": 1,
       "iconIdx": 5
     },
     {
@@ -213,14 +213,14 @@
       "attrs": [],
       "properties": {
         "id": 11,
-        "order": 17,
+        "order": 33,
         "ligatures": "",
         "prevSize": 32,
         "name": "save",
         "code": 59393
       },
-      "setIdx": 0,
-      "setId": 0,
+      "setIdx": 1,
+      "setId": 1,
       "iconIdx": 6
     },
     {
@@ -241,14 +241,14 @@
       "attrs": [],
       "properties": {
         "id": 12,
-        "order": 18,
+        "order": 34,
         "ligatures": "",
         "prevSize": 32,
         "name": "play",
         "code": 59394
       },
-      "setIdx": 0,
-      "setId": 0,
+      "setIdx": 1,
+      "setId": 1,
       "iconIdx": 7
     },
     {
@@ -269,14 +269,14 @@
       "attrs": [],
       "properties": {
         "id": 13,
-        "order": 19,
+        "order": 35,
         "ligatures": "",
         "prevSize": 32,
         "name": "pause",
         "code": 59395
       },
-      "setIdx": 0,
-      "setId": 0,
+      "setIdx": 1,
+      "setId": 1,
       "iconIdx": 8
     },
     {
@@ -297,14 +297,14 @@
       "attrs": [],
       "properties": {
         "id": 14,
-        "order": 20,
+        "order": 36,
         "ligatures": "",
         "prevSize": 32,
         "name": "stop",
         "code": 59396
       },
-      "setIdx": 0,
-      "setId": 0,
+      "setIdx": 1,
+      "setId": 1,
       "iconIdx": 9
     },
     {
@@ -325,15 +325,41 @@
       "attrs": [],
       "properties": {
         "id": 15,
-        "order": 21,
+        "order": 37,
         "ligatures": "",
         "prevSize": 32,
         "name": "open",
         "code": 61717
       },
-      "setIdx": 0,
-      "setId": 0,
+      "setIdx": 1,
+      "setId": 1,
       "iconIdx": 10
+    },
+    {
+      "icon": {
+        "paths": [
+          "M219.136 840.704q0-14.336-10.24-25.6t-25.6-10.24-25.6 10.24-11.264 25.6 11.264 25.6 25.6 11.264 25.6-11.264 10.24-25.6zM587.776 601.088l-390.144 390.144q-21.504 20.48-51.2 20.48t-52.224-20.48l-60.416-62.464q-21.504-20.48-21.504-51.2 0-29.696 21.504-52.224l389.12-389.12q22.528 56.32 65.536 99.328t99.328 65.536zM950.272 352.256q0 22.528-13.312 60.416-27.648 76.8-94.208 124.928t-147.456 47.104q-106.496 0-181.248-74.752t-74.752-181.248 74.752-180.224 181.248-75.776q32.768 0 68.608 10.24t61.44 26.624q9.216 6.144 9.216 15.36t-9.216 16.384l-166.912 96.256v128l110.592 61.44q2.048-2.048 45.056-27.648t76.8-46.080 40.96-20.48q8.192 0 13.312 5.12t5.12 14.336z"
+        ],
+        "width": 950,
+        "isMulticolor": false,
+        "isMulticolor2": false,
+        "tags": [
+          "wrench"
+        ],
+        "defaultCode": 59392,
+        "grid": 16
+      },
+      "properties": {
+        "id": 21,
+        "order": 26,
+        "ligatures": "",
+        "prevSize": 32,
+        "code": 59400,
+        "name": "wrench"
+      },
+      "setIdx": 1,
+      "setId": 1,
+      "iconIdx": 11
     }
   ],
   "height": 1024,
