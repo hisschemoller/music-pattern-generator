@@ -338,6 +338,10 @@ div[data-theme] {
  ************************/
 
 .help {
+    background-color: var(--panel-bg-color);
     float: right;
     width: 360px;
+}
+.help__content {
+    padding: 0 10px;
 }
