@@ -56,11 +56,48 @@ window.WH = window.WH || {};
                 }
             },
             
-            renderLayout = function() {
-                const panelsHeight = panelsEl.clientHeight,
-                    prefsHeight = prefsEl.querySelector('.panel__content').clientHeight,
-                    remoteHeight = remoteEl.querySelector('.panel__content').clientHeight;
-                console.log(panelsHeight, prefsHeight, remoteHeight);
+            renderLayout = function(leftColumn = true, rightColumn = true) {
+                console.log('renderLayout');
+                const totalHeight = panelsEl.clientHeight,
+                    isPrefsVisible = prefsEl.dataset.show == 'true',
+                    isRemoteVisible = remoteEl.dataset.show == 'true',
+                    prefsViewportEl = prefsEl.querySelector('.panel__viewport'),
+                    remoteViewportEl = remoteEl.querySelector('.panel__viewport'),
+                    prefsHeight = prefsEl.clientHeight,
+                    remoteHeight = remoteEl.clientHeight,
+                    prefsContentHeight = prefsEl.querySelector('.panel__content').clientHeight,
+                    remoteContentHeight = remoteEl.querySelector('.panel__content').clientHeight;
+                
+                if (isPrefsVisible && isRemoteVisible) {
+                    let combinedHeight = prefsContentHeight + remoteContentHeight + (panelHeaderHeight * 2);
+                    if (combinedHeight > totalHeight) {
+                        if (prefsContentHeight + panelHeaderHeight < totalHeight / 2) {
+                            prefsViewportEl.style.height = prefsEl.prefsContentHeight + 'px';
+                            remoteViewportEl.style.height = (totalHeight - prefsContentHeight - (panelHeaderHeight * 2)) + 'px';
+                        } else if (remoteContentHeight + panelHeaderHeight < totalHeight / 2) {
+                            prefsViewportEl.style.height = (totalHeight - remoteContentHeight - (panelHeaderHeight * 2)) + 'px';
+                            remoteViewportEl.style.height = remoteEl.prefsContentHeight + 'px';
+                        } else {
+                            prefsViewportEl.style.height = ((totalHeight / 2) - panelHeaderHeight) + 'px';
+                            remoteViewportEl.style.height = ((totalHeight / 2) - panelHeaderHeight) + 'px';
+                        }
+                    } else {
+                        prefsViewportEl.style.height = 'auto';
+                        remoteViewportEl.style.height = 'auto';
+                    }
+                } else if (isPrefsVisible) {
+                    if (prefsContentHeight + panelHeaderHeight > totalHeight) {
+                        prefsViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
+                    } else {
+                        prefsViewportEl.style.height = 'auto';
+                    }
+                } else if (isRemoteVisible) {
+                    if (remoteContentHeight + panelHeaderHeight > totalHeight) {
+                        remoteViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
+                    } else {
+                        remoteViewportEl.style.height = 'auto';
+                    }
+                }
             },
             
             toggleEdit = function(isVisible) {
@@ -87,6 +124,7 @@ window.WH = window.WH || {};
         
         init();
         
+        that.renderLayout = renderLayout;
         that.createSettingsView = createSettingsView;
         that.deleteSettingsView = deleteSettingsView;
         that.toggleEdit = toggleEdit;

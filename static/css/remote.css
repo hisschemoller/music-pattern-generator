@@ -4,8 +4,6 @@
 
 .remote {
     background-color: var(--panel-bg-color);
-    border-bottom: none;
-    margin: 2px;
     position: relative;
     width: 340px;
 }

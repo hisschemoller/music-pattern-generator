@@ -25,6 +25,7 @@ window.WH = window.WH || {};
                     parentEl: listEl
                 });
                 groupViews.push(remoteGroupView);
+                appView.renderLayout();
             },
             
             /**
@@ -37,6 +38,7 @@ window.WH = window.WH || {};
                     if (groupViews[n].hasProcessor(processor)) {
                         groupViews[n].terminate();
                         groupViews.splice(n, 1);
+                        appView.renderLayout();
                         return false;
                     }
                 }
@@ -59,6 +61,7 @@ window.WH = window.WH || {};
                 while (--n >= 0) {
                     if (groupViews[n].hasParameter(param)) {
                         groupViews[n].addParameter(param, midiRemote.unassingParameter);
+                        appView.renderLayout();
                         return;
                     }
                 }
@@ -69,10 +72,12 @@ window.WH = window.WH || {};
              * @param  {Object} param Processor parameter.
              */
             removeParameter = function(param) {
+                console.log('removeParameter');
                 var n = groupViews.length;
                 while (--n >= 0) {
                     if (groupViews[n].hasParameter(param)) {
                         groupViews[n].removeParameter(param);
+                        appView.renderLayout();
                         return;
                     }
                 }

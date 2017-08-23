@@ -4,7 +4,6 @@
 
 .prefs {
     background-color: var(--panel-bg-color);
-    margin: 2px;
     position: relative;
     width: 340px;
 }

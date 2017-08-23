@@ -214,19 +214,13 @@ div[data-theme] {
 .panels__left {
     display: flex;
     flex-basis: 340px;
+    flex-direction: column;
     flex-shrink: 0;
-    flex-wrap: nowrap;
 }
 .panels__right {
     flex-basis: 360px;
     flex-direction: column;
     flex-grow: 1;
-}
-.panels__left .prefs {
-    flex-shrink: 1;
-}
-.panels__left .remote {
-    flex-shrink: 1;
 }
 .panels > * {
     pointer-events: none;
