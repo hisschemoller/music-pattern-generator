@@ -57,7 +57,15 @@ window.WH = window.WH || {};
             },
             
             renderLayout = function(leftColumn = true, rightColumn = true) {
-                console.log('renderLayout');
+                if (leftColumn) {
+                    renderLayoutLeftColumn();
+                }
+                if (rightColumn) {
+                    renderLayoutRightColumn();
+                }
+            },
+            
+            renderLayoutLeftColumn = function() {
                 const totalHeight = panelsEl.clientHeight,
                     isPrefsVisible = prefsEl.dataset.show == 'true',
                     isRemoteVisible = remoteEl.dataset.show == 'true',
@@ -96,6 +104,49 @@ window.WH = window.WH || {};
                         remoteViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
                     } else {
                         remoteViewportEl.style.height = 'auto';
+                    }
+                }
+            },
+            
+            renderLayoutRightColumn = function() {
+                const totalHeight = panelsEl.clientHeight,
+                    columnWidth = document.querySelector('.panels__right').clientWidth,
+                    editWidth = editEl.clientWidth,
+                    helpWidth = helpEl.clientWidth,
+                    isEditVisible = editEl.dataset.show == 'true',
+                    isHelpVisible = helpEl.dataset.show == 'true',
+                    editViewportEl = editEl.querySelector('.panel__viewport'),
+                    helpViewportEl = helpEl.querySelector('.panel__viewport'),
+                    editContentHeight = editEl.querySelector('.panel__content').clientHeight,
+                    helpContentHeight = helpEl.querySelector('.panel__content').clientHeight;
+                
+                if (editWidth + helpWidth < columnWidth) {
+                    if (editContentHeight + panelHeaderHeight > totalHeight) {
+                        editViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
+                    } else {
+                        editViewportEl.style.height = 'auto';
+                    }
+                    if (helpContentHeight + panelHeaderHeight > totalHeight) {
+                        helpViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
+                    } else {
+                        helpViewportEl.style.height = 'auto';
+                    }
+                } else {
+                    if (isEditVisible && isHelpVisible) {
+                        editViewportEl.style.height = ((totalHeight / 2) - panelHeaderHeight) + 'px';
+                        helpViewportEl.style.height = ((totalHeight / 2) - panelHeaderHeight) + 'px';
+                    } else if (isEditVisible) {
+                        if (editContentHeight + panelHeaderHeight > totalHeight) {
+                            editViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
+                        } else {
+                            editViewportEl.style.height = 'auto';
+                        }
+                    } else if (isHelpVisible) {
+                        if (helpContentHeight + panelHeaderHeight > totalHeight) {
+                            helpViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
+                        } else {
+                            helpViewportEl.style.height = 'auto';
+                        }
                     }
                 }
             },
