@@ -3,13 +3,10 @@
  ************************/
 
 .settings {
-    position: relative;
-    width: 360px;
-}
-.settings > * {
     background-color: var(--panel-bg-color);
-    margin: 2px;
     padding-bottom: 10px;
+    position: relative;
+    width: 100%;
 }
 .settings .btn {
     height: var(--input-height);

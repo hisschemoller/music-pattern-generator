@@ -14,7 +14,8 @@ window.WH = window.WH || {};
             panelsEl = document.querySelector('.panels'),
             helpEl = document.querySelector('.help'),
             prefsEl = document.querySelector('.prefs'),
-            settingsEl = document.querySelector('.settings'),
+            editEl = document.querySelector('.edit'),
+            editContentEl = document.querySelector('.edit .panel__content'),
             remoteEl = document.querySelector('.remote'),
             settingsViews = [],
             panelHeaderHeight,
@@ -35,7 +36,7 @@ window.WH = window.WH || {};
                 var settingsView = ns.createSettingsView({
                     midiNetwork: midiNetwork,
                     processor: processor,
-                    parentEl: settingsEl
+                    parentEl: editContentEl
                 });
                 settingsViews.push(settingsView);
             },
@@ -62,6 +63,11 @@ window.WH = window.WH || {};
                 console.log(panelsHeight, prefsHeight, remoteHeight);
             },
             
+            toggleEdit = function(isVisible) {
+                editEl.dataset.show = isVisible;
+                renderLayout();
+            },
+            
             toggleHelp = function(isVisible) {
                 helpEl.dataset.show = isVisible;
                 renderLayout();
@@ -75,11 +81,6 @@ window.WH = window.WH || {};
             toggleRemote = function(isVisible) {
                 remoteEl.dataset.show = isVisible;
                 renderLayout();
-            },
-            
-            toggleSettings = function(isVisible) {
-                settingsEl.dataset.show = isVisible;
-                renderLayout();
             };
         
         that = specs.that || {};
@@ -88,10 +89,10 @@ window.WH = window.WH || {};
         
         that.createSettingsView = createSettingsView;
         that.deleteSettingsView = deleteSettingsView;
+        that.toggleEdit = toggleEdit;
         that.toggleHelp = toggleHelp;
         that.togglePreferences = togglePreferences;
         that.toggleRemote = toggleRemote;
-        that.toggleSettings = toggleSettings;
         return that;
     };
 

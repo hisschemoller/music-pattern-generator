@@ -33,9 +33,9 @@
                     type: 'checkbox',
                     input: document.getElementById('prefs-check')
                 },
-                settings: {
+                edit: {
                     type: 'checkbox',
-                    input: document.getElementById('settings-check')
+                    input: document.getElementById('edit-check')
                 },
                 help: {
                     type: 'checkbox',
@@ -56,8 +56,8 @@
                 controls.prefs.input.addEventListener('change', function(e) {
                     appView.togglePreferences(e.target.checked);
                 });
-                controls.settings.input.addEventListener('change', function(e) {
-                    appView.toggleSettings(e.target.checked);
+                controls.edit.input.addEventListener('change', function(e) {
+                    appView.toggleEdit(e.target.checked);
                 });
                 controls.help.input.addEventListener('change', function(e) {
                     appView.toggleHelp(e.target.checked);

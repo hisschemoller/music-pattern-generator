@@ -31,8 +31,8 @@
             <label for="learn-check" class="toggle__label btn" title="MIDI learn">
                 <span class="icon-midi" data-on="&#xe900;" data-off="&#xe900;"></span>
             </label>
-            <input type="checkbox" id="settings-check" class="toggle__check" />
-            <label for="settings-check" class="toggle__label btn" title="Edit settings">
+            <input type="checkbox" id="edit-check" class="toggle__check" />
+            <label for="edit-check" class="toggle__label btn" title="Edit settings">
                 <span class="icon-help" data-on="&#xe808;" data-off="&#xe808;"></span>
             </label>
             <input type="checkbox" id="help-check" class="toggle__check" />
@@ -94,7 +94,14 @@
                     </div>
                 </div><!-- /panels__left -->
                 <div class="panels__right">
-                    <div class="panel settings"></div>
+                    <div class="panel edit">
+                        <div class="panel__header">
+                            <span class="header__label">Settings</span>
+                        </div>
+                        <div class="panel__viewport">
+                            <div class="panel__content"></div>
+                        </div>
+                    </div>
                     <div class="panel help">
                         <div class="panel__header">
                             <span class="header__label">Help</span>
@@ -112,13 +119,10 @@
     </app>
 
     <template id="template-settings-epg">
-        <div class="settings__epg">
+        <div class="settings settings--epg">
             <form><!-- form element separates radio groups of the same name -->
-                <div class="header header">
-                    <span class="header__label">Euclidean Processor</span>
-                </div>
                 <div class="header header--sub">
-                    <span class="header__label">Euclidean</span>
+                    <span class="header__label">Euclidean Rhythm</span>
                 </div>
                 <fieldset class="settings__fieldset">
                     <div class="settings__row steps"></div>
