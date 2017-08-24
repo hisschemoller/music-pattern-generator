@@ -217,8 +217,6 @@ window.WH = window.WH || {};
             createView = function(processor) {
                 let specs = {
                     processor: processor,
-                    staticCtx: staticCtx,
-                    dynamicCtx: dynamicCtx,
                     canvasDirtyCallback: markDirty
                 }
                 switch (processor.getType()) {

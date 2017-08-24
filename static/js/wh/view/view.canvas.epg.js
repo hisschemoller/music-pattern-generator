@@ -11,7 +11,6 @@ window.WH = window.WH || {};
     function createCanvasEPGView(specs) {
         let that,
             processor = specs.processor,
-            dynamicCtx = specs.dynamicCtx,
             canvasDirtyCallback = specs.canvasDirtyCallback,
             staticCanvas,
             staticCtx,
