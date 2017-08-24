@@ -22,7 +22,7 @@ window.WH = window.WH || {};
 
 (function (ns) {
     
-    function createCanvasView(specs) {
+    function createCanvasView(specs, my) {
         var that,
             midiNetwork = specs.midiNetwork,
             staticCanvas,
@@ -65,8 +65,8 @@ window.WH = window.WH || {};
                 dynamicCanvas.addEventListener(eventType.start, onTouchStart);
                 dynamicCanvas.addEventListener(eventType.move, dragMove);
                 dynamicCanvas.addEventListener(eventType.end, dragEnd);
-                window.addEventListener('resize', onWindowResize, false);
                 
+                my.addWindowResizeCallback(onWindowResize);
                 onWindowResize();
             },
             
@@ -287,8 +287,10 @@ window.WH = window.WH || {};
                     views[i].addToDynamicView(dynamicCtx);
                 }
             };
+            
+        my = my || {};
         
-        that = specs.that || {};
+        that = ns.addWindowResize(specs, my);
         
         init();
         

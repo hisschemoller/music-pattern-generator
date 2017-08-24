@@ -24,7 +24,7 @@ window.WH = window.WH || {};
                 var style = getComputedStyle(document.body);
                 panelHeaderHeight = parseInt(style.getPropertyValue('--header-height'), 10);
                 
-                window.addEventListener('resize', renderLayout, false);
+                my.addWindowResizeCallback(renderLayout);
                 renderLayout();
             },
             
@@ -171,7 +171,9 @@ window.WH = window.WH || {};
                 renderLayout();
             };
         
-        that = specs.that || {};
+        my = my || {};
+        
+        that = ns.addWindowResize(specs, my);
         
         init();
         
