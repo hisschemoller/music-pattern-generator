@@ -177,25 +177,40 @@ window.WH = window.WH || {};
                     centerDotEndTween.stop();
                     centerDotEndTween = null;
                 }
-                
+                console.log('1 create', noteStartDelay);
                 // center dot start animation
                 centerDotStartTween = new TWEEN.Tween({centerRadius: 0.01})
                     .to({centerRadius: centerDotFullRadius}, 10)
                     .onStart(function() {
+                            console.log('1 start');
                             isNoteActive = true;
                         })
-                    .onUpdate(function() {
-                            centerDotRadius = this.centerRadius;
+                    .onStop(function() {
+                            console.log('1 stop');
                         })
-                    .delay(noteStartDelay);
-                    
-                // center dot end animation
-                centerDotEndTween = new TWEEN.Tween({centerRadius: centerDotFullRadius})
-                    .to({centerRadius: 0.01}, 150)
                     .onUpdate(function() {
                             centerDotRadius = this.centerRadius;
                         })
                     .onComplete(function() {
+                            console.log('1 complete');
+                        })
+                    .delay(noteStartDelay);
+                    
+                console.log('2 create');
+                // center dot end animation
+                centerDotEndTween = new TWEEN.Tween({centerRadius: centerDotFullRadius})
+                    .to({centerRadius: 0.01}, 150)
+                    .onStart(function() {
+                            console.log('2 start');
+                        })
+                    .onStop(function() {
+                            console.log('2 stop');
+                        })
+                    .onUpdate(function() {
+                            centerDotRadius = this.centerRadius;
+                        })
+                    .onComplete(function() {
+                            console.log('2 complete');
                             isNoteActive = false;
                         })
                     .delay(noteStopDelay - noteStartDelay);
