@@ -1,5 +1,5 @@
 /**
- * @description Controls view.
+ * @description Controls view. This is the main controls bar on top of the application window.
  * @author Wouter Hisschemöller
  * @version 0.0.0
  * 
