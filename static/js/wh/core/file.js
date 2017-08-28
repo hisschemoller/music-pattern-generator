@@ -174,15 +174,21 @@ window.WH = window.WH || {};
                 fileReader.onload = (function(f) {
                     return function(e) {
                         try {
-                            let data = JSON.parse(e.target.result);
+                            const data = JSON.parse(e.target.result);
                             setData(data);
                         } catch(errorMessage) {
-                            console.log(errorMessage);
+                            // try if it's a legacy xml file
+                            const legacyData = XML2jsobj(e.target.result);
+                            if (legacyData.hasOwnProperty('network')) {
+                                setData(data);
+                            } else {
+                                console.log(errorMessage);
+                            }
                         }
                     };
                 })(file);
                 fileReader.readAsText(file);
-            },
+            },s
 
             /**
              * Export project data to filesystem JSON file.
@@ -194,6 +200,57 @@ window.WH = window.WH || {};
                 a.download = 'epg.json';
                 a.href = URL.createObjectURL(blob);
                 a.click();
+            },
+            
+            /**
+             * XML2jsobj v1.0
+             * Converts XML to a JavaScript object
+             * so it can be handled like a JSON message
+             *
+             * By Craig Buckler, @craigbuckler, http://optimalworks.net
+             *
+             * As featured on SitePoint.com:
+             * http://www.sitepoint.com/xml-to-javascript-object/
+             *
+             * Please use as you wish at your own risk.
+             */
+            XML2jsobj = function(node) {
+            	var	data = {};
+
+            	// append a value
+            	function Add(name, value) {
+            		if (data[name]) {
+            			if (data[name].constructor != Array) {
+            				data[name] = [data[name]];
+            			}
+            			data[name][data[name].length] = value;
+            		}
+            		else {
+            			data[name] = value;
+            		}
+            	};
+            	
+            	// element attributes
+            	var c, cn;
+            	for (c = 0; cn = node.attributes[c]; c++) {
+            		Add(cn.name, cn.value);
+            	}
+            	
+            	// child elements
+            	for (c = 0; cn = node.childNodes[c]; c++) {
+            		if (cn.nodeType == 1) {
+            			if (cn.childNodes.length == 1 && cn.firstChild.nodeType == 3) {
+            				// text value
+            				Add(cn.nodeName, cn.firstChild.nodeValue);
+            			}
+            			else {
+            				// sub-object
+            				Add(cn.nodeName, XML2jsobj(cn));
+            			}
+            		}
+            	}
+
+            	return data;
             };
 
         that = specs.that;
