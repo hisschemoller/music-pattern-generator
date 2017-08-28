@@ -264,10 +264,17 @@ window.WH = window.WH || {};
                 markDirty();
             },
             
+            /**
+             * Set a flag to indicate the static canvas should be redrawn.
+             */
             markDirty = function() {
                 isDirty = true;
             },
             
+            /**
+             * Update any tween animations that are going on and
+             * redraw the canvases if needed.
+             */
             draw = function() {
                 TWEEN.update();
                 let i;
