@@ -343,5 +343,33 @@ div[data-theme] {
     width: 360px;
 }
 .help__content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.help__nav {
+    background-color: var(--subheader-bg-color);
+    flex-shrink: 0;
+    height: 100px;
+}
+.help__nav-column {
+    float: left;
+    width: 50%;
+}
+.help__nav-item {
+    color: var(--header-color);
+    display: block;
+    font-size: var(--font-size-subheader);
+    height: var(--header-height);
+    line-height: var(--header-height);
+    padding-left: 10px;
+    text-decoration: none;
+}
+.help__viewport {
+    flex-grow: 1;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.help__copy {
     padding: 0 10px;
 }

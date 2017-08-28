@@ -118,7 +118,7 @@ window.WH = window.WH || {};
                     editViewportEl = editEl.querySelector('.panel__viewport'),
                     helpViewportEl = helpEl.querySelector('.panel__viewport'),
                     editContentHeight = editEl.querySelector('.panel__content').clientHeight,
-                    helpContentHeight = helpEl.querySelector('.panel__content').clientHeight;
+                    helpContentHeight = helpEl.querySelector('.help__nav').clientHeight + helpEl.querySelector('.help__copy').clientHeight;
                 
                 if (editWidth + helpWidth < columnWidth) {
                     if (editContentHeight + panelHeaderHeight > totalHeight) {
@@ -136,13 +136,13 @@ window.WH = window.WH || {};
                         editViewportEl.style.height = ((totalHeight / 2) - panelHeaderHeight) + 'px';
                         helpViewportEl.style.height = ((totalHeight / 2) - panelHeaderHeight) + 'px';
                     } else if (isEditVisible) {
-                        if (editContentHeight + panelHeaderHeight > totalHeight) {
+                        if (editContentHeight + panelHeaderHeight >= totalHeight) {
                             editViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
                         } else {
                             editViewportEl.style.height = 'auto';
                         }
                     } else if (isHelpVisible) {
-                        if (helpContentHeight + panelHeaderHeight > totalHeight) {
+                        if (helpContentHeight + panelHeaderHeight >= totalHeight) {
                             helpViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
                         } else {
                             helpViewportEl.style.height = 'auto';
