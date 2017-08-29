@@ -69,6 +69,11 @@ window.WH = window.WH || {};
         that.getPosition2d = getPosition2d;
         that.setTheme = setTheme;
         return that;
+    }
+
+    ns.createCanvasMIDIOutView = createCanvasMIDIOutView;
+
+})(WH);
             
             
             
