@@ -350,7 +350,8 @@ div[data-theme] {
 .help__nav {
     background-color: var(--subheader-bg-color);
     flex-shrink: 0;
-    height: 100px;
+    height: calc(75px + 10px + 10px);
+    padding: 10px 0;
 }
 .help__nav-column {
     float: left;
