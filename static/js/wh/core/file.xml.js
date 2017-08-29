@@ -33,49 +33,49 @@ window.WH = window.WH || {};
                     id: pattern.id,
                     steps: {
                         props: {
-                            value: pattern.events.steps,
+                            value: parseInt(pattern.events.steps, 10),
                             min: 0,
                             max: 64
                         }
                     },
                     pulses: {
                         props: {
-                            value: pattern.events.notes,
+                            value: parseInt(pattern.events.notes, 10),
                             min: 0,
-                            max: pattern.events.steps
+                            max: parseInt(pattern.events.steps, 10)
                         }
                     },
                     rotation: {
                         props: {
-                            value: pattern.events.rotation,
+                            value: parseInt(pattern.events.rotation, 10),
                             min: 0,
-                            max: pattern.events.steps - 1
+                            max: parseInt(pattern.events.steps, 10) - 1
                         }
                     },
                     channel_out: {
                         props: {
-                            value: pattern.midi_out.channel,
+                            value: parseInt(pattern.midi_out.channel, 10),
                             min: 1,
                             max: 16
                         }
                     },
                     pitch_out: {
                         props: {
-                            value: pattern.midi_out.pitch,
+                            value: parseInt(pattern.midi_out.pitch, 10),
                             min: 0,
                             max: 127
                         }
                     },
                     velocity_out: {
                         props: {
-                            value: pattern.midi_out.velocity,
+                            value: parseInt(pattern.midi_out.velocity, 10),
                             min: 0,
                             max: 127
                         }
                     },
                     rate: {
                         props: {
-                            value: pattern.settings.quantization / 64
+                            value: parseInt(pattern.settings.quantization, 10) / 64
                         }
                     },
                     is_triplets: {
@@ -85,7 +85,7 @@ window.WH = window.WH || {};
                     },
                     note_length: {
                         props: {
-                            value: pattern.settings.notelength / 64
+                            value: parseInt(pattern.settings.notelength, 10) / 64
                         }
                     },
                     is_mute: {
@@ -101,8 +101,8 @@ window.WH = window.WH || {};
                     position2d: {
                         props: {
                             value: {
-                                x: pattern.location.x,
-                                y: pattern.location.y
+                                x: parseInt(pattern.location.x, 10),
+                                y: parseInt(pattern.location.y, 10)
                             }
                         }
                     },
