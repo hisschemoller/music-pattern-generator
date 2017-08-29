@@ -9,8 +9,103 @@ window.WH = window.WH || {};
 (function (ns) {
     
     const convertLegacyFile = function(xmlString) {
-            const data = parseXML(xmlString);
+            const xmlData = parseXML(xmlString),
+                data = convertData(xmlData);
             return data;
+        },
+        
+        convertData = function(src) {
+            const dest = {
+                bpm: src.project.tempo,
+                network: {
+                    processors: []
+                }
+            };
+            for (let i = 0, n = src.project.patterns.pattern.length; i < n; i++) {
+                const pattern = src.project.patterns.pattern[i];
+                const processor = {
+                    type: 'epg',
+                    id: pattern.id,
+                    steps: {
+                        props: {
+                            value: pattern.events.steps,
+                            min: 0,
+                            max: 64
+                        }
+                    },
+                    pulses: {
+                        props: {
+                            value: pattern.events.notes,
+                            min: 0,
+                            max: pattern.events.steps
+                        }
+                    },
+                    pulses: {
+                        props: {
+                            value: pattern.events.rotation,
+                            min: 0,
+                            max: pattern.events.steps - 1
+                        }
+                    },
+                    channel_out: {
+                        props: {
+                            value: pattern.midi_out.channel,
+                            min: 1,
+                            max: 16
+                        }
+                    },
+                    pitch_out: {
+                        props: {
+                            value: pattern.midi_out.pitch,
+                            min: 0,
+                            max: 127
+                        }
+                    },
+                    velocity_out: {
+                        props: {
+                            value: pattern.midi_out.velocity,
+                            min: 0,
+                            max: 127
+                        }
+                    },
+                    rate: {
+                        props: {
+                            value: pattern.settings.quantization / 64
+                        }
+                    },
+                    is_triplets: {
+                        props: {
+                            value: false
+                        }
+                    },
+                    note_length: {
+                        props: {
+                            value: pattern.settings.notelength / 64
+                        }
+                    },
+                    is_mute: {
+                        props: {
+                            value: pattern.settings.mute
+                        }
+                    },
+                    name: {
+                        props: {
+                            value: pattern.name
+                        }
+                    },
+                    position2d: {
+                        props: {
+                            value: {
+                                x: pattern.location.x,
+                                y: pattern.location.y
+                            }
+                        }
+                    },
+                    destinations: []
+                };
+                dest.network.processors.push(processor);
+            };
+            return dest;
         },
         
         /**
