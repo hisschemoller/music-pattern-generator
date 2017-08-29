@@ -17,9 +17,14 @@ window.WH = window.WH || {};
         convertData = function(src) {
             const dest = {
                 bpm: src.project.tempo,
+                midi: {
+                    inputs: [],
+                    outputs: []
+                },
                 network: {
                     processors: []
-                }
+                },
+                remote: []
             };
             for (let i = 0, n = src.project.patterns.pattern.length; i < n; i++) {
                 const pattern = src.project.patterns.pattern[i];
@@ -40,7 +45,7 @@ window.WH = window.WH || {};
                             max: pattern.events.steps
                         }
                     },
-                    pulses: {
+                    rotation: {
                         props: {
                             value: pattern.events.rotation,
                             min: 0,
@@ -85,7 +90,7 @@ window.WH = window.WH || {};
                     },
                     is_mute: {
                         props: {
-                            value: pattern.settings.mute
+                            value: pattern.settings.mute == 'true'
                         }
                     },
                     name: {
