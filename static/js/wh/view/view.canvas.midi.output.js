@@ -6,7 +6,7 @@ window.WH = window.WH || {};
 
 (function (ns) {
     
-    function createCanvasMIDIOutView(specs) {
+    function createCanvasMIDIOutView(specs, my) {
         let that,
             processor = specs.processor,
             
@@ -36,26 +36,19 @@ window.WH = window.WH || {};
             intersectsWithPoint = function(x, y) {
             },
             
-            getProcessor = function() {
-                return processor;
-            },
-            
-            setPosition2d = function(position2d) {
-                processor.setParamValue('position2d', position2d);
-            },
-            
-            getPosition2d = function() {
-                return processor.getParamValue('position2d');
-            },
-            
             /**
              * Set the theme colours of the processor view.
              * @param {Object} theme Theme settings object.
              */
             setTheme = function(theme) {
+                my.colorHigh = theme.colorHigh;
+                my.colorMid = theme.colorMid;
+                my.colorLow = theme.colorLow;
             };
+            
+        my = my || {};
         
-        that = specs.that || {};
+        that = ns.createCanvasBaseView(specs, my);
         
         initialise();
         

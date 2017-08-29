@@ -13,7 +13,6 @@ window.WH = window.WH || {};
     
     function createCanvasEPGView(specs, my) {
         let that,
-            processor = specs.processor,
             canvasDirtyCallback = specs.canvasDirtyCallback,
             staticCanvas,
             staticCtx,
@@ -42,9 +41,6 @@ window.WH = window.WH || {};
             selectRadius = 15,
             dotRadius,
             zeroMarkerRadius = 3,
-            colorHigh = '#cccccc',
-            colorMid = '#dddddd',
-            colorLow = '#eeeeee',
             lineWidth = 2,
             position2d,
             isSelected = false,
@@ -60,16 +56,16 @@ window.WH = window.WH || {};
                 staticCanvas.width = radius * 2;
                 staticCtx = staticCanvas.getContext('2d');
                 staticCtx.lineWidth = lineWidth;
-                staticCtx.strokeStyle = colorHigh;
+                staticCtx.strokeStyle = my.colorHigh;
                 
                 // offscreen canvas for dots ring and polygon
                 necklaceCanvas = document.createElement('canvas');
                 necklaceCanvas.height = radius * 2;
                 necklaceCanvas.width = radius * 2;
                 necklaceCtx = necklaceCanvas.getContext('2d');
-                necklaceCtx.fillStyle = colorHigh;
+                necklaceCtx.fillStyle = my.colorHigh;
                 necklaceCtx.lineWidth = lineWidth;
-                necklaceCtx.strokeStyle = colorHigh;
+                necklaceCtx.strokeStyle = my.colorHigh;
                 
                 // offscreen canvas for the pointer
                 pointerCanvas = document.createElement('canvas');
@@ -77,7 +73,7 @@ window.WH = window.WH || {};
                 pointerCanvas.width = centerRadius * 2;
                 pointerCtx = pointerCanvas.getContext('2d');
                 pointerCtx.lineWidth = lineWidth;
-                pointerCtx.strokeStyle = colorHigh;
+                pointerCtx.strokeStyle = my.colorHigh;
                 pointerCanvasCenter = pointerCanvas.width / 2;
                 
                 // offscreen canvas for the name
@@ -85,7 +81,7 @@ window.WH = window.WH || {};
                 nameCanvas.height = 40;
                 nameCanvas.width = radius * 2;
                 nameCtx = nameCanvas.getContext('2d');
-                nameCtx.fillStyle = colorMid;
+                nameCtx.fillStyle = my.colorMid;
                 nameCtx.font = '14px sans-serif';
                 nameCtx.textAlign = 'center';
                 
@@ -93,12 +89,12 @@ window.WH = window.WH || {};
                 centerDotSize = (centerDotFullRadius + 1) * 2;
                 
                 // add callback to update before render.
-                processor.addRenderCallback(showPlaybackPosition);
-                processor.addProcessCallback(showNote);
-                processor.addSelectCallback(updateSelectCircle);
+                my.processor.addRenderCallback(showPlaybackPosition);
+                my.processor.addProcessCallback(showNote);
+                my.processor.addSelectCallback(updateSelectCircle);
                 
                 // add listeners to parameters
-                let params = processor.getParameters();
+                let params = my.processor.getParameters();
                 params.steps.addChangedCallback(updateNecklace);
                 params.pulses.addChangedCallback(updateNecklace);
                 params.rotation.addChangedCallback(updateNecklace);
@@ -118,7 +114,7 @@ window.WH = window.WH || {};
              * Called before this view is deleted.
              */
             terminate = function() {
-                let params = processor.getParameters();
+                let params = my.processor.getParameters();
                 params.steps.removeChangedCallback(updateNecklace);
                 params.pulses.removeChangedCallback(updateNecklace);
                 params.rotation.removeChangedCallback(updateNecklace);
@@ -146,7 +142,7 @@ window.WH = window.WH || {};
              */
             showNote = function(stepIndex, noteStartDelay, noteStopDelay) {
                 // get the coordinates of the dot for this step
-                let steps = processor.getParamValue('steps');
+                let steps = my.processor.getParamValue('steps');
                 
                 // retain necklace dot state in object
                 dotAnimations[stepIndex] = {
@@ -214,10 +210,10 @@ window.WH = window.WH || {};
              * If steps change it might invalidate the pointer.
              */
             updateNecklace = function() {
-                let steps = processor.getParamValue('steps'),
-                    pulses = processor.getParamValue('pulses'),
-                    rotation = processor.getParamValue('rotation'),
-                    euclid = processor.getEuclidPattern(),
+                let steps = my.processor.getParamValue('steps'),
+                    pulses = my.processor.getParamValue('pulses'),
+                    rotation = my.processor.getParamValue('rotation'),
+                    euclid = my.processor.getEuclidPattern(),
                     rad, x, y;
                 
                 necklace = [];
@@ -269,7 +265,7 @@ window.WH = window.WH || {};
             },
             
             /**
-             * Show circle if the processor is selected, else hide.
+             * Show circle if the my.processor is selected, else hide.
              * @param {Boolean} isSelectedView True if selected.
              */
             updateSelectCircle = function(isSelectedView) {
@@ -280,7 +276,7 @@ window.WH = window.WH || {};
             
             /**
              * Update pattern's position on the 2D canvas.
-             * @param  {Object} param Processor 2D position parameter.
+             * @param  {Object} param my.processor 2D position parameter.
              * @param  {Object} oldValue Previous 2D position as object.
              * @param  {Object} newValue New 2D position as object.
              */
@@ -298,8 +294,8 @@ window.WH = window.WH || {};
              */
             updatePolygon = function(steps, pulses, euclid, necklace) {
                 if (pulses > 1) {
-                    necklaceCtx.fillStyle = colorLow;
-                    necklaceCtx.strokeStyle = colorLow;
+                    necklaceCtx.fillStyle = my.colorLow;
+                    necklaceCtx.strokeStyle = my.colorLow;
                     necklaceCtx.beginPath();
                     let isFirstPoint = true,
                         firstPoint,
@@ -327,8 +323,8 @@ window.WH = window.WH || {};
             updateDots = function(steps, euclid, necklace) {
                 dotRadius = dotMaxRadius - 3 - (Math.max(0, steps - 16) * 0.09);
                 
-                necklaceCtx.fillStyle = colorHigh;
-                necklaceCtx.strokeStyle = colorHigh;
+                necklaceCtx.fillStyle = my.colorHigh;
+                necklaceCtx.strokeStyle = my.colorHigh;
                 for (let i = 0; i < steps; i++) {
                     point = necklace[i].center;
                     if (euclid[i]) {
@@ -352,7 +348,7 @@ window.WH = window.WH || {};
              * Update the pointer that connects the dots.
              */
             updatePointer = function() {
-                let isMute = processor.getParamValue('is_mute'),
+                let isMute = my.processor.getParamValue('is_mute'),
                     pointerRadius = isMute ? pointerMutedRadius : necklaceRadius,
                     pointerX = isMute ? 15 : 19,
                     pointerY = isMute ? 15 : 6;
@@ -402,7 +398,7 @@ window.WH = window.WH || {};
             },
             
             updateName = function() {
-                let name = processor.getParamValue('name');
+                let name = my.processor.getParamValue('name');
                 nameCtx.clearRect(0, 0, nameCanvas.width, nameCanvas.height);
                 nameCtx.fillText(name, nameCanvas.width / 2, nameCanvas.height / 2);
                 canvasDirtyCallback();
@@ -446,8 +442,8 @@ window.WH = window.WH || {};
                 mainDynamicCtx.drawImage(pointerCanvas, -pointerCanvasCenter, -pointerCanvas.height);
                 mainDynamicCtx.restore();
                 
-                mainDynamicCtx.fillStyle = colorHigh;
-                mainDynamicCtx.strokeStyle = colorHigh;
+                mainDynamicCtx.fillStyle = my.colorHigh;
+                mainDynamicCtx.strokeStyle = my.colorHigh;
                 mainDynamicCtx.beginPath();
                 
                 // necklace dots
@@ -506,31 +502,19 @@ window.WH = window.WH || {};
                 return distance <= necklaceRadius + dotRadius;
             },
             
-            getProcessor = function() {
-                return processor;
-            },
-            
-            setPosition2d = function(position2d) {
-                processor.setParamValue('position2d', position2d);
-            },
-            
-            getPosition2d = function() {
-                return processor.getParamValue('position2d');
-            },
-            
             /**
              * Set the theme colours of the processor view.
              * @param {Object} theme Theme settings object.
              */
             setTheme = function(theme) {
-                colorHigh = theme.colorHigh;
-                colorMid = theme.colorMid;
-                colorLow = theme.colorLow;
-                staticCtx.strokeStyle = colorHigh;
-                necklaceCtx.fillStyle = colorHigh;
-                necklaceCtx.strokeStyle = colorHigh;
-                pointerCtx.strokeStyle = colorHigh;
-                nameCtx.fillStyle = colorMid;
+                my.colorHigh = theme.colorHigh;
+                my.colorMid = theme.colorMid;
+                my.colorLow = theme.colorLow;
+                staticCtx.strokeStyle = my.colorHigh;
+                necklaceCtx.fillStyle = my.colorHigh;
+                necklaceCtx.strokeStyle = my.colorHigh;
+                pointerCtx.strokeStyle = my.colorHigh;
+                nameCtx.fillStyle = my.colorMid;
                 updateName();
                 updateNecklace();
             };
@@ -546,9 +530,6 @@ window.WH = window.WH || {};
         that.addToDynamicView = addToDynamicView;
         that.clearFromDynamicView = clearFromDynamicView;
         that.intersectsWithPoint = intersectsWithPoint;
-        that.getProcessor = getProcessor;
-        that.setPosition2d = setPosition2d;
-        that.getPosition2d = getPosition2d;
         that.setTheme = setTheme;
         return that;
     }
