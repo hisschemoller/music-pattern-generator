@@ -11,7 +11,7 @@ window.WH = window.WH || {};
     
     let centerDotSize;
     
-    function createCanvasEPGView(specs) {
+    function createCanvasEPGView(specs, my) {
         let that,
             processor = specs.processor,
             canvasDirtyCallback = specs.canvasDirtyCallback,
@@ -534,8 +534,10 @@ window.WH = window.WH || {};
                 updateName();
                 updateNecklace();
             };
+            
+        my = my || {};
         
-        that = specs.that || {};
+        that = ns.createCanvasBaseView(specs, my);
         
         initialise();
         
