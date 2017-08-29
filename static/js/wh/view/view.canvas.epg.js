@@ -1,3 +1,6 @@
+/**
+ * Euclidean pattern animated necklace wheel drawn on canvas.
+ */
 
 window.WH = window.WH || {};
 
