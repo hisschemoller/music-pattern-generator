@@ -54,7 +54,7 @@ window.WH = window.WH || {};
                     },
                     channel_out: {
                         props: {
-                            value: parseInt(pattern.midi_out.channel, 10),
+                            value: parseInt(pattern.midi_out.channel, 10) + 1,
                             min: 1,
                             max: 16
                         }
