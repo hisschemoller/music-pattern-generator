@@ -321,6 +321,9 @@ window.WH = window.WH || {};
                 }
             },
             
+            /**
+             * Draw the necklace dots in their inactive state.
+             */
             updateDots = function(steps, euclid, necklace) {
                 dotRadius = dotMaxRadius - 3 - (Math.max(0, steps - 16) * 0.09);
                 
@@ -398,6 +401,9 @@ window.WH = window.WH || {};
                 }
             },
             
+            /**
+             * Update the pattern's name.
+             */
             updateName = function() {
                 let name = processor.getParamValue('name');
                 nameCtx.clearRect(0, 0, nameCanvas.width, nameCanvas.height);
@@ -498,6 +504,12 @@ window.WH = window.WH || {};
                 mainDynamicCtx.restore();
             },
             
+            /**
+             * Test if a coordinate intersects with the graphic's hit area.
+             * @param  {Number} x Horizontal coordinate.
+             * @param  {[type]} y Vertical coordinate.
+             * @return {Boolean} True if the point intersects. 
+             */
             intersectsWithPoint = function(x, y) {
                 let distance = Math.sqrt(Math.pow(x - position2d.x, 2) + Math.pow(y - position2d.y, 2));
                 return distance <= necklaceRadius + dotRadius;
