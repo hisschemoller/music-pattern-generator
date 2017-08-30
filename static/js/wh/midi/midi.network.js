@@ -51,7 +51,9 @@ window.WH = window.WH || {};
                     // create the views for the processor
                     switch (specs.type) {
                         case 'input':
+                            break;
                         case 'output':
+                            canvasView.createView(processor);
                             break;
                         case 'epg':
                             appView.createSettingsView(processor);

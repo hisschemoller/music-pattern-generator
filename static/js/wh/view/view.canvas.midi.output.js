@@ -22,6 +22,11 @@ window.WH = window.WH || {};
                 staticCtx = staticCanvas.getContext('2d');
                 staticCtx.lineWidth = lineWidth;
                 staticCtx.strokeStyle = my.colorHigh;
+                staticCtx.clearRect(0, 0, 100, 100);
+                staticCtx.beginPath();
+                staticCtx.moveTo(60, 50);
+                staticCtx.arc(50, 50, 10, 0, Math.PI * 2, true);
+                staticCtx.stroke();
                 
                 // add listeners to parameters
                 let params = my.processor.getParameters();
@@ -29,6 +34,7 @@ window.WH = window.WH || {};
                 
                 position2d = params.position2d.getValue();
                 updatePosition(params.position2d, position2d, position2d);
+                console.log(position2d);
             },
             
             /**
@@ -52,6 +58,10 @@ window.WH = window.WH || {};
             },
             
             addToStaticView = function(mainStaticCtx) {
+                mainStaticCtx.drawImage(
+                    staticCanvas,
+                    position2d.x - 50,
+                    position2d.y - 50);
             },
             
             addToDynamicView = function(mainDynamicCtx) {
@@ -89,9 +99,6 @@ window.WH = window.WH || {};
         that.addToDynamicView = addToDynamicView;
         that.clearFromDynamicView = clearFromDynamicView;
         that.intersectsWithPoint = intersectsWithPoint;
-        that.getProcessor = getProcessor;
-        that.setPosition2d = setPosition2d;
-        that.getPosition2d = getPosition2d;
         that.setTheme = setTheme;
         return that;
     }

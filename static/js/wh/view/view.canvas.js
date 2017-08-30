@@ -215,13 +215,17 @@ window.WH = window.WH || {};
              * @param  {Object} processor MIDI processor for which the 3D object will be a view.
              */
             createView = function(processor) {
-                let specs = {
-                    processor: processor,
-                    canvasDirtyCallback: markDirty
-                }
+                let view,
+                    specs = {
+                        processor: processor,
+                        canvasDirtyCallback: markDirty
+                    };
                 switch (processor.getType()) {
                     case 'epg':
-                        var view = ns.createCanvasEPGView(specs);
+                        view = ns.createCanvasEPGView(specs);
+                        break;
+                    case 'output':
+                        view = ns.createCanvasMIDIOutView(specs);
                         break;
                 }
                 views.push(view);
