@@ -104,8 +104,8 @@ window.WH = window.WH || {};
                     position2d: {
                         props: {
                             value: {
-                                x: parseInt(pattern.location.x, 10),
-                                y: parseInt(pattern.location.y, 10)
+                                x: parseInt(pattern.location.x, 10) + 100,
+                                y: parseInt(pattern.location.y, 10) + 100
                             }
                         }
                     },
