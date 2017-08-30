@@ -9,14 +9,46 @@ window.WH = window.WH || {};
     function createCanvasMIDIOutView(specs, my) {
         let that,
             processor = specs.processor,
+            staticCanvas,
+            staticCtx,
+            position2d,
+            lineWidth = 2,
             
             initialise = function() {
+                // offscreen canvas for static shapes
+                staticCanvas = document.createElement('canvas');
+                staticCanvas.height = 100;
+                staticCanvas.width = 100;
+                staticCtx = staticCanvas.getContext('2d');
+                staticCtx.lineWidth = lineWidth;
+                staticCtx.strokeStyle = my.colorHigh;
+                
+                // add listeners to parameters
+                let params = my.processor.getParameters();
+                params.position2d.addChangedCallback(updatePosition);
+                
+                position2d = params.position2d.getValue();
+                updatePosition(params.position2d, position2d, position2d);
             },
             
             /**
              * Called before this view is deleted.
              */
             terminate = function() {
+                let params = my.processor.getParameters();
+                params.position2d.removeChangedCallback(updatePosition);
+            },
+            
+            /**
+             * Update pattern's position on the 2D canvas.
+             * @param  {Object} param my.processor 2D position parameter.
+             * @param  {Object} oldValue Previous 2D position as object.
+             * @param  {Object} newValue New 2D position as object.
+             */
+            updatePosition = function(param, oldValue, newValue) {
+                position2d = newValue;
+                // redrawStaticCanvas();
+                // canvasDirtyCallback();
             },
             
             addToStaticView = function(mainStaticCtx) {
