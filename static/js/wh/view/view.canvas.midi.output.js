@@ -76,6 +76,8 @@ window.WH = window.WH || {};
             },
             
             intersectsWithPoint = function(x, y) {
+                let distance = Math.sqrt(Math.pow(x - position2d.x, 2) + Math.pow(y - position2d.y, 2));
+                return distance <= 10;
             },
             
             /**
