@@ -95,7 +95,7 @@ window.WH = window.WH || {};
                     },
                     name: {
                         props: {
-                            value: pattern.name
+                            value: pattern.name['#text']
                         }
                     },
                     position2d: {
@@ -139,7 +139,7 @@ window.WH = window.WH || {};
             }
 
             function parseNode(xmlNode, result) {
-                if (xmlNode.nodeName == "#text") {
+                if (xmlNode.nodeName == "#text" || xmlNode.nodeName == '#cdata-section') {
                     var v = xmlNode.nodeValue;
                     if (v.trim()) {
                        result['#text'] = v;
