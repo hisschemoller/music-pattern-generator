@@ -85,7 +85,10 @@ window.WH = window.WH || {};
                     },
                     note_length: {
                         props: {
-                            value: parseInt(pattern.settings.notelength, 10) / 64
+                            // Old noteLength is in pulses where PPQN is 24, 
+                            // so for example 6 is a sixteenth note length,
+                            // 96 is one 4/4 measure.
+                            value: convertNoteLength(parseInt(pattern.settings.notelength, 10))
                         }
                     },
                     is_mute: {
@@ -111,6 +114,31 @@ window.WH = window.WH || {};
                 dest.network.processors.push(processor);
             };
             return dest;
+        },
+        
+        /**
+         * Old noteLength is in pulses where PPQN is 24, 
+         * so for example 6 is a sixteenth note length,
+         * 96 is one 4/4 measure.
+         * @param  {Number} oldLength Note length in pulses.
+         * @return {Number} New note length in fraction of a beat.
+         */
+        convertNoteLength = function(oldLength) {
+            let newNoteLength;
+            if (oldLength == 96) {
+                newNoteLength = 4;
+            } else if (oldLength >= 48) {
+                newNoteLength = 2;
+            } else if (oldLength >= 24) {
+                newNoteLength = 1;
+            } else if (oldLength >= 12) {
+                newNoteLength = 0.5;
+            } else if (oldLength >= 6) {
+                newNoteLength = 0.25;
+            } else {
+                newNoteLength = 0.125;
+            }
+            return newNoteLength;
         },
         
         /**
