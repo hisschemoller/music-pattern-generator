@@ -75,7 +75,7 @@ window.WH = window.WH || {};
                     },
                     rate: {
                         props: {
-                            value: parseInt(pattern.settings.quantization, 10) / 64
+                            value: (1 / parseInt(pattern.settings.quantization, 10)) * 4
                         }
                     },
                     is_triplets: {
