@@ -11,7 +11,7 @@ window.WH = window.WH || {};
     /**
      * @description Creates a transport object.
      */
-    function createFile(specs) {
+    function createFile(specs, my) {
         var that,
             midi = specs.midi,
             midiNetwork = specs.midiNetwork,
@@ -173,16 +173,27 @@ window.WH = window.WH || {};
                 // closure to capture the file information
                 fileReader.onload = (function(f) {
                     return function(e) {
+                        let isJSON = true
                         try {
-                            let data = JSON.parse(e.target.result);
-                            setData(data);
+                            const data = JSON.parse(e.target.result);
+                            if (data) {
+                                setData(data);
+                            }
                         } catch(errorMessage) {
                             console.log(errorMessage);
+                            isJSON = false;
+                        }
+                        if (!isJSON) {
+                            // try if it's a legacy xml file
+                            const legacyData = my.convertLegacyFile(e.target.result);
+                            if (legacyData) {
+                                setData(legacyData);
+                            }
                         }
                     };
                 })(file);
                 fileReader.readAsText(file);
-            },
+            },s
 
             /**
              * Export project data to filesystem JSON file.
@@ -195,9 +206,11 @@ window.WH = window.WH || {};
                 a.href = URL.createObjectURL(blob);
                 a.click();
             };
+        
+        my = my || {};
 
-        that = specs.that;
-
+        that = ns.addXMLFileParser(specs, my);
+        
         init();
 
         that.setup = setup;
