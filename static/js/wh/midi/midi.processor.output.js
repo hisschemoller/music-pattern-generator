@@ -58,9 +58,19 @@ window.WH = window.WH || {};
         my = my || {};
         my.isEnabled = true;
         my.getProcessorSpecificData = getProcessorSpecificData;
+        my.$position2d = function(value, timestamp) {}
 
         that = ns.createMIDIProcessorBase(specs, my);
         that = ns.createMIDIConnectorIn(specs, my);
+        
+        my.defineParams({
+            position2d: {
+                label: '2D position',
+                type: 'vector2d',
+                default: {x: 0, y: 0},
+                isMidiControllable: false
+            }
+        });
 
         that.process = process;
         that.setEnabled = setEnabled;
