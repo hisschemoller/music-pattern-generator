@@ -8,7 +8,7 @@ window.WH = window.WH || {};
     
     function createCanvasMIDIOutView(specs, my) {
         let that,
-            processor = specs.processor,
+            canvasDirtyCallback = specs.canvasDirtyCallback,
             staticCanvas,
             staticCtx,
             position2d,
@@ -32,9 +32,13 @@ window.WH = window.WH || {};
                 let params = my.processor.getParameters();
                 params.position2d.addChangedCallback(updatePosition);
                 
+                // set position on the canvas
                 position2d = params.position2d.getValue();
+                if (position2d.x == 0 && position2d.y == 0) {
+                    // use initial position centered on the canvas
+                    params.position2d.setValue(specs.initialPosition);
+                }
                 updatePosition(params.position2d, position2d, position2d);
-                console.log(position2d);
             },
             
             /**
@@ -53,8 +57,7 @@ window.WH = window.WH || {};
              */
             updatePosition = function(param, oldValue, newValue) {
                 position2d = newValue;
-                // redrawStaticCanvas();
-                // canvasDirtyCallback();
+                canvasDirtyCallback();
             },
             
             addToStaticView = function(mainStaticCtx) {
