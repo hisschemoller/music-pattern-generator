@@ -106,6 +106,7 @@ window.WH = window.WH || {};
                             numInputProcessors--;
                             break;
                         case 'output':
+                            canvasView.deleteView(processor);
                             break;
                         case 'epg':
                             appView.deleteSettingsView(processor);
