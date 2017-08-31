@@ -11,6 +11,8 @@ window.WH = window.WH || {};
             canvasDirtyCallback = specs.canvasDirtyCallback,
             staticCanvas,
             staticCtx,
+            nameCanvas,
+            nameCtx,
             position2d,
             lineWidth = 2,
             
@@ -27,6 +29,16 @@ window.WH = window.WH || {};
                 staticCtx.moveTo(60, 50);
                 staticCtx.arc(50, 50, 10, 0, Math.PI * 2, true);
                 staticCtx.stroke();
+                
+                // offscreen canvas for the name
+                nameCanvas = document.createElement('canvas');
+                nameCanvas.height = 40;
+                nameCanvas.width = 200;
+                nameCtx = nameCanvas.getContext('2d');
+                nameCtx.fillStyle = my.colorMid;
+                nameCtx.font = '14px sans-serif';
+                nameCtx.textAlign = 'center';
+                nameCtx.fillText(my.processor.getPort().name, nameCanvas.width / 2, nameCanvas.height / 2);
                 
                 // add listeners to parameters
                 let params = my.processor.getParameters();
@@ -66,6 +78,11 @@ window.WH = window.WH || {};
                     staticCanvas,
                     position2d.x - 50,
                     position2d.y - 50);
+                    
+                mainStaticCtx.drawImage(
+                    nameCanvas,
+                    position2d.x - (nameCanvas.width / 2),
+                    position2d.y + 10);
             },
             
             addToDynamicView = function(mainDynamicCtx) {
