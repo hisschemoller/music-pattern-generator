@@ -121,6 +121,7 @@ window.WH = window.WH || {};
                 params.is_mute.removeChangedCallback(updatePointer);
                 params.position2d.removeChangedCallback(updatePosition);
                 params.name.removeChangedCallback(updateName);
+                canvasDirtyCallback = null;
             },
             
             /**

@@ -47,6 +47,7 @@ window.WH = window.WH || {};
             terminate = function() {
                 let params = my.processor.getParameters();
                 params.position2d.removeChangedCallback(updatePosition);
+                canvasDirtyCallback = null;
             },
             
             /**
