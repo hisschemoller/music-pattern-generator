@@ -79,6 +79,7 @@ window.WH = window.WH || {};
              * Clear all settings and set default values..
              */
             createNew = function() {
+                showUnsavedChangedDialog();
                 midiRemote.clear();
                 midiNetwork.clear();
                 transport.setBPM(120);
@@ -122,7 +123,12 @@ window.WH = window.WH || {};
              */
             onBeforeUnload = function(e) {
                 savePreferences();
-                autoSave();
+                showUnsavedChangedDialog();
+                // autoSave();
+            },
+            
+            showUnsavedChangedDialog = function() {
+                
             },
 
             /**
