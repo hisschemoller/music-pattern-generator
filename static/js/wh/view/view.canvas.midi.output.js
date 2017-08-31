@@ -18,17 +18,31 @@ window.WH = window.WH || {};
             
             initialise = function() {
                 // offscreen canvas for static shapes
+                const width = 100,
+                    height = 50,
+                    radius = 10,
+                    boxWidth = 80;
                 staticCanvas = document.createElement('canvas');
-                staticCanvas.height = 100;
-                staticCanvas.width = 100;
+                staticCanvas.height = height;
+                staticCanvas.width = width;
                 staticCtx = staticCanvas.getContext('2d');
                 staticCtx.lineWidth = lineWidth;
                 staticCtx.strokeStyle = my.colorHigh;
-                staticCtx.clearRect(0, 0, 100, 100);
+                staticCtx.clearRect(0, 0, width, height);
+                staticCtx.save();
+                staticCtx.translate(width / 2, height / 2 - 10);
                 staticCtx.beginPath();
-                staticCtx.moveTo(60, 50);
-                staticCtx.arc(50, 50, 10, 0, Math.PI * 2, true);
+                // box
+                staticCtx.rect(-boxWidth / 2, -radius, boxWidth, radius * 2);
+                // arrow
+                staticCtx.moveTo(-boxWidth / 2, radius);
+                staticCtx.lineTo(0, radius + 20)
+                staticCtx.lineTo(boxWidth / 2, radius);
+                // circle
+                staticCtx.moveTo(radius, 0);
+                staticCtx.arc(0, 0, radius, 0, Math.PI * 2, true);
                 staticCtx.stroke();
+                staticCtx.restore90;
                 
                 // offscreen canvas for the name
                 nameCanvas = document.createElement('canvas');
@@ -77,12 +91,12 @@ window.WH = window.WH || {};
                 mainStaticCtx.drawImage(
                     staticCanvas,
                     position2d.x - 50,
-                    position2d.y - 50);
+                    position2d.y - 15);
                     
                 mainStaticCtx.drawImage(
                     nameCanvas,
                     position2d.x - (nameCanvas.width / 2),
-                    position2d.y + 10);
+                    position2d.y + 30);
             },
             
             addToDynamicView = function(mainDynamicCtx) {

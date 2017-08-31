@@ -225,7 +225,7 @@ window.WH = window.WH || {};
                         view = ns.createCanvasEPGView(specs);
                         break;
                     case 'output':
-                        specs.initialPosition = {x: canvasRect.width / 2, y: canvasRect.height - 50};
+                        specs.initialPosition = {x: canvasRect.width / 2, y: canvasRect.height - 70};
                         view = ns.createCanvasMIDIOutView(specs);
                         break;
                 }
