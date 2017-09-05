@@ -72,7 +72,6 @@ window.WH = window.WH || {};
              * @param  {Object} param Processor parameter.
              */
             removeParameter = function(param) {
-                console.log('removeParameter');
                 var n = groupViews.length;
                 while (--n >= 0) {
                     if (groupViews[n].hasParameter(param)) {

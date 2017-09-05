@@ -231,7 +231,7 @@ window.WH = window.WH || {};
                 while (--n >= 0) {
                     var a = assignments[n];
                     if (a.param == param && a.channel == channel && a.controller == controller) {
-                        assignments.splice(n, 0);
+                        assignments.splice(n, 1);
                         break;
                     }
                 }
