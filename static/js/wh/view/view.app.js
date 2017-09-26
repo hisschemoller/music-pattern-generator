@@ -57,6 +57,15 @@ window.WH = window.WH || {};
                 controls.learn.input.addEventListener('change', function(e) {
                     app.updateApp('learn', e.target.checked);
                 });
+                controls.prefs.input.addEventListener('change', function(e) {
+                    app.togglePanel('preferences', e.target.checked);
+                });
+                controls.edit.input.addEventListener('change', function(e) {
+                    app.togglePanel('settings', e.target.checked);
+                });
+                controls.help.input.addEventListener('change', function(e) {
+                    app.togglePanel('help', e.target.checked);
+                });
                 
                 // get panel header height from CSS.
                 var style = getComputedStyle(document.body);
