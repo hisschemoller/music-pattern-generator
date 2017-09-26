@@ -27,7 +27,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
     var app = {},
         appView = {},
         canvasView = {},
-        controlsView = {},
         file = {},
         fileView = {},
         midi = {},
@@ -54,11 +53,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
     WH.createCanvasView({
         that: canvasView,
         midiNetwork: midiNetwork
-    });
-    WH.createControlsView({
-        that: controlsView,
-        app: app,
-        midiRemote: midiRemote
     });
     WH.createPreferences({
         that: preferences
