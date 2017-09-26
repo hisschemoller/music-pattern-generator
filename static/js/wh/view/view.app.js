@@ -67,6 +67,14 @@ window.WH = window.WH || {};
                     app.togglePanel('help', e.target.checked);
                 });
                 
+                document.addEventListener('keyup', function(e) {
+                    switch (e.keyCode) {
+                        case 32:
+                            app.updateApp('play');
+                            break;
+                    }
+                });
+                
                 // get panel header height from CSS.
                 var style = getComputedStyle(document.body);
                 panelHeaderHeight = parseInt(style.getPropertyValue('--header-height'), 10);
