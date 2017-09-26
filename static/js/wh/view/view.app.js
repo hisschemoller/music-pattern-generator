@@ -49,11 +49,13 @@ window.WH = window.WH || {};
             
             init = function() {
                 controls.play.input.addEventListener('change', function(e) {
-                    app.updateTransport('play');
+                    app.updateApp('play');
                 });
                 controls.bpm.input.addEventListener('change', function(e) {
-                    console.log(app);
-                    app.updateTransport('bpm', e.target.value);
+                    app.updateApp('bpm', e.target.value);
+                });
+                controls.learn.input.addEventListener('change', function(e) {
+                    app.updateApp('learn', e.target.checked);
                 });
                 
                 // get panel header height from CSS.
@@ -194,6 +196,9 @@ window.WH = window.WH || {};
                         break;
                     case 'play':
                         controls.play.input.checked = value;
+                        break;
+                    case 'learn':
+                        controls.learn.input.checked = value;
                         break;
                 }
             },

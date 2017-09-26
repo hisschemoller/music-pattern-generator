@@ -87,7 +87,7 @@ window.WH = window.WH || {};
                 // calculate change factor
                 var factor = lastBpm / bpm;
                 my.setLoopByFactor(factor);
-                app.transportUpdated('bpm', bpm);
+                app.appUpdated('bpm', bpm);
             },
             
             /**
@@ -284,7 +284,7 @@ window.WH = window.WH || {};
                 setOrigin(position - offset);
                 setScanRange(position);
                 isRunning = true;
-                app.transportUpdated('play', isRunning);
+                app.appUpdated('play', isRunning);
             },
             
             /**
@@ -292,7 +292,7 @@ window.WH = window.WH || {};
              */
             pause = function () {
                 isRunning = false;
-                app.transportUpdated('play', isRunning);
+                app.appUpdated('play', isRunning);
             },
             
             /**

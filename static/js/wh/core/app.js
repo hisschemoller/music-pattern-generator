@@ -8,6 +8,7 @@ window.WH = window.WH || {};
     function createApp(specs, my) {
         let that,
             appView = specs.appView,
+            midiRemote = specs.midiRemote,
             transport = specs.transport,
             panelStates = {
                 help: false
@@ -21,7 +22,7 @@ window.WH = window.WH || {};
                 }
             },
             
-            updateTransport = function(property, value) {
+            updateApp = function(property, value) {
                 switch(property) {
                     case 'bpm':
                         transport.setBPM(value);
@@ -29,18 +30,21 @@ window.WH = window.WH || {};
                     case 'play':
                         transport.toggleStartStop();
                         break;
+                    case 'learn':
+                        midiRemote.toggleMidiLearn(value);
+                        break;
                 }
             },
             
-            transportUpdated = function(property, value) {
+            appUpdated = function(property, value) {
                 appView.updateControl(property, value);
             };
         
         that = specs.that || {};
         
         that.togglePanel = togglePanel;
-        that.updateTransport = updateTransport;
-        that.transportUpdated = transportUpdated;
+        that.updateApp = updateApp;
+        that.appUpdated = appUpdated;
         return that;
     }
 
