@@ -9,6 +9,7 @@ window.WH = window.WH || {};
     
     function createAppView(specs, my) {
         var that,
+            app = specs.app,
             midiNetwork = specs.midiNetwork,
             rootEl = document.querySelector('#app'),
             panelsEl = document.querySelector('.panels'),
@@ -19,8 +20,43 @@ window.WH = window.WH || {};
             remoteEl = document.querySelector('.remote'),
             settingsViews = [],
             panelHeaderHeight,
+            controls = {
+                play: {
+                    type: 'checkbox',
+                    input: document.getElementById('play-check')
+                },
+                bpm: {
+                    type: 'number',
+                    input: document.getElementById('bpm-number')
+                },
+                learn: {
+                    type: 'checkbox',
+                    input: document.getElementById('learn-check')
+                },
+                prefs: {
+                    type: 'checkbox',
+                    input: document.getElementById('prefs-check')
+                },
+                edit: {
+                    type: 'checkbox',
+                    input: document.getElementById('edit-check')
+                },
+                help: {
+                    type: 'checkbox',
+                    input: document.getElementById('help-check')
+                }
+            },
             
             init = function() {
+                controls.play.input.addEventListener('change', function(e) {
+                    app.updateTransport('play');
+                });
+                controls.bpm.input.addEventListener('change', function(e) {
+                    console.log(app);
+                    app.updateTransport('bpm', e.target.value);
+                });
+                
+                // get panel header height from CSS.
                 var style = getComputedStyle(document.body);
                 panelHeaderHeight = parseInt(style.getPropertyValue('--header-height'), 10);
                 
@@ -151,6 +187,17 @@ window.WH = window.WH || {};
                 }
             },
             
+            updateControl = function(property, value) {
+                switch(property) {
+                    case 'bpm':
+                        controls.bpm.input.value = value;
+                        break;
+                    case 'play':
+                        controls.play.input.checked = value;
+                        break;
+                }
+            },
+            
             toggleEdit = function(isVisible) {
                 editEl.dataset.show = isVisible;
                 renderLayout();
@@ -180,6 +227,7 @@ window.WH = window.WH || {};
         that.renderLayout = renderLayout;
         that.createSettingsView = createSettingsView;
         that.deleteSettingsView = deleteSettingsView;
+        that.updateControl = updateControl;
         that.toggleEdit = toggleEdit;
         that.toggleHelp = toggleHelp;
         that.togglePreferences = togglePreferences;
