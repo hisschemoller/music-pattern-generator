@@ -88,6 +88,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     WH.createMIDIRemote({
         that: midiRemote,
+        app: app,
         remoteView: remoteView
     });
     WH.createMIDISync({

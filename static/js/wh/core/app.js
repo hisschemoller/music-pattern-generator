@@ -11,14 +11,16 @@ window.WH = window.WH || {};
             midiRemote = specs.midiRemote,
             transport = specs.transport,
             panelStates = {
-                help: false
+                help: false,
+                preferences: false,
+                remote: false,
+                settings: false
             },
             
             togglePanel = function(panelID, isVisible) {
-                console.log(panelID, isVisible);
                 if (typeof panelStates[panelID] == 'boolean') {
                     panelStates[panelID] = isVisible;
-                    appView.showPanel(panelStates[panelID]);
+                    appView.showPanel(panelID, panelStates[panelID]);
                 }
             },
             
@@ -30,7 +32,7 @@ window.WH = window.WH || {};
                     case 'play':
                         transport.toggleStartStop();
                         break;
-                    case 'learn':
+                    case 'remote':
                         midiRemote.toggleMidiLearn(value);
                         break;
                 }

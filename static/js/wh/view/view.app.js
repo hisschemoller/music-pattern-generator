@@ -29,7 +29,7 @@ window.WH = window.WH || {};
                     type: 'number',
                     input: document.getElementById('bpm-number')
                 },
-                learn: {
+                remote: {
                     type: 'checkbox',
                     input: document.getElementById('learn-check')
                 },
@@ -54,8 +54,9 @@ window.WH = window.WH || {};
                 controls.bpm.input.addEventListener('change', function(e) {
                     app.updateApp('bpm', e.target.value);
                 });
-                controls.learn.input.addEventListener('change', function(e) {
-                    app.updateApp('learn', e.target.checked);
+                controls.remote.input.addEventListener('change', function(e) {
+                    app.updateApp('remote', e.target.checked);
+                    app.togglePanel('remote', e.target.checked);
                 });
                 controls.prefs.input.addEventListener('change', function(e) {
                     app.togglePanel('preferences', e.target.checked);
@@ -214,29 +215,31 @@ window.WH = window.WH || {};
                     case 'play':
                         controls.play.input.checked = value;
                         break;
-                    case 'learn':
-                        controls.learn.input.checked = value;
+                    case 'remote':
+                        controls.remote.input.checked = value;
                         break;
                 }
             },
             
-            toggleEdit = function(isVisible) {
-                editEl.dataset.show = isVisible;
-                renderLayout();
-            },
-            
-            toggleHelp = function(isVisible) {
-                helpEl.dataset.show = isVisible;
-                renderLayout();
-            },
-            
-            togglePreferences = function(isVisible) {
-                prefsEl.dataset.show = isVisible;
-                renderLayout();
-            },
-            
-            toggleRemote = function(isVisible) {
-                remoteEl.dataset.show = isVisible;
+            showPanel = function(panelID, isVisible) {
+                switch (panelID) {
+                    case 'help':
+                        helpEl.dataset.show = isVisible;
+                        break;
+                    case 'preferences':
+                        prefsEl.dataset.show = isVisible;
+                        break;
+                    case 'remote':
+                        remoteEl.dataset.show = isVisible;
+                        break;
+                    case 'settings':
+                        editEl.dataset.show = isVisible;
+                        break;
+                    default:
+                        console.error('Panel ID ', panelID, 'not found.');
+                        return;
+                }
+                
                 renderLayout();
             };
         
@@ -250,10 +253,7 @@ window.WH = window.WH || {};
         that.createSettingsView = createSettingsView;
         that.deleteSettingsView = deleteSettingsView;
         that.updateControl = updateControl;
-        that.toggleEdit = toggleEdit;
-        that.toggleHelp = toggleHelp;
-        that.togglePreferences = togglePreferences;
-        that.toggleRemote = toggleRemote;
+        that.showPanel = showPanel;
         return that;
     };
 

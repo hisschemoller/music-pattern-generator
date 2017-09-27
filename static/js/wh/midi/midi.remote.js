@@ -12,6 +12,7 @@ window.WH = window.WH || {};
 
     function createMIDIRemote(specs) {
         var that,
+            app = specs.app,
             remoteView = specs.remoteView,
             midiInputs = [],
             assignments = [],
@@ -108,7 +109,7 @@ window.WH = window.WH || {};
             toggleMidiLearn = function(isEnabled) {
                 isInLearnMode = isEnabled;
                 deselectParameter();
-                remoteView.toggleVisibility(isInLearnMode);
+                app.appUpdated('remote', isInLearnMode);
 
                 // set learn mode on all parameters
                 for (var i = 0; i < processors.length; i++) {
