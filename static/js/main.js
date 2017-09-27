@@ -97,6 +97,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     WH.createMIDINetwork({
         that: midiNetwork,
+        app: app,
         appView: appView,
         canvasView: canvasView,
         midiRemote: midiRemote,

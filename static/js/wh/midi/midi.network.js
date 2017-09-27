@@ -9,6 +9,7 @@ window.WH = window.WH || {};
 
     function createMIDINetwork(specs, my) {
         var that,
+            app = specs.app,
             appView = specs.appView,
             canvasView = specs.canvasView,
             midiRemote = specs.midiRemote,
@@ -109,7 +110,6 @@ window.WH = window.WH || {};
                             appView.deleteSettingsView(processor);
                             canvasView.deleteView(processor);
                             midiRemote.unregisterProcessor(processor);
-                            selectProcessor(processor);
                             break;
                     }
 
@@ -134,6 +134,7 @@ window.WH = window.WH || {};
              * @param  {Object} processor Processor to select.
              */
             selectProcessor = function(processor) {
+                app.togglePanel('settings', processor != null);
                 for (var i = 0; i < numProcessors; i++) {
                     var proc = processors[i];
                     if (typeof proc.setSelected == 'function') {
@@ -148,16 +149,21 @@ window.WH = window.WH || {};
              */
             selectNextProcessor = function(processor) {
                 let processorIndex = processors.indexOf(processor),
-                    n = processors.length,
                     nextIndex,
-                    nextProcessor;
-                for (let i = 1; i <= n; i++) {
+                    nextProcessor,
+                    isNextProcessor;
+                for (let i = 1, n = processors.length; i <= n; i++) {
                     nextIndex = (processorIndex + i) % n;
                     nextProcessor = processors[nextIndex];
                     if (nextProcessor.getType() !== 'input' && nextProcessor.getType() !== 'output' && nextProcessor !== processor) {
+                        isNextProcessor = true;
                         selectProcessor(nextProcessor);
                         break;
                     }
+                }
+                
+                if (!isNextProcessor) {
+                    selectProcessor(null);
                 }
             },
             
