@@ -295,24 +295,24 @@ window.WH = window.WH || {};
                 }
                 
                 // create the processors
-                var pdata = data.processors,
-                    n = pdata.length;
-                for (let i = 0; i < n; i++) {
-                    // don't create MIDI inputs and outputs
-                    if (pdata[i].type !== 'input' && pdata[i].type !== 'output') {
+                data.processors.forEach(function(item) {
+                    // don't create MIDI inputs and outputs yet
+                    if (item.type !== 'input' && item.type !== 'output') {
                         createProcessor({
-                            type: pdata[i].type,
-                            id: pdata[i].id
+                            type: item.type,
+                            id: item.id
                         }, true);
                     }
-                }
+                });
 
                 // find midi processors created for the detected midi ports,
                 // match them with the saved midi processor data,
                 // by comparing the midi port ids
                 // then give the matched processors the processor id from the saved data
                 // so that connections to input and output processors can be restored
-                var procType,
+                var pdata = data.processors,
+                    n = pdata.length,
+                    procType,
                     numProcessors = processors.length;
                 for (var i = 0; i < n; i++) {
                     if (pdata[i].type === 'input' || pdata[i].type === 'output') {
