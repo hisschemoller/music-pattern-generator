@@ -290,10 +290,14 @@ window.WH = window.WH || {};
                 // clear all old data
                 clear();
                 
+                if (!data.processors || data.processors.length == 0) {
+                    return;
+                }
+                
                 // create the processors
                 var pdata = data.processors,
                     n = pdata.length;
-                for (var i = 0; i < n; i++) {
+                for (let i = 0; i < n; i++) {
                     // don't create MIDI inputs and outputs
                     if (pdata[i].type !== 'input' && pdata[i].type !== 'output') {
                         createProcessor({

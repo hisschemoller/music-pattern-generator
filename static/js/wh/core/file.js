@@ -80,9 +80,7 @@ window.WH = window.WH || {};
              */
             createNew = function() {
                 showUnsavedChangedDialog();
-                midiRemote.clear();
-                midiNetwork.clear();
-                transport.setBPM(120);
+                setData();
             },
 
             /**
@@ -164,10 +162,11 @@ window.WH = window.WH || {};
              */
             setData = function(data) {
                 console.log(data);
-                transport.setBPM(data.bpm);
-                midi.setData(data.midi);
-                midiNetwork.setData(data.network);
-                midiRemote.setData(data.remote);
+                data = data || {};
+                transport.setBPM(data.bpm || 120);
+                midi.setData(data.midi || {});
+                midiNetwork.setData(data.network || {});
+                midiRemote.setData(data.remote || {});
             },
 
             /**
@@ -179,7 +178,7 @@ window.WH = window.WH || {};
                 // closure to capture the file information
                 fileReader.onload = (function(f) {
                     return function(e) {
-                        let isJSON = true
+                        let isJSON = true;
                         try {
                             const data = JSON.parse(e.target.result);
                             if (data) {
