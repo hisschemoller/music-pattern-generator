@@ -45,14 +45,6 @@ window.WH = window.WH || {};
             },
             
             /**
-             * Show or hide the remote list element.
-             * @param  {Boolean} isVisible [description]
-             */
-            toggleVisibility = function(isVisible) {
-                appView.toggleRemote(isVisible);
-            },
-            
-            /**
              * Add a parameter that is assigned.
              * @param  {Object} param Processor parameter.
              */
@@ -86,7 +78,6 @@ window.WH = window.WH || {};
         
         that.createRemoteGroup = createRemoteGroup;
         that.deleteRemoteGroup = deleteRemoteGroup;
-        that.toggleVisibility = toggleVisibility;
         that.addParameter = addParameter;
         that.removeParameter = removeParameter;
         return that;

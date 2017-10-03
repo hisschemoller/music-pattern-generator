@@ -24,9 +24,9 @@
 document.addEventListener('DOMContentLoaded', function(e) {
 
     // Create all objects that will be the modules of the app.
-    var appView = {},
+    var app = {},
+        appView = {},
         canvasView = {},
-        controlsView = {},
         file = {},
         fileView = {},
         midi = {},
@@ -39,19 +39,20 @@ document.addEventListener('DOMContentLoaded', function(e) {
         transport = {};
 
     // Add functionality to the modules and inject dependencies.
+    WH.createApp({
+        that: app,
+        appView: appView,
+        midiRemote: midiRemote,
+        transport: transport
+    });
     WH.createAppView({
         that: appView,
+        app: app,
         midiNetwork: midiNetwork
     });
     WH.createCanvasView({
         that: canvasView,
         midiNetwork: midiNetwork
-    });
-    WH.createControlsView({
-        that: controlsView,
-        appView: appView,
-        midiRemote: midiRemote,
-        transport: transport
     });
     WH.createPreferences({
         that: preferences
@@ -87,6 +88,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     WH.createMIDIRemote({
         that: midiRemote,
+        app: app,
         remoteView: remoteView
     });
     WH.createMIDISync({
@@ -95,6 +97,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     WH.createMIDINetwork({
         that: midiNetwork,
+        app: app,
         appView: appView,
         canvasView: canvasView,
         midiRemote: midiRemote,
@@ -102,8 +105,8 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     WH.createTransport({
         that: transport,
+        app: app,
         canvasView: canvasView,
-        controlsView: controlsView,
         midiNetwork: midiNetwork
     });
 

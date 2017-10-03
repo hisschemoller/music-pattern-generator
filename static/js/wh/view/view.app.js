@@ -9,6 +9,7 @@ window.WH = window.WH || {};
     
     function createAppView(specs, my) {
         var that,
+            app = specs.app,
             midiNetwork = specs.midiNetwork,
             rootEl = document.querySelector('#app'),
             panelsEl = document.querySelector('.panels'),
@@ -19,8 +20,63 @@ window.WH = window.WH || {};
             remoteEl = document.querySelector('.remote'),
             settingsViews = [],
             panelHeaderHeight,
+            controls = {
+                play: {
+                    type: 'checkbox',
+                    input: document.getElementById('play-check')
+                },
+                bpm: {
+                    type: 'number',
+                    input: document.getElementById('bpm-number')
+                },
+                remote: {
+                    type: 'checkbox',
+                    input: document.getElementById('learn-check')
+                },
+                prefs: {
+                    type: 'checkbox',
+                    input: document.getElementById('prefs-check')
+                },
+                edit: {
+                    type: 'checkbox',
+                    input: document.getElementById('edit-check')
+                },
+                help: {
+                    type: 'checkbox',
+                    input: document.getElementById('help-check')
+                }
+            },
             
             init = function() {
+                controls.play.input.addEventListener('change', function(e) {
+                    app.updateApp('play');
+                });
+                controls.bpm.input.addEventListener('change', function(e) {
+                    app.updateApp('bpm', e.target.value);
+                });
+                controls.remote.input.addEventListener('change', function(e) {
+                    app.updateApp('remote', e.target.checked);
+                    app.togglePanel('remote', e.target.checked);
+                });
+                controls.prefs.input.addEventListener('change', function(e) {
+                    app.togglePanel('preferences', e.target.checked);
+                });
+                controls.edit.input.addEventListener('change', function(e) {
+                    app.togglePanel('settings', e.target.checked);
+                });
+                controls.help.input.addEventListener('change', function(e) {
+                    app.togglePanel('help', e.target.checked);
+                });
+                
+                document.addEventListener('keyup', function(e) {
+                    switch (e.keyCode) {
+                        case 32:
+                            app.updateApp('play');
+                            break;
+                    }
+                });
+                
+                // get panel header height from CSS.
                 var style = getComputedStyle(document.body);
                 panelHeaderHeight = parseInt(style.getPropertyValue('--header-height'), 10);
                 
@@ -58,116 +114,105 @@ window.WH = window.WH || {};
             
             renderLayout = function(leftColumn = true, rightColumn = true) {
                 if (leftColumn) {
-                    renderLayoutLeftColumn();
+                    renderColumnLayout(prefsEl, remoteEl, false);
                 }
                 if (rightColumn) {
-                    renderLayoutRightColumn();
+                    renderColumnLayout(helpEl, editEl, true);
                 }
             },
             
-            renderLayoutLeftColumn = function() {
-                const totalHeight = panelsEl.clientHeight,
-                    isPrefsVisible = prefsEl.dataset.show == 'true',
-                    isRemoteVisible = remoteEl.dataset.show == 'true',
-                    prefsViewportEl = prefsEl.querySelector('.panel__viewport'),
-                    remoteViewportEl = remoteEl.querySelector('.panel__viewport'),
-                    prefsHeight = prefsEl.clientHeight,
-                    remoteHeight = remoteEl.clientHeight,
-                    prefsContentHeight = prefsEl.querySelector('.panel__content').clientHeight,
-                    remoteContentHeight = remoteEl.querySelector('.panel__content').clientHeight;
-                
-                if (isPrefsVisible && isRemoteVisible) {
-                    let combinedHeight = prefsContentHeight + remoteContentHeight + (panelHeaderHeight * 2);
-                    if (combinedHeight > totalHeight) {
-                        if (prefsContentHeight + panelHeaderHeight < totalHeight / 2) {
-                            prefsViewportEl.style.height = prefsEl.prefsContentHeight + 'px';
-                            remoteViewportEl.style.height = (totalHeight - prefsContentHeight - (panelHeaderHeight * 2)) + 'px';
-                        } else if (remoteContentHeight + panelHeaderHeight < totalHeight / 2) {
-                            prefsViewportEl.style.height = (totalHeight - remoteContentHeight - (panelHeaderHeight * 2)) + 'px';
-                            remoteViewportEl.style.height = remoteEl.prefsContentHeight + 'px';
-                        } else {
-                            prefsViewportEl.style.height = ((totalHeight / 2) - panelHeaderHeight) + 'px';
-                            remoteViewportEl.style.height = ((totalHeight / 2) - panelHeaderHeight) + 'px';
-                        }
-                    } else {
-                        prefsViewportEl.style.height = 'auto';
-                        remoteViewportEl.style.height = 'auto';
-                    }
-                } else if (isPrefsVisible) {
-                    if (prefsContentHeight + panelHeaderHeight > totalHeight) {
-                        prefsViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
-                    } else {
-                        prefsViewportEl.style.height = 'auto';
-                    }
-                } else if (isRemoteVisible) {
-                    if (remoteContentHeight + panelHeaderHeight > totalHeight) {
-                        remoteViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
-                    } else {
-                        remoteViewportEl.style.height = 'auto';
-                    }
-                }
-            },
-            
-            renderLayoutRightColumn = function() {
+            renderColumnLayout = function(topEl, btmEl, isRightColumn) {
                 const totalHeight = panelsEl.clientHeight,
                     columnWidth = document.querySelector('.panels__right').clientWidth,
-                    editWidth = editEl.clientWidth,
-                    helpWidth = helpEl.clientWidth,
-                    isEditVisible = editEl.dataset.show == 'true',
-                    isHelpVisible = helpEl.dataset.show == 'true',
-                    editViewportEl = editEl.querySelector('.panel__viewport'),
-                    helpViewportEl = helpEl.querySelector('.panel__viewport'),
-                    editContentHeight = editEl.querySelector('.panel__content').clientHeight,
-                    helpContentHeight = helpEl.querySelector('.help__nav').clientHeight + helpEl.querySelector('.help__copy').clientHeight;
+                    topWidth = topEl.clientWidth,
+                    btmWidth = btmEl.clientWidth,
+                    isTopVisible = topEl.dataset.show == 'true',
+                    isBtmVisible = btmEl.dataset.show == 'true',
+                    topViewportEl = topEl.querySelector('.panel__viewport'),
+                    btmViewportEl = btmEl.querySelector('.panel__viewport'),
+                    topHeight = topEl.clientHeight,
+                    btmHeight = btmEl.clientHeight,
+                    topContentHeight = topEl.querySelector('.panel__content').clientHeight,
+                    btmContentHeight = btmEl.querySelector('.panel__content').clientHeight;
                 
-                if (editWidth + helpWidth < columnWidth) {
-                    if (editContentHeight + panelHeaderHeight > totalHeight) {
-                        editViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
+                if (isRightColumn && (topWidth + btmWidth < columnWidth)) {
+                    if (topContentHeight + panelHeaderHeight > totalHeight) {
+                        topViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
                     } else {
-                        editViewportEl.style.height = 'auto';
+                        topViewportEl.style.height = 'auto';
                     }
-                    if (helpContentHeight + panelHeaderHeight > totalHeight) {
-                        helpViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
+                    if (btmContentHeight + panelHeaderHeight > totalHeight) {
+                        btmViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
                     } else {
-                        helpViewportEl.style.height = 'auto';
+                        btmViewportEl.style.height = 'auto';
                     }
                 } else {
-                    if (isEditVisible && isHelpVisible) {
-                        editViewportEl.style.height = ((totalHeight / 2) - panelHeaderHeight) + 'px';
-                        helpViewportEl.style.height = ((totalHeight / 2) - panelHeaderHeight) + 'px';
-                    } else if (isEditVisible) {
-                        if (editContentHeight + panelHeaderHeight >= totalHeight) {
-                            editViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
+                    if (isTopVisible && isBtmVisible) {
+                        let combinedHeight = topContentHeight + btmContentHeight + (panelHeaderHeight * 2);
+                        if (combinedHeight > totalHeight) {
+                            if (topContentHeight + panelHeaderHeight < totalHeight / 2) {
+                                topViewportEl.style.height = prefsEl.topContentHeight + 'px';
+                                btmViewportEl.style.height = (totalHeight - topContentHeight - (panelHeaderHeight * 2)) + 'px';
+                            } else if (btmContentHeight + panelHeaderHeight < totalHeight / 2) {
+                                topViewportEl.style.height = (totalHeight - btmContentHeight - (panelHeaderHeight * 2)) + 'px';
+                                btmViewportEl.style.height = remoteEl.topContentHeight + 'px';
+                            } else {
+                                topViewportEl.style.height = ((totalHeight / 2) - panelHeaderHeight) + 'px';
+                                btmViewportEl.style.height = ((totalHeight / 2) - panelHeaderHeight) + 'px';
+                            }
                         } else {
-                            editViewportEl.style.height = 'auto';
+                            topViewportEl.style.height = 'auto';
+                            btmViewportEl.style.height = 'auto';
                         }
-                    } else if (isHelpVisible) {
-                        if (helpContentHeight + panelHeaderHeight >= totalHeight) {
-                            helpViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
+                    } else if (isTopVisible) {
+                        if (topContentHeight + panelHeaderHeight > totalHeight) {
+                            topViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
                         } else {
-                            helpViewportEl.style.height = 'auto';
+                            topViewportEl.style.height = 'auto';
+                        }
+                    } else if (isBtmVisible) {
+                        if (btmContentHeight + panelHeaderHeight > totalHeight) {
+                            btmViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
+                        } else {
+                            btmViewportEl.style.height = 'auto';
                         }
                     }
                 }
             },
             
-            toggleEdit = function(isVisible) {
-                editEl.dataset.show = isVisible;
-                renderLayout();
+            updateControl = function(property, value) {
+                switch(property) {
+                    case 'bpm':
+                        controls.bpm.input.value = value;
+                        break;
+                    case 'play':
+                        controls.play.input.checked = value;
+                        break;
+                    case 'remote':
+                        controls.remote.input.checked = value;
+                        break;
+                }
             },
             
-            toggleHelp = function(isVisible) {
-                helpEl.dataset.show = isVisible;
-                renderLayout();
-            },
-            
-            togglePreferences = function(isVisible) {
-                prefsEl.dataset.show = isVisible;
-                renderLayout();
-            },
-            
-            toggleRemote = function(isVisible) {
-                remoteEl.dataset.show = isVisible;
+            showPanel = function(panelID, isVisible) {
+                switch (panelID) {
+                    case 'help':
+                        helpEl.dataset.show = isVisible;
+                        break;
+                    case 'preferences':
+                        prefsEl.dataset.show = isVisible;
+                        break;
+                    case 'remote':
+                        remoteEl.dataset.show = isVisible;
+                        break;
+                    case 'settings':
+                        editEl.dataset.show = isVisible;
+                        break;
+                    default:
+                        console.error('Panel ID ', panelID, 'not found.');
+                        return;
+                }
+                
                 renderLayout();
             };
         
@@ -180,10 +225,8 @@ window.WH = window.WH || {};
         that.renderLayout = renderLayout;
         that.createSettingsView = createSettingsView;
         that.deleteSettingsView = deleteSettingsView;
-        that.toggleEdit = toggleEdit;
-        that.toggleHelp = toggleHelp;
-        that.togglePreferences = togglePreferences;
-        that.toggleRemote = toggleRemote;
+        that.updateControl = updateControl;
+        that.showPanel = showPanel;
         return that;
     };
 
