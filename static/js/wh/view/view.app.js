@@ -115,11 +115,55 @@ window.WH = window.WH || {};
             renderLayout = function(leftColumn = true, rightColumn = true) {
                 if (leftColumn) {
                     renderLayoutLeftColumn();
+                    // renderColumnLayout(prefsEl, remoteEl);
                 }
                 if (rightColumn) {
                     renderLayoutRightColumn();
                 }
             },
+            
+            // renderColumnLayout = function(topEl, bottomEl) {
+            //     const totalHeight = panelsEl.clientHeight,
+            //         isTopVisible = topEl.dataset.show == 'true',
+            //         isBtmVisible = btmEl.dataset.show == 'true',
+            //         topViewportEl = topEl.querySelector('.panel__viewport'),
+            //         btmViewportEl = btmEl.querySelector('.panel__viewport'),
+            //         topHeight = topEl.clientHeight,
+            //         btmHeight = btmEl.clientHeight,
+            //         topContentHeight = topEl.querySelector('.panel__content').clientHeight,
+            //         btmContentHeight = btmEl.querySelector('.panel__content').clientHeight;
+            //     
+            //     if (isTopVisible && isBtmVisible) {
+            //         let combinedHeight = topContentHeight + btmContentHeight + (panelHeaderHeight * 2);
+            //         if (combinedHeight > totalHeight) {
+            //             if (topContentHeight + panelHeaderHeight < totalHeight / 2) {
+            //                 topViewportEl.style.height = prefsEl.topContentHeight + 'px';
+            //                 btmViewportEl.style.height = (totalHeight - topContentHeight - (panelHeaderHeight * 2)) + 'px';
+            //             } else if (btmContentHeight + panelHeaderHeight < totalHeight / 2) {
+            //                 topViewportEl.style.height = (totalHeight - btmContentHeight - (panelHeaderHeight * 2)) + 'px';
+            //                 btmViewportEl.style.height = remoteEl.topContentHeight + 'px';
+            //             } else {
+            //                 topViewportEl.style.height = ((totalHeight / 2) - panelHeaderHeight) + 'px';
+            //                 btmViewportEl.style.height = ((totalHeight / 2) - panelHeaderHeight) + 'px';
+            //             }
+            //         } else {
+            //             topViewportEl.style.height = 'auto';
+            //             btmViewportEl.style.height = 'auto';
+            //         }
+            //     } else if (isTopVisible) {
+            //         if (topContentHeight + panelHeaderHeight > totalHeight) {
+            //             topViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
+            //         } else {
+            //             topViewportEl.style.height = 'auto';
+            //         }
+            //     } else if (isBtmVisible) {
+            //         if (btmContentHeight + panelHeaderHeight > totalHeight) {
+            //             btmViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
+            //         } else {
+            //             btmViewportEl.style.height = 'auto';
+            //         }
+            //     }
+            // },
             
             renderLayoutLeftColumn = function() {
                 const totalHeight = panelsEl.clientHeight,
@@ -136,11 +180,11 @@ window.WH = window.WH || {};
                     let combinedHeight = prefsContentHeight + remoteContentHeight + (panelHeaderHeight * 2);
                     if (combinedHeight > totalHeight) {
                         if (prefsContentHeight + panelHeaderHeight < totalHeight / 2) {
-                            prefsViewportEl.style.height = prefsEl.prefsContentHeight + 'px';
+                            prefsViewportEl.style.height = prefsContentHeight + 'px';
                             remoteViewportEl.style.height = (totalHeight - prefsContentHeight - (panelHeaderHeight * 2)) + 'px';
                         } else if (remoteContentHeight + panelHeaderHeight < totalHeight / 2) {
                             prefsViewportEl.style.height = (totalHeight - remoteContentHeight - (panelHeaderHeight * 2)) + 'px';
-                            remoteViewportEl.style.height = remoteEl.prefsContentHeight + 'px';
+                            remoteViewportEl.style.height = remoteContentHeight + 'px';
                         } else {
                             prefsViewportEl.style.height = ((totalHeight / 2) - panelHeaderHeight) + 'px';
                             remoteViewportEl.style.height = ((totalHeight / 2) - panelHeaderHeight) + 'px';
@@ -189,8 +233,22 @@ window.WH = window.WH || {};
                     }
                 } else {
                     if (isEditVisible && isHelpVisible) {
-                        editViewportEl.style.height = ((totalHeight / 2) - panelHeaderHeight) + 'px';
-                        helpViewportEl.style.height = ((totalHeight / 2) - panelHeaderHeight) + 'px';
+                        let combinedHeight = editContentHeight + helpContentHeight + (panelHeaderHeight * 2);
+                        if (combinedHeight > totalHeight) {
+                            if (editContentHeight + panelHeaderHeight < totalHeight / 2) {
+                                editViewportEl.style.height = editContentHeight + 'px';
+                                helpViewportEl.style.height = (totalHeight - editContentHeight - (panelHeaderHeight * 2)) + 'px';
+                            } else if (helpContentHeight + panelHeaderHeight < totalHeight / 2) {
+                                editViewportEl.style.height = (totalHeight - helpContentHeight - (panelHeaderHeight * 2)) + 'px';
+                                helpViewportEl.style.height = helpContentHeight + 'px';
+                            } else {
+                                editViewportEl.style.height = ((totalHeight / 2) - panelHeaderHeight) + 'px';
+                                helpViewportEl.style.height = ((totalHeight / 2) - panelHeaderHeight) + 'px';
+                            }
+                        } else {
+                            editViewportEl.style.height = 'auto';
+                            helpViewportEl.style.height = 'auto';
+                        }
                     } else if (isEditVisible) {
                         if (editContentHeight + panelHeaderHeight >= totalHeight) {
                             editViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
