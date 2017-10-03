@@ -9,11 +9,13 @@ The application creates a specific type of patterns, known as Euclidean rhythms.
 A desktop application can be downloaded for Windows, Mac and Linux, and it can be used as an online app that runs in the browser as well (Chrome and Chromium only at the moment). It is written in Javascript and uses the Electron framework to create the desktop versions.
 
 ## Euclidean rhythms
-Euclidean rhythms are generated with a mathematical formula that is really simple. It’s an algorithm to distribute an amount of notes as evenly as possible over a period of time, where time is divided in equal parts. A very basic example: Say you have one measure of sixteen sixteenth notes and there are four notes to be played, then this is how those four notes would be equally distributed by the algorithm:
+Euclidean rhythms are generated with a simple mathematical formula. It distributes an amount of pulses as evenly as possible over a period of time, where time is divided in equal parts. So, say you have four notes to divide over a sequence of sixteen steps, the result would be the following pattern:
 
 ``x . . . x . . . x . . . x . . .``
 
-A basic house or techno kick drum pattern. There are four notes on sixteen steps, so the division is easy, 16 / 4 = 4. It gives you one note every four steps. But it gets more interesting when the numbers don’t divide so easily. Take five hits on sixteen steps. Then the pattern becomes more irregular:
+The notes are spread as evenly as possible over the length of time: Each note is followed by three silent rests. Because there are four notes on sixteen steps the division is easy: 16 / 4 = 4. One note every four steps. Ab basic techno or house kick pattern.
+
+The results get more interesting if the numbers can't be so cleanly divided. Then the patterns get irregular. If we take five notes over sixteen steps, the pattern will look like this:
 
 ``x . . . x . . x . . x . . x . .``
 
