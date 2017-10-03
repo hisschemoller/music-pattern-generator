@@ -8,6 +8,21 @@ The application creates a specific type of patterns, known as Euclidean rhythms.
 
 A desktop application can be downloaded for Windows, Mac and Linux, and it can be used as an online app that runs in the browser as well (Chrome and Chromium only at the moment). It is written in Javascript and uses the Electron framework to create the desktop versions.
 
+## Euclidean rhythms
+Euclidean rhythms are generated with a mathematical formula that is really simple. It’s an algorithm to distribute an amount of notes as evenly as possible over a period of time, where time is divided in equal parts. A very basic example: Say you have one measure of sixteen sixteenth notes and there are four notes to be played, then this is how those four notes would be equally distributed by the algorithm:
+
+``x . . . x . . . x . . . x . . .``
+
+A basic house or techno kick drum pattern. There are four notes on sixteen steps, so the division is easy, 16 / 4 = 4. It gives you one note every four steps. But it gets more interesting when the numbers don’t divide so easily. Take five hits on sixteen steps. Then the pattern becomes more irregular:
+
+``x . . . x . . x . . x . . x . .``
+
+It’s these irregular patterns that create the best rhythms. Especially when several patterns are combined.
+[“The Euclidean Algorithm Generates Traditional Musical Rhythms"][link1]
+
+[link1]: http://cgm.cs.mcgill.ca/~godfried/publications/banff.pdf
+
+
 ## Introduction (old)
 
 JS-EPG is a Javascript version of the Euclidean Pattern Generator, a Java application I made several years ago. It has [its own repository](https://github.com/WouterHisschemoller/Euclidean-Pattern-Generator) here on GitHub.
