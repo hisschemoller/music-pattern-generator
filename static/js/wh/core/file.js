@@ -25,21 +25,10 @@ window.WH = window.WH || {};
              * Autosave file if true.
              * @type {Boolean}
              */
-            autoSaveEnabled = false,
+            autoSaveEnabled = true,
 
             init = function() {
                 window.addEventListener('beforeunload', onBeforeUnload);
-                document.addEventListener('keyup', function(e) {
-                    console.log(e.keyCode);
-                    switch (e.keyCode) {
-                        case 83: // s
-                            save();
-                            break;
-                        case 76: // l
-                            loadProjectFromStorage();
-                            break;
-                    }
-                });
             },
 
             /**
@@ -47,9 +36,9 @@ window.WH = window.WH || {};
              */
             setup = function() {
                 loadPreferences();
-                // if (!loadProjectFromStorage()) {
-                //     createNew();
-                // }
+                if (!loadProjectFromStorage()) {
+                    createNew();
+                }
             },
 
             /**
@@ -59,6 +48,7 @@ window.WH = window.WH || {};
                 var data = localStorage.getItem(preferencesName);
                 if (data) {
                     data = JSON.parse(data);
+                    console.log(data);
                     preferences.setData(data);
                 } else {
                     console.log('No data in LocalStorage with name "' + preferencesName + '".');
