@@ -374,3 +374,16 @@ div[data-theme] {
 .help__copy {
     padding: 0 10px;
 }
+.help__copy h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    padding-top: 10px;
+}
+.help__copy h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    padding-top: 20px;
+}
+.help__copy p {
+    margin-bottom: 20px;
+}
