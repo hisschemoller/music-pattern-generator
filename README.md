@@ -19,6 +19,14 @@ Each note is separated from the next by three rests, a typical house and techno 
 
 Interesting polyrhythms can be created by combining patterns of different length. The patterns in the application go up to 64 steps in length.
 
+Patterns can also be rotated to create more variation, because without rotation they always start with a note on the first step. This is the 4 on 16 pattern from before followed by rotations of 1 and 2:
+
+``x . . . x . . . x . . . x . . .``
+
+``. x . . . x . . . x . . . x . .``
+
+``. . x . . . x . . . x . . . x .``
+
 The generation of Euclidean rhythms in music was discovered by Godfried Toussaint in 2004. His paper on this theory is online as a PDF file: [“The Euclidean Algorithm Generates Traditional Musical Rhythms"][link_toussaint]
 
 ## Download and installation
@@ -55,8 +63,20 @@ The controlbar is permanently visible and shows a row of buttons and other contr
 
 ### Pattern area
 
+* Doubleclick the background to create a pattern.
+* Click a pattern to select or drag it.
+* Drag the background to move all patterns at once.
 
+### Settings panel
 
+The Settings panel shows the settings for the currently selected pattern.
+
+* __Steps, Pulses & Rotation__ - The Euclidean settings that determine the pattern.
+* __Rate__ - The duration of one step in the pattern. Default is 1/16, where one step is a 16th note. If you change that rate to 1/8 the pattern play half speed.
+* __Note length__ - The length of a played note. Default is 1/16, which is a 16th note.
+* __MIDI Out Channel, Pitch & Velocity__ - Properties of the MIDI notes that the pattern will output.
+* __Name__ - All patterns get a default name which can be changed here.
+* __Delete__ - Button to delete the current pattern.
 
 [link_toussaint]: http://cgm.cs.mcgill.ca/~godfried/publications/banff.pdf
 
