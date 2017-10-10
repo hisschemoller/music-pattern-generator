@@ -35,6 +35,29 @@ The application opens with just the controlbar visible at the top and the empty 
 * Choose the MIDI output you want by toggling its button in the Network column. 'Network' means that the network of patterns will output MIDI notes on this port.
 * The pattern you created will now send notes to your MIDI port on Channel 1 with Pitch 60 and Velocity 100, the default values of a new pattern (as you can see in the Settings panel).
 
+## Application overview
+
+The application window shows a controlbar at the top. The rest of the window is the pattern area. Panels can be opened and closed as necessary.
+
+### Controlbar
+
+The controlbar is permanently visible and shows a row of buttons and other controls.
+
+* __New Project__ - Create an empty new project. All previous existing patterns are lost.
+* __Open Project__ - Opens a file browser to select and load a project file that was saved earlier.
+* __Save Project__ - Opens a file browser to save the current project to a file.
+* __Play / Stop__ - Starts and stops playback of the patterns.
+* __BPM Tempo__ - A number input to set the tempo in Beats Per Minute.
+* __Preferences__ - Toggles the Preferences panel.
+* __MIDI Learn__ - Toggles 'MIDI Learn' mode and the associated Remote MIDI Assignments panel.
+* __Settings__ - Toggles the panel with settings of the currently selected pattern.
+* __Help__ - Toggles the Help text panel.
+
+### Pattern area
+
+
+
+
 [link_toussaint]: http://cgm.cs.mcgill.ca/~godfried/publications/banff.pdf
 
 
