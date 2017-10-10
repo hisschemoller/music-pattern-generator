@@ -9,20 +9,33 @@ The application creates a specific type of patterns, known as Euclidean rhythms.
 A desktop application can be downloaded for Windows, Mac and Linux, and it can be used as an online app that runs in the browser as well (Chrome and Chromium only at the moment). It is written in Javascript and uses the Electron framework to create the desktop versions.
 
 ## Euclidean rhythms
-Euclidean rhythms are generated with a simple mathematical formula. It distributes an amount of pulses as evenly as possible over a period of time, where time is divided in equal parts. So, say you have four notes to divide over a sequence of sixteen steps, the result would be the following pattern:
+Euclidean rhythms are generated with a simple mathematical formula. It distributes an amount of pulses as evenly as possible over a period of time, where time is divided in equal parts. So, say you have four notes to divide over a sequence of sixteen steps, the result is:
 
 ``x . . . x . . . x . . . x . . .``
 
-The notes are spread as evenly as possible over the length of time: Each note is followed by three silent rests. Because there are four notes on sixteen steps the division is easy: 16 / 4 = 4. One note every four steps. Ab basic techno or house kick pattern.
-
-The results get more interesting if the numbers can't be so cleanly divided. Then the patterns get irregular. If we take five notes over sixteen steps, the pattern will look like this:
+Each note is separated from the next by three rests, a typical house and techno kick drum pattern. 4 steps can be very evenly distributed over 16 steps: 16 / 4 = 4. More uneven divisions create more complex rhythms. 5 notes over 16 steps for example results in this pattern:
 
 ``x . . . x . . x . . x . . x . .``
 
-It’s these irregular patterns that create the best rhythms. Especially when several patterns are combined.
-[“The Euclidean Algorithm Generates Traditional Musical Rhythms"][link1]
+Interesting polyrhythms can be created by combining patterns of different length. The patterns in the application go up to 64 steps in length.
 
-[link1]: http://cgm.cs.mcgill.ca/~godfried/publications/banff.pdf
+The generation of Euclidean rhythms in music was discovered by Godfried Toussaint in 2004. His paper on this theory is online as a PDF file: [“The Euclidean Algorithm Generates Traditional Musical Rhythms"][link_toussaint]
+
+## Download and installation
+
+Desktop applications will be available for Linux, Mac and Windows.
+
+## Quick start
+
+The application opens with just the controlbar visible at the top and the empty pattern area below.
+
+* Create a pattern by double clicking the pattern area. A pattern wheel appears and its Settings panel opens at the right.
+* You can start and stop the pattern with the play button in the controlbar.
+* Open the Preferences panel with the 'cogwheel' button in the controlbar.
+* Choose the MIDI output you want by toggling its button in the Network column. 'Network' means that the network of patterns will output MIDI notes on this port.
+* The pattern you created will now send notes to your MIDI port on Channel 1 with Pitch 60 and Velocity 100, the default values of a new pattern (as you can see in the Settings panel).
+
+[link_toussaint]: http://cgm.cs.mcgill.ca/~godfried/publications/banff.pdf
 
 
 ## Introduction (old)
