@@ -45,8 +45,6 @@ window.WH = window.WH || {};
                         my.viewCallback('connected', true);
                         break;
                     case 'disconnected':
-                        my.wasSyncEnabled = my.isSyncEnabled;
-                        my.wasRemoteEnabled = my.isRemoteEnabled;
                         toggleSync(false);
                         toggleRemote(false);
                         my.viewCallback('connected', false);
@@ -105,6 +103,7 @@ window.WH = window.WH || {};
                     my.sync.addMidiInput(that);
                 }
                 my.isSyncEnabled = !my.isSyncEnabled;
+                my.wasSyncEnabled = my.isSyncEnabled;
                 my.viewCallback('sync', my.isSyncEnabled);
             },
 
@@ -125,6 +124,7 @@ window.WH = window.WH || {};
                     my.remote.addMidiInput(that);
                 }
                 my.isRemoteEnabled = !my.isRemoteEnabled;
+                my.wasRemoteEnabled = my.isRemoteEnabled;
                 my.viewCallback('remote', my.isRemoteEnabled);
             },
 

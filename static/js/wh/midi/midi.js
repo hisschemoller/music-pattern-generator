@@ -17,6 +17,7 @@ window.WH = window.WH || {};
             midiAccess,
             inputs = [],
             outputs = [],
+            dataFromStorage,
 
             setup = function() {
                 requestAccess(onAccessSuccess, onAccessFailure, false);
@@ -71,6 +72,8 @@ window.WH = window.WH || {};
                 for (var port = outputs.next(); port && !port.done; port = outputs.next()) {
                     createOutput(port.value);
                 }
+                
+                restorePortSettings();
 
                 midiAccess.onstatechange = onAccessStateChange;
             },
@@ -139,37 +142,51 @@ window.WH = window.WH || {};
                 // port initialisation last
                 output.setup();
             },
+            
+            /**
+             * Restore settings at initialisation.
+             * If port settings data from localStorage and 
+             * access to MIDI ports exists, restore port settings.
+             */
+            restorePortSettings = function() {
+                if (midiAccess && dataFromStorage) {
+                    const data = dataFromStorage;
+                    
+                    if (data.inputs) {
+                        let inputData;
+                        for (let i = 0, n = data.inputs.length; i < n; i++) {
+                            inputData = data.inputs[i];
+                            // find the input port by MIDIInput ID
+                            for (let j = 0, nn = inputs.length; j < nn; j++) {
+                                if (inputData.midiPortID == inputs[j].getID()) {
+                                    inputs[j].setData(inputData);
+                                }
+                            }
+                        }
+                    }
+                    
+                    if (data.outputs) {
+                        let outputData;
+                        for (let i = 0, n = data.outputs.length; i < n; i++) {
+                            outputData = data.outputs[i];
+                            // find the output port by MIDIOutput ID
+                            for (let j = 0, nn = outputs.length; j < nn; j++) {
+                                if (outputData.midiPortID == outputs[j].getID()) {
+                                    outputs[j].setData(outputData);
+                                }
+                            }
+                        }
+                    }
+                }
+            },
 
             /**
              * Restore MIDI port object settings from data object.
              * @param {Object} data Preferences data object.
              */
             setData = function(data) {
-                if (data.inputs) {
-                    let inputData;
-                    for (let i = 0, n = data.inputs.length; i < n; i++) {
-                        inputData = data.inputs[i];
-                        // find the input port by MIDIInput ID
-                        for (let j = 0, nn = inputs.length; j < nn; j++) {
-                            if (inputData.midiPortID == inputs[j].getID()) {
-                                inputs[j].setData(inputData);
-                            }
-                        }
-                    }
-                }
-                
-                if (data.outputs) {
-                    let outputData;
-                    for (let i = 0, n = data.outputs.length; i < n; i++) {
-                        outputData = data.outputs[i];
-                        // find the output port by MIDIOutput ID
-                        for (let j = 0, nn = outputs.length; j < nn; j++) {
-                            if (outputData.midiPortID == outputs[j].getID()) {
-                                outputs[j].setData(outputData);
-                            }
-                        }
-                    }
-                }
+                dataFromStorage = data;
+                restorePortSettings();
             },
 
             /**

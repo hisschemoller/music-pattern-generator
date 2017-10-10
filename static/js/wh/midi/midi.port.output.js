@@ -28,7 +28,6 @@ window.WH = window.WH || {};
                         my.viewCallback('connected', true);
                         break;
                     case 'disconnected':
-                        my.wasNetworkEnabled = my.isNetworkEnabled
                         toggleNetwork(false);
                         my.viewCallback('connected', false);
                         break;
@@ -77,6 +76,7 @@ window.WH = window.WH || {};
                     ns.EPGMode.selectMIDIOutPort(networkOutputProcessor.getID(), toggleNetwork);
                 }
                 
+                my.wasNetworkEnabled = my.isNetworkEnabled;
                 my.viewCallback('network', my.isNetworkEnabled);
             },
             
