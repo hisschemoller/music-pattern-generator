@@ -104,7 +104,7 @@ Each assignment in the list shows these fields:
 
 ## MIDI learn mode
 
-Several pattern parameters can be remotely controlled by MIDI CC messages. A CC is associated with a parameter by its MIDI Channel and its Controller number. To set this up MIDI learn mode is used. This example presumes you will use a hardware MIDI controller with knobs that send MIDI CC messages.
+Several pattern parameters can be remotely controlled by MIDI CC messages. A CC is associated with a parameter by its MIDI Channel and its Controller number. To set this up 'MIDI learn mode' is used. The following example presumes you use a hardware MIDI controller with knobs or sliders that send MIDI CC messages.
 
 * Connect your MIDI Controller hardware to a MIDI input.
 * In the Preferences panel make sure that the MIDI input port has its Remote option enabled.
@@ -112,14 +112,15 @@ Several pattern parameters can be remotely controlled by MIDI CC messages. A CC 
   - The Remote Assignments panel appears, showing all existing assignments.
   - The selected pattern's Settings panel shows a dashed border around each parameter that is not yet assigned.
   - Parameters that have already been assigned show a solid unbroken line as their border.
-* Select a pattern and click an assignable' parameter in the Settings panel. The parameter will turn slightly darker to indicate it's selected.
+* Select a pattern and click an assignable parameter in the Settings panel. The parameter will turn slightly darker to indicate it's selected.
 * Turn a knob on the hardware controller that sends MIDI CC messages.
 * The MIDI Channel and CC Number is now assigned to the parameter.
-  - The paremeter's border turns from dashed into a solid line.
+  - The paremeter's border turns from dashed to a solid line.
   - The assignent appears in the Assignments panel list.
-* Click the 'MIDI Learn' button in the controlbar to leave MIDI learn mode.
+* Click the 'MIDI Learn' button in the controlbar to exit MIDI learn mode.
 * Now, if you turn the knob on the hardware, the pattern's parameter will change accordingly.
 
+The assignments are saved in the project file. So save the project to keep the assignments for later use in the project.
 
 
 
