@@ -384,6 +384,22 @@ div[data-theme] {
     margin-bottom: 20px;
     padding-top: 20px;
 }
+.help__copy h3 {
+    font-size: 18px;
+    font-weight: normal;
+    margin-bottom: 20px;
+    padding-top: 20px;
+}
 .help__copy p {
     margin-bottom: 20px;
+}
+.help__copy ul {
+    margin: 1rem 0;
+    padding-left: 40px;
+}
+.help__copy a {
+    color: var(--text-color);
+}
+.help__copy code {
+    font-size: 15px;
 }
