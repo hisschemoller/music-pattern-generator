@@ -9,57 +9,82 @@ The application creates a specific type of patterns, known as Euclidean rhythms.
 A desktop application can be downloaded for Windows, Mac and Linux, and it can be used as an online app that runs in the browser as well (Chrome and Chromium only at the moment). It is written in Javascript and uses the Electron framework to create the desktop versions.
 
 ## Euclidean rhythms
-Euclidean rhythms are generated with a simple mathematical formula. It distributes an amount of pulses as evenly as possible over a period of time, where time is divided in equal parts. So, say you have four notes to divide over a sequence of sixteen steps, the result would be the following pattern:
+Euclidean rhythms are generated with a simple mathematical formula. It distributes an amount of pulses as evenly as possible over a period of time, where time is divided in equal parts. So, say you have four notes to divide over a sequence of sixteen steps, the result is:
 
 ``x . . . x . . . x . . . x . . .``
 
-The notes are spread as evenly as possible over the length of time: Each note is followed by three silent rests. Because there are four notes on sixteen steps the division is easy: 16 / 4 = 4. One note every four steps. Ab basic techno or house kick pattern.
-
-The results get more interesting if the numbers can't be so cleanly divided. Then the patterns get irregular. If we take five notes over sixteen steps, the pattern will look like this:
+Each note is separated from the next by three rests, a typical house and techno kick drum pattern. 4 steps can be very evenly distributed over 16 steps: 16 / 4 = 4. More uneven divisions create more complex rhythms. 5 notes over 16 steps for example results in this pattern:
 
 ``x . . . x . . x . . x . . x . .``
 
-It’s these irregular patterns that create the best rhythms. Especially when several patterns are combined.
-[“The Euclidean Algorithm Generates Traditional Musical Rhythms"][link1]
+Interesting polyrhythms can be created by combining patterns of different length. The patterns in the application go up to 64 steps in length.
 
-[link1]: http://cgm.cs.mcgill.ca/~godfried/publications/banff.pdf
+Patterns can also be rotated to create more variation, because without rotation they always start with a note on the first step. This is the 4 on 16 pattern from before followed by rotations of 1 and 2:
+
+``x . . . x . . . x . . . x . . .``
+
+``. x . . . x . . . x . . . x . .``
+
+``. . x . . . x . . . x . . . x .``
+
+The generation of Euclidean rhythms in music was discovered by Godfried Toussaint in 2004. His paper on this theory is online as a PDF file: [“The Euclidean Algorithm Generates Traditional Musical Rhythms"][link_toussaint]
+
+## Download and installation
+
+Desktop applications will be available for Linux, Mac and Windows.
+
+## Quick start
+
+The application opens with just the controlbar visible at the top and the empty pattern area below.
+
+* Create a pattern by double clicking the pattern area. A pattern wheel appears and its Settings panel opens at the right.
+* You can start and stop the pattern with the play button in the controlbar.
+* Open the Preferences panel with the 'cogwheel' button in the controlbar.
+* Choose the MIDI output you want by toggling its button in the Network column. 'Network' means that the network of patterns will output MIDI notes on this port.
+* The pattern you created will now send notes to your MIDI port on Channel 1 with Pitch 60 and Velocity 100, the default values of a new pattern (as you can see in the Settings panel).
+
+## Application overview
+
+The application window shows a controlbar at the top. The rest of the window is the pattern area. Panels can be opened and closed as necessary.
+
+### Controlbar
+
+The controlbar is permanently visible and shows a row of buttons and other controls.
+
+* __New Project__ - Create an empty new project. All previous existing patterns are lost.
+* __Open Project__ - Opens a file browser to select and load a project file that was saved earlier.
+* __Save Project__ - Opens a file browser to save the current project to a file.
+* __Play / Stop__ - Starts and stops playback of the patterns.
+* __BPM Tempo__ - A number input to set the tempo in Beats Per Minute.
+* __Preferences__ - Toggles the Preferences panel.
+* __MIDI Learn__ - Toggles 'MIDI Learn' mode and the associated Remote MIDI Assignments panel.
+* __Settings__ - Toggles the panel with settings of the currently selected pattern.
+* __Help__ - Toggles the Help text panel.
+
+### Pattern area
+
+* Doubleclick the background to create a pattern.
+* Click a pattern to select or drag it.
+* Drag the background to move all patterns at once.
+
+### Settings panel
+
+The Settings panel shows the settings for the currently selected pattern.
+
+* __Steps, Pulses & Rotation__ - The Euclidean settings that determine the pattern.
+* __Rate__ - The duration of one step in the pattern. Default is 1/16, where one step is a 16th note. If you change that rate to 1/8 the pattern play half speed.
+* __Note length__ - The length of a played note. Default is 1/16, which is a 16th note.
+* __MIDI Out Channel, Pitch & Velocity__ - Properties of the MIDI notes that the pattern will output.
+* __Name__ - All patterns get a default name which can be changed here.
+* __Delete__ - Button to delete the current pattern.
+
+### Preferences panel
+
+### MIDI Assignments panel
 
 
-## Introduction (old)
 
-JS-EPG is a Javascript version of the Euclidean Pattern Generator, a Java application I made several years ago. It has [its own repository](https://github.com/WouterHisschemoller/Euclidean-Pattern-Generator) here on GitHub.
-
-This Javascript app generates rhythms that can be used to create music. The rhythms are generated by a mathematical formula that is based on the Euclidean Algorithm. These rhythms therefore became known as [Euclidean rhythms](https://en.wikipedia.org/wiki/Euclidean_rhythm).
-
-JS-EPG outputs the rhythms as MIDI messages, so to actually hear any sounds you have to choose a MIDI output in the app that is connected to a MIDI equipped sound generator. That generator can be a software DAW like Ableton Live or a hardware drum machine, synthesizer or sampler.
-
-JS-EPG uses the Javascript [Web MIDI API](https://www.w3.org/TR/webmidi/) to send MIDI messages. Only a few browsers support Web MIDI at the moment. [Check CanIUse.com](http://caniuse.com/#search=web%20midi%20api) for the current browser support.
-
-## Usage
-To run the app simply open index.html in a web browser. There are no dependencies on external online files and it doesn't need a server, so it can be used offline.
-
-To add a rhythm pattern doubleclick anywhere on the canvas area and a pattern graphic will appear. A default new pattern has 16 steps and plays four notes, effectively a note on each beat as in a standard house or techno four-to-the-floor kick drum pattern.
-
-There are a few keyboard shortcuts:
-
-| Key       | Action                  |
-| ---       | ---                     |
-| Space     | Toggle start / stop     |
-| Backspace | Delete selected pattern |
-
-## Saving and exporting projects
-
-Projects can be exported as a file to the local file system (the desktop for instance) by simply clicking the Export button (disk icon) in the header bar. This will present you with the computer's regular file save dialog.
-
-A regular 'save' option to automatically overwrite the current project file doesn't exist. This is because Javascript doesn't have this kind of direct access to the computer's file system.
-
-## Importing projects
-
-Project files can be imported by simply clicking the Import button (open folder icon) in the header bar. This will present you with the computer's regular file save open dialog.
-
-## Autosave
-
-All settings are saved however to the browser's LocalStorage when the page unloads, and restored from LocalStorage when the page is loaded again. So you can shut down your browser and start it up the next day, and your settings and preferences will be restored. 
+[link_toussaint]: http://cgm.cs.mcgill.ca/~godfried/publications/banff.pdf
 
 ## Note
 This app is a project in progress, so all of the above might not yet work at all.
