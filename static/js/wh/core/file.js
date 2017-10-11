@@ -20,6 +20,7 @@ window.WH = window.WH || {};
             transport = specs.transport,
             projectName = 'project',
             preferencesName = 'preferences',
+            unchangedDataString,
 
             /**
              * Autosave file if true.
@@ -79,8 +80,8 @@ window.WH = window.WH || {};
              * Clear all settings and set default values..
              */
             createNew = function() {
-                showUnsavedChangedDialog();
-                setData();
+                console.log('createNew');
+                checkForUnsavedChanged(setData);
             },
 
             /**
@@ -121,12 +122,29 @@ window.WH = window.WH || {};
              */
             onBeforeUnload = function(e) {
                 savePreferences();
-                showUnsavedChangedDialog();
+                checkForUnsavedChanged();
                 // autoSave();
             },
             
-            showUnsavedChangedDialog = function() {
+            /**
+             * Check if the current project is changed since it was loaded.
+             * @return {Boolean} True if the project has changed.
+             */
+            checkForUnsavedChanged = function(callback) {
                 
+                var handleUnSavedChanges = new Promise(function(resolve, reject) {
+                    // compare stringified project data
+                    console.log('handleUnSavedChanges');
+                    console.log(unchangedDataString);
+                    console.log(JSON.stringify(getData()));
+                    if ((unchangedDataString || '') == JSON.stringify(getData())) {
+                        resolve(false);
+                    } else {
+                        resolve(true);
+                    }
+                });
+                
+                handleUnSavedChanges.then(callback);
             },
 
             /**
@@ -136,7 +154,7 @@ window.WH = window.WH || {};
             getData = function() {
                 return {
                     bpm: transport.getBPM(),
-                    midi: midi.getData(),
+                    // midi: midi.getData(),
                     network: midiNetwork.getData(),
                     remote: midiRemote.getData()
                 };
@@ -162,6 +180,7 @@ window.WH = window.WH || {};
              */
             setData = function(data) {
                 console.log(data);
+                unchangedDataString = JSON.stringify(data);
                 data = data || {};
                 transport.setBPM(data.bpm || 120);
                 midi.setData(data.midi || {});
@@ -174,6 +193,7 @@ window.WH = window.WH || {};
              * @param {Object} file File object.
              */
             importFile = function(file) {
+                checkForUnsavedChanged();
                 let fileReader = new FileReader();
                 // closure to capture the file information
                 fileReader.onload = (function(f) {
