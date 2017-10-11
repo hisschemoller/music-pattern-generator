@@ -40,7 +40,7 @@ The application opens with just the controlbar visible at the top and the empty 
 * Create a pattern by double clicking the pattern area. A pattern wheel appears and its Settings panel opens at the right.
 * You can start and stop the pattern with the play button in the controlbar.
 * Open the Preferences panel with the 'cogwheel' button in the controlbar.
-* Choose the MIDI output you want by toggling its button in the Network column. 'Network' means that the network of patterns will output MIDI notes on this port.
+* Choose the MIDI output you want by toggling its button in the Network column. 'Network' is the term for the network of patterns that outputs MIDI notes on this port.
 * The pattern you created will now send notes to your MIDI port on Channel 1 with Pitch 60 and Velocity 100, the default values of a new pattern (as you can see in the Settings panel).
 
 ## Application overview
@@ -79,6 +79,18 @@ The Settings panel shows the settings for the currently selected pattern.
 * __Delete__ - Button to delete the current pattern.
 
 ### Preferences panel
+
+Preferences are loaded when the program starts. They are not stored in project files.
+
+* __MIDI Inputs__ - All MIDI input ports are listed here.
+  - __Sync__ - MIDI start and stop messages received on the port will start and stop playback.
+  - __Remote__ - MIDI CC messages received on the port can be assigned to remotely control pattern parameters.
+* __MIDI Outputs__ - All MIDI output ports are listed here.
+  - __Network__ - MIDI notes are sent to the selected output port. 'Network' is the term for the network of patterns that generates MIDI notes.
+
+MIDI devices that are connected or disconnected will automatically appear or disappear in this list. If a device is accidentally diconnected and reconnected, it's settings are attempted to be restored.
+
+* __Dark theme__ - An inverse colour theme with light content on a dark background. To comfortably use the application in dark environments.
 
 ### MIDI Assignments panel
 
