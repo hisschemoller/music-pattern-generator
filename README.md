@@ -27,7 +27,7 @@ Patterns can also be rotated to create more variation, because without rotation 
 
 ``. . x . . . x . . . x . . . x .``
 
-The generation of Euclidean rhythms in music was discovered by Godfried Toussaint in 2004. His paper on this theory is online as a PDF file: [“The Euclidean Algorithm Generates Traditional Musical Rhythms"][link_toussaint]
+The generation of Euclidean rhythms in music was discovered by Godfried Toussaint in 2004. His paper on this theory is online as a PDF file: [The Euclidean Algorithm Generates Traditional Musical Rhythms][link_toussaint]
 
 ## Download and installation
 
@@ -94,6 +94,14 @@ MIDI devices that are connected or disconnected will automatically appear or dis
 
 ### MIDI Assignments panel
 
+A list of all the pattern parameters that have a MIDI CC assigned to them so they can be remotely controlled. The assignments are grouped by pattern. Creating remote assignments is explained elsewhere in this text.
+
+Each assignement in the list shows these fields:
+
+* Name of the parameter.
+* MIDI Channel of he assigned CC.
+* MIDI CC (Continuous Control) number.
+* A 'X' button to remove the assignment.
 
 
 [link_toussaint]: http://cgm.cs.mcgill.ca/~godfried/publications/banff.pdf
