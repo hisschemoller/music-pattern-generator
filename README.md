@@ -60,7 +60,6 @@ The controlbar is permanently visible and shows a row of buttons and other contr
 * __MIDI Learn__ - Toggles 'MIDI Learn' mode and the associated Remote MIDI Assignments panel.
 * __Settings__ - Toggles the panel with settings of the currently selected pattern.
 * __Help__ - Toggles the Help text panel.
-
 ### Pattern area
 
 * Doubleclick the background to create a pattern.
@@ -71,10 +70,10 @@ The controlbar is permanently visible and shows a row of buttons and other contr
 
 The Settings panel shows the settings for the currently selected pattern.
 
-* __Steps, Pulses & Rotation__ - The Euclidean settings that determine the pattern.
+* __Steps, Pulses, Rotation__ - The Euclidean settings that determine the pattern.
 * __Rate__ - The duration of one step in the pattern. Default is 1/16, where one step is a 16th note. If you change that rate to 1/8 the pattern play half speed.
 * __Note length__ - The length of a played note. Default is 1/16, which is a 16th note.
-* __MIDI Out Channel, Pitch & Velocity__ - Properties of the MIDI notes that the pattern will output.
+* __MIDI Out Channel, Pitch, Velocity__ - Properties of the MIDI notes that the pattern will output.
 * __Name__ - All patterns get a default name which can be changed here.
 * __Delete__ - Button to delete the current pattern.
 
@@ -96,15 +95,35 @@ MIDI devices that are connected or disconnected will automatically appear or dis
 
 A list of all the pattern parameters that have a MIDI CC assigned to them so they can be remotely controlled. The assignments are grouped by pattern. Creating remote assignments is explained elsewhere in this text.
 
-Each assignement in the list shows these fields:
+Each assignment in the list shows these fields:
 
 * Name of the parameter.
 * MIDI Channel of he assigned CC.
 * MIDI CC (Continuous Control) number.
 * A 'X' button to remove the assignment.
 
+## MIDI learn mode
+
+Several pattern parameters can be remotely controlled by MIDI CC messages. A CC is associated with a parameter by its MIDI Channel and its Controller number. To set this up MIDI learn mode is used. This example presumes you will use a hardware MIDI controller with knobs that send MIDI CC messages.
+
+* Connect your MIDI Controller hardware to a MIDI input.
+* In the Preferences panel make sure that the MIDI input port has its Remote option enabled.
+* Click the 'MIDI Learn' button (MIDI connector icon) in the controlbar to enter MIDI learn mode.
+  - The Remote Assignments panel appears, showing all existing assignments.
+  - The selected pattern's Settings panel shows a dashed border around each parameter that is not yet assigned.
+  - Parameters that have already been assigned show a solid unbroken line as their border.
+* Select a pattern and click an assignable' parameter in the Settings panel. The parameter will turn slightly darker to indicate it's selected.
+* Turn a knob on the hardware controller that sends MIDI CC messages.
+* The MIDI Channel and CC Number is now assigned to the parameter.
+  - The paremeter's border turns from dashed into a solid line.
+  - The assignent appears in the Assignments panel list.
+* Click the 'MIDI Learn' button in the controlbar to leave MIDI learn mode.
+* Now, if you turn the knob on the hardware, the pattern's parameter will change accordingly.
+
+
+
 
 [link_toussaint]: http://cgm.cs.mcgill.ca/~godfried/publications/banff.pdf
 
 ## Note
-This app is a project in progress, so all of the above might not yet work at all.
+This app is a project in progress, so all of the above might not yet.
