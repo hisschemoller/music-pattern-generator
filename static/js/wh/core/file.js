@@ -30,17 +30,6 @@ window.WH = window.WH || {};
 
             init = function() {
                 window.addEventListener('beforeunload', onBeforeUnload);
-                document.addEventListener('keyup', function(e) {
-                    console.log(e.keyCode);
-                    switch (e.keyCode) {
-                        case 83: // s
-                            save();
-                            break;
-                        case 76: // l
-                            loadProjectFromStorage();
-                            break;
-                    }
-                });
             },
 
             /**
@@ -48,9 +37,9 @@ window.WH = window.WH || {};
              */
             setup = function() {
                 loadPreferences();
-                // if (!loadProjectFromStorage()) {
-                //     createNew();
-                // }
+                if (!loadProjectFromStorage()) {
+                    createNew();
+                }
             },
 
             /**
@@ -80,8 +69,7 @@ window.WH = window.WH || {};
              * Clear all settings and set default values..
              */
             createNew = function() {
-                console.log('createNew');
-                checkForUnsavedChanged(setData);
+                checkForChanges().then(setData);
             },
 
             /**
@@ -122,29 +110,28 @@ window.WH = window.WH || {};
              */
             onBeforeUnload = function(e) {
                 savePreferences();
-                checkForUnsavedChanged();
-                // autoSave();
+                checkForChanges().then(autoSave);
             },
             
             /**
              * Check if the current project is changed since it was loaded.
              * @return {Boolean} True if the project has changed.
              */
-            checkForUnsavedChanged = function(callback) {
-                
-                var handleUnSavedChanges = new Promise(function(resolve, reject) {
+            checkForChanges = function() {
+                return new Promise((resolve, reject) => {
                     // compare stringified project data
                     console.log('handleUnSavedChanges');
-                    console.log(unchangedDataString);
-                    console.log(JSON.stringify(getData()));
+                    console.log('old', unchangedDataString);
+                    console.log('new', JSON.stringify(getData()));
                     if ((unchangedDataString || '') == JSON.stringify(getData())) {
                         resolve(false);
                     } else {
+                        // show save dialog
+                        
+                        console.log('changed');
                         resolve(true);
                     }
                 });
-                
-                handleUnSavedChanges.then(callback);
             },
 
             /**
@@ -193,32 +180,33 @@ window.WH = window.WH || {};
              * @param {Object} file File object.
              */
             importFile = function(file) {
-                checkForUnsavedChanged();
-                let fileReader = new FileReader();
-                // closure to capture the file information
-                fileReader.onload = (function(f) {
-                    return function(e) {
-                        let isJSON = true;
-                        try {
-                            const data = JSON.parse(e.target.result);
-                            if (data) {
-                                setData(data);
+                checkForChanges().then(function() {
+                    let fileReader = new FileReader();
+                    // closure to capture the file information
+                    fileReader.onload = (function(f) {
+                        return function(e) {
+                            let isJSON = true;
+                            try {
+                                const data = JSON.parse(e.target.result);
+                                if (data) {
+                                    setData(data);
+                                }
+                            } catch(errorMessage) {
+                                console.log(errorMessage);
+                                isJSON = false;
                             }
-                        } catch(errorMessage) {
-                            console.log(errorMessage);
-                            isJSON = false;
-                        }
-                        if (!isJSON) {
-                            // try if it's a legacy xml file
-                            const legacyData = my.convertLegacyFile(e.target.result);
-                            if (legacyData) {
-                                setData(legacyData);
+                            if (!isJSON) {
+                                // try if it's a legacy xml file
+                                const legacyData = my.convertLegacyFile(e.target.result);
+                                if (legacyData) {
+                                    setData(legacyData);
+                                }
                             }
-                        }
-                    };
-                })(file);
-                fileReader.readAsText(file);
-            },s
+                        };
+                    })(file);
+                    fileReader.readAsText(file);
+                });
+            },
 
             /**
              * Export project data to filesystem JSON file.
