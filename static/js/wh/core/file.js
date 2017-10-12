@@ -6,7 +6,7 @@
  */
 window.WH = window.WH || {};
 
-(function (ns) {
+(function (WH) {
 
     /**
      * @description Creates a transport object.
@@ -49,8 +49,8 @@ window.WH = window.WH || {};
                 if (data) {
                     data = JSON.parse(data);
                     console.log(data);
-                    midi.setData(data.midi);
-                    preferences.setData(data.preferences);
+                    midi.setData(data.midi || {});
+                    preferences.setData(data.preferences || {});
                 } else {
                     console.log('No data in LocalStorage with name "' + preferencesName + '".');
                 }
@@ -64,7 +64,6 @@ window.WH = window.WH || {};
                 var data = {
                     midi: midi.getData() || {},
                     preferences: preferences.getData() || {}
-                    
                 }
                 localStorage.setItem(preferencesName, JSON.stringify(data));
             },
@@ -74,9 +73,7 @@ window.WH = window.WH || {};
              * Clear all settings and set default values..
              */
             createNew = function() {
-                midiRemote.clear();
-                midiNetwork.clear();
-                transport.setBPM(120);
+                setData();
             },
 
             /**
@@ -152,9 +149,10 @@ window.WH = window.WH || {};
              */
             setData = function(data) {
                 console.log(data);
-                transport.setBPM(data.bpm);
-                midiNetwork.setData(data.network);
-                midiRemote.setData(data.remote);
+                data = data || {};
+                transport.setBPM(data.bpm || 120);
+                midiNetwork.setData(data.network || {});
+                midiRemote.setData(data.remote || {});
             },
 
             /**
@@ -202,7 +200,7 @@ window.WH = window.WH || {};
         
         my = my || {};
 
-        that = ns.addXMLFileParser(specs, my);
+        that = WH.addXMLFileParser(specs, my);
         
         init();
 
@@ -215,6 +213,6 @@ window.WH = window.WH || {};
         return that;
     }
 
-    ns.createFile = createFile;
+    WH.createFile = createFile;
 
 })(WH);
