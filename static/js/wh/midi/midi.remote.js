@@ -318,18 +318,20 @@ window.WH = window.WH || {};
              * Unregister all processors.
              */
             clear = function() {
-                // Unassign all parameters.
+                // unassign all parameters
                 for (let key in paramLookup) {
                     if (paramLookup.hasOwnProperty(key)) {
-                        unassingParameter(paramLookup[key]);
+                        paramLookup[key].forEach(function(param) {
+                            unassingParameter(param);
+                        });
                     }
                 }
                 paramLookup = {};
                 
-                // Unregister all processors.
-                for (var i = 0; i < processors.length; i++) {
-                    unregisterProcessor(processors[i]);
-                }
+                // unregister all processors
+                processors.forEach(function(processor) {
+                    unregisterProcessor(processor);
+                });
             },
 
             /**
