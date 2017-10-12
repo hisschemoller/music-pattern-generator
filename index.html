@@ -248,6 +248,19 @@
             </label>
         </li>
     </template><!-- /template-midi-port -->
+    <template id="template-dialog">
+        <div class="dialog-overlay">
+            <div class="dialog">
+                <h2 class="dialog__header"></h2>
+                <p class="dialog__body"></p>
+                <div class="dialog__controls">
+                    <button class="dialog__button dialog__button--secondary"></button>
+                    <button class="dialog__button dialog__button--primary"></button>
+                </div>
+            </div><!-- /dialog -->
+        </div><!-- /dialog-overlay -->
+    </template><!-- /template-dialog -->
+    
     <script src="static/js/lib/tween.js"></script>
     <script src="static/js/main.js"></script>
     <script src="static/js/wh/core/conf.js"></script>
@@ -280,6 +293,7 @@
     <script src="static/js/wh/view/view.canvas.js"></script>
     <script src="static/js/wh/view/view.canvas.epg.js"></script>
     <script src="static/js/wh/view/view.controls.js"></script>
+    <script src="static/js/wh/view/view.dialog.js"></script>
     <script src="static/js/wh/view/view.file.js"></script>
     <script src="static/js/wh/view/view.midi.base.js"></script>
     <script src="static/js/wh/view/view.midi.input.js"></script>

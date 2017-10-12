@@ -374,3 +374,28 @@ div[data-theme] {
 .help__copy {
     padding: 0 10px;
 }
+
+
+/************************
+ * dialog
+ ************************/
+
+.dialog-overlay {
+}
+    .dialog {
+        background: #ddd;
+        border: 2px solid #fff;
+        margin: 0 auto;
+        max-width: 400px;
+        padding: 10px 30px;
+    }
+        .dialog__header {
+            font-size: 2rem;
+        }
+        .dialog__controls {
+            font-size: 0;
+            text-align: center;
+        }
+            .dialog__button {
+                margin: 10px 2px 10px 2px;
+            }

@@ -6,7 +6,7 @@
  */
 window.WH = window.WH || {};
 
-(function (ns) {
+(function (WH) {
 
     /**
      * @description Creates a transport object.
@@ -127,7 +127,7 @@ window.WH = window.WH || {};
                         resolve(false);
                     } else {
                         // show save dialog
-                        
+                        WH.createDialogView();
                         console.log('changed');
                         resolve(true);
                     }
@@ -222,7 +222,7 @@ window.WH = window.WH || {};
         
         my = my || {};
 
-        that = ns.addXMLFileParser(specs, my);
+        that = WH.addXMLFileParser(specs, my);
         
         init();
 
@@ -235,6 +235,6 @@ window.WH = window.WH || {};
         return that;
     }
 
-    ns.createFile = createFile;
+    WH.createFile = createFile;
 
 })(WH);
