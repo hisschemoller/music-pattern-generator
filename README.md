@@ -27,7 +27,7 @@ Patterns can also be rotated to create more variation, because without rotation 
 
 ``. . x . . . x . . . x . . . x .``
 
-The generation of Euclidean rhythms in music was discovered by Godfried Toussaint in 2004. His paper on this theory is online as a PDF file: [“The Euclidean Algorithm Generates Traditional Musical Rhythms"][link_toussaint]
+The generation of Euclidean rhythms in music was discovered by Godfried Toussaint in 2004. His paper on this theory is online as a PDF file: [The Euclidean Algorithm Generates Traditional Musical Rhythms][link_toussaint]
 
 ## Download and installation
 
@@ -40,7 +40,7 @@ The application opens with just the controlbar visible at the top and the empty 
 * Create a pattern by double clicking the pattern area. A pattern wheel appears and its Settings panel opens at the right.
 * You can start and stop the pattern with the play button in the controlbar.
 * Open the Preferences panel with the 'cogwheel' button in the controlbar.
-* Choose the MIDI output you want by toggling its button in the Network column. 'Network' means that the network of patterns will output MIDI notes on this port.
+* Choose the MIDI output you want by toggling its button in the Network column. 'Network' is the term for the network of patterns that outputs MIDI notes on this port.
 * The pattern you created will now send notes to your MIDI port on Channel 1 with Pitch 60 and Velocity 100, the default values of a new pattern (as you can see in the Settings panel).
 
 ## Application overview
@@ -60,7 +60,6 @@ The controlbar is permanently visible and shows a row of buttons and other contr
 * __MIDI Learn__ - Toggles 'MIDI Learn' mode and the associated Remote MIDI Assignments panel.
 * __Settings__ - Toggles the panel with settings of the currently selected pattern.
 * __Help__ - Toggles the Help text panel.
-
 ### Pattern area
 
 * Doubleclick the background to create a pattern.
@@ -71,20 +70,61 @@ The controlbar is permanently visible and shows a row of buttons and other contr
 
 The Settings panel shows the settings for the currently selected pattern.
 
-* __Steps, Pulses & Rotation__ - The Euclidean settings that determine the pattern.
+* __Steps, Pulses, Rotation__ - The Euclidean settings that determine the pattern.
 * __Rate__ - The duration of one step in the pattern. Default is 1/16, where one step is a 16th note. If you change that rate to 1/8 the pattern play half speed.
 * __Note length__ - The length of a played note. Default is 1/16, which is a 16th note.
-* __MIDI Out Channel, Pitch & Velocity__ - Properties of the MIDI notes that the pattern will output.
+* __MIDI Out Channel, Pitch, Velocity__ - Properties of the MIDI notes that the pattern will output.
 * __Name__ - All patterns get a default name which can be changed here.
 * __Delete__ - Button to delete the current pattern.
 
 ### Preferences panel
 
+Preferences are loaded when the program starts. They are not stored in project files.
+
+* __MIDI Inputs__ - All MIDI input ports are listed here.
+  - __Sync__ - MIDI start and stop messages received on the port will start and stop playback.
+  - __Remote__ - MIDI CC messages received on the port can be assigned to remotely control pattern parameters.
+* __MIDI Outputs__ - All MIDI output ports are listed here.
+  - __Network__ - MIDI notes are sent to the selected output port. 'Network' is the term for the network of patterns that generates MIDI notes.
+
+MIDI devices that are connected or disconnected will automatically appear or disappear in this list. If a device is accidentally diconnected and reconnected, it's settings are attempted to be restored.
+
+* __Dark theme__ - An inverse colour theme with light content on a dark background. To comfortably use the application in dark environments.
+
 ### MIDI Assignments panel
+
+A list of all the pattern parameters that have a MIDI CC assigned to them so they can be remotely controlled. The assignments are grouped by pattern. Creating remote assignments is explained elsewhere in this text.
+
+Each assignment in the list shows these fields:
+
+* Name of the parameter.
+* MIDI Channel of he assigned CC.
+* MIDI CC (Continuous Control) number.
+* A 'X' button to remove the assignment.
+
+## MIDI learn mode
+
+Several pattern parameters can be remotely controlled by MIDI CC messages. A CC is associated with a parameter by its MIDI Channel and its Controller number. To set this up 'MIDI learn mode' is used. The following example presumes you use a hardware MIDI controller with knobs or sliders that send MIDI CC messages.
+
+* Connect your MIDI Controller hardware to a MIDI input.
+* In the Preferences panel make sure that the MIDI input port has its Remote option enabled.
+* Click the 'MIDI Learn' button (MIDI connector icon) in the controlbar to enter MIDI learn mode.
+  - The Remote Assignments panel appears, showing all existing assignments.
+  - The selected pattern's Settings panel shows a dashed border around each parameter that is not yet assigned.
+  - Parameters that have already been assigned show a solid unbroken line as their border.
+* Select a pattern and click an assignable parameter in the Settings panel. The parameter will turn slightly darker to indicate it's selected.
+* Turn a knob on the hardware controller that sends MIDI CC messages.
+* The MIDI Channel and CC Number is now assigned to the parameter.
+  - The paremeter's border turns from dashed to a solid line.
+  - The assignent appears in the Assignments panel list.
+* Click the 'MIDI Learn' button in the controlbar to exit MIDI learn mode.
+* Now, if you turn the knob on the hardware, the pattern's parameter will change accordingly.
+
+The assignments are saved in the project file. So save the project to keep the assignments for later use in the project.
 
 
 
 [link_toussaint]: http://cgm.cs.mcgill.ca/~godfried/publications/banff.pdf
 
 ## Note
-This app is a project in progress, so all of the above might not yet work at all.
+This app is a project in progress, so all of the above might not yet.
