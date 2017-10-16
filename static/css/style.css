@@ -296,12 +296,27 @@ div[data-theme] {
  * control bar
  ************************/
 
-.controls {
+.controlbar {
     align-items: flex-start;
     background-color: var(--panel-bg-color);
     display: flex;
     height: var(--control-bar-height);
     position: relative;
+}
+.controlbar__info {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding: 5px 10px;
+    text-align: right;
+}
+.controlbar__name {
+    font-size: 12px;
+    line-height: 12px;
+}
+.controlbar__version {
+    font-size: 18px;
+    line-height: 16px;
 }
 .controls .btn,
 .controls .bpm {
