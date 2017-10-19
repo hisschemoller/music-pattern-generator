@@ -143,10 +143,6 @@ window.WH = window.WH || {};
              * @param {Number} noteStopDelay Delay from now until note end in ms.
              */
             showNote = function(stepIndex, noteStartDelay, noteStopDelay) {
-                // lookAhead is 200ms
-                let elapsed = performance.now() - that.lastNow;
-                that.lastNow = performance.now();
-                
                 // get the coordinates of the dot for this step
                 let steps = processor.getParamValue('steps');
                 
@@ -381,6 +377,9 @@ window.WH = window.WH || {};
                 canvasDirtyCallback();
             },
             
+            /**
+             * Redraw the pattern's static shapes canvas.
+             */
             redrawStaticCanvas = function() {
                 staticCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
                 staticCtx.beginPath();
@@ -400,6 +399,10 @@ window.WH = window.WH || {};
                 staticCtx.stroke();
             },
             
+            /**
+             * Add the pattern's static canvas to the main static canvas.
+             * @param  {Object} mainStaticCtx 2D canvas context.
+             */
             addToStaticView = function(mainStaticCtx) {
                 mainStaticCtx.drawImage(
                     staticCanvas,
@@ -411,6 +414,10 @@ window.WH = window.WH || {};
                     position2d.y + necklaceRadius + 4);
             },
             
+            /**
+             * Draw the pattern's dynamic shapes on the main dymamic canvas
+             * @param  {Object} mainStaticCtx 2D canvas context.
+             */
             addToDynamicView = function(mainDynamicCtx) {
                 // draw rotating pointer
                 mainDynamicCtx.save();
