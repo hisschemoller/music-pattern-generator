@@ -1,25 +1,25 @@
 {
-  "name": "euclidean-pattern-generator",
-  "version": "2.0.0alpha",
-  "description": "MIDI rhythm pattern generator",
-  "main": "main.js",
-  "scripts": {
-    "start": "electron .",
-    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
-    "package-win": "electron-packager . --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/win/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Electron Tutorial App\"",
-    "package-linux": "electron-packager . --overwrite --platform=linux --arch=x64 --icon=assets/icons/png/1024x1024.png --prune=true --out=release-builds"
-  },
-  "repository": "https://github.com/wouterhisschemoller/js-epg",
-  "keywords": [
-    "MIDI",
-    "euclidean rhythm",
-    "music",
-    "percussion"
-  ],
-  "author": "Wouter Hisschemoller",
-  "licence": "LGPL-3.0",
-  "devDependencies": {
-    "electron": "^1.6.11",
-    "electron-packager": "^8.7.2"
-  }
+    "name": "euclidean-pattern-generator",
+    "version": "2.0.0beta",
+    "description": "MIDI rhythm pattern generator",
+    "main": "electron.js",
+    "scripts": {
+        "start": "electron .",
+        "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
+        "package-win": "electron-packager . --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/win/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Electron Tutorial App\"",
+        "package-linux": "electron-packager . --overwrite --platform=linux --arch=x64 --icon=assets/icons/png/1024x1024.png --prune=true --out=release-builds"
+    },
+    "repository": "https://github.com/wouterhisschemoller/js-epg",
+    "keywords": [
+        "MIDI",
+        "euclidean rhythm",
+        "music",
+        "percussion"
+    ],
+    "author": "Wouter Hisschemoller",
+    "licence": "LGPL-3.0",
+    "devDependencies": {
+        "electron": "^1.6.11",
+        "electron-packager": "^8.7.2"
+    }
 }
