@@ -38,6 +38,7 @@ window.WH = window.WH || {};
             
             selectRadius = 15,
             dotRadius,
+            dotActiveRadius,
             zeroMarkerRadius = 3,
             colorHigh = '#cccccc',
             colorMid = '#dddddd',
@@ -142,6 +143,10 @@ window.WH = window.WH || {};
              * @param {Number} noteStopDelay Delay from now until note end in ms.
              */
             showNote = function(stepIndex, noteStartDelay, noteStopDelay) {
+                // lookAhead is 200ms
+                let elapsed = performance.now() - that.lastNow;
+                that.lastNow = performance.now();
+                
                 // get the coordinates of the dot for this step
                 let steps = processor.getParamValue('steps');
                 
@@ -155,7 +160,7 @@ window.WH = window.WH || {};
                 let tweeningDot = dotAnimations[stepIndex];
                 
                 // animate the necklace dot
-                new TWEEN.Tween({currentRadius: dotRadius * 2})
+                new TWEEN.Tween({currentRadius: dotActiveRadius})
                     .to({currentRadius: dotRadius}, 300)
                     .onUpdate(function() {
                             // store new dot size
@@ -167,42 +172,6 @@ window.WH = window.WH || {};
                         })
                     .delay(noteStartDelay)
                     .start();
-                
-                // stop center dot animation, if any
-                if (centerDotStartTween) {
-                    centerDotStartTween.stop();
-                    centerDotStartTween = null;
-                }
-                if (centerDotEndTween) {
-                    centerDotEndTween.stop();
-                    centerDotEndTween = null;
-                }
-                
-                // center dot start animation
-                centerDotStartTween = new TWEEN.Tween({centerRadius: 0.01})
-                    .to({centerRadius: centerDotFullRadius}, 10)
-                    .onStart(function() {
-                            isNoteActive = true;
-                        })
-                    .onUpdate(function() {
-                            centerDotRadius = this.centerRadius;
-                        })
-                    .delay(noteStartDelay);
-                    
-                // center dot end animation
-                centerDotEndTween = new TWEEN.Tween({centerRadius: centerDotFullRadius})
-                    .to({centerRadius: 0.01}, 150)
-                    .onUpdate(function() {
-                            centerDotRadius = this.centerRadius;
-                        })
-                    .onComplete(function() {
-                            isNoteActive = false;
-                        })
-                    .delay(noteStopDelay - noteStartDelay);
-                
-                // start center dot animation
-                centerDotStartTween.chain(centerDotEndTween);
-                centerDotStartTween.start();
             },
             
             /**
@@ -326,6 +295,7 @@ window.WH = window.WH || {};
              */
             updateDots = function(steps, euclid, necklace) {
                 dotRadius = dotMaxRadius - 3 - (Math.max(0, steps - 16) * 0.09);
+                dotActiveRadius = dotRadius * 2;
                 
                 necklaceCtx.fillStyle = colorHigh;
                 necklaceCtx.strokeStyle = colorHigh;
@@ -454,7 +424,10 @@ window.WH = window.WH || {};
                 mainDynamicCtx.beginPath();
                 
                 // necklace dots
+                isNoteActive = false;
                 let n = dotAnimations.length,
+                    largestDot = dotRadius,
+                    hasDotAnimations = false,
                     dotState, x, y;
                 for (let key in dotAnimations) {
                     if (dotAnimations.hasOwnProperty(key)) {
@@ -463,11 +436,15 @@ window.WH = window.WH || {};
                         y = position2d.y - dotState.position2d.y;
                         mainDynamicCtx.moveTo(x + dotState.dotRadius, y);
                         mainDynamicCtx.arc(x, y, dotState.dotRadius, 0, doublePI, true);
+                        largestDot = Math.max(largestDot, dotState.dotRadius);
+                        isNoteActive = true;
                     }
                 }
                 
                 // center dot
                 if (isNoteActive) {
+                    let largestDotNormalised = (largestDot - dotRadius) / (dotActiveRadius - dotRadius);
+                    centerDotRadius = largestDotNormalised * centerDotFullRadius;
                     mainDynamicCtx.moveTo(position2d.x + centerDotRadius, position2d.y);
                     mainDynamicCtx.arc(position2d.x, position2d.y, centerDotRadius, 0, doublePI, true);
                 }
