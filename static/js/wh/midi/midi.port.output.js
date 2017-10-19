@@ -84,8 +84,8 @@ window.WH = window.WH || {};
              * Restore state from data object.
              * @param {Object} data Preferences data object.
              */
-            setData = function(data) {
-                toggleNetwork(data.isNetworkEnabled);
+            setData = function(data = {}) {
+                toggleNetwork(data.isNetworkEnabled || false);
             }, 
             
             /**

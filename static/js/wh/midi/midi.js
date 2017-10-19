@@ -179,6 +179,15 @@ window.WH = window.WH || {};
                     }
                 }
             },
+            
+            clearPortSettings = function() {
+                inputs.forEach(function(input) {
+                    input.setData();
+                });
+                outputs.forEach(function(output) {
+                    output.setData();
+                });
+            },
 
             /**
              * Restore MIDI port object settings from data object.
@@ -186,6 +195,7 @@ window.WH = window.WH || {};
              */
             setData = function(data) {
                 dataFromStorage = data;
+                clearPortSettings();
                 restorePortSettings();
             },
 

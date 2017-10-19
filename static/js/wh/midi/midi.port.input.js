@@ -132,9 +132,9 @@ window.WH = window.WH || {};
              * Restore state from data object.
              * @param {Object} data Preferences data object.
              */
-            setData = function(data) {
-                toggleSync(data.isSyncEnabled);
-                toggleRemote(data.isRemoteEnabled);
+            setData = function(data = {}) {
+                toggleSync(data.isSyncEnabled || false);
+                toggleRemote(data.isRemoteEnabled || false);
             },
 
             /**
