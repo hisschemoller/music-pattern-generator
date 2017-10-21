@@ -1,7 +1,15 @@
 {
     "name": "euclidean-pattern-generator",
-    "version": "2.0.0beta",
+    "version": "2.0.0",
     "description": "MIDI rhythm pattern generator",
+    "keywords": [
+        "MIDI",
+        "euclidean rhythm",
+        "music",
+        "percussion"
+    ],
+    "homepage": "http://github.com/wouterhisschemoller/js-epg",
+    "license": "LGPL-3.0",
     "main": "electron.js",
     "scripts": {
         "start": "electron .",
@@ -9,15 +17,11 @@
         "package-win": "electron-packager . --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/win/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Electron Tutorial App\"",
         "package-linux": "electron-packager . --overwrite --platform=linux --arch=x64 --icon=assets/icons/png/128x128.png --prune=true --out=release-builds"
     },
-    "repository": "https://github.com/wouterhisschemoller/js-epg",
-    "keywords": [
-        "MIDI",
-        "euclidean rhythm",
-        "music",
-        "percussion"
-    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/wouterhisschemoller/js-epg"
+    },
     "author": "Wouter Hisschemoller",
-    "licence": "LGPL-3.0",
     "devDependencies": {
         "electron": "^1.6.11",
         "electron-packager": "^8.7.2"
