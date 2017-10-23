@@ -73,7 +73,6 @@ window.WH = window.WH || {};
                         });
                     }
                     my.isNetworkEnabled = true;
-                    ns.EPGMode.selectMIDIOutPort(networkOutputProcessor.getID(), toggleNetwork);
                 }
                 
                 my.wasNetworkEnabled = my.isNetworkEnabled;

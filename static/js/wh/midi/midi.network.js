@@ -64,10 +64,6 @@ window.WH = window.WH || {};
                             canvasView.markDirty();
                             break;
                     }
-                    
-                    // If the app is in EPG mode connect each EPG processor
-                    // to the selected output port.
-                    ns.EPGMode.addProcessor(processor);
                 } else {
                     console.error('No MIDI processor found of type: ', specs.type);
                 }
@@ -98,8 +94,6 @@ window.WH = window.WH || {};
                             processors[i].disconnect(processor);
                         }
                     }
-                    
-                    ns.EPGMode.removeProcessor(processor);
                     
                     // delete the views for the processor
                     switch (processor.getType()) {
