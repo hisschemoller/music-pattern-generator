@@ -20,7 +20,7 @@ window.WH = window.WH || {};
             transport = specs.transport,
             projectName = 'project',
             preferencesName = 'preferences',
-            resetKeyCombo = {};
+            resetKeyCombo = {},
 
             /**
              * Autosave file if true.
@@ -156,7 +156,6 @@ window.WH = window.WH || {};
              *   3b. Restores the output processor IDs, to identify the for connections.
              *   3c. Restores all connections between processors.
              * 4. midiRemote.setData() restores all assignments from MIDI inputs to processor parameters.
-             * 5. midiSync.setData() ?
              *
              * @param {Object} data Project data.
              */
