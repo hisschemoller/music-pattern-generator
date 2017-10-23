@@ -387,7 +387,7 @@ window.WH = window.WH || {};
 
         my = my || {};
 
-        that = specs.that || {};
+        that = ns.createMIDINetworkConnections(specs, my);
 
         that.createProcessor = createProcessor;
         that.deleteProcessor = deleteProcessor;

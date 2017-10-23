@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     WH.createApp({
         that: app,
         appView: appView,
+        midiNetwork: midiNetwork,
         midiRemote: midiRemote,
         transport: transport
     });
