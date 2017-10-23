@@ -20,7 +20,7 @@ window.WH = window.WH || {};
             transport = specs.transport,
             projectName = 'project',
             preferencesName = 'preferences',
-            resetKeyCombo = {};
+            resetKeyCombo = {},
 
             /**
              * Autosave file if true.
@@ -61,9 +61,11 @@ window.WH = window.WH || {};
                 var data = localStorage.getItem(preferencesName);
                 if (data) {
                     data = JSON.parse(data);
+                    midi.setData(data.midi || {});
                     preferences.setData(data.preferences || {});
                 } else {
-                    preferences.setData({});
+                    midi.setData();
+                    preferences.setData();
                     console.log('No data in LocalStorage with name "' + preferencesName + '".');
                 }
             },
@@ -136,7 +138,7 @@ window.WH = window.WH || {};
             getData = function() {
                 return {
                     bpm: transport.getBPM(),
-                    midi: midi.getData(),
+                    // midi: midi.getData(),
                     network: midiNetwork.getData(),
                     remote: midiRemote.getData()
                 };
@@ -164,7 +166,7 @@ window.WH = window.WH || {};
                 console.log(data);
                 data = data || {};
                 transport.setBPM(data.bpm || 120);
-                midi.setData(data.midi || {});
+                // midi.setData(data.midi || {});
                 midiNetwork.setData(data.network || {});
                 midiRemote.setData(data.remote || {});
             },
