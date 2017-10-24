@@ -205,7 +205,12 @@ div[data-theme] {
 .canvas-connections {
     position: absolute;
 }
-
+.canvas-connections {
+    display: none;
+}
+.canvas-connections[data-show=true] {
+    display: block;
+}
 .panels {
     bottom: 0;
     display: flex;
