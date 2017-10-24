@@ -302,6 +302,7 @@ window.WH = window.WH || {};
             
         my = my || {};
         
+        that = ns.createCanvasConnectionsView(specs, my);
         that = ns.addWindowResize(specs, my);
         
         init();

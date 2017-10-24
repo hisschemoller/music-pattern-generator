@@ -9,9 +9,17 @@ window.WH = window.WH || {};
     function createMIDINetworkConnections(specs, my) {
         var that,
             app = specs.app,
+            canvasView = specs.canvasView,
+            isConnectModeEnabled = false,
             
+            /**
+             * Enter or leave application connect mode.
+             * @param  {Boolean} isEnabled True to enable connect mode.
+             */
             toggleConnections = function(isEnabled) {
-                app.appUpdated('connections', isEnabled);
+                isConnectModeEnabled = isEnabled;
+                canvasView.toggleConnectMode(isConnectModeEnabled);
+                app.appUpdated('connections', isConnectModeEnabled);
             };
         
         my = my || {};
@@ -25,4 +33,3 @@ window.WH = window.WH || {};
     WH.createMIDINetworkConnections = createMIDINetworkConnections;
 
 })(WH);
-
