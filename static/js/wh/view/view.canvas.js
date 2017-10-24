@@ -33,7 +33,6 @@ window.WH = window.WH || {};
             views = [],
             numViews,
             isDirty = false,
-            isTouchDevice = 'ontouchstart' in window || window.DocumentTouch && document instanceof DocumentTouch,
             doubleClickCounter = 0,
             doubleClickDelay = 300,
             doubleClickTimer,
@@ -42,17 +41,6 @@ window.WH = window.WH || {};
             dragOffsetX,
             dragOffsetY,
             theme,
-        
-            /**
-             * Type of events to use, touch or mouse
-             * @type {String}
-             */
-            eventType = {
-                start: isTouchDevice ? 'touchstart' : 'mousedown',
-                end: isTouchDevice ? 'touchend' : 'mouseup',
-                click: isTouchDevice ? 'touchend' : 'click',
-                move: isTouchDevice ? 'touchmove' : 'mousemove',
-            },
             
             init = function() {
                 numViews = 0;
@@ -61,10 +49,10 @@ window.WH = window.WH || {};
                 staticCtx = staticCanvas.getContext('2d');
                 dynamicCtx = dynamicCanvas.getContext('2d');
                 
-                dynamicCanvas.addEventListener(eventType.click, onClick);
-                dynamicCanvas.addEventListener(eventType.start, onTouchStart);
-                dynamicCanvas.addEventListener(eventType.move, dragMove);
-                dynamicCanvas.addEventListener(eventType.end, dragEnd);
+                dynamicCanvas.addEventListener(ns.util.eventType.click, onClick);
+                dynamicCanvas.addEventListener(ns.util.eventType.start, onTouchStart);
+                dynamicCanvas.addEventListener(ns.util.eventType.move, dragMove);
+                dynamicCanvas.addEventListener(ns.util.eventType.end, dragEnd);
                 
                 my.addWindowResizeCallback(onWindowResize);
                 onWindowResize();
