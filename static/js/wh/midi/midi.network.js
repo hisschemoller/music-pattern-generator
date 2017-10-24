@@ -14,8 +14,7 @@ window.WH = window.WH || {};
             canvasView = specs.canvasView,
             midiRemote = specs.midiRemote,
             preferencesView = specs.preferencesView,
-            processors = [],
-            numProcessors = processors.length,
+            numProcessors = 0,
             numInputProcessors = 0,
 
             /**
@@ -34,18 +33,18 @@ window.WH = window.WH || {};
                     // insert the processor at the right position
                     switch (specs.type) {
                         case 'input':
-                            processors.unshift(processor);
+                            my.processors.unshift(processor);
                             numInputProcessors++;
                             break;
                         case 'output':
-                            processors.push(processor);
+                            my.processors.push(processor);
                             break;
                         default:
-                            processors.splice(numInputProcessors, 0, processor);
+                            my.processors.splice(numInputProcessors, 0, processor);
                     }
 
                     console.log('Create processor ' + processor.getType() + ' (id ' + processor.getID() + ')');
-                    numProcessors = processors.length;
+                    numProcessors = my.processors.length;
                     
                     setProcessorDefaultName(processor);
 
@@ -79,8 +78,8 @@ window.WH = window.WH || {};
                 // find the processor
                 var processor;
                 for (var i = 0; i < numProcessors; i++) {
-                    if (processors[i] === processor) {
-                        processor = processors[i];
+                    if (my.processors[i] === processor) {
+                        processor = my.processors[i];
                         break;
                     }
                 }
@@ -90,8 +89,8 @@ window.WH = window.WH || {};
                     
                     // disconnect other processors that have this processor as destination
                     for (var i = 0; i < numProcessors; i++) {
-                        if (typeof processors[i].disconnect === 'function') {
-                            processors[i].disconnect(processor);
+                        if (typeof my.processors[i].disconnect === 'function') {
+                            my.processors[i].disconnect(processor);
                         }
                     }
                     
@@ -121,8 +120,8 @@ window.WH = window.WH || {};
                         processor.terminate();
                     }
                     
-                    processors.splice(processors.indexOf(processor), 1);
-                    numProcessors = processors.length;
+                    my.processors.splice(my.processors.indexOf(processor), 1);
+                    numProcessors = my.processors.length;
                 }
             },
 
@@ -133,7 +132,7 @@ window.WH = window.WH || {};
             selectProcessor = function(processor) {
                 app.togglePanel('settings', processor != null);
                 for (var i = 0; i < numProcessors; i++) {
-                    var proc = processors[i];
+                    var proc = my.processors[i];
                     if (typeof proc.setSelected == 'function') {
                         proc.setSelected(proc === processor);
                     }
@@ -145,13 +144,13 @@ window.WH = window.WH || {};
              * @param  {Object} processor Processor to select.
              */
             selectNextProcessor = function(processor) {
-                let processorIndex = processors.indexOf(processor),
+                let processorIndex = my.processors.indexOf(processor),
                     nextIndex,
                     nextProcessor,
                     isNextProcessor;
-                for (let i = 1, n = processors.length; i <= n; i++) {
+                for (let i = 1, n = my.processors.length; i <= n; i++) {
                     nextIndex = (processorIndex + i) % n;
-                    nextProcessor = processors[nextIndex];
+                    nextProcessor = my.processors[nextIndex];
                     if (nextProcessor.getType() !== 'input' && nextProcessor.getType() !== 'output' && nextProcessor !== processor) {
                         isNextProcessor = true;
                         selectProcessor(nextProcessor);
@@ -173,7 +172,7 @@ window.WH = window.WH || {};
                     highestNumber = 0,
                     staticName = 'Processor';
                 for (let i = 0; i < numProcessors; i++) {
-                    name = processors[i].getParamValue('name');
+                    name = my.processors[i].getParamValue('name');
                     if (name && name.indexOf(staticName) == 0) {
                         spaceIndex = name.lastIndexOf(' ');
                         if (spaceIndex != -1) {
@@ -197,7 +196,7 @@ window.WH = window.WH || {};
              */
             process = function(start, end, nowToScanStart, ticksToMsMultiplier, offset) {
                 for (var i = 0; i < numProcessors; i++) {
-                    processors[i].process(start, end, nowToScanStart, ticksToMsMultiplier, offset);
+                    my.processors[i].process(start, end, nowToScanStart, ticksToMsMultiplier, offset);
                 }
             },
 
@@ -207,8 +206,8 @@ window.WH = window.WH || {};
              */
             render = function(position) {
                 for (var i = 0; i < numProcessors; i++) {
-                    if (processors[i].render) {
-                        processors[i].render(position);
+                    if (my.processors[i].render) {
+                        my.processors[i].render(position);
                     }
                 }
             },
@@ -222,9 +221,9 @@ window.WH = window.WH || {};
                 let type,
                     n = numProcessors;
                 while (--n >= 0) {
-                    type = processors[n].getType();
+                    type = my.processors[n].getType();
                     if (type !== 'input' && type !== 'output') {
-                        deleteProcessor(processors[n]);
+                        deleteProcessor(my.processors[n]);
                     }
                 }
             },
@@ -260,14 +259,14 @@ window.WH = window.WH || {};
                 var pdata = data.processors,
                     n = pdata.length,
                     procType,
-                    numProcessors = processors.length;
+                    numProcessors = my.processors.length;
                 for (var i = 0; i < n; i++) {
                     if (pdata[i].type === 'input' || pdata[i].type === 'output') {
                         for (var j = 0; j < numProcessors; j++) {
-                            procType = processors[j].getType();
+                            procType = my.processors[j].getType();
                             if (procType === 'input' || procType === 'output') {
-                                if (pdata[i].midiPortID === processors[j].getPort().id) {
-                                    processors[j].setID(pdata[i].id);
+                                if (pdata[i].midiPortID === my.processors[j].getPort().id) {
+                                    my.processors[j].setID(pdata[i].id);
                                 }
                             }
                         }
@@ -277,8 +276,8 @@ window.WH = window.WH || {};
                 // restore state of the processor
                 for (var i = 0; i < n; i++) {
                     for (var j = 0; j < numProcessors; j++) {
-                        if (pdata[i].id === processors[j].getID()) {
-                            processors[j].setData(pdata[i]);
+                        if (pdata[i].id === my.processors[j].getID()) {
+                            my.processors[j].setData(pdata[i]);
                         }
                     }
                 }
@@ -291,8 +290,8 @@ window.WH = window.WH || {};
                         // find source processor
                         sourceProcessor = null;
                         for (var j = 0; j < numProcessors; j++) {
-                            if (pdata[i].id === processors[j].getID()) {
-                                sourceProcessor = processors[j];
+                            if (pdata[i].id === my.processors[j].getID()) {
+                                sourceProcessor = my.processors[j];
                             }
                         }
 
@@ -301,9 +300,9 @@ window.WH = window.WH || {};
                             numDestinations = destinationIDs.length;
                             for (var j = 0; j < numDestinations; j++) {
                                 for (var k = 0; k < numProcessors; k++) {
-                                    if (destinationIDs[j] == processors[k].getID()) {
-                                        sourceProcessor.connect(processors[k]);
-                                        console.log('Connect ' + sourceProcessor.getType() + ' to ' + processors[k].getType());
+                                    if (destinationIDs[j] == my.processors[k].getID()) {
+                                        sourceProcessor.connect(my.processors[k]);
+                                        console.log('Connect ' + sourceProcessor.getType() + ' to ' + my.processors[k].getType());
                                     }
                                 }
                             }
@@ -321,7 +320,7 @@ window.WH = window.WH || {};
                 var processor,
                     procData = [];
                 for (var i = 0; i < numProcessors; i++) {
-                    procData.push(processors[i].getData());
+                    procData.push(my.processors[i].getData());
                 }
 
                 return {
@@ -330,6 +329,7 @@ window.WH = window.WH || {};
             };
 
         my = my || {};
+        my.processors = [];
 
         that = ns.createMIDINetworkConnections(specs, my);
 

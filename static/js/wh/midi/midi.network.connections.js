@@ -18,7 +18,7 @@ window.WH = window.WH || {};
              */
             toggleConnections = function(isEnabled) {
                 isConnectModeEnabled = isEnabled;
-                canvasView.toggleConnectMode(isConnectModeEnabled);
+                canvasView.toggleConnectMode(isConnectModeEnabled, my.processors);
                 app.appUpdated('connections', isConnectModeEnabled);
             };
         
