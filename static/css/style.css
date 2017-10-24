@@ -201,7 +201,8 @@ div[data-theme] {
 }
 
 .canvas-static,
-.canvas-dynamic {
+.canvas-dynamic,
+.canvas-connections {
     position: absolute;
 }
 
