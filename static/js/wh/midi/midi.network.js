@@ -214,62 +214,6 @@ window.WH = window.WH || {};
             },
 
             /**
-             * Connect all EPG processors to a MIDI input port.
-             * @param {String} newPortID MIDI input to connect to.
-             * @param {String} oldPortID MIDI input to disconnect from.
-             */
-            connectAllEPGToInput = function(newPortID, oldPortID) {
-                let newPortProcessor, oldPortProcessor;
-                for (let i = 0; i < numProcessors; i++) {
-                    if (processors[i].getType() == 'input') {
-                        let portID = processors[i].getPort().id;
-                        if (portID == oldPortID) {
-                            oldPortProcessor = processors[i];
-                        }
-                        if (portID == newPortID) {
-                            newPortProcessor = processors[i];
-                        }
-                    }
-                }
-                for (let i = 0; i < numProcessors; i++) {
-                    if (processors[i].getType() == 'epg') {
-                        if (oldPortProcessor) {
-                            oldPortProcessor.disconnect(processors[i]);
-                        }
-                        newPortProcessor.connect(processors[i]);
-                    }
-                }
-            },
-
-            /**
-             * Connect all EPG processors to a MIDI output port.
-             * @param {String} newPortID MIDI output to connect to.
-             * @param {String} oldPortID MIDI output to disconnect from.
-             */
-            connectAllEPGToOutput = function(newPortID, oldPortID) {
-                let newPortProcessor, oldPortProcessor;
-                for (let i = 0; i < numProcessors; i++) {
-                    if (processors[i].getType() == 'output') {
-                        let portID = processors[i].getPort().id;
-                        if (portID == oldPortID) {
-                            oldPortProcessor = processors[i];
-                        }
-                        if (portID == newPortID) {
-                            newPortProcessor = processors[i];
-                        }
-                    }
-                }
-                for (let i = 0; i < numProcessors; i++) {
-                    if (processors[i].getType() == 'epg') {
-                        if (oldPortProcessor) {
-                            processors[i].disconnect(oldPortProcessor);
-                        }
-                        processors[i].connect(newPortProcessor);
-                    }
-                }
-            },
-
-            /**
              * Clear the whole network.
              * Remove all processors except the inputs and outputs.
              * Remove all the connections.
@@ -394,8 +338,6 @@ window.WH = window.WH || {};
         that.selectProcessor = selectProcessor;
         that.process = process;
         that.render = render;
-        that.connectAllEPGToInput = connectAllEPGToInput;
-        that.connectAllEPGToOutput = connectAllEPGToOutput;
         that.clear = clear;
         that.setData = setData;
         that.getData = getData;
