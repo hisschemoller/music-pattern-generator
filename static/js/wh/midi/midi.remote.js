@@ -338,7 +338,7 @@ window.WH = window.WH || {};
              * Restore assigned parameters from data object.
              * @param {Object} data  data object.
              */
-            setData = function(data) {
+            setData = function(data = {}) {
                 // clear all old data
                 clear();
                 

@@ -193,8 +193,8 @@ window.WH = window.WH || {};
              * Restore MIDI port object settings from data object.
              * @param {Object} data Preferences data object.
              */
-            setData = function(data) {
-                dataFromStorage = data || {};
+            setData = function(data = {}) {
+                dataFromStorage = data;
                 clearPortSettings();
                 restorePortSettings();
             },
