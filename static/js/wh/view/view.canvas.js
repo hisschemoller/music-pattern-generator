@@ -30,7 +30,6 @@ window.WH = window.WH || {};
             staticCtx,
             dynamicCtx,
             canvasRect,
-            numViews,
             isDirty = false,
             doubleClickCounter = 0,
             doubleClickDelay = 300,
@@ -42,7 +41,7 @@ window.WH = window.WH || {};
             theme,
             
             init = function() {
-                numViews = 0;
+                my.numViews = 0;
                 staticCanvas = document.querySelector('.canvas-static');
                 dynamicCanvas = document.querySelector('.canvas-dynamic');
                 staticCtx = staticCanvas.getContext('2d');
@@ -114,7 +113,7 @@ window.WH = window.WH || {};
                 let view,
                     x = e.clientX - canvasRect.left + window.scrollX,
                     y = e.clientY - canvasRect.top + window.scrollY;
-                for (var i = numViews - 1; i >= 0; i--) {
+                for (var i = my.numViews - 1; i >= 0; i--) {
                     if (my.views[i].intersectsWithPoint(x, y)) {
                         view = my.views[i];
                         // select the found view's processor
@@ -172,7 +171,7 @@ window.WH = window.WH || {};
                             y = canvasY - dragOffsetY;
                         dragOffsetX = canvasX;
                         dragOffsetY = canvasY;
-                        for (let i = 0; i < numViews; i++) {
+                        for (let i = 0; i < my.numViews; i++) {
                             view = my.views[i];
                             position2d = view.getPosition2d();
                             my.views[i].setPosition2d({
@@ -217,7 +216,7 @@ window.WH = window.WH || {};
                         break;
                 }
                 my.views.push(view);
-                numViews = my.views.length;
+                my.numViews = my.views.length;
                 
                 // set theme on the new view
                 if (theme && view.setTheme) {
@@ -230,12 +229,12 @@ window.WH = window.WH || {};
              * @param  {Object} processor MIDI processor for which the 3D object will be a view.
              */
             deleteView = function(processor) {
-                let i = numViews;
+                let i = my.numViews;
                 while (--i >= 0) {
                     if (my.views[i].getProcessor() === processor) {
                         my.views[i].terminate();
                         my.views.splice(i, 1);
-                        numViews = my.views.length;
+                        my.numViews = my.views.length;
                         markDirty();
                         return;
                     }
@@ -274,21 +273,22 @@ window.WH = window.WH || {};
                     isDirty = false;
                     staticCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
                     dynamicCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
-                    for (i = 0; i < numViews; i++) {
+                    for (i = 0; i < my.numViews; i++) {
                         my.views[i].addToStaticView(staticCtx);
                     }
                 }
                 
-                for (i = 0; i < numViews; i++) {
+                for (i = 0; i < my.numViews; i++) {
                     my.views[i].clearFromDynamicView(dynamicCtx);
                 }
-                for (i = 0; i < numViews; i++) {
+                for (i = 0; i < my.numViews; i++) {
                     my.views[i].addToDynamicView(dynamicCtx);
                 }
             };
             
         my = my || {};
         my.views = [];
+        my.numViews;
         
         that = ns.createCanvasConnectionsView(specs, my);
         that = ns.addWindowResize(specs, my);
