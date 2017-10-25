@@ -248,6 +248,11 @@ window.WH = window.WH || {};
              */
             setTheme = function(newTheme) {
                 theme = newTheme;
+                
+                // update library
+                my.setThemeOnLibrary(theme);
+                
+                // update processor views
                 for (let i = 0, n = my.views.length; i < n; i++) {
                     if (my.views[i].setTheme instanceof Function) {
                         my.views[i].setTheme(theme);
@@ -292,6 +297,7 @@ window.WH = window.WH || {};
         my.numViews;
         
         that = WH.createCanvasConnectionsView(specs, my);
+        that = WH.createCanvasLibrary(specs, my);
         that = WH.addWindowResize(specs, my);
         
         init();
