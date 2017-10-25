@@ -40,3 +40,12 @@ Remove a connection
 Export, import
 1. Connections are created from existing processor destination data.
 
+
+/** OR **/
+
+CanvasConnectionsView shares the views array with CanvasView.
+1. When entering edit mode, get input output info from each view.
+2. Get position from each view.
+3. Get default and active, input and or output, canvas from each view.
+4. Draw all input and output canvasses on the connections canvas.
+
