@@ -20,7 +20,7 @@
  */
 window.WH = window.WH || {};
 
-(function (ns) {
+(function (WH) {
     
     function createCanvasView(specs, my) {
         var that,
@@ -47,10 +47,10 @@ window.WH = window.WH || {};
                 staticCtx = staticCanvas.getContext('2d');
                 dynamicCtx = dynamicCanvas.getContext('2d');
                 
-                dynamicCanvas.addEventListener(ns.util.eventType.click, onClick);
-                dynamicCanvas.addEventListener(ns.util.eventType.start, onTouchStart);
-                dynamicCanvas.addEventListener(ns.util.eventType.move, dragMove);
-                dynamicCanvas.addEventListener(ns.util.eventType.end, dragEnd);
+                dynamicCanvas.addEventListener(WH.util.eventType.click, onClick);
+                dynamicCanvas.addEventListener(WH.util.eventType.start, onTouchStart);
+                dynamicCanvas.addEventListener(WH.util.eventType.move, dragMove);
+                dynamicCanvas.addEventListener(WH.util.eventType.end, dragEnd);
                 
                 my.addWindowResizeCallback(onWindowResize);
                 onWindowResize();
@@ -208,11 +208,11 @@ window.WH = window.WH || {};
                     };
                 switch (processor.getType()) {
                     case 'epg':
-                        view = ns.midiProcessors[processor.getType()].createCanvasView(specs);
+                        view = WH.midiProcessors[processor.getType()].createCanvasView(specs);
                         break;
                     case 'output':
                         specs.initialPosition = {x: canvasRect.width / 2, y: canvasRect.height - 70};
-                        view = ns.midiProcessors[processor.getType()].createCanvasView(specs);
+                        view = WH.midiProcessors[processor.getType()].createCanvasView(specs);
                         break;
                 }
                 
@@ -291,8 +291,8 @@ window.WH = window.WH || {};
         my.views = [];
         my.numViews;
         
-        that = ns.createCanvasConnectionsView(specs, my);
-        that = ns.addWindowResize(specs, my);
+        that = WH.createCanvasConnectionsView(specs, my);
+        that = WH.addWindowResize(specs, my);
         
         init();
         
@@ -304,6 +304,6 @@ window.WH = window.WH || {};
         return that;
     }
 
-    ns.createCanvasView = createCanvasView;
+    WH.createCanvasView = createCanvasView;
 
 })(WH);
