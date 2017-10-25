@@ -89,6 +89,14 @@ window.WH = window.WH || {};
                 return false;
             },
             
+            /**
+             * General processor info.
+             * @return {Object} Processor properties info.
+             */
+            getInfo = function() {
+                return my.info;
+            },
+            
             getType = function() {
                 return type;
             },
@@ -145,16 +153,24 @@ window.WH = window.WH || {};
         my.defineParams = defineParams;
         
         that = specs.that || {};
+        if (my.info.inputs == 1) {
+            that = ns.createMIDIConnectorIn(specs, my);
+        }
+        if (my.info.outputs == 1) {
+            that = ns.createMIDIConnectorOut(specs, my);
+        }
         
         that.setParamValue = setParamValue;
         that.getParamValue = getParamValue;
         that.getParameters = getParameters;
         that.hasParameter = hasParameter;
+        that.getInfo = getInfo;
         that.getType = getType;
         that.setID = setID;
         that.getID = getID;
         that.setData = setData;
         that.getData = getData;
+        
         return that;
     }
     

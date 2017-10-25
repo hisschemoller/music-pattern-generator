@@ -74,9 +74,12 @@ window.WH = window.WH || {};
        
         my = my || {};
         my.getProcessorSpecificData = getProcessorSpecificData;
+        my.info = {
+            inputs: 0,
+            outputs: 1
+        };
         
         that = ns.createMIDIProcessorBase(specs, my);
-        that = ns.createMIDIConnectorOut(specs, my);
         
         that.process = process;
         that.getPort = getPort;

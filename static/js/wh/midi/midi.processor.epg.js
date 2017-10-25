@@ -381,6 +381,10 @@ window.WH = window.WH || {};
             };
        
         my = my || {};
+        my.info = {
+            inputs: 0,
+            outputs: 1
+        };
         
         /**
          * Parameter change handlers.
@@ -421,8 +425,6 @@ window.WH = window.WH || {};
         my.$position2d = function(value, timestamp) {}
 
         that = ns.createMIDIProcessorBase(specs, my);
-        that = ns.createMIDIConnectorIn(specs, my);
-        that = ns.createMIDIConnectorOut(specs, my);
         
         my.defineParams({
             steps: {

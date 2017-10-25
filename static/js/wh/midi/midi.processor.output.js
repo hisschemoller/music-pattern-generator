@@ -56,12 +56,15 @@ window.WH = window.WH || {};
 
 
         my = my || {};
+        my.info = {
+            inputs: 1,
+            outputs: 0
+        };
         my.isEnabled = true;
         my.getProcessorSpecificData = getProcessorSpecificData;
         my.$position2d = function(value, timestamp) {}
 
         that = ns.createMIDIProcessorBase(specs, my);
-        that = ns.createMIDIConnectorIn(specs, my);
         
         my.defineParams({
             position2d: {
