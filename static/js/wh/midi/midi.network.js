@@ -28,7 +28,7 @@ window.WH = window.WH || {};
                     specs = specs || {};
                     specs.that = {};
                     specs.id = specs.id || specs.type + performance.now() + '_' + Math.random();
-                    var processor = ns.midiProcessors[specs.type].create(specs);
+                    var processor = ns.midiProcessors[specs.type].createProcessor(specs);
 
                     // insert the processor at the right position
                     switch (specs.type) {

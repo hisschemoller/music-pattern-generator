@@ -84,7 +84,7 @@ window.WH = window.WH || {};
     var type = 'output';
     WH.midiProcessors = WH.midiProcessors || {};
     WH.midiProcessors[type] = {
-        create: createMIDIPortOut
+        createProcessor: createMIDIPortOut
     };
 
 })(WH);
