@@ -30,7 +30,6 @@ window.WH = window.WH || {};
             staticCtx,
             dynamicCtx,
             canvasRect,
-            views = [],
             numViews,
             isDirty = false,
             doubleClickCounter = 0,
@@ -116,8 +115,8 @@ window.WH = window.WH || {};
                     x = e.clientX - canvasRect.left + window.scrollX,
                     y = e.clientY - canvasRect.top + window.scrollY;
                 for (var i = numViews - 1; i >= 0; i--) {
-                    if (views[i].intersectsWithPoint(x, y)) {
-                        view = views[i];
+                    if (my.views[i].intersectsWithPoint(x, y)) {
+                        view = my.views[i];
                         // select the found view's processor
                         midiNetwork.selectProcessor(view.getProcessor());
                         // start dragging the view's graphic
@@ -174,9 +173,9 @@ window.WH = window.WH || {};
                         dragOffsetX = canvasX;
                         dragOffsetY = canvasY;
                         for (let i = 0; i < numViews; i++) {
-                            view = views[i];
+                            view = my.views[i];
                             position2d = view.getPosition2d();
-                            views[i].setPosition2d({
+                            my.views[i].setPosition2d({
                                 x: position2d.x + x,
                                 y: position2d.y + y
                             });
@@ -217,8 +216,8 @@ window.WH = window.WH || {};
                         view = ns.createCanvasMIDIOutView(specs);
                         break;
                 }
-                views.push(view);
-                numViews = views.length;
+                my.views.push(view);
+                numViews = my.views.length;
                 
                 // set theme on the new view
                 if (theme && view.setTheme) {
@@ -233,10 +232,10 @@ window.WH = window.WH || {};
             deleteView = function(processor) {
                 let i = numViews;
                 while (--i >= 0) {
-                    if (views[i].getProcessor() === processor) {
-                        views[i].terminate();
-                        views.splice(i, 1);
-                        numViews = views.length;
+                    if (my.views[i].getProcessor() === processor) {
+                        my.views[i].terminate();
+                        my.views.splice(i, 1);
+                        numViews = my.views.length;
                         markDirty();
                         return;
                     }
@@ -249,9 +248,9 @@ window.WH = window.WH || {};
              */
             setTheme = function(newTheme) {
                 theme = newTheme;
-                for (let i = 0, n = views.length; i < n; i++) {
-                    if (views[i].setTheme instanceof Function) {
-                        views[i].setTheme(theme);
+                for (let i = 0, n = my.views.length; i < n; i++) {
+                    if (my.views[i].setTheme instanceof Function) {
+                        my.views[i].setTheme(theme);
                     }
                 }
                 markDirty();
@@ -276,19 +275,20 @@ window.WH = window.WH || {};
                     staticCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
                     dynamicCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
                     for (i = 0; i < numViews; i++) {
-                        views[i].addToStaticView(staticCtx);
+                        my.views[i].addToStaticView(staticCtx);
                     }
                 }
                 
                 for (i = 0; i < numViews; i++) {
-                    views[i].clearFromDynamicView(dynamicCtx);
+                    my.views[i].clearFromDynamicView(dynamicCtx);
                 }
                 for (i = 0; i < numViews; i++) {
-                    views[i].addToDynamicView(dynamicCtx);
+                    my.views[i].addToDynamicView(dynamicCtx);
                 }
             };
             
         my = my || {};
+        my.views = [];
         
         that = ns.createCanvasConnectionsView(specs, my);
         that = ns.addWindowResize(specs, my);
