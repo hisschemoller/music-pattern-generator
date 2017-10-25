@@ -5,7 +5,7 @@
 
 window.WH = window.WH || {};
 
-(function (ns) {
+(function (WH) {
     
     function createMIDIProcessorBase(specs, my) {
         var that,
@@ -21,19 +21,19 @@ window.WH = window.WH || {};
                     paramSpecs[key].key = key;
                     switch(paramSpecs[key].type) {
                         case 'integer':
-                            my.params[key] = ns.createIntegerParameter(paramSpecs[key]);
+                            my.params[key] = WH.createIntegerParameter(paramSpecs[key]);
                             break;
                         case 'boolean':
-                            my.params[key] = ns.createBooleanParameter(paramSpecs[key]);
+                            my.params[key] = WH.createBooleanParameter(paramSpecs[key]);
                             break;
                         case 'itemized':
-                            my.params[key] = ns.createItemizedParameter(paramSpecs[key]);
+                            my.params[key] = WH.createItemizedParameter(paramSpecs[key]);
                             break;
                         case 'string':
-                            my.params[key] = ns.createStringParameter(paramSpecs[key]);
+                            my.params[key] = WH.createStringParameter(paramSpecs[key]);
                             break;
                         case 'vector2d':
-                            my.params[key] = ns.createVector2DParameter(paramSpecs[key]);
+                            my.params[key] = WH.createVector2DParameter(paramSpecs[key]);
                             break;
                     }
                     my.params[key].addChangedCallback(paramChangedCallback);
@@ -154,10 +154,10 @@ window.WH = window.WH || {};
         
         that = specs.that || {};
         if (my.info.inputs == 1) {
-            that = ns.createMIDIConnectorIn(specs, my);
+            that = WH.createMIDIConnectorIn(specs, my);
         }
         if (my.info.outputs == 1) {
-            that = ns.createMIDIConnectorOut(specs, my);
+            that = WH.createMIDIConnectorOut(specs, my);
         }
         
         that.setParamValue = setParamValue;
@@ -174,6 +174,6 @@ window.WH = window.WH || {};
         return that;
     }
     
-    ns.createMIDIProcessorBase = createMIDIProcessorBase;
+    WH.createMIDIProcessorBase = createMIDIProcessorBase;
 
 })(WH);

@@ -5,7 +5,7 @@
 
 window.WH = window.WH || {};
 
-(function (ns) {
+(function (WH) {
     
     function createMIDIProcessorEPG(specs, my) {
         var that,
@@ -424,7 +424,7 @@ window.WH = window.WH || {};
         my.$name = function(value, timestamp) {}
         my.$position2d = function(value, timestamp) {}
 
-        that = ns.createMIDIProcessorBase(specs, my);
+        that = WH.createMIDIProcessorBase(specs, my);
         
         my.defineParams({
             steps: {
@@ -543,8 +543,8 @@ window.WH = window.WH || {};
     };
     
     var type = 'epg';
-    ns.midiProcessors = ns.midiProcessors || {};
-    ns.midiProcessors[type] = {
+    WH.midiProcessors = WH.midiProcessors || {};
+    WH.midiProcessors[type] = {
         create: createMIDIProcessorEPG
     };
 
