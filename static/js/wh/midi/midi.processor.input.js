@@ -88,8 +88,7 @@ window.WH = window.WH || {};
     
     var type = 'input';
     WH.midiProcessors = WH.midiProcessors || {};
-    WH.midiProcessors[type] = {
-        createProcessor: createMIDIPortIn
-    };
+    WH.midiProcessors[type] = WH.midiProcessors[type] || {};
+    WH.midiProcessors[type].createProcessor = createMIDIPortIn;
 
 })(WH);

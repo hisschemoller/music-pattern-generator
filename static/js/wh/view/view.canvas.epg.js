@@ -530,7 +530,10 @@ window.WH = window.WH || {};
         that.setTheme = setTheme;
         return that;
     }
-
-    ns.createCanvasEPGView = createCanvasEPGView;
+    
+    var type = 'epg';
+    WH.midiProcessors = WH.midiProcessors || {};
+    WH.midiProcessors[type] = WH.midiProcessors[type] || {};
+    WH.midiProcessors[type].createCanvasView = createCanvasEPGView;
 
 })(WH);

@@ -80,11 +80,10 @@ window.WH = window.WH || {};
         that.getPort = getPort;
         return that;
     };
-
+    
     var type = 'output';
     WH.midiProcessors = WH.midiProcessors || {};
-    WH.midiProcessors[type] = {
-        createProcessor: createMIDIPortOut
-    };
+    WH.midiProcessors[type] = WH.midiProcessors[type] || {};
+    WH.midiProcessors[type].createProcessor = createMIDIPortOut;
 
 })(WH);

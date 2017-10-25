@@ -208,13 +208,14 @@ window.WH = window.WH || {};
                     };
                 switch (processor.getType()) {
                     case 'epg':
-                        view = ns.createCanvasEPGView(specs);
+                        view = ns.midiProcessors[processor.getType()].createCanvasView(specs);
                         break;
                     case 'output':
                         specs.initialPosition = {x: canvasRect.width / 2, y: canvasRect.height - 70};
-                        view = ns.createCanvasMIDIOutView(specs);
+                        view = ns.midiProcessors[processor.getType()].createCanvasView(specs);
                         break;
                 }
+                
                 my.views.push(view);
                 my.numViews = my.views.length;
                 

@@ -544,8 +544,7 @@ window.WH = window.WH || {};
     
     var type = 'epg';
     WH.midiProcessors = WH.midiProcessors || {};
-    WH.midiProcessors[type] = {
-        createProcessor: createMIDIProcessorEPG
-    };
+    WH.midiProcessors[type] = WH.midiProcessors[type] || {};
+    WH.midiProcessors[type].createProcessor = createMIDIProcessorEPG;
 
 })(WH);

@@ -6,6 +6,24 @@ window.WH = window.WH || {};
 
 (function (ns) {
     
+    let inputCanvas,
+        inputCtx,
+        inputRadius = 10,
+        inputLineWidth = 2,
+        
+        createInputGraphic = function() {
+            inputCanvas = document.createElement('canvas');
+            inputCanvas.width = (inputRadius + inputLineWidth) * 2;
+            inputCanvas.height = (inputRadius + inputLineWidth) * 2;
+            inputCtx = inputCanvas.getContext('2d');
+            inputCtx.lineWidth = inputLineWidth;
+        },
+        
+        drawInputGraphic = function() {
+            
+        };
+        
+    
     function createCanvasMIDIOutView(specs, my) {
         let that,
             canvasDirtyCallback = specs.canvasDirtyCallback,
@@ -139,8 +157,11 @@ window.WH = window.WH || {};
         that.setTheme = setTheme;
         return that;
     }
-
-    ns.createCanvasMIDIOutView = createCanvasMIDIOutView;
+    
+    var type = 'output';
+    WH.midiProcessors = WH.midiProcessors || {};
+    WH.midiProcessors[type] = WH.midiProcessors[type] || {};
+    WH.midiProcessors[type].createCanvasView = createCanvasMIDIOutView;
 
 })(WH);
             
