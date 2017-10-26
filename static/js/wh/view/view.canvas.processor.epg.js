@@ -11,7 +11,7 @@ window.WH = window.WH || {};
     
     let centerDotSize;
     
-    function createCanvasEPGView(specs, my) {
+    function createCanvasProcessorEPGView(specs, my) {
         let that,
             canvasDirtyCallback = specs.canvasDirtyCallback,
             staticCanvas,
@@ -518,7 +518,7 @@ window.WH = window.WH || {};
             
         my = my || {};
         
-        that = ns.createCanvasBaseView(specs, my);
+        that = ns.createCanvasProcessorBaseView(specs, my);
         
         initialise();
         
@@ -534,6 +534,6 @@ window.WH = window.WH || {};
     var type = 'epg';
     WH.midiProcessors = WH.midiProcessors || {};
     WH.midiProcessors[type] = WH.midiProcessors[type] || {};
-    WH.midiProcessors[type].createCanvasView = createCanvasEPGView;
+    WH.midiProcessors[type].createCanvasView = createCanvasProcessorEPGView;
 
 })(WH);

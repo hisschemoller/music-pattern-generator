@@ -6,7 +6,7 @@ window.WH = window.WH || {};
 
 (function (ns) {
     
-    function createCanvasBaseView(specs, my) {
+    function createCanvasProcessorBaseView(specs, my) {
         var that,
         
             getProcessor = function() {
@@ -35,6 +35,6 @@ window.WH = window.WH || {};
         return that;
     }
     
-    ns.createCanvasBaseView = createCanvasBaseView;
+    ns.createCanvasProcessorBaseView = createCanvasProcessorBaseView;
 
 })(WH);

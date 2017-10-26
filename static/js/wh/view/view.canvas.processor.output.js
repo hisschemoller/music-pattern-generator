@@ -6,9 +6,10 @@ window.WH = window.WH || {};
 
 (function (ns) {
     
-    function createCanvasMIDIOutView(specs, my) {
+    function createCanvasProcessorOutView(specs, my) {
         let that,
             canvasDirtyCallback = specs.canvasDirtyCallback,
+            connectorCanvas = specs.connectorCanvas,
             staticCanvas,
             staticCtx,
             nameCanvas,
@@ -123,11 +124,19 @@ window.WH = window.WH || {};
                 my.colorHigh = theme.colorHigh;
                 my.colorMid = theme.colorMid;
                 my.colorLow = theme.colorLow;
+            },
+            
+            /**
+             * Canvas graphic 
+             * @return {[type]} [description]
+             */
+            getConnectorCanvas = function() {
+                return connectorCanvas;
             };
             
         my = my || {};
         
-        that = ns.createCanvasBaseView(specs, my);
+        that = ns.createCanvasProcessorBaseView(specs, my);
         
         initialise();
         
@@ -137,13 +146,14 @@ window.WH = window.WH || {};
         that.clearFromDynamicView = clearFromDynamicView;
         that.intersectsWithPoint = intersectsWithPoint;
         that.setTheme = setTheme;
+        that.getConnectorCanvas = getConnectorCanvas;
         return that;
     }
     
     var type = 'output';
     WH.midiProcessors = WH.midiProcessors || {};
     WH.midiProcessors[type] = WH.midiProcessors[type] || {};
-    WH.midiProcessors[type].createCanvasView = createCanvasMIDIOutView;
+    WH.midiProcessors[type].createCanvasView = createCanvasProcessorOutView;
 
 })(WH);
             
