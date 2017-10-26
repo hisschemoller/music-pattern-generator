@@ -1,5 +1,5 @@
 /**
- * 2D view.
+ * Graphic 2D view of the processor network.
  *
  * CanvasView draws the graphics for all processors.
  * DynamicCanvas shows all elements that update each requestAnimationFrame.
@@ -25,32 +25,33 @@ window.WH = window.WH || {};
     function createCanvasView(specs, my) {
         var that,
             midiNetwork = specs.midiNetwork,
+            rootEl,
             staticCanvas,
             dynamicCanvas,
+            connectCanvas,
             staticCtx,
             dynamicCtx,
-            canvasRect,
+            connectCtx,
             isDirty = false,
             doubleClickCounter = 0,
             doubleClickDelay = 300,
             doubleClickTimer,
-            isDragging = false,
-            draggedView,
-            dragOffsetX,
-            dragOffsetY,
-            theme,
+            isConnectMode = false,
+            dragObjectType, // 'background|processor|connection'
             
             init = function() {
-                my.numViews = 0;
+                rootEl = document.querySelector('.canvas-container');
                 staticCanvas = document.querySelector('.canvas-static');
                 dynamicCanvas = document.querySelector('.canvas-dynamic');
+                connectCanvas = document.querySelector('.canvas-connect');
                 staticCtx = staticCanvas.getContext('2d');
                 dynamicCtx = dynamicCanvas.getContext('2d');
+                connectCtx = dynamicCanvas.getContext('2d');
                 
-                dynamicCanvas.addEventListener(WH.util.eventType.click, onClick);
-                dynamicCanvas.addEventListener(WH.util.eventType.start, onTouchStart);
-                dynamicCanvas.addEventListener(WH.util.eventType.move, dragMove);
-                dynamicCanvas.addEventListener(WH.util.eventType.end, dragEnd);
+                rootEl.addEventListener(WH.util.eventType.click, onClick);
+                rootEl.addEventListener(WH.util.eventType.start, onTouchStart);
+                rootEl.addEventListener(WH.util.eventType.move, dragMove);
+                rootEl.addEventListener(WH.util.eventType.end, dragEnd);
                 
                 my.addWindowResizeCallback(onWindowResize);
                 onWindowResize();
@@ -60,12 +61,13 @@ window.WH = window.WH || {};
              * Window resize event handler.
              */
             onWindowResize = function() {
-                const parentEl = staticCanvas.parentElement;
-                staticCanvas.width = parentEl.clientWidth;
-                staticCanvas.height = parentEl.clientHeight;
-                dynamicCanvas.width = parentEl.clientWidth;
-                dynamicCanvas.height = parentEl.clientHeight;
-                canvasRect = dynamicCanvas.getBoundingClientRect();
+                staticCanvas.width = rootEl.clientWidth;
+                staticCanvas.height = rootEl.clientHeight;
+                dynamicCanvas.width = rootEl.clientWidth;
+                dynamicCanvas.height = rootEl.clientHeight;
+                connectCanvas.width = rootEl.clientWidth;
+                connectCanvas.height = rootEl.clientHeight;
+                my.canvasRect = dynamicCanvas.getBoundingClientRect();
                 markDirty();
             },
             
@@ -98,8 +100,8 @@ window.WH = window.WH || {};
                 midiNetwork.createProcessor({
                     type: 'epg',
                     position2d: {
-                        x: e.clientX - canvasRect.left + window.scrollX,
-                        y: e.clientY - canvasRect.top + window.scrollY
+                        x: e.clientX - my.canvasRect.left + window.scrollX,
+                        y: e.clientY - my.canvasRect.top + window.scrollY
                     }
                 });
             },
@@ -109,43 +111,16 @@ window.WH = window.WH || {};
              * Start dragging the object.
              */
             onTouchStart = function(e) {
-                // find view under mouse, search from new to old
-                let view,
-                    x = e.clientX - canvasRect.left + window.scrollX,
-                    y = e.clientY - canvasRect.top + window.scrollY;
-                for (var i = my.numViews - 1; i >= 0; i--) {
-                    if (my.views[i].intersectsWithPoint(x, y)) {
-                        view = my.views[i];
-                        // select the found view's processor
-                        midiNetwork.selectProcessor(view.getProcessor());
-                        // start dragging the view's graphic
-                        dragStart(x, y, view);
-                        break;
-                    }
-                }
+                let x = e.clientX - my.canvasRect.left + window.scrollX,
+                    y = e.clientY - my.canvasRect.top + window.scrollY;
                 
-                // if there's no view under the mouse, drag the whole background
-                if (!view) {
-                    dragStart(x, y);
-                }
-            },
-            
-            /**
-             * Initialise object dragging.
-             */
-            dragStart = function(x, y, view) {
-                if (view) {
-                    // drag a view
-                    let position2d = view.getPosition2d();
-                    draggedView = view;
-                    dragOffsetX = x - position2d.x;
-                    dragOffsetY = y - position2d.y;
+                if (my.intersectsProcessor(x, y)) {
+                    dragObjectType = 'processor';
+                } else if (isConnectMode && my.intersectsOutConnector(x, y)) {
+                    dragObjectType = 'connection';
                 } else {
-                    // drag background, so all views
-                    dragOffsetX = x;
-                    dragOffsetY = y;
+                    dragObjectType = 'background';
                 }
-                isDragging = true;
             },
             
             /**
@@ -154,33 +129,21 @@ window.WH = window.WH || {};
              */
             dragMove = function(e) {
                 e.preventDefault();
-                if (isDragging) {
-                    let canvasX = e.clientX - canvasRect.left + window.scrollX,
-                        canvasY = e.clientY - canvasRect.top + window.scrollY
-                    if (draggedView) {
-                        // drag a view
-                        draggedView.setPosition2d({
-                            x: canvasX - dragOffsetX,
-                            y: canvasY - dragOffsetY
-                        });
-                    } else {
-                        // drag background, so all views
-                        let view, 
-                            position2d,
-                            x = canvasX - dragOffsetX,
-                            y = canvasY - dragOffsetY;
-                        dragOffsetX = canvasX;
-                        dragOffsetY = canvasY;
-                        for (let i = 0; i < my.numViews; i++) {
-                            view = my.views[i];
-                            position2d = view.getPosition2d();
-                            my.views[i].setPosition2d({
-                                x: position2d.x + x,
-                                y: position2d.y + y
-                            });
-                        }
+                
+                if (dragObjectType) {
+                    let canvasX = e.clientX - my.canvasRect.left + window.scrollX,
+                        canvasY = e.clientY - my.canvasRect.top + window.scrollY;
+                    
+                    switch (dragObjectType) {
+                        case 'processor':
+                            my.dragSelectedProcessor(canvasX, canvasY);
+                            break;
+                        case 'background':
+                            my.dragAllProcessors(canvasX, canvasY);
+                            break;
                     }
-                    markDirty();
+                    
+                    my.markDirty();
                 }
             },
             
@@ -190,55 +153,11 @@ window.WH = window.WH || {};
              */
             dragEnd = function(e) {
                 e.preventDefault();
-                dragMove(e);
-                draggedView = null;
-                isDragging = false;
-                markDirty();
-            },
-            
-            /**
-             * Create canvas 2D object if it exists for the type.
-             * @param  {Object} processor MIDI processor for which the 3D object will be a view.
-             */
-            createView = function(processor) {
-                let view,
-                    specs = {
-                        processor: processor,
-                        canvasDirtyCallback: markDirty
-                    };
-                switch (processor.getType()) {
-                    case 'epg':
-                        view = WH.midiProcessors[processor.getType()].createCanvasView(specs);
-                        break;
-                    case 'output':
-                        specs.initialPosition = {x: canvasRect.width / 2, y: canvasRect.height - 70};
-                        view = WH.midiProcessors[processor.getType()].createCanvasView(specs);
-                        break;
-                }
                 
-                my.views.push(view);
-                my.numViews = my.views.length;
-                
-                // set theme on the new view
-                if (theme && view.setTheme) {
-                    view.setTheme(theme);
-                }
-            },
-            
-            /**
-             * Delete canvas 2D object when the processor is deleted.
-             * @param  {Object} processor MIDI processor for which the 3D object will be a view.
-             */
-            deleteView = function(processor) {
-                let i = my.numViews;
-                while (--i >= 0) {
-                    if (my.views[i].getProcessor() === processor) {
-                        my.views[i].terminate();
-                        my.views.splice(i, 1);
-                        my.numViews = my.views.length;
-                        markDirty();
-                        return;
-                    }
+                if (dragObjectType) {
+                    dragMove(e);
+                    dragObjectType = null;
+                    my.markDirty();
                 }
             },
             
@@ -246,19 +165,27 @@ window.WH = window.WH || {};
              * Set the theme colours of the processor canvas views.
              * @param {Object} theme Theme settings object.
              */
-            setTheme = function(newTheme) {
-                theme = newTheme;
+            setTheme = function(theme) {
+                my.theme = theme;
+                my.setThemeOnViews();
+                my.markDirty();
+            },
+            
+            /**
+             * Enter or leave application connect mode.
+             * @param {Boolean} isEnabled True to enable connect mode.
+             */
+            toggleConnectMode = function(isEnabled) {
+                isConnectMode = isEnabled
                 
-                // update library
-                my.setThemeOnLibrary(theme);
+                // show the canvas
+                connectCanvas.dataset.show = isEnabled;
                 
-                // update processor views
-                for (let i = 0, n = my.views.length; i < n; i++) {
-                    if (my.views[i].setTheme instanceof Function) {
-                        my.views[i].setTheme(theme);
-                    }
-                }
-                markDirty();
+                // if (isConnectMode) {
+                //     enterConnectMode();
+                // } else {
+                //     exitConnectMode();
+                // }
             },
             
             /**
@@ -293,19 +220,17 @@ window.WH = window.WH || {};
             };
             
         my = my || {};
-        my.views = [];
-        my.numViews;
+        my.theme;
+        my.canvasRect;
+        my.markDirty = markDirty;
         
-        that = WH.createCanvasConnectionsView(specs, my);
-        that = WH.createCanvasLibrary(specs, my);
+        that = WH.createCanvasProcessorsView(specs, my);
         that = WH.addWindowResize(specs, my);
         
         init();
         
-        that.createView = createView;
-        that.deleteView = deleteView;
         that.setTheme = setTheme;
-        that.markDirty = markDirty;
+        that.toggleConnectMode = toggleConnectMode;
         that.draw = draw;
         return that;
     }

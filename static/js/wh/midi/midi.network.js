@@ -53,14 +53,14 @@ window.WH = window.WH || {};
                         case 'input':
                             break;
                         case 'output':
-                            canvasView.createView(processor);
+                            canvasView.createProcessorView(processor);
                             break;
                         case 'epg':
                             appView.createSettingsView(processor);
-                            canvasView.createView(processor);
+                            canvasView.createProcessorView(processor);
                             midiRemote.registerProcessor(processor);
                             selectProcessor(processor);
-                            canvasView.markDirty();
+                            // canvasView.markDirty();
                             break;
                     }
                 } else {
@@ -100,11 +100,11 @@ window.WH = window.WH || {};
                             numInputProcessors--;
                             break;
                         case 'output':
-                            canvasView.deleteView(processor);
+                            canvasView.deleteProcessorView(processor);
                             break;
                         case 'epg':
                             appView.deleteSettingsView(processor);
-                            canvasView.deleteView(processor);
+                            canvasView.deleteProcessorView(processor);
                             midiRemote.unregisterProcessor(processor);
                             break;
                     }

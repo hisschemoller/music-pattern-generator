@@ -131,7 +131,7 @@ window.WH = window.WH || {};
              * @return {[type]} [description]
              */
             getConnectorCanvas = function() {
-                return connectorCanvas;
+                return my.connectorGraphic.canvas;
             };
             
         my = my || {};
