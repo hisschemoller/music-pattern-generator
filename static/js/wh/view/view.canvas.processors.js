@@ -115,7 +115,7 @@ window.WH = window.WH || {};
             setThemeOnViews = function() {
                 for (let i = 0, n = my.views.length; i < n; i++) {
                     if (my.views[i].setTheme instanceof Function) {
-                        my.views[i].setTheme(theme);
+                        my.views[i].setTheme(my.theme);
                     }
                 }
             };

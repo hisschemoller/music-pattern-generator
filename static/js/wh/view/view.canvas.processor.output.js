@@ -124,14 +124,8 @@ window.WH = window.WH || {};
                 my.colorHigh = theme.colorHigh;
                 my.colorMid = theme.colorMid;
                 my.colorLow = theme.colorLow;
-            },
-            
-            /**
-             * Canvas graphic 
-             * @return {[type]} [description]
-             */
-            getConnectorCanvas = function() {
-                return my.connectorGraphic.canvas;
+                console.log('setTheme');
+                my.getConnectorGraphic().setTheme(theme);
             };
             
         my = my || {};
@@ -146,7 +140,6 @@ window.WH = window.WH || {};
         that.clearFromDynamicView = clearFromDynamicView;
         that.intersectsWithPoint = intersectsWithPoint;
         that.setTheme = setTheme;
-        that.getConnectorCanvas = getConnectorCanvas;
         return that;
     }
     

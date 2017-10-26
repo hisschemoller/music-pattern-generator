@@ -514,6 +514,7 @@ window.WH = window.WH || {};
                 nameCtx.fillStyle = my.colorMid;
                 updateName();
                 updateNecklace();
+                my.getConnectorGraphic().setTheme(theme);
             };
             
         my = my || {};

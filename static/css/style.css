@@ -209,13 +209,13 @@ div[data-theme] {
 }
 .canvas-static,
 .canvas-dynamic,
-.canvas-connections {
+.canvas-connect {
     position: absolute;
 }
-.canvas-connections {
+.canvas-connect {
     display: none;
 }
-.canvas-connections[data-show=true] {
+.canvas-connect[data-show=true] {
     display: block;
 }
 .panels {

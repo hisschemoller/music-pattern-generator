@@ -28,10 +28,8 @@ window.WH = window.WH || {};
             rootEl,
             staticCanvas,
             dynamicCanvas,
-            connectCanvas,
             staticCtx,
             dynamicCtx,
-            connectCtx,
             isDirty = false,
             doubleClickCounter = 0,
             doubleClickDelay = 300,
@@ -43,10 +41,10 @@ window.WH = window.WH || {};
                 rootEl = document.querySelector('.canvas-container');
                 staticCanvas = document.querySelector('.canvas-static');
                 dynamicCanvas = document.querySelector('.canvas-dynamic');
-                connectCanvas = document.querySelector('.canvas-connect');
+                my.connectCanvas = document.querySelector('.canvas-connect');
                 staticCtx = staticCanvas.getContext('2d');
                 dynamicCtx = dynamicCanvas.getContext('2d');
-                connectCtx = dynamicCanvas.getContext('2d');
+                my.connectCtx = my.connectCanvas.getContext('2d');
                 
                 rootEl.addEventListener(WH.util.eventType.click, onClick);
                 rootEl.addEventListener(WH.util.eventType.start, onTouchStart);
@@ -65,8 +63,8 @@ window.WH = window.WH || {};
                 staticCanvas.height = rootEl.clientHeight;
                 dynamicCanvas.width = rootEl.clientWidth;
                 dynamicCanvas.height = rootEl.clientHeight;
-                connectCanvas.width = rootEl.clientWidth;
-                connectCanvas.height = rootEl.clientHeight;
+                my.connectCanvas.width = rootEl.clientWidth;
+                my.connectCanvas.height = rootEl.clientHeight;
                 my.canvasRect = dynamicCanvas.getBoundingClientRect();
                 markDirty();
             },
@@ -168,6 +166,7 @@ window.WH = window.WH || {};
             setTheme = function(theme) {
                 my.theme = theme;
                 my.setThemeOnViews();
+                my.setThemeOnConnections();
                 my.markDirty();
             },
             
@@ -179,13 +178,13 @@ window.WH = window.WH || {};
                 isConnectMode = isEnabled
                 
                 // show the canvas
-                connectCanvas.dataset.show = isEnabled;
+                my.connectCanvas.dataset.show = isEnabled;
                 
-                // if (isConnectMode) {
-                //     enterConnectMode();
-                // } else {
-                //     exitConnectMode();
-                // }
+                if (isConnectMode) {
+                    my.enterConnectMode();
+                } else {
+                    my.exitConnectMode();
+                }
             },
             
             /**
@@ -223,8 +222,11 @@ window.WH = window.WH || {};
         my.theme;
         my.canvasRect;
         my.markDirty = markDirty;
+        my.connectCanvas;
+        my.connectCtx;
         
         that = WH.createCanvasProcessorsView(specs, my);
+        that = WH.createCanvasConnectionsView(specs, my);
         that = WH.addWindowResize(specs, my);
         
         init();
