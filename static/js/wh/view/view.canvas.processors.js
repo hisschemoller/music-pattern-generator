@@ -95,6 +95,7 @@ window.WH = window.WH || {};
                     x: x - dragOffsetX,
                     y: y - dragOffsetY
                 });
+                my.drawConnections();
             },
             
             dragAllProcessors = function(x, y) {
@@ -111,6 +112,7 @@ window.WH = window.WH || {};
                         y: position2d.y + newY
                     });
                 }
+                my.drawConnections();
             },
             
             /**

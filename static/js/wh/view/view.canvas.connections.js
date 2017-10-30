@@ -51,6 +51,7 @@ window.WH = window.WH || {};
         my.exitConnectMode = exitConnectMode;
         my.intersectsOutConnector = intersectsOutConnector;
         my.setThemeOnConnections = setThemeOnConnections;
+        my.drawConnections = drawConnections;
         
         that = specs.that || {};
         
