@@ -109,13 +109,13 @@ window.WH = window.WH || {};
              * Start dragging the object.
              */
             onTouchStart = function(e) {
-                let x = e.clientX - my.canvasRect.left + window.scrollX,
-                    y = e.clientY - my.canvasRect.top + window.scrollY;
+                let canvasX = e.clientX - my.canvasRect.left + window.scrollX,
+                    canvasY = e.clientY - my.canvasRect.top + window.scrollY;
                 
-                if (my.intersectsProcessor(x, y)) {
-                    dragObjectType = 'processor';
-                } else if (isConnectMode && my.intersectsOutConnector(x, y)) {
+                if (isConnectMode && my.intersectsOutConnector(canvasX, canvasY)) {
                     dragObjectType = 'connection';
+                } else if (my.intersectsProcessor(canvasX, canvasY)) {
+                    dragObjectType = 'processor';
                 } else {
                     dragObjectType = 'background';
                 }
@@ -136,11 +136,15 @@ window.WH = window.WH || {};
                         case 'processor':
                             my.dragSelectedProcessor(canvasX, canvasY);
                             break;
+                        case 'connection':
+                            my.dragMoveConnection(canvasX, canvasY);
+                            break;
                         case 'background':
                             my.dragAllProcessors(canvasX, canvasY);
                             break;
                     }
                     
+                    my.drawConnections();
                     my.markDirty();
                 }
             },
@@ -154,6 +158,17 @@ window.WH = window.WH || {};
                 
                 if (dragObjectType) {
                     dragMove(e);
+                    let canvasX = e.clientX - my.canvasRect.left + window.scrollX,
+                        canvasY = e.clientY - my.canvasRect.top + window.scrollY;
+                    switch (dragObjectType) {
+                        case 'processor':
+                            break;
+                        case 'connection':
+                            my.dragEndConnection(canvasX, canvasY);
+                            break;
+                        case 'background':
+                            break;
+                    }
                     dragObjectType = null;
                     my.markDirty();
                 }
@@ -200,21 +215,23 @@ window.WH = window.WH || {};
              */
             draw = function() {
                 TWEEN.update();
-                let i;
+                let i,
+                    views = my.getProcessorViews(),
+                    n = views.length;
                 if (isDirty) {
                     isDirty = false;
                     staticCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
                     dynamicCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
-                    for (i = 0; i < my.numViews; i++) {
-                        my.views[i].addToStaticView(staticCtx);
+                    for (i = 0; i < n; i++) {
+                        views[i].addToStaticView(staticCtx);
                     }
                 }
                 
-                for (i = 0; i < my.numViews; i++) {
-                    my.views[i].clearFromDynamicView(dynamicCtx);
+                for (i = 0; i < n; i++) {
+                    views[i].clearFromDynamicView(dynamicCtx);
                 }
-                for (i = 0; i < my.numViews; i++) {
-                    my.views[i].addToDynamicView(dynamicCtx);
+                for (i = 0; i < n; i++) {
+                    views[i].addToDynamicView(dynamicCtx);
                 }
             };
             

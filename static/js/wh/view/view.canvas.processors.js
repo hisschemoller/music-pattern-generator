@@ -13,6 +13,8 @@ window.WH = window.WH || {};
     function createCanvasProcessorsView(specs, my) {
         var that,
             midiNetwork = specs.midiNetwork,
+            views = [],
+            numViews = 0,
             selectedView,
             dragOffsetX,
             dragOffsetY,
@@ -38,8 +40,8 @@ window.WH = window.WH || {};
                         break;
                 }
                 
-                my.views.push(view);
-                my.numViews = my.views.length;
+                views.push(view);
+                numViews = views.length;
                 
                 // set theme on the new view
                 if (my.theme && typeof view.setTheme == 'function') {
@@ -52,12 +54,12 @@ window.WH = window.WH || {};
              * @param  {Object} processor MIDI processor for which the 3D object will be a view.
              */
             deleteProcessorView = function(processor) {
-                let i = my.numViews;
+                let i = numViews;
                 while (--i >= 0) {
-                    if (my.views[i].getProcessor() === processor) {
-                        my.views[i].terminate();
-                        my.views.splice(i, 1);
-                        my.numViews = my.views.length;
+                    if (views[i].getProcessor() === processor) {
+                        views[i].terminate();
+                        views.splice(i, 1);
+                        numViews = views.length;
                         my.markDirty();
                         return;
                     }
@@ -74,10 +76,10 @@ window.WH = window.WH || {};
                 let isIntersect = false;
                 dragOffsetX = x;
                 dragOffsetY = y;
-                for (var i = my.numViews - 1; i >= 0; i--) {
-                    if (my.views[i].intersectsWithPoint(x, y)) {
+                for (let i = numViews - 1; i >= 0; i--) {
+                    if (views[i].intersectsWithPoint(x, y, 'processor')) {
                         isIntersect = true;
-                        selectedView = my.views[i];
+                        selectedView = views[i];
                         // select the found view's processor
                         midiNetwork.selectProcessor(selectedView.getProcessor());
                         // start dragging the view's graphic
@@ -90,12 +92,22 @@ window.WH = window.WH || {};
                 return isIntersect;
             },
             
+            
+            intersectsOutConnector = function(x, y) {
+                for (let i = 0; i < numViews; i++) {
+                    if (views[i].intersectsWithPoint(x, y, 'outconnector')) {
+                        my.dragStartConnection(views[i], x, y);
+                        return true;
+                    }
+                }
+                return false;
+            },
+            
             dragSelectedProcessor = function(x, y) {
                 selectedView.setPosition2d({
                     x: x - dragOffsetX,
                     y: y - dragOffsetY
                 });
-                my.drawConnections();
             },
             
             dragAllProcessors = function(x, y) {
@@ -104,15 +116,18 @@ window.WH = window.WH || {};
                     newY = y - dragOffsetY;
                 dragOffsetX = x;
                 dragOffsetY = y;
-                for (let i = 0, view, position2d; i < my.numViews; i++) {
-                    view = my.views[i];
+                for (let i = 0, view, position2d; i < numViews; i++) {
+                    view = views[i];
                     position2d = view.getPosition2d();
                     view.setPosition2d({
                         x: position2d.x + newX,
                         y: position2d.y + newY
                     });
                 }
-                my.drawConnections();
+            },
+            
+            getProcessorViews = function() {
+                return views;
             },
             
             /**
@@ -120,18 +135,18 @@ window.WH = window.WH || {};
              */
             setThemeOnViews = function() {
                 for (let i = 0, n = my.views.length; i < n; i++) {
-                    if (my.views[i].setTheme instanceof Function) {
-                        my.views[i].setTheme(my.theme);
+                    if (views[i].setTheme instanceof Function) {
+                        views[i].setTheme(my.theme);
                     }
                 }
             };
     
         my = my || {};
-        my.views = [];
-        my.numViews;
         my.intersectsProcessor = intersectsProcessor;
+        my.intersectsOutConnector = intersectsOutConnector;
         my.dragSelectedProcessor = dragSelectedProcessor;
         my.dragAllProcessors = dragAllProcessors;
+        my.getProcessorViews = getProcessorViews;
         my.setThemeOnViews = setThemeOnViews;
         
         that = specs.that || {};

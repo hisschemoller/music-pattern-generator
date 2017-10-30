@@ -492,12 +492,22 @@ window.WH = window.WH || {};
             /**
              * Test if a coordinate intersects with the graphic's hit area.
              * @param  {Number} x Horizontal coordinate.
-             * @param  {[type]} y Vertical coordinate.
+             * @param  {Number} y Vertical coordinate.
+             * @param  {String} type Hit area type, 'processor|inconnector|outconnector'
              * @return {Boolean} True if the point intersects. 
              */
-            intersectsWithPoint = function(x, y) {
-                let distance = Math.sqrt(Math.pow(x - position2d.x, 2) + Math.pow(y - position2d.y, 2));
-                return distance <= necklaceRadius + dotRadius;
+            intersectsWithPoint = function(x, y, type) {
+                let distance;
+                switch (type) {
+                    case 'processor':
+                        distance = Math.sqrt(Math.pow(x - position2d.x, 2) + Math.pow(y - position2d.y, 2));
+                        return distance <= necklaceRadius + dotRadius;
+                    case 'inconnector':
+                        return false;
+                    case 'outconnector':
+                        distance = Math.sqrt(Math.pow(x - position2d.x, 2) + Math.pow(y - position2d.y - outConnectorY, 2));
+                        return distance <= my.getConnectorGraphic().canvas.width / 2;
+                }
             },
             
             /**
@@ -518,16 +528,24 @@ window.WH = window.WH || {};
                 my.getConnectorGraphic().setTheme(theme);
             },
             
+            getOutConnectorPoint = function() {
+                return {
+                    x: position2d.x,
+                    y: position2d.y + outConnectorY
+                }
+            },
+            
             /**
              * Provide output connector image for editing connections.
              * @return {Object} Contains canvas and coordinates.
              */
             getOutConnectorGraphic = function() {
-                const canvas = my.getConnectorGraphic().canvas;
+                const canvas = my.getConnectorGraphic().canvas,
+                    point = getOutConnectorPoint();
                 return {
                     canvas: canvas,
-                    x: position2d.x - (canvas.width / 2),
-                    y: position2d.y - (canvas.height / 2) + outConnectorY
+                    x: point.x - (canvas.width / 2),
+                    y: point.y - (canvas.height / 2)
                 };
             };
             
@@ -543,6 +561,7 @@ window.WH = window.WH || {};
         that.clearFromDynamicView = clearFromDynamicView;
         that.intersectsWithPoint = intersectsWithPoint;
         that.setTheme = setTheme;
+        that.getOutConnectorPoint = getOutConnectorPoint;
         that.getOutConnectorGraphic = getOutConnectorGraphic;
         return that;
     }
