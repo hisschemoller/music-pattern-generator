@@ -37,8 +37,9 @@ window.WH = window.WH || {};
                 drawConnections();
             },
             
-            dragEndConnection = function(x, y) {
+            dragEndConnection = function() {
                 dragData.isDragging = false;
+                drawConnections();
             },
             
             setThemeOnConnections = function(theme) {

@@ -164,7 +164,7 @@ window.WH = window.WH || {};
                         case 'processor':
                             break;
                         case 'connection':
-                            my.dragEndConnection(canvasX, canvasY);
+                            my.intersectsInConnector(canvasX, canvasY);
                             break;
                         case 'background':
                             break;

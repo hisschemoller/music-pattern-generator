@@ -111,9 +111,25 @@ window.WH = window.WH || {};
             clearFromDynamicView = function(mainDynamicCtx) {
             },
             
-            intersectsWithPoint = function(x, y) {
-                let distance = Math.sqrt(Math.pow(x - position2d.x, 2) + Math.pow(y - position2d.y, 2));
-                return distance <= 10;
+            /**
+             * Test if a coordinate intersects with the graphic's hit area.
+             * @param  {Number} x Horizontal coordinate.
+             * @param  {Number} y Vertical coordinate.
+             * @param  {String} type Hit area type, 'processor|inconnector|outconnector'
+             * @return {Boolean} True if the point intersects. 
+             */
+            intersectsWithPoint = function(x, y, type) {
+                let distance;
+                switch (type) {
+                    case 'processor':
+                        distance = Math.sqrt(Math.pow(x - position2d.x, 2) + Math.pow(y - position2d.y, 2));
+                        return distance <= 10;
+                    case 'inconnector':
+                        distance = Math.sqrt(Math.pow(x - position2d.x, 2) + Math.pow(y - position2d.y, 2));
+                        return distance <= my.getConnectorGraphic().canvas.width / 2;
+                    case 'outconnector':
+                        return false;
+                    }
             },
             
             /**

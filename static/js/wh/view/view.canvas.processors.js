@@ -16,6 +16,7 @@ window.WH = window.WH || {};
             views = [],
             numViews = 0,
             selectedView,
+            connectionSourceProcessor,
             dragOffsetX,
             dragOffsetY,
             
@@ -92,10 +93,21 @@ window.WH = window.WH || {};
                 return isIntersect;
             },
             
+            intersectsInConnector = function(x, y) {
+                for (let i = 0; i < numViews; i++) {
+                    if (views[i].intersectsWithPoint(x, y, 'inconnector')) {
+                        const destinationProcessor = views[i].getProcessor();
+                        connectionSourceProcessor.connect(destinationProcessor);
+                        break;
+                    }
+                }
+                my.dragEndConnection();
+            },
             
             intersectsOutConnector = function(x, y) {
                 for (let i = 0; i < numViews; i++) {
                     if (views[i].intersectsWithPoint(x, y, 'outconnector')) {
+                        connectionSourceProcessor = views[i].getProcessor();
                         my.dragStartConnection(views[i], x, y);
                         return true;
                     }
@@ -143,6 +155,7 @@ window.WH = window.WH || {};
     
         my = my || {};
         my.intersectsProcessor = intersectsProcessor;
+        my.intersectsInConnector = intersectsInConnector;
         my.intersectsOutConnector = intersectsOutConnector;
         my.dragSelectedProcessor = dragSelectedProcessor;
         my.dragAllProcessors = dragAllProcessors;
