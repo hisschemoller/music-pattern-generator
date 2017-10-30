@@ -31,12 +31,13 @@ window.WH = window.WH || {};
                 my.connectCtx.clearRect(0, 0, my.connectCanvas.width, my.connectCanvas.height);
                 
                 // show inputs and outputs
-                for (let i = 0, view, viewInfo, viewPos; i < my.numViews; i++) {
+                for (let i = 0, view, viewInfo, viewPos, graphic; i < my.numViews; i++) {
                     view = my.views[i];
                     viewInfo = view.getProcessor().getInfo();
                     viewPos = view.getPosition2d();
                     if (viewInfo.inputs == 1) {
-                        my.connectCtx.drawImage(view.getConnectorCanvas(), viewPos.x, viewPos.y);
+                        graphic = view.getInConnectorGraphic();
+                        my.connectCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
                     }
                 }
             };

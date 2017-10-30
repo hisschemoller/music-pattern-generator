@@ -1,5 +1,9 @@
 /**
  * Manages the canvas views of the processors in the network.
+ * - Processor view lifecycle.
+ * - Processor view user interaction, itersection with (mouse) point.
+ * - Processor view dragging.
+ * - Processor view theme changes.
  */
 
 window.WH = window.WH || {};
@@ -12,6 +16,53 @@ window.WH = window.WH || {};
             selectedView,
             dragOffsetX,
             dragOffsetY,
+            
+            /**
+             * Create canvas 2D object if it exists for the type.
+             * @param  {Object} processor MIDI processor for which the 3D object will be a view.
+             */
+            createProcessorView = function(processor) {
+                let view,
+                    specs = {
+                        processor: processor,
+                        canvasDirtyCallback: my.markDirty
+                    };
+                
+                switch (processor.getType()) {
+                    case 'epg':
+                        view = WH.midiProcessors[processor.getType()].createCanvasView(specs);
+                        break;
+                    case 'output':
+                        specs.initialPosition = {x: my.canvasRect.width / 2, y: my.canvasRect.height - 70};
+                        view = WH.midiProcessors[processor.getType()].createCanvasView(specs);
+                        break;
+                }
+                
+                my.views.push(view);
+                my.numViews = my.views.length;
+                
+                // set theme on the new view
+                if (my.theme && typeof view.setTheme == 'function') {
+                    view.setTheme(my.theme);
+                }
+            },
+            
+            /**
+             * Delete canvas 2D object when the processor is deleted.
+             * @param  {Object} processor MIDI processor for which the 3D object will be a view.
+             */
+            deleteProcessorView = function(processor) {
+                let i = my.numViews;
+                while (--i >= 0) {
+                    if (my.views[i].getProcessor() === processor) {
+                        my.views[i].terminate();
+                        my.views.splice(i, 1);
+                        my.numViews = my.views.length;
+                        my.markDirty();
+                        return;
+                    }
+                }
+            },
             
             /**
              * Check and handle intersection of point with view.
@@ -59,53 +110,6 @@ window.WH = window.WH || {};
                         x: position2d.x + newX,
                         y: position2d.y + newY
                     });
-                }
-            },
-            
-            /**
-             * Create canvas 2D object if it exists for the type.
-             * @param  {Object} processor MIDI processor for which the 3D object will be a view.
-             */
-            createProcessorView = function(processor) {
-                let view,
-                    specs = {
-                        processor: processor,
-                        canvasDirtyCallback: my.markDirty
-                    };
-                
-                switch (processor.getType()) {
-                    case 'epg':
-                        view = WH.midiProcessors[processor.getType()].createCanvasView(specs);
-                        break;
-                    case 'output':
-                        specs.initialPosition = {x: my.canvasRect.width / 2, y: my.canvasRect.height - 70};
-                        view = WH.midiProcessors[processor.getType()].createCanvasView(specs);
-                        break;
-                }
-                
-                my.views.push(view);
-                my.numViews = my.views.length;
-                
-                // set theme on the new view
-                if (my.theme && typeof view.setTheme == 'function') {
-                    view.setTheme(my.theme);
-                }
-            },
-            
-            /**
-             * Delete canvas 2D object when the processor is deleted.
-             * @param  {Object} processor MIDI processor for which the 3D object will be a view.
-             */
-            deleteProcessorView = function(processor) {
-                let i = my.numViews;
-                while (--i >= 0) {
-                    if (my.views[i].getProcessor() === processor) {
-                        my.views[i].terminate();
-                        my.views.splice(i, 1);
-                        my.numViews = my.views.length;
-                        my.markDirty();
-                        return;
-                    }
                 }
             },
             

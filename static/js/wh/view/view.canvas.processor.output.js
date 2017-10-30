@@ -124,8 +124,20 @@ window.WH = window.WH || {};
                 my.colorHigh = theme.colorHigh;
                 my.colorMid = theme.colorMid;
                 my.colorLow = theme.colorLow;
-                console.log('setTheme');
                 my.getConnectorGraphic().setTheme(theme);
+            },
+            
+            /**
+             * Provide output connector image for editing connections.
+             * @return {Object} Contains canvas and coordinates.
+             */
+            getInConnectorGraphic = function() {
+                const canvas = my.getConnectorGraphic().canvas;
+                return {
+                    canvas: canvas,
+                    x: position2d.x - (canvas.width / 2),
+                    y: position2d.y - (canvas.height / 2)
+                };
             };
             
         my = my || {};
@@ -140,6 +152,7 @@ window.WH = window.WH || {};
         that.clearFromDynamicView = clearFromDynamicView;
         that.intersectsWithPoint = intersectsWithPoint;
         that.setTheme = setTheme;
+        that.getInConnectorGraphic = getInConnectorGraphic;
         return that;
     }
     

@@ -59,10 +59,6 @@ window.WH = window.WH || {};
             
             getPosition2d = function() {
                 return my.processor.getParamValue('position2d');
-            },
-            
-            getConnectorCanvas = function() {
-                return getConnectorGraphic().canvas;
             };
         
         my = my || {};
@@ -77,7 +73,6 @@ window.WH = window.WH || {};
         that.getProcessor = getProcessor;
         that.setPosition2d = setPosition2d;
         that.getPosition2d = getPosition2d;
-        that.getConnectorCanvas = getConnectorCanvas;
         return that;
     }
     
