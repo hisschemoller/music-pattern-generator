@@ -38,6 +38,7 @@ window.WH = window.WH || {};
             centerDotStartTween,
             centerDotEndTween,
             
+            outConnectorY = 35,
             selectRadius = 15,
             dotRadius,
             dotActiveRadius,
@@ -515,6 +516,19 @@ window.WH = window.WH || {};
                 updateName();
                 updateNecklace();
                 my.getConnectorGraphic().setTheme(theme);
+            },
+            
+            /**
+             * Provide output connector image for editing connections.
+             * @return {Object} Contains canvas and coordinates.
+             */
+            getOutConnectorGraphic = function() {
+                const canvas = my.getConnectorGraphic().canvas;
+                return {
+                    canvas: canvas,
+                    x: position2d.x - (canvas.width / 2),
+                    y: position2d.y - (canvas.height / 2) + outConnectorY
+                };
             };
             
         my = my || {};
@@ -529,6 +543,7 @@ window.WH = window.WH || {};
         that.clearFromDynamicView = clearFromDynamicView;
         that.intersectsWithPoint = intersectsWithPoint;
         that.setTheme = setTheme;
+        that.getOutConnectorGraphic = getOutConnectorGraphic;
         return that;
     }
     

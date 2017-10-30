@@ -39,6 +39,10 @@ window.WH = window.WH || {};
                         graphic = view.getInConnectorGraphic();
                         my.connectCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
                     }
+                    if (viewInfo.outputs == 1) {
+                        graphic = view.getOutConnectorGraphic();
+                        my.connectCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
+                    }
                 }
             };
     
