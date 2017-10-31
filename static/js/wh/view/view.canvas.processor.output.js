@@ -143,16 +143,24 @@ window.WH = window.WH || {};
                 my.getConnectorGraphic().setTheme(theme);
             },
             
+            getInConnectorPoint = function() {
+                return {
+                    x: position2d.x,
+                    y: position2d.y
+                }
+            },
+            
             /**
              * Provide output connector image for editing connections.
              * @return {Object} Contains canvas and coordinates.
              */
             getInConnectorGraphic = function() {
-                const canvas = my.getConnectorGraphic().canvas;
+                const canvas = my.getConnectorGraphic().canvas,
+                    point = getInConnectorPoint();
                 return {
                     canvas: canvas,
-                    x: position2d.x - (canvas.width / 2),
-                    y: position2d.y - (canvas.height / 2)
+                    x: point - (canvas.width / 2),
+                    y: point - (canvas.height / 2)
                 };
             };
             
@@ -168,6 +176,7 @@ window.WH = window.WH || {};
         that.clearFromDynamicView = clearFromDynamicView;
         that.intersectsWithPoint = intersectsWithPoint;
         that.setTheme = setTheme;
+        that.getInConnectorPoint = getInConnectorPoint;
         that.getInConnectorGraphic = getInConnectorGraphic;
         return that;
     }
