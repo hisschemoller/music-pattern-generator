@@ -159,8 +159,8 @@ window.WH = window.WH || {};
                     point = getInConnectorPoint();
                 return {
                     canvas: canvas,
-                    x: point - (canvas.width / 2),
-                    y: point - (canvas.height / 2)
+                    x: point.x - (canvas.width / 2),
+                    y: point.y - (canvas.height / 2)
                 };
             };
             
