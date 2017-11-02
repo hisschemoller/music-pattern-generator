@@ -49,3 +49,35 @@ CanvasConnectionsView shares the views array with CanvasView.
 3. Get default and active, input and or output, canvas from each view.
 4. Draw all input and output canvasses on the connections canvas.
 
+
+
+
+/** draw connections **/
+
+if enter connect mode
+    1. redraw connections canvas in active state
+    
+if exit connect mode
+    1. redraw connections canvas in active state 
+
+if (create|delete|move processor, connections change)
+    if connectMode
+        1. redraw connections canvas in active state
+        2. copy connections canvas to connect-canvas
+        3. (draw connectors and dragged line on connect-canvas)
+    else
+        1. redraw connections canvas in active state 
+        2. copy connections canvas to static-canvas
+        3. (draw processors on static-canvas)]
+
+if (change processor properties, connections do not change)
+    if connectMode
+        2. copy connections canvas to connect-canvas
+        3. (draw connectors and dragged line on connect-canvas)
+    else
+        2. copy connections canvas to static-canvas
+        3. (draw processors on static-canvas)
+
+No, all existing connections are drawn on the staticCanvas.
+Only connectors and dragged line on the connectCanvas.
+

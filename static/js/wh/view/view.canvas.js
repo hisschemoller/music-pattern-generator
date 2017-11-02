@@ -34,17 +34,14 @@ window.WH = window.WH || {};
             doubleClickCounter = 0,
             doubleClickDelay = 300,
             doubleClickTimer,
-            isConnectMode = false,
             dragObjectType, // 'background|processor|connection'
             
             init = function() {
                 rootEl = document.querySelector('.canvas-container');
                 staticCanvas = document.querySelector('.canvas-static');
                 dynamicCanvas = document.querySelector('.canvas-dynamic');
-                my.connectCanvas = document.querySelector('.canvas-connect');
                 staticCtx = staticCanvas.getContext('2d');
                 dynamicCtx = dynamicCanvas.getContext('2d');
-                my.connectCtx = my.connectCanvas.getContext('2d');
                 
                 rootEl.addEventListener(WH.util.eventType.click, onClick);
                 rootEl.addEventListener(WH.util.eventType.start, onTouchStart);
@@ -63,8 +60,6 @@ window.WH = window.WH || {};
                 staticCanvas.height = rootEl.clientHeight;
                 dynamicCanvas.width = rootEl.clientWidth;
                 dynamicCanvas.height = rootEl.clientHeight;
-                my.connectCanvas.width = rootEl.clientWidth;
-                my.connectCanvas.height = rootEl.clientHeight;
                 my.canvasRect = dynamicCanvas.getBoundingClientRect();
                 markDirty();
             },
@@ -112,7 +107,7 @@ window.WH = window.WH || {};
                 let canvasX = e.clientX - my.canvasRect.left + window.scrollX,
                     canvasY = e.clientY - my.canvasRect.top + window.scrollY;
                 
-                if (isConnectMode && my.intersectsOutConnector(canvasX, canvasY)) {
+                if (my.isConnectMode && my.intersectsOutConnector(canvasX, canvasY)) {
                     dragObjectType = 'connection';
                 } else if (my.intersectsProcessor(canvasX, canvasY)) {
                     dragObjectType = 'processor';
@@ -133,11 +128,11 @@ window.WH = window.WH || {};
                         canvasY = e.clientY - my.canvasRect.top + window.scrollY;
                     
                     switch (dragObjectType) {
-                        case 'processor':
-                            my.dragSelectedProcessor(canvasX, canvasY);
-                            break;
                         case 'connection':
                             my.dragMoveConnection(canvasX, canvasY);
+                            break;
+                        case 'processor':
+                            my.dragSelectedProcessor(canvasX, canvasY);
                             break;
                         case 'background':
                             my.dragAllProcessors(canvasX, canvasY);
@@ -161,10 +156,10 @@ window.WH = window.WH || {};
                     let canvasX = e.clientX - my.canvasRect.left + window.scrollX,
                         canvasY = e.clientY - my.canvasRect.top + window.scrollY;
                     switch (dragObjectType) {
-                        case 'processor':
-                            break;
                         case 'connection':
                             my.intersectsInConnector(canvasX, canvasY);
+                            break;
+                        case 'processor':
                             break;
                         case 'background':
                             break;
@@ -183,23 +178,6 @@ window.WH = window.WH || {};
                 my.setThemeOnViews();
                 my.setThemeOnConnections();
                 my.markDirty();
-            },
-            
-            /**
-             * Enter or leave application connect mode.
-             * @param {Boolean} isEnabled True to enable connect mode.
-             */
-            toggleConnectMode = function(isEnabled) {
-                isConnectMode = isEnabled
-                
-                // show the canvas
-                my.connectCanvas.dataset.show = isEnabled;
-                
-                if (isConnectMode) {
-                    my.enterConnectMode();
-                } else {
-                    my.exitConnectMode();
-                }
             },
             
             /**
@@ -222,6 +200,7 @@ window.WH = window.WH || {};
                     isDirty = false;
                     staticCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
                     dynamicCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
+                    my.addConnectionsToCanvas(staticCtx);
                     for (i = 0; i < n; i++) {
                         views[i].addToStaticView(staticCtx);
                     }
@@ -237,19 +216,16 @@ window.WH = window.WH || {};
             
         my = my || {};
         my.theme;
-        my.canvasRect;
+        my.canvasRect,
         my.markDirty = markDirty;
-        my.connectCanvas;
-        my.connectCtx;
         
+        that = WH.addWindowResize(specs, my);
         that = WH.createCanvasProcessorsView(specs, my);
         that = WH.createCanvasConnectionsView(specs, my);
-        that = WH.addWindowResize(specs, my);
         
         init();
         
         that.setTheme = setTheme;
-        that.toggleConnectMode = toggleConnectMode;
         that.draw = draw;
         return that;
     }

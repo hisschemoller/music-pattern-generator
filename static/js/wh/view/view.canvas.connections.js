@@ -8,23 +8,48 @@ window.WH = window.WH || {};
 
     function createCanvasConnectionsView(specs, my) {
         var that,
+            rootEl,
+            connectCanvas,
+            connectCtx,
+            offlineCanvas,
+            offlineCtx,
             inConnectors,
             outConnectors,
             dragData = {
                 startPoint: {x: 0, y: 0},
                 endPoint: {x: 0, y: 0},
                 lineColor: 0,
-                lineWidth: 2
+                lineWidth: 1,
+                lineWidthActive: 2
             },
         
             init = function() {
+                rootEl = document.querySelector('.canvas-container');
+                connectCanvas = document.querySelector('.canvas-connect');
+                connectCtx = connectCanvas.getContext('2d');
+                offlineCanvas = document.createElement('canvas');
+                offlineCtx = offlineCanvas.getContext('2d');
+                
+                my.addWindowResizeCallback(onResize);
+                onResize();
             },
             
-            enterConnectMode = function() {
-                drawConnections();
+            onResize = function() {
+                connectCanvas.width = rootEl.clientWidth;
+                connectCanvas.height = rootEl.clientHeight;
+                offlineCanvas.width = rootEl.clientWidth;
+                offlineCanvas.height = rootEl.clientHeight;
             },
             
-            exitConnectMode = function() {
+            /**
+             * Enter or leave application connect mode.
+             * @param {Boolean} isEnabled True to enable connect mode.
+             */
+            toggleConnectMode = function(isEnabled) {
+                my.isConnectMode = isEnabled
+                
+                // show the canvas
+                connectCanvas.dataset.show = isEnabled;
             },
             
             dragStartConnection = function(processorView, x, y) {
@@ -50,7 +75,7 @@ window.WH = window.WH || {};
             },
             
             drawConnections = function() {
-                my.connectCtx.clearRect(0, 0, my.connectCanvas.width, my.connectCanvas.height);
+                connectCtx.clearRect(0, 0, connectCanvas.width, connectCanvas.height);
                 
                 // show inputs and outputs
                 inConnectors = {};
@@ -64,12 +89,12 @@ window.WH = window.WH || {};
                     viewPos = view.getPosition2d();
                     if (viewInfo.inputs == 1) {
                         graphic = view.getInConnectorGraphic();
-                        my.connectCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
+                        connectCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
                         inConnectors[processor.getID()] = view.getInConnectorPoint();
                     }
                     if (viewInfo.outputs == 1) {
                         graphic = view.getOutConnectorGraphic();
-                        my.connectCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
+                        connectCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
                         outConnectors[processor.getID()] = view.getOutConnectorPoint();
                     }
                 }
@@ -93,6 +118,10 @@ window.WH = window.WH || {};
                 }
             },
             
+            addConnectionsToCanvas = function(ctx) {
+                
+            },
+            
             drawCable = function(startPoint, endPoint) {
                 const distance = Math.sqrt(Math.pow(startPoint.x - endPoint.x, 2) + Math.pow(startPoint.y - endPoint.y, 2)),
                     tension = distance / 2,
@@ -100,27 +129,28 @@ window.WH = window.WH || {};
                     cp1y = startPoint.y + tension,
                     cp2x = endPoint.x,
                     cp2y = endPoint.y + tension;
-                my.connectCtx.lineWidth = dragData.lineWidth;
-                my.connectCtx.strokeStyle = dragData.lineColor;
-                my.connectCtx.beginPath();
-                my.connectCtx.moveTo(startPoint.x, startPoint.y);
-                my.connectCtx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, endPoint.x, endPoint.y);
-                my.connectCtx.stroke();
+                connectCtx.lineWidth = dragData.lineWidth;
+                connectCtx.strokeStyle = dragData.lineColor;
+                connectCtx.beginPath();
+                connectCtx.moveTo(startPoint.x, startPoint.y);
+                connectCtx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, endPoint.x, endPoint.y);
+                connectCtx.stroke();
             };
     
         my = my || {};
-        my.enterConnectMode = enterConnectMode;
-        my.exitConnectMode = exitConnectMode;
+        my.isConnectMode = false,
         my.dragStartConnection = dragStartConnection;
         my.dragMoveConnection = dragMoveConnection;
         my.dragEndConnection = dragEndConnection;
         my.setThemeOnConnections = setThemeOnConnections;
         my.drawConnections = drawConnections;
+        my.addConnectionsToCanvas = addConnectionsToCanvas;
         
         that = specs.that || {};
         
         init();
         
+        that.toggleConnectMode = toggleConnectMode;
         return that;
     };
 
