@@ -130,7 +130,7 @@ window.WH = window.WH || {};
 
             /**
              * Restore state from data object.
-             * @param {Object} data Preferences data object.
+             * @param {Object} data Project MIDI data object.
              */
             setData = function(data = {}) {
                 toggleSync(data.isSyncEnabled || false);
