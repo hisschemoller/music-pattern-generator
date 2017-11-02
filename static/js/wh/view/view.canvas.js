@@ -133,13 +133,16 @@ window.WH = window.WH || {};
                             break;
                         case 'processor':
                             my.dragSelectedProcessor(canvasX, canvasY);
+                            my.updateConnectorsInfo();
+                            my.drawOfflineCanvas();
                             break;
                         case 'background':
                             my.dragAllProcessors(canvasX, canvasY);
+                            my.updateConnectorsInfo();
+                            my.drawOfflineCanvas();
                             break;
                     }
                     
-                    my.drawConnections();
                     my.markDirty();
                 }
             },

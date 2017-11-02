@@ -77,6 +77,9 @@ if (change processor properties, connections do not change)
     else
         2. copy connections canvas to static-canvas
         3. (draw processors on static-canvas)
+        
+if theme change
+    
 
 No, all existing connections are drawn on the staticCanvas.
 Only connectors and dragged line on the connectCanvas.

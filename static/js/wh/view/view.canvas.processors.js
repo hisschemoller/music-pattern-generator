@@ -48,6 +48,8 @@ window.WH = window.WH || {};
                 if (my.theme && typeof view.setTheme == 'function') {
                     view.setTheme(my.theme);
                 }
+                
+                my.updateConnectorsInfo();
             },
             
             /**
@@ -61,6 +63,7 @@ window.WH = window.WH || {};
                         views[i].terminate();
                         views.splice(i, 1);
                         numViews = views.length;
+                        my.updateConnectorsInfo();
                         my.markDirty();
                         return;
                     }
