@@ -133,11 +133,18 @@ window.WH = window.WH || {};
                     isTopVisible = topEl.dataset.show == 'true',
                     isBtmVisible = btmEl.dataset.show == 'true',
                     topViewportEl = topEl.querySelector('.panel__viewport'),
-                    btmViewportEl = btmEl.querySelector('.panel__viewport'),
-                    topHeight = topEl.clientHeight,
-                    btmHeight = btmEl.clientHeight,
-                    topContentHeight = topEl.querySelector('.panel__content').clientHeight,
-                    btmContentHeight = btmEl.querySelector('.panel__content').clientHeight;
+                    btmViewportEl = btmEl.querySelector('.panel__viewport');
+                
+                let topHeight, btmHeight, topContentHeight, btmContentHeight;
+                
+                // reset heights before measuring them
+                topViewportEl.style.height = 'auto';
+                btmViewportEl.style.height = 'auto';
+                
+                topHeight = topEl.clientHeight,
+                btmHeight = btmEl.clientHeight,
+                topContentHeight = topEl.querySelector('.panel__content').clientHeight,
+                btmContentHeight = btmEl.querySelector('.panel__content').clientHeight;
                 
                 if (isRightColumn && (topWidth + btmWidth < columnWidth)) {
                     if (topContentHeight + panelHeaderHeight > totalHeight) {
