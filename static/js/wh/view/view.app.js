@@ -71,6 +71,10 @@ window.WH = window.WH || {};
                 document.addEventListener('keyup', function(e) {
                     switch (e.keyCode) {
                         case 32:
+                            // don't toggle play while typing space key in a text field.
+                            if (e.target.tagName.toLowerCase() == 'input' && e.target.getAttribute('type') == 'text') {
+                                return;
+                            }
                             app.updateApp('play');
                             break;
                     }
