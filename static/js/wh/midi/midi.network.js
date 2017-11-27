@@ -135,6 +135,7 @@ window.WH = window.WH || {};
              */
             selectProcessor = function(processor) {
                 app.togglePanel('settings', processor != null);
+                app.appUpdated('settings', processor != null);
                 for (var i = 0; i < numProcessors; i++) {
                     var proc = processors[i];
                     if (typeof proc.setSelected == 'function') {
