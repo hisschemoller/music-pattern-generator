@@ -80,8 +80,8 @@ window.WH = window.WH || {};
              * Set Beats Per Minute.
              * @param {Number} newBpm New value for BPM.
              */
-            setBPM = function(newBpm) {
-                bpm = (newBpm || 120);
+            setBPM = function(newBpm = 120) {
+                bpm = newBpm;
                 var beatInMilliseconds = 60000.0 / bpm;
                 tickInMilliseconds = beatInMilliseconds / ppqn;
                 // calculate change factor
