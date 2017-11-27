@@ -202,6 +202,11 @@ window.WH = window.WH || {};
                     case 'remote':
                         controls.remote.input.checked = value;
                         break;
+                    case 'settings':
+                        controls.edit.input.checked = value;
+                        break;
+                    default:
+                        console.error('Unknown updateControl property:', property);
                 }
             },
             
