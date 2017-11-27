@@ -35,7 +35,7 @@ window.WH = window.WH || {};
              * Restore preferences from data object.
              * @param {Object} data Data object.
              */
-            setData = function(data) {
+            setData = function(data = {}) {
                 enableDarkTheme(data.isDarkTheme || false);
             },
 

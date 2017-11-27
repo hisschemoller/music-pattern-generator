@@ -61,9 +61,11 @@ window.WH = window.WH || {};
                 var data = localStorage.getItem(preferencesName);
                 if (data) {
                     data = JSON.parse(data);
-                    preferences.setData(data.preferences || {});
+                    midi.setData(data.midi);
+                    preferences.setData(data.preferences);
                 } else {
-                    preferences.setData({});
+                    midi.setData();
+                    preferences.setData();
                     console.log('No data in LocalStorage with name "' + preferencesName + '".');
                 }
             },
@@ -74,8 +76,8 @@ window.WH = window.WH || {};
              */
             savePreferences = function() {
                 var data = {
-                    midi: midi.getData() || {},
-                    preferences: preferences.getData() || {}
+                    midi: midi.getData(),
+                    preferences: preferences.getData()
                 }
                 localStorage.setItem(preferencesName, JSON.stringify(data));
             },
@@ -136,7 +138,6 @@ window.WH = window.WH || {};
             getData = function() {
                 return {
                     bpm: transport.getBPM(),
-                    midi: midi.getData(),
                     network: midiNetwork.getData(),
                     remote: midiRemote.getData()
                 };
@@ -162,10 +163,9 @@ window.WH = window.WH || {};
             setData = function(data) {
                 console.log(data);
                 data = data || {};
-                transport.setBPM(data.bpm || 120);
-                midi.setData(data.midi || {});
-                midiNetwork.setData(data.network || {});
-                midiRemote.setData(data.remote || {});
+                transport.setBPM(data.bpm);
+                midiNetwork.setData(data.network);
+                midiRemote.setData(data.remote);
             },
 
             /**

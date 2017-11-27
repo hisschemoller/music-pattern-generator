@@ -289,7 +289,7 @@ window.WH = window.WH || {};
              * Restore network from data object.
              * @param {Object} data Preferences data object.
              */
-            setData = function(data) {
+            setData = function(data = {}) {
                 // clear all old data
                 clear();
                 
