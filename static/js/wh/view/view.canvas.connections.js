@@ -16,6 +16,7 @@ window.WH = window.WH || {};
             inConnectors,
             outConnectors,
             dragData = {
+                isDragging: false,
                 startPoint: {x: 0, y: 0},
                 endPoint: {x: 0, y: 0},
                 lineColor: 0,
@@ -62,17 +63,17 @@ window.WH = window.WH || {};
                 dragData.isDragging = true;
                 dragData.startPoint = processorView.getOutConnectorPoint();
                 dragData.endPoint = {x: x, y: y};
-                drawConnectCanvas();
+                drawOfflineCanvas();
             },
             
             dragMoveConnection = function(x, y) {
                 dragData.endPoint = {x: x, y: y};
-                drawConnectCanvas();
+                drawOfflineCanvas();
             },
             
             dragEndConnection = function() {
                 dragData.isDragging = false;
-                drawConnectCanvas();
+                drawOfflineCanvas();
             },
             
             setThemeOnConnections = function(theme) {
@@ -119,6 +120,8 @@ window.WH = window.WH || {};
              * or when Connect Mode is entered or exited.
              */
             drawOfflineCanvas = function() {
+                offlineCtx.clearRect(0, 0, offlineCanvas.width, offlineCanvas.height);
+                
                 const lineWidth = my.isConnectMode ? dragData.lineWidthActive : dragData.lineWidth;
                 
                 // show cables
@@ -138,6 +141,12 @@ window.WH = window.WH || {};
                         drawCable(outConnectors[sourceID].point, inConnectors[destinationID].point);
                     }
                 }
+                
+                // cable currently being dragged
+                if (dragData.isDragging) {
+                    drawCable(dragData.startPoint, dragData.endPoint);
+                }
+                
                 offlineCtx.stroke();
             },
             
@@ -159,6 +168,7 @@ window.WH = window.WH || {};
             
             addConnectionsToCanvas = function(ctx) {
                 ctx.drawImage(offlineCanvas, 0, 0);
+                ctx.drawImage(connectCanvas, 0, 0);
             },
             
             /**
@@ -180,11 +190,6 @@ window.WH = window.WH || {};
                         graphic = outConnectors[id].graphic;
                         connectCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
                     }
-                }
-                
-                // cable currently being dragged
-                if (dragData.isDragging) {
-                    drawCable(dragData.startPoint, dragData.endPoint);
                 }
             };
             
