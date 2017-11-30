@@ -156,6 +156,7 @@ window.WH = window.WH || {};
              * @param  {Object} endPoint   {x, y} end coordinate.
              */
             drawCable = function(startPoint, endPoint) {
+                // line
                 const distance = Math.sqrt(Math.pow(startPoint.x - endPoint.x, 2) + Math.pow(startPoint.y - endPoint.y, 2)),
                     tension = distance / 2,
                     cp1x = startPoint.x,
@@ -164,6 +165,10 @@ window.WH = window.WH || {};
                     cp2y = endPoint.y + tension;
                 offlineCtx.moveTo(startPoint.x, startPoint.y);
                 offlineCtx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, endPoint.x, endPoint.y);
+                
+                // endpoint
+                const radius = 3;
+                offlineCtx.arc(endPoint.x, endPoint.y, radius * 2, 0, Math.PI * 2, true);
             },
             
             addConnectionsToCanvas = function(ctx) {
