@@ -100,7 +100,7 @@ window.WH = window.WH || {};
                 for (let i = 0; i < numViews; i++) {
                     if (views[i].intersectsWithPoint(x, y, 'inconnector')) {
                         const destinationProcessor = views[i].getProcessor();
-                        connectionSourceProcessor.connect(destinationProcessor);
+                        midiNetwork.connectProcessors(connectionSourceProcessor, destinationProcessor);
                         break;
                     }
                 }

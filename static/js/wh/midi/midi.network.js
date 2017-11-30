@@ -90,7 +90,7 @@ window.WH = window.WH || {};
                     // disconnect other processors that have this processor as destination
                     for (var i = 0; i < numProcessors; i++) {
                         if (typeof my.processors[i].disconnect === 'function') {
-                            my.processors[i].disconnect(processor);
+                            disconnectProcessors(my.processors[i], processor);
                         }
                     }
                     
@@ -160,6 +160,18 @@ window.WH = window.WH || {};
                 
                 if (!isNextProcessor) {
                     selectProcessor(null);
+                }
+            },
+            
+            connectProcessors = function(sourceProcessor, destinationProcessor) {
+                if (!sourceProcessor.getDestinations().includes(destinationProcessor)) {
+                    sourceProcessor.connect(destinationProcessor);
+                }
+            },
+            
+            disconnectProcessors = function(sourceProcessor, destinationProcessor) {
+                if (sourceProcessor.getDestinations().includes(destinationProcessor)) {
+                    sourceProcessor.disconnect(destinationProcessor);
                 }
             },
             
@@ -336,6 +348,8 @@ window.WH = window.WH || {};
         that.createProcessor = createProcessor;
         that.deleteProcessor = deleteProcessor;
         that.selectProcessor = selectProcessor;
+        that.connectProcessors = connectProcessors;
+        that.disconnectProcessors = disconnectProcessors;
         that.process = process;
         that.render = render;
         that.clear = clear;
