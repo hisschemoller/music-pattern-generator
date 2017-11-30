@@ -86,7 +86,7 @@ window.WH = window.WH || {};
                 inConnectors = {};
                 outConnectors = {};
                 
-                // loog over all processor views to collect current info
+                // loop over all processor views to collect current info
                 const views = my.getProcessorViews(),
                     n = views.length; 
                 for (let i = 0, view, processor, viewInfo, viewPos, graphic; i < n; i++) {
@@ -106,6 +106,10 @@ window.WH = window.WH || {};
                             graphic: view.getOutConnectorGraphic()
                         }
                     }
+                }
+                
+                if (my.isConnectMode) {
+                    drawConnectCanvas();
                 }
             },
             
