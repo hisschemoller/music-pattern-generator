@@ -237,8 +237,10 @@ window.WH = window.WH || {};
              */
             updateSelectCircle = function(isSelectedView) {
                 isSelected = isSelectedView;
-                redrawStaticCanvas();
-                canvasDirtyCallback();
+                if (typeof redrawStaticCanvas == 'function' && typeof canvasDirtyCallback == 'function') {
+                    redrawStaticCanvas();
+                    canvasDirtyCallback();
+                }
             },
             
             /**
