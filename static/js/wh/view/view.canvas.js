@@ -75,6 +75,7 @@ window.WH = window.WH || {};
                     doubleClickTimer = setTimeout(function() {
                         doubleClickCounter = 0;
                         // implement single click behaviour here
+                        onClick();
                     }, doubleClickDelay);
                 } else {
                     clearTimeout(doubleClickTimer);
@@ -82,6 +83,14 @@ window.WH = window.WH || {};
                     // implement double click behaviour here
                     onDoubleClick(e);
                 }
+            },
+            
+            /**
+             * [description]
+             * @param  {[type]} e [description]
+             */
+            onClick = function(e) {
+                
             },
             
             /**

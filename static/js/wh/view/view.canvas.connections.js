@@ -15,6 +15,7 @@ window.WH = window.WH || {};
             offlineCtx,
             inConnectors,
             outConnectors,
+            connections,
             dragData = {
                 isDragging: false,
                 startPoint: {x: 0, y: 0},
@@ -118,7 +119,11 @@ window.WH = window.WH || {};
              * or when Connect Mode is entered or exited.
              */
             drawOfflineCanvas = function() {
+                // clear the canvas
                 offlineCtx.clearRect(0, 0, offlineCanvas.width, offlineCanvas.height);
+                
+                // clear the old info
+                connections = [];
                 
                 const lineWidth = my.isConnectMode ? dragData.lineWidthActive : dragData.lineWidth;
                 
@@ -136,7 +141,12 @@ window.WH = window.WH || {};
                     numDestinations = destinations.length;
                     for (let j = 0; j < numDestinations; j++) {
                         destinationID = destinations[j].getID();
-                        drawCable(outConnectors[sourceID].point, inConnectors[destinationID].point);
+                        let selectPoint = drawCable(outConnectors[sourceID].point, inConnectors[destinationID].point);
+                        connections.push({
+                            sourceProcessor: processor,
+                            destinationProcessor: destinations[j],
+                            selectPoint: selectPoint
+                        });
                     }
                 }
                 
@@ -169,9 +179,13 @@ window.WH = window.WH || {};
                 offlineCtx.moveTo(endPoint.x + radius, endPoint.y);
                 offlineCtx.arc(endPoint.x, endPoint.y, radius, 0, Math.PI * 2, true);
                 
+                // select circle
+                let selectPoint = null;
                 if (my.isConnectMode) {
-                    drawCableSelectPoint(startPoint.x, startPoint.y, cp1x, cp1y, cp2x, cp2y, endPoint.x, endPoint.y);
+                    return drawCableSelectPoint(startPoint.x, startPoint.y, cp1x, cp1y, cp2x, cp2y, endPoint.x, endPoint.y);
                 }
+                
+                return selectPoint;
             },
             
             /**
@@ -199,6 +213,11 @@ window.WH = window.WH || {};
                 
                 offlineCtx.moveTo(pxt + radius, pyt);
                 offlineCtx.arc(pxt, pyt, radius, 0, Math.PI * 2, true);
+                
+                return {
+                    x: pxt,
+                    y: pyt
+                };
             },
             
             addConnectionsToCanvas = function(ctx) {
