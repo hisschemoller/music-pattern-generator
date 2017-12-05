@@ -19,7 +19,7 @@ window.WH = window.WH || {};
                 isDragging: false,
                 startPoint: {x: 0, y: 0},
                 endPoint: {x: 0, y: 0},
-                lineColor: 0,
+                lineColor: '#ccc',
                 lineWidth: 1,
                 lineWidthActive: 2
             },
@@ -165,8 +165,40 @@ window.WH = window.WH || {};
                 offlineCtx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, endPoint.x, endPoint.y);
                 
                 // endpoint
-                const radius = 3;
-                offlineCtx.arc(endPoint.x, endPoint.y, radius * 2, 0, Math.PI * 2, true);
+                const radius = 5;
+                offlineCtx.moveTo(endPoint.x + radius, endPoint.y);
+                offlineCtx.arc(endPoint.x, endPoint.y, radius, 0, Math.PI * 2, true);
+                
+                if (my.isConnectMode) {
+                    drawCableSelectPoint(startPoint.x, startPoint.y, cp1x, cp1y, cp2x, cp2y, endPoint.x, endPoint.y);
+                }
+            },
+            
+            /**
+             * Draw select button halfway the bezier curved cable.
+             * @see https://stackoverflow.com/questions/15397596/find-all-the-points-of-a-cubic-bezier-curve-in-javascript
+             * @param  {[type]} ax [description]
+             * @param  {[type]} ay [description]
+             * @param  {[type]} bx [description]
+             * @param  {[type]} by [description]
+             * @param  {[type]} cx [description]
+             * @param  {[type]} cy [description]
+             * @param  {[type]} dx [description]
+             * @param  {[type]} dy [description]
+             * @return {[type]}    [description]
+             */
+            drawCableSelectPoint = function(ax, ay, bx, by, cx, cy, dx, dy) {
+                const t = 0.5, // halfway the cable
+                    b0t = Math.pow(1 - t, 3),
+                    b1t = 3 * t * Math.pow(1 - t, 2),
+                    b2t = 3 * Math.pow(t, 2) * (1 - t),
+                    b3t = Math.pow(t, 3),
+                    pxt = (b0t * ax) + (b1t * bx) + (b2t * cx) + (b3t * dx),
+                    pyt = (b0t * ay) + (b1t * by) + (b2t * cy) + (b3t * dy),
+                    radius = 10;
+                
+                offlineCtx.moveTo(pxt + radius, pyt);
+                offlineCtx.arc(pxt, pyt, radius, 0, Math.PI * 2, true);
             },
             
             addConnectionsToCanvas = function(ctx) {
