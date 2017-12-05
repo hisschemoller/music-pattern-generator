@@ -53,10 +53,8 @@ window.WH = window.WH || {};
                 connectCanvas.dataset.show = isEnabled;
                 
                 drawOfflineCanvas();
-                
-                if (my.isConnectMode) {
-                    drawConnectCanvas();
-                }
+                drawConnectCanvas();
+                my.markDirty();
             },
             
             dragStartConnection = function(processorView, x, y) {
@@ -173,7 +171,9 @@ window.WH = window.WH || {};
             
             addConnectionsToCanvas = function(ctx) {
                 ctx.drawImage(offlineCanvas, 0, 0);
-                ctx.drawImage(connectCanvas, 0, 0);
+                if (my.isConnectMode) {
+                    ctx.drawImage(connectCanvas, 0, 0);
+                }
             },
             
             /**
@@ -182,18 +182,20 @@ window.WH = window.WH || {};
             drawConnectCanvas = function() {
                 connectCtx.clearRect(0, 0, connectCanvas.width, connectCanvas.height);
                 
-                // show inputs and outputs
-                let graphic;
-                for (id in inConnectors) {
-                    if (inConnectors.hasOwnProperty(id)) {
-                        graphic = inConnectors[id].graphic;
-                        connectCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
+                if (my.isConnectMode) {
+                    // show inputs and outputs
+                    let graphic;
+                    for (id in inConnectors) {
+                        if (inConnectors.hasOwnProperty(id)) {
+                            graphic = inConnectors[id].graphic;
+                            connectCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
+                        }
                     }
-                }
-                for (id in outConnectors) {
-                    if (outConnectors.hasOwnProperty(id)) {
-                        graphic = outConnectors[id].graphic;
-                        connectCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
+                    for (id in outConnectors) {
+                        if (outConnectors.hasOwnProperty(id)) {
+                            graphic = outConnectors[id].graphic;
+                            connectCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
+                        }
                     }
                 }
             };
