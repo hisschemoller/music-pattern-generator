@@ -111,7 +111,10 @@ window.WH = window.WH || {};
 
                     // disconnect this processor from its destinations
                     if (typeof processor.disconnect === 'function') {
-                        processor.disconnect();
+                        const destinationProcessors = processor.getDestinations();
+                        for (var i = 0, n < destinationProcessors.length; i < numProcessors; i++) {
+                            disconnectProcessors(processor, destinationProcessors[i]);
+                        }
                     }
                     
                     selectNextProcessor(processor);
@@ -313,7 +316,7 @@ window.WH = window.WH || {};
                             for (var j = 0; j < numDestinations; j++) {
                                 for (var k = 0; k < numProcessors; k++) {
                                     if (destinationIDs[j] == my.processors[k].getID()) {
-                                        sourceProcessor.connect(my.processors[k]);
+                                        connectProcessors(sourceProcessor, my.processors[k]);
                                         console.log('Connect ' + sourceProcessor.getType() + ' to ' + my.processors[k].getType());
                                     }
                                 }
