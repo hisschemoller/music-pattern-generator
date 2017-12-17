@@ -1,6 +1,6 @@
 {
     "name": "euclidean-pattern-generator",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "MIDI rhythm pattern generator",
     "keywords": [
         "MIDI",
