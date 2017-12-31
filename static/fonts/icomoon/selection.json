@@ -29,7 +29,7 @@
         "prevSize": 32,
         "code": 59399
       },
-      "setIdx": 1,
+      "setIdx": 0,
       "setId": 1,
       "iconIdx": 0
     },
@@ -60,7 +60,7 @@
         "prevSize": 32,
         "code": 59398
       },
-      "setIdx": 1,
+      "setIdx": 0,
       "setId": 1,
       "iconIdx": 1
     },
@@ -107,7 +107,7 @@
         "prevSize": 32,
         "code": 59648
       },
-      "setIdx": 1,
+      "setIdx": 0,
       "setId": 1,
       "iconIdx": 2
     },
@@ -135,7 +135,7 @@
         "code": 59397,
         "name": "cog"
       },
-      "setIdx": 1,
+      "setIdx": 0,
       "setId": 1,
       "iconIdx": 3
     },
@@ -163,7 +163,7 @@
         "code": 61736,
         "name": "help"
       },
-      "setIdx": 1,
+      "setIdx": 0,
       "setId": 1,
       "iconIdx": 4
     },
@@ -191,7 +191,7 @@
         "name": "new",
         "code": 59392
       },
-      "setIdx": 1,
+      "setIdx": 0,
       "setId": 1,
       "iconIdx": 5
     },
@@ -219,7 +219,7 @@
         "name": "save",
         "code": 59393
       },
-      "setIdx": 1,
+      "setIdx": 0,
       "setId": 1,
       "iconIdx": 6
     },
@@ -247,7 +247,7 @@
         "name": "play",
         "code": 59394
       },
-      "setIdx": 1,
+      "setIdx": 0,
       "setId": 1,
       "iconIdx": 7
     },
@@ -275,7 +275,7 @@
         "name": "pause",
         "code": 59395
       },
-      "setIdx": 1,
+      "setIdx": 0,
       "setId": 1,
       "iconIdx": 8
     },
@@ -303,7 +303,7 @@
         "name": "stop",
         "code": 59396
       },
-      "setIdx": 1,
+      "setIdx": 0,
       "setId": 1,
       "iconIdx": 9
     },
@@ -331,7 +331,7 @@
         "name": "open",
         "code": 61717
       },
-      "setIdx": 1,
+      "setIdx": 0,
       "setId": 1,
       "iconIdx": 10
     },
@@ -347,8 +347,10 @@
           "wrench"
         ],
         "defaultCode": 59392,
-        "grid": 16
+        "grid": 16,
+        "attrs": []
       },
+      "attrs": [],
       "properties": {
         "id": 21,
         "order": 26,
@@ -357,9 +359,41 @@
         "code": 59400,
         "name": "wrench"
       },
-      "setIdx": 1,
+      "setIdx": 0,
       "setId": 1,
       "iconIdx": 11
+    },
+    {
+      "icon": {
+        "paths": [
+          "M695.296 584.704q75.776 0 129.024 54.272t53.248 129.024-53.248 129.024-129.024 54.272-130.048-54.272-53.248-129.024q0-7.168 1.024-19.456l-205.824-102.4q-52.224 49.152-123.904 49.152-76.8 0-130.048-54.272t-53.248-129.024 53.248-129.024 130.048-54.272q71.68 0 123.904 49.152l205.824-102.4q-1.024-12.288-1.024-19.456 0-75.776 53.248-129.024t130.048-54.272 129.024 54.272 53.248 129.024-53.248 129.024-129.024 54.272q-72.704 0-124.928-49.152l-205.824 102.4q1.024 12.288 1.024 19.456t-1.024 19.456l205.824 102.4q52.224-49.152 124.928-49.152z"
+        ],
+        "attrs": [
+          {}
+        ],
+        "width": 878,
+        "isMulticolor": false,
+        "isMulticolor2": false,
+        "tags": [
+          "connections"
+        ],
+        "defaultCode": 61920,
+        "grid": 16
+      },
+      "attrs": [
+        {}
+      ],
+      "properties": {
+        "order": 38,
+        "id": 22,
+        "name": "connections",
+        "ligatures": "",
+        "prevSize": 32,
+        "code": 61920
+      },
+      "setIdx": 0,
+      "setId": 1,
+      "iconIdx": 12
     }
   ],
   "height": 1024,

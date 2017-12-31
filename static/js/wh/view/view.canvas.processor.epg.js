@@ -11,7 +11,7 @@ window.WH = window.WH || {};
     
     let centerDotSize;
     
-    function createCanvasEPGView(specs, my) {
+    function createCanvasProcessorEPGView(specs, my) {
         let that,
             canvasDirtyCallback = specs.canvasDirtyCallback,
             staticCanvas,
@@ -38,6 +38,7 @@ window.WH = window.WH || {};
             centerDotStartTween,
             centerDotEndTween,
             
+            outConnectorY = 35,
             selectRadius = 15,
             dotRadius,
             dotActiveRadius,
@@ -236,8 +237,10 @@ window.WH = window.WH || {};
              */
             updateSelectCircle = function(isSelectedView) {
                 isSelected = isSelectedView;
-                redrawStaticCanvas();
-                canvasDirtyCallback();
+                if (typeof redrawStaticCanvas == 'function' && typeof canvasDirtyCallback == 'function') {
+                    redrawStaticCanvas();
+                    canvasDirtyCallback();
+                }
             },
             
             /**
@@ -491,12 +494,22 @@ window.WH = window.WH || {};
             /**
              * Test if a coordinate intersects with the graphic's hit area.
              * @param  {Number} x Horizontal coordinate.
-             * @param  {[type]} y Vertical coordinate.
+             * @param  {Number} y Vertical coordinate.
+             * @param  {String} type Hit area type, 'processor|inconnector|outconnector'
              * @return {Boolean} True if the point intersects. 
              */
-            intersectsWithPoint = function(x, y) {
-                let distance = Math.sqrt(Math.pow(x - position2d.x, 2) + Math.pow(y - position2d.y, 2));
-                return distance <= necklaceRadius + dotRadius;
+            intersectsWithPoint = function(x, y, type) {
+                let distance;
+                switch (type) {
+                    case 'processor':
+                        distance = Math.sqrt(Math.pow(x - position2d.x, 2) + Math.pow(y - position2d.y, 2));
+                        return distance <= necklaceRadius + dotRadius;
+                    case 'inconnector':
+                        return false;
+                    case 'outconnector':
+                        distance = Math.sqrt(Math.pow(x - position2d.x, 2) + Math.pow(y - position2d.y - outConnectorY, 2));
+                        return distance <= my.getConnectorGraphic().canvas.width / 2;
+                }
             },
             
             /**
@@ -514,11 +527,33 @@ window.WH = window.WH || {};
                 nameCtx.fillStyle = my.colorMid;
                 updateName();
                 updateNecklace();
+                my.getConnectorGraphic().setTheme(theme);
+            },
+            
+            getOutConnectorPoint = function() {
+                return {
+                    x: position2d.x,
+                    y: position2d.y + outConnectorY
+                }
+            },
+            
+            /**
+             * Provide output connector image for editing connections.
+             * @return {Object} Contains canvas and coordinates.
+             */
+            getOutConnectorGraphic = function() {
+                const canvas = my.getConnectorGraphic().canvas,
+                    point = getOutConnectorPoint();
+                return {
+                    canvas: canvas,
+                    x: point.x - (canvas.width / 2),
+                    y: point.y - (canvas.height / 2)
+                };
             };
             
         my = my || {};
         
-        that = ns.createCanvasBaseView(specs, my);
+        that = ns.createCanvasProcessorBaseView(specs, my);
         
         initialise();
         
@@ -528,9 +563,14 @@ window.WH = window.WH || {};
         that.clearFromDynamicView = clearFromDynamicView;
         that.intersectsWithPoint = intersectsWithPoint;
         that.setTheme = setTheme;
+        that.getOutConnectorPoint = getOutConnectorPoint;
+        that.getOutConnectorGraphic = getOutConnectorGraphic;
         return that;
     }
-
-    ns.createCanvasEPGView = createCanvasEPGView;
+    
+    var type = 'epg';
+    WH.midiProcessors = WH.midiProcessors || {};
+    WH.midiProcessors[type] = WH.midiProcessors[type] || {};
+    WH.midiProcessors[type].createCanvasView = createCanvasProcessorEPGView;
 
 })(WH);

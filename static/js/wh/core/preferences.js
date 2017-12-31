@@ -24,7 +24,7 @@ window.WH = window.WH || {};
              * @param {Boolean} isEnabled True to enable the dark theme.
              */
             enableDarkTheme = function(isEnabled) {
-                // return;
+                return;
                 isDarkTheme = isEnabled;
                 for (let i = 0, n = themeCallbacks.length; i < n; i++) {
                     themeCallbacks[i]('dark-theme', isDarkTheme);

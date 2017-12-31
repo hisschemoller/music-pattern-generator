@@ -41,6 +41,10 @@ window.WH = window.WH || {};
                     type: 'checkbox',
                     input: document.getElementById('edit-check')
                 },
+                connections: {
+                    type: 'checkbox',
+                    input: document.getElementById('connections-check')
+                },
                 help: {
                     type: 'checkbox',
                     input: document.getElementById('help-check')
@@ -63,6 +67,9 @@ window.WH = window.WH || {};
                 });
                 controls.edit.input.addEventListener('change', function(e) {
                     app.togglePanel('settings', e.target.checked);
+                });
+                controls.connections.input.addEventListener('change', function(e) {
+                    app.updateApp('connections', e.target.checked);
                 });
                 controls.help.input.addEventListener('change', function(e) {
                     app.togglePanel('help', e.target.checked);
@@ -204,6 +211,9 @@ window.WH = window.WH || {};
                         break;
                     case 'settings':
                         controls.edit.input.checked = value;
+                        break;
+                    case 'connections':
+                        controls.connections.input.checked = value;
                         break;
                     default:
                         console.error('Unknown updateControl property:', property);

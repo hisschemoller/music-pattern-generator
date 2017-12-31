@@ -15,8 +15,9 @@ window.WH = window.WH || {};
             midiRemote = specs.midiRemote,
             preferencesView = specs.preferencesView,
             processors = [],
-            numProcessors = processors.length,
+            numProcessors = 0,
             numInputProcessors = 0,
+            connections = [],
 
             /**
              * Create a new processor in the network.
@@ -29,7 +30,7 @@ window.WH = window.WH || {};
                     specs = specs || {};
                     specs.that = {};
                     specs.id = specs.id || specs.type + performance.now() + '_' + Math.random();
-                    var processor = ns.midiProcessors[specs.type].create(specs);
+                    var processor = ns.midiProcessors[specs.type].createProcessor(specs);
 
                     // insert the processor at the right position
                     switch (specs.type) {
@@ -54,14 +55,14 @@ window.WH = window.WH || {};
                         case 'input':
                             break;
                         case 'output':
-                            canvasView.createView(processor);
+                            canvasView.createProcessorView(processor);
                             break;
                         case 'epg':
                             appView.createSettingsView(processor);
-                            canvasView.createView(processor);
+                            canvasView.createProcessorView(processor);
                             midiRemote.registerProcessor(processor);
                             selectProcessor(processor);
-                            canvasView.markDirty();
+                            // canvasView.markDirty();
                             break;
                     }
                 } else {
@@ -91,7 +92,7 @@ window.WH = window.WH || {};
                     // disconnect other processors that have this processor as destination
                     for (var i = 0; i < numProcessors; i++) {
                         if (typeof processors[i].disconnect === 'function') {
-                            processors[i].disconnect(processor);
+                            disconnectProcessors(processors[i], processor);
                         }
                     }
                     
@@ -101,18 +102,21 @@ window.WH = window.WH || {};
                             numInputProcessors--;
                             break;
                         case 'output':
-                            canvasView.deleteView(processor);
+                            canvasView.deleteProcessorView(processor);
                             break;
                         case 'epg':
                             appView.deleteSettingsView(processor);
-                            canvasView.deleteView(processor);
+                            canvasView.deleteProcessorView(processor);
                             midiRemote.unregisterProcessor(processor);
                             break;
                     }
 
                     // disconnect this processor from its destinations
                     if (typeof processor.disconnect === 'function') {
-                        processor.disconnect();
+                        const destinationProcessors = processor.getDestinations();
+                        for (let i = 0, n = destinationProcessors.length; i < n; i++) {
+                            disconnectProcessors(processor, destinationProcessors[i]);
+                        }
                     }
                     
                     selectNextProcessor(processor);
@@ -165,6 +169,18 @@ window.WH = window.WH || {};
                 }
             },
             
+            connectProcessors = function(sourceProcessor, destinationProcessor) {
+                if (!sourceProcessor.getDestinations().includes(destinationProcessor)) {
+                    sourceProcessor.connect(destinationProcessor);
+                }
+            },
+            
+            disconnectProcessors = function(sourceProcessor, destinationProcessor) {
+                if (sourceProcessor.getDestinations().includes(destinationProcessor)) {
+                    sourceProcessor.disconnect(destinationProcessor);
+                }
+            },
+            
             /**
              * Set default processor name.
              * @param {Object} processor Processor to name.
@@ -210,62 +226,6 @@ window.WH = window.WH || {};
                 for (var i = 0; i < numProcessors; i++) {
                     if (processors[i].render) {
                         processors[i].render(position);
-                    }
-                }
-            },
-
-            /**
-             * Connect all EPG processors to a MIDI input port.
-             * @param {String} newPortID MIDI input to connect to.
-             * @param {String} oldPortID MIDI input to disconnect from.
-             */
-            connectAllEPGToInput = function(newPortID, oldPortID) {
-                let newPortProcessor, oldPortProcessor;
-                for (let i = 0; i < numProcessors; i++) {
-                    if (processors[i].getType() == 'input') {
-                        let portID = processors[i].getPort().id;
-                        if (portID == oldPortID) {
-                            oldPortProcessor = processors[i];
-                        }
-                        if (portID == newPortID) {
-                            newPortProcessor = processors[i];
-                        }
-                    }
-                }
-                for (let i = 0; i < numProcessors; i++) {
-                    if (processors[i].getType() == 'epg') {
-                        if (oldPortProcessor) {
-                            oldPortProcessor.disconnect(processors[i]);
-                        }
-                        newPortProcessor.connect(processors[i]);
-                    }
-                }
-            },
-
-            /**
-             * Connect all EPG processors to a MIDI output port.
-             * @param {String} newPortID MIDI output to connect to.
-             * @param {String} oldPortID MIDI output to disconnect from.
-             */
-            connectAllEPGToOutput = function(newPortID, oldPortID) {
-                let newPortProcessor, oldPortProcessor;
-                for (let i = 0; i < numProcessors; i++) {
-                    if (processors[i].getType() == 'output') {
-                        let portID = processors[i].getPort().id;
-                        if (portID == oldPortID) {
-                            oldPortProcessor = processors[i];
-                        }
-                        if (portID == newPortID) {
-                            newPortProcessor = processors[i];
-                        }
-                    }
-                }
-                for (let i = 0; i < numProcessors; i++) {
-                    if (processors[i].getType() == 'epg') {
-                        if (oldPortProcessor) {
-                            processors[i].disconnect(oldPortProcessor);
-                        }
-                        processors[i].connect(newPortProcessor);
                     }
                 }
             },
@@ -359,7 +319,7 @@ window.WH = window.WH || {};
                             for (var j = 0; j < numDestinations; j++) {
                                 for (var k = 0; k < numProcessors; k++) {
                                     if (destinationIDs[j] == processors[k].getID()) {
-                                        sourceProcessor.connect(processors[k]);
+                                        connectProcessors(sourceProcessor, processors[k]);
                                         console.log('Connect ' + sourceProcessor.getType() + ' to ' + processors[k].getType());
                                     }
                                 }
@@ -388,15 +348,15 @@ window.WH = window.WH || {};
 
         my = my || {};
 
-        that = specs.that || {};
+        that = ns.createMIDINetworkConnections(specs, my);
 
         that.createProcessor = createProcessor;
         that.deleteProcessor = deleteProcessor;
         that.selectProcessor = selectProcessor;
+        that.connectProcessors = connectProcessors;
+        that.disconnectProcessors = disconnectProcessors;
         that.process = process;
         that.render = render;
-        that.connectAllEPGToInput = connectAllEPGToInput;
-        that.connectAllEPGToOutput = connectAllEPGToOutput;
         that.clear = clear;
         that.setData = setData;
         that.getData = getData;

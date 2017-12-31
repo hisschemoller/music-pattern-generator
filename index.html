@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="static/css/style.css">
 </head>
 <body>
-    <div id="app" data-theme="">
+    <div id="app" data-theme="dev">
         <header class="controlbar controls file">
             <button class="file__new btn" title="New project">
                 <span class="icon-new"></span>
@@ -35,6 +35,10 @@
             <label for="edit-check" class="toggle__label btn" title="Edit settings">
                 <span class="icon-help" data-on="&#xe808;" data-off="&#xe808;"></span>
             </label>
+            <input type="checkbox" id="connections-check" class="toggle__check" />
+            <label for="connections-check" class="toggle__label btn" title="Edit connections">
+                <span class="icon-connections" data-on="&#xf1e0;" data-off="&#xf1e0;"></span>
+            </label>
             <input type="checkbox" id="help-check" class="toggle__check" />
             <label for="help-check" class="toggle__label btn" title="Help">
                 <span class="icon-help" data-on="&#xf128;" data-off="&#xf128;"></span>
@@ -45,8 +49,11 @@
             </div>
         </header>
         <main class="main">
-            <canvas class="canvas-static"></canvas>
-            <canvas class="canvas-dynamic"></canvas>
+            <div class="canvas-container">
+                <canvas class="canvas-static"></canvas>
+                <canvas class="canvas-dynamic"></canvas>
+                <canvas class="canvas-connect"></canvas>
+            </div>
             <div class="panels">
                 <div class="panels__left">
                     <div class="panel prefs">
@@ -357,8 +364,10 @@
     <script src="static/js/wh/core/file.xml.js"></script>
     <script src="static/js/wh/core/preferences.js"></script>
     <script src="static/js/wh/core/transport.js"></script>
+    <script src="static/js/wh/core/util.js"></script>
     <script src="static/js/wh/midi/midi.js"></script>
     <script src="static/js/wh/midi/midi.network.js"></script>
+    <script src="static/js/wh/midi/midi.network.connections.js"></script>
     <script src="static/js/wh/midi/midi.connector.in.js"></script>
     <script src="static/js/wh/midi/midi.connector.out.js"></script>
     <script src="static/js/wh/midi/midi.remote.js"></script>
@@ -379,10 +388,11 @@
     <script src="static/js/wh/parameter/parameter.vector2d.js"></script>
     <script src="static/js/wh/view/view.app.js"></script>
     <script src="static/js/wh/view/view.canvas.js"></script>
-    <script src="static/js/wh/view/view.canvas.base.js"></script>
-    <script src="static/js/wh/view/view.canvas.epg.js"></script>
-    <script src="static/js/wh/view/view.canvas.midi.output.js"></script>
-    <script src="static/js/wh/view/view.controls.js"></script>
+    <script src="static/js/wh/view/view.canvas.connections.js"></script>
+    <script src="static/js/wh/view/view.canvas.processor.base.js"></script>
+    <script src="static/js/wh/view/view.canvas.processor.epg.js"></script>
+    <script src="static/js/wh/view/view.canvas.processor.output.js"></script>
+    <script src="static/js/wh/view/view.canvas.processors.js"></script>
     <script src="static/js/wh/view/view.file.js"></script>
     <script src="static/js/wh/view/view.midi.base.js"></script>
     <script src="static/js/wh/view/view.midi.input.js"></script>

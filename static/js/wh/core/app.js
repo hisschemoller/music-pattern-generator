@@ -8,6 +8,7 @@ window.WH = window.WH || {};
     function createApp(specs, my) {
         let that,
             appView = specs.appView,
+            midiNetwork = specs.midiNetwork,
             midiRemote = specs.midiRemote,
             transport = specs.transport,
             panelStates = {
@@ -34,6 +35,9 @@ window.WH = window.WH || {};
                         break;
                     case 'remote':
                         midiRemote.toggleMidiLearn(value);
+                        break;
+                    case 'connections':
+                        midiNetwork.toggleConnections(value);
                         break;
                 }
             },

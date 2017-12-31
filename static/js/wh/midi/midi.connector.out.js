@@ -64,6 +64,15 @@ window.WH = window.WH || {};
             },
             
             /**
+             * Get destination processors.
+             * Used to draw the connection cables on canvas.
+             * @return {Array} Processors this output connects to.
+             */
+            getDestinations = function() {
+                return destinations;
+            },
+            
+            /**
              * The destinations are the processors this output is connected to.
              * This function collects the ID's of these processors and adds them
              * to a data object that can be stored.
@@ -84,6 +93,7 @@ window.WH = window.WH || {};
 
         that = specs.that || {};
         
+        that.getDestinations = getDestinations;
         that.getOutputData = getOutputData;
         that.connect = connect;
         that.disconnect = disconnect;

@@ -5,7 +5,7 @@
 
 window.WH = window.WH || {};
 
-(function (ns) {
+(function (WH) {
 
     function createMIDIPortOut(specs, my) {
         var that,
@@ -56,12 +56,15 @@ window.WH = window.WH || {};
 
 
         my = my || {};
+        my.info = {
+            inputs: 1,
+            outputs: 0
+        };
         my.isEnabled = true;
         my.getProcessorSpecificData = getProcessorSpecificData;
         my.$position2d = function(value, timestamp) {}
 
-        that = ns.createMIDIProcessorBase(specs, my);
-        that = ns.createMIDIConnectorIn(specs, my);
+        that = WH.createMIDIProcessorBase(specs, my);
         
         my.defineParams({
             position2d: {
@@ -77,11 +80,10 @@ window.WH = window.WH || {};
         that.getPort = getPort;
         return that;
     };
-
+    
     var type = 'output';
-    ns.midiProcessors = ns.midiProcessors || {};
-    ns.midiProcessors[type] = {
-        create: createMIDIPortOut
-    };
+    WH.midiProcessors = WH.midiProcessors || {};
+    WH.midiProcessors[type] = WH.midiProcessors[type] || {};
+    WH.midiProcessors[type].createProcessor = createMIDIPortOut;
 
 })(WH);

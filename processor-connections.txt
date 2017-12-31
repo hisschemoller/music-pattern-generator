@@ -1,0 +1,86 @@
+Processor connections.
+
+1. Toggle connection edit mode in controlbar.
+2. Network tells all processors to enter edit mode.
+3. Processors show their inputs and outputs.
+
+Create a connection
+1. User dragstarts on a processor output.
+2. The processor notifies the network.
+3. The network notifies all processors.
+4. All processors with a connectable input highlight the input.
+5. User dragstops on a connectable input.
+
+
+Different scenario
+All connections are edited in a canvas layer on top of the patterns.
+
+Connecion edit mode
+1. Toggle connection edit mode in controlbar.
+2. Network starts the NetworkConnections object.
+3. NetworkConnectionsView shows canvas on top of processor canvasses.
+4. Input and output points shown on basis of processors.
+
+Create a connection
+1. User dragstarts on a processor output point.
+2. NetworkConnections highlights all possible input points.
+3. User drags a line from the output point.
+4. User dragstops on a connectable input point.
+5. NetworkConnections connects the processors.
+6. A NetworkConnection object is added to the connections array.
+6. A connection line appears between the input and output points.
+
+Remove a connection
+1. A connection line has a circle in the middle of the line.
+2. User clicks the circle to delete the connection.
+3. NetworkConnections disconnects the processors.
+4. Line removed that connects the processors.
+6. The NetworkConnection object is removed from the connections array.
+
+Export, import
+1. Connections are created from existing processor destination data.
+
+
+/** OR **/
+
+CanvasConnectionsView shares the views array with CanvasView.
+1. When entering edit mode, get input output info from each view.
+2. Get position from each view.
+3. Get default and active, input and or output, canvas from each view.
+4. Draw all input and output canvasses on the connections canvas.
+
+
+
+
+/** draw connections **/
+
+if enter connect mode
+    1. redraw connections canvas in active state
+    
+if exit connect mode
+    1. redraw connections canvas in active state 
+
+if (create|delete|move processor, connections change)
+    if connectMode
+        1. redraw connections canvas in active state
+        2. copy connections canvas to connect-canvas
+        3. (draw connectors and dragged line on connect-canvas)
+    else
+        1. redraw connections canvas in active state 
+        2. copy connections canvas to static-canvas
+        3. (draw processors on static-canvas)]
+
+if (change processor properties, connections do not change)
+    if connectMode
+        2. copy connections canvas to connect-canvas
+        3. (draw connectors and dragged line on connect-canvas)
+    else
+        2. copy connections canvas to static-canvas
+        3. (draw processors on static-canvas)
+        
+if theme change
+    
+
+No, all existing connections are drawn on the staticCanvas.
+Only connectors and dragged line on the connectCanvas.
+

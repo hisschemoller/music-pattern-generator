@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     WH.createApp({
         that: app,
         appView: appView,
+        midiNetwork: midiNetwork,
         midiRemote: midiRemote,
         transport: transport
     });
@@ -114,4 +115,8 @@ document.addEventListener('DOMContentLoaded', function(e) {
     midi.setup();
     file.setup();
     transport.run();
+
+    // midi.connect()
+    //     .then(file.loadLocalStorage)
+    //     .then(transport.run);
 });
