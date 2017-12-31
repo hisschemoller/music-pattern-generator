@@ -115,4 +115,8 @@ document.addEventListener('DOMContentLoaded', function(e) {
     midi.setup();
     file.setup();
     transport.run();
+
+    // midi.connect()
+    //     .then(file.loadLocalStorage)
+    //     .then(transport.run);
 });

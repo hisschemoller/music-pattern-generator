@@ -1,5 +1,7 @@
 /**
- * 
+ * Canvas processor connector input and output points,
+ * cables between the processor connectors,
+ * Delete circles halfway the cables.
  */
 
 window.WH = window.WH || {};
