@@ -19,8 +19,10 @@ window.WH = window.WH || {};
             outputs = [],
             dataFromStorage,
 
-            setup = function() {
-                requestAccess(onAccessSuccess, onAccessFailure, false);
+            connect = function() {
+                return new Promise((resolve, reject) => {
+                    requestAccess(resolve, onAccessFailure, false);
+                });
             },
 
             /**
@@ -37,6 +39,7 @@ window.WH = window.WH || {};
                         if (!_midiAccess.inputs.size && !_midiAccess.outputs.size) {
                             failureCallback('No MIDI devices found on this system.');
                         } else {
+                            midiAccess = _midiAccess;
                             successCallback(_midiAccess);
                         }
                     }, function() {
@@ -59,24 +62,24 @@ window.WH = window.WH || {};
              * MIDI access request succeeded.
              * @param {Object} midiAccessObj MidiAccess object.
              */
-            onAccessSuccess = function(midiAccessObj) {
-                console.log('MIDI enabled.');
-                midiAccess = midiAccessObj;
-                var inputs = midiAccess.inputs.values();
-                var outputs = midiAccess.outputs.values();
+            // onAccessSuccess = function(midiAccessObj) {
+            //     console.log('MIDI enabled.');
+            //     midiAccess = midiAccessObj;
+            //     var inputs = midiAccess.inputs.values();
+            //     var outputs = midiAccess.outputs.values();
                 
-                for (var port = inputs.next(); port && !port.done; port = inputs.next()) {
-                    createInput(port.value);
-                }
+            //     for (var port = inputs.next(); port && !port.done; port = inputs.next()) {
+            //         createInput(port.value);
+            //     }
                 
-                for (var port = outputs.next(); port && !port.done; port = outputs.next()) {
-                    createOutput(port.value);
-                }
+            //     for (var port = outputs.next(); port && !port.done; port = outputs.next()) {
+            //         createOutput(port.value);
+            //     }
                 
-                restorePortSettings();
+            //     restorePortSettings();
 
-                midiAccess.onstatechange = onAccessStateChange;
-            },
+            //     midiAccess.onstatechange = onAccessStateChange;
+            // },
 
             /**
              * MIDIAccess object statechange handler.
@@ -222,7 +225,7 @@ window.WH = window.WH || {};
 
         that = specs.that;
 
-        that.setup = setup;
+        that.connect = connect;
         that.setData = setData;
         that.getData = getData;
         return that;

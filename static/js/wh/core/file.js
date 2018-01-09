@@ -47,11 +47,13 @@ window.WH = window.WH || {};
             /**
              * Setup on application start.
              */
-            setup = function() {
-                loadPreferences();
-                if (!loadProjectFromStorage()) {
-                    createNew();
-                }
+            loadLocalStorage = function() {
+                return new Promise((resolve, reject) => {
+                    loadPreferences();
+                    if (!loadProjectFromStorage()) {
+                        createNew();
+                    }
+                });
             },
 
             /**
@@ -217,7 +219,7 @@ window.WH = window.WH || {};
         
         init();
 
-        that.setup = setup;
+        that.loadLocalStorage = loadLocalStorage;
         that.createNew = createNew;
         that.autoSave = autoSave;
         that.save = save;

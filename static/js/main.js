@@ -37,6 +37,8 @@ document.addEventListener('DOMContentLoaded', function(e) {
         preferencesView = {},
         remoteView = {},
         transport = {};
+    
+    const store = WH.createStore();
 
     // Add functionality to the modules and inject dependencies.
     WH.createApp({
@@ -112,11 +114,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
 
     // initialise
-    midi.setup();
-    file.setup();
-    transport.run();
-
-    // midi.connect()
-    //     .then(file.loadLocalStorage)
-    //     .then(transport.run);
+    midi.connect()
+        .then(file.loadLocalStorage)
+        .then(transport.run);
 });
