@@ -8,8 +8,19 @@ window.WH = window.WH || {};
 
     function createPreferences(specs) {
         var that,
+            store = specs.store,
             themeCallbacks = [],
             isDarkTheme = false,
+
+            init = function() {
+                document.addEventListener(store.STATE_CHANGE, (e) => {
+                    if (e.detail.currentState.preferences && 
+                        e.detail.previousState.preferences && 
+                        e.detail.currentState.preferences.isDarkTheme != e.detail.previousState.preferences.isDarkTheme) {
+                        enableDarkTheme(e.detail.currentState.preferences.isDarkTheme);
+                    }
+                });
+            },
 
             /**
              * Set callback function to update after theme change.
@@ -50,6 +61,8 @@ window.WH = window.WH || {};
             };
 
         that = specs.that;
+
+        init();
 
         that.addThemeCallback = addThemeCallback;
         that.enableDarkTheme = enableDarkTheme;

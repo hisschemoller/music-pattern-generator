@@ -13,6 +13,7 @@ window.WH = window.WH || {};
      */
     function createFile(specs, my) {
         var that,
+            store = specs.store,
             midi = specs.midi,
             midiNetwork = specs.midiNetwork,
             midiRemote = specs.midiRemote,
@@ -60,16 +61,17 @@ window.WH = window.WH || {};
              * Get the stored preferences, if any.
              */
             loadPreferences = function() {
-                var data = localStorage.getItem(preferencesName);
-                if (data) {
-                    data = JSON.parse(data);
-                    midi.setData(data.midi);
-                    preferences.setData(data.preferences);
-                } else {
-                    midi.setData();
-                    preferences.setData();
-                    console.log('No data in LocalStorage with name "' + preferencesName + '".');
-                }
+                var data = localStorage.getItem(preferencesName) || {};
+                store.dispatch(store.actions.setPreferences(data));
+                // if (data) {
+                //     data = JSON.parse(data);
+                //     midi.setData(data.midi);
+                //     preferences.setData(data.preferences);
+                // } else {
+                //     midi.setData();
+                //     preferences.setData();
+                //     console.log('No data in LocalStorage with name "' + preferencesName + '".');
+                // }
             },
 
             /**
