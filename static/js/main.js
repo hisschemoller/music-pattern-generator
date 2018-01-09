@@ -36,9 +36,16 @@ document.addEventListener('DOMContentLoaded', function(e) {
         preferences = {},
         preferencesView = {},
         remoteView = {},
+        store = {},
         transport = {};
     
-    const store = WH.createStore();
+    WH.createStore({
+        that: store,
+        actions: WH.createActions(),
+        reducers: WH.createReducers({
+            store: store
+        })
+    });
 
     // Add functionality to the modules and inject dependencies.
     WH.createApp({
@@ -58,7 +65,8 @@ document.addEventListener('DOMContentLoaded', function(e) {
         midiNetwork: midiNetwork
     });
     WH.createPreferences({
-        that: preferences
+        that: preferences,
+        store: store
     });
     WH.createPreferencesView({
         that: preferencesView,
@@ -72,6 +80,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     WH.createFile({
         that: file,
+        store: store,
         midi: midi,
         midiNetwork: midiNetwork,
         midiRemote: midiRemote,
