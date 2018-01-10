@@ -25,7 +25,7 @@ window.WH = window.WH || {};
     function createCanvasView(specs, my) {
         var that,
             store = specs.store,
-            midiNetwork = specs.midiNetwork,
+            // midiNetwork = specs.midiNetwork,
             rootEl,
             staticCanvas,
             dynamicCanvas,
@@ -50,8 +50,13 @@ window.WH = window.WH || {};
                 rootEl.addEventListener(WH.util.eventType.end, dragEnd);
 
                 document.addEventListener(store.STATE_CHANGE, (e) => {
-                    const themeName = e.detail.state.preferences.isDarkTheme ? 'dark' : '';
-                    setTheme(themeName);
+                    switch (e.detail.action.type) {
+                        case e.detail.actions.SET_PREFERENCES:
+                        case e.detail.actions.SET_THEME:
+                            const themeName = e.detail.state.preferences.isDarkTheme ? 'dark' : '';
+                            setTheme(themeName);
+                            break;
+                    }
                 });
                 
                 my.addWindowResizeCallback(onWindowResize);
@@ -105,13 +110,20 @@ window.WH = window.WH || {};
              */
             onDoubleClick = function(e) {
                 // create a new processor
-                midiNetwork.createProcessor({
+                store.dispatch(store.getActions().createProcessor({
                     type: 'epg',
                     position2d: {
                         x: e.clientX - my.canvasRect.left + window.scrollX,
                         y: e.clientY - my.canvasRect.top + window.scrollY
                     }
-                });
+                }));
+                // midiNetwork.createProcessor({
+                //     type: 'epg',
+                //     position2d: {
+                //         x: e.clientX - my.canvasRect.left + window.scrollX,
+                //         y: e.clientY - my.canvasRect.top + window.scrollY
+                //     }
+                // });
             },
             
             /**

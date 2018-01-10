@@ -10,15 +10,14 @@ window.WH = window.WH || {};
         let that,
             actions = specs.actions,
             reducers = specs.reducers,
-            previousState = {},
             currentState = {},
             
             dispatch = (action) => {
-                previousState = currentState;
                 currentState = reducers.reduce(currentState, action);
                 document.dispatchEvent(new CustomEvent(STATE_CHANGE, { detail: {
-                    previousState: previousState, 
-                    state: currentState
+                    state: currentState,
+                    action: action,
+                    actions: actions
                 }}));
             },
             

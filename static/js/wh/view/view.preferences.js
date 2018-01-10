@@ -27,7 +27,12 @@ window.WH = window.WH || {};
                 });
 
                 document.addEventListener(store.STATE_CHANGE, (e) => {
-                    updateControl('dark-theme', e.detail.state.preferences.isDarkTheme);
+                    switch (e.detail.action.type) {
+                        case e.detail.actions.SET_PREFERENCES:
+                        case e.detail.actions.SET_THEME:
+                            updateControl('dark-theme', e.detail.state.preferences.isDarkTheme);
+                            break;
+                    }
                 });
             },
 
