@@ -77,8 +77,8 @@ window.WH = window.WH || {};
                 drawOfflineCanvas();
             },
             
-            setThemeOnConnections = function(theme) {
-                dragData.lineColor = theme.colorHigh || '#333';
+            setThemeOnConnections = function() {
+                dragData.lineColor = my.theme.colorHigh || '#333';
                 drawOfflineCanvas();
                 drawConnectCanvas();
             },

@@ -9,6 +9,7 @@ window.WH = window.WH || {};
     
     function createAppView(specs, my) {
         var that,
+            store = specs.store,
             app = specs.app,
             midiNetwork = specs.midiNetwork,
             rootEl = document.querySelector('#app'),
@@ -85,6 +86,10 @@ window.WH = window.WH || {};
                             app.updateApp('play');
                             break;
                     }
+                });
+
+                document.addEventListener(store.STATE_CHANGE, (e) => {
+                    rootEl.dataset.theme = e.detail.state.preferences.isDarkTheme ? 'dark' : '';
                 });
                 
                 // get panel header height from CSS.

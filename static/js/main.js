@@ -57,11 +57,13 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     WH.createAppView({
         that: appView,
+        store: store,
         app: app,
         midiNetwork: midiNetwork
     });
     WH.createCanvasView({
         that: canvasView,
+        store: store,
         midiNetwork: midiNetwork
     });
     WH.createPreferences({
@@ -70,8 +72,9 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     WH.createPreferencesView({
         that: preferencesView,
-        canvasView: canvasView,
-        preferences: preferences
+        store: store,
+        canvasView: canvasView
+        // preferences: preferences
     });
     WH.createRemoteView({
         that: remoteView,

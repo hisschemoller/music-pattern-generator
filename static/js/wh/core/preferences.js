@@ -12,62 +12,62 @@ window.WH = window.WH || {};
             themeCallbacks = [],
             isDarkTheme = false,
 
-            init = function() {
-                document.addEventListener(store.STATE_CHANGE, (e) => {
-                    if (e.detail.currentState.preferences && 
-                        e.detail.previousState.preferences && 
-                        e.detail.currentState.preferences.isDarkTheme != e.detail.previousState.preferences.isDarkTheme) {
-                        enableDarkTheme(e.detail.currentState.preferences.isDarkTheme);
-                    }
-                });
-            },
+            // init = function() {
+            //     document.addEventListener(store.STATE_CHANGE, (e) => {
+            //         if (e.detail.state.preferences && 
+            //             e.detail.previousState.preferences && 
+            //             e.detail.state.preferences.isDarkTheme != e.detail.previousState.preferences.isDarkTheme) {
+            //             enableDarkTheme(e.detail.state.preferences.isDarkTheme);
+            //         }
+            //     });
+            // },
 
             /**
              * Set callback function to update after theme change.
              * @param {Function} callback Callback function.
              */
-            addThemeCallback = function(callback) {
-                themeCallbacks.push(callback);
-            },
+            // addThemeCallback = function(callback) {
+            //     themeCallbacks.push(callback);
+            // },
 
             /**
              * Enable dark UI theme for low light environment.
              * @param {Boolean} isEnabled True to enable the dark theme.
              */
-            enableDarkTheme = function(isEnabled) {
-                return;
-                isDarkTheme = isEnabled;
-                for (let i = 0, n = themeCallbacks.length; i < n; i++) {
-                    themeCallbacks[i]('dark-theme', isDarkTheme);
-                }
-            },
+            // enableDarkTheme = function(isEnabled) {
+            //     return;
+            //     isDarkTheme = isEnabled;
+            //     for (let i = 0, n = themeCallbacks.length; i < n; i++) {
+            //         themeCallbacks[i]('dark-theme', isDarkTheme);
+            //     }
+            // },
 
             /**
              * Restore preferences from data object.
              * @param {Object} data Data object.
              */
-            setData = function(data = {}) {
-                enableDarkTheme(data.isDarkTheme || false);
-            },
+            // setData = function(data = {}) {
+            //     enableDarkTheme(data.isDarkTheme || false);
+            // },
 
             /**
              * Write preferences to data object.
              * @return {Object} Data object.
              */
-            getData = function() {
-                return {
-                    isDarkTheme: isDarkTheme
-                };
-            };
+            // getData = function() {
+            //     return {
+            //         isDarkTheme: isDarkTheme
+            //     };
+            // };
 
         that = specs.that;
 
-        init();
+        // init();
 
-        that.addThemeCallback = addThemeCallback;
-        that.enableDarkTheme = enableDarkTheme;
-        that.setData = setData;
-        that.getData = getData;
+        // that.addThemeCallback = addThemeCallback;
+        // that.enableDarkTheme = enableDarkTheme;
+        // that.setData = setData;
+        // that.getData = getData;
         return that;
     }
 

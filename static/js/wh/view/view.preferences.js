@@ -8,8 +8,8 @@ window.WH = window.WH || {};
 
     function createPreferencesView(specs) {
         var that,
+            store = specs.store,
             canvasView = specs.canvasView,
-            preferences = specs.preferences,
             preferencesEl = document.querySelector('.prefs'),
             midiInputsEl = document.querySelector('.prefs__inputs'),
             midiOutputsEl = document.querySelector('.prefs__outputs'),
@@ -22,10 +22,12 @@ window.WH = window.WH || {};
             },
 
             init = function() {
-                preferences.addThemeCallback(updateControl);
-
                 controls.darkTheme.input.addEventListener('change', function(e) {
-                    preferences.enableDarkTheme(e.target.checked);
+                    store.dispatch(store.getActions().setTheme(e.target.checked));
+                });
+
+                document.addEventListener(store.STATE_CHANGE, (e) => {
+                    updateControl('dark-theme', e.detail.state.preferences.isDarkTheme);
                 });
             },
 
@@ -39,13 +41,6 @@ window.WH = window.WH || {};
                 switch (key) {
                     case 'dark-theme':
                         controls.darkTheme.input.checked = value;
-                        document.querySelector('#app').dataset.theme = value ? 'dark' : '';
-                        var themeStyles = window.getComputedStyle(document.querySelector('[data-theme]'))
-                        canvasView.setTheme({
-                            colorHigh: themeStyles.getPropertyValue('--text-color'),
-                            colorMid: themeStyles.getPropertyValue('--border-color'),
-                            colorLow: themeStyles.getPropertyValue('--panel-bg-color')
-                        });
                         break;
                 }
             },

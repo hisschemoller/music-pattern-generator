@@ -62,7 +62,7 @@ window.WH = window.WH || {};
              */
             loadPreferences = function() {
                 var data = localStorage.getItem(preferencesName) || {};
-                store.dispatch(store.actions.setPreferences(data));
+                store.dispatch(store.getActions().setPreferences(JSON.parse(data)));
                 // if (data) {
                 //     data = JSON.parse(data);
                 //     midi.setData(data.midi);
@@ -79,10 +79,11 @@ window.WH = window.WH || {};
              * @param {Object} data Object with preferences data to save.
              */
             savePreferences = function() {
-                var data = {
-                    midi: midi.getData(),
-                    preferences: preferences.getData()
-                }
+                // var data = {
+                //     midi: midi.getData(),
+                //     preferences: preferences.getData()
+                // }
+                const data = store.getState().preferences;
                 localStorage.setItem(preferencesName, JSON.stringify(data));
             },
 
@@ -99,10 +100,11 @@ window.WH = window.WH || {};
              * @return {Boolean} True if a project was found in localstorage.
              */
             loadProjectFromStorage = function() {
-                var data = localStorage.getItem(projectName);
+                let data = localStorage.getItem(projectName);
                 if (data) {
-                    data = JSON.parse(data);
-                    setData(data);
+                    // store.dispatch(store.actions.setProject(JSON.parse(data)));
+                    // data = JSON.parse(data);
+                    // setData(data);
                 } else {
                     console.log('No data in LocalStorage with name "' + projectName + '".');
                     return false;

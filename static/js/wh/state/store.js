@@ -18,15 +18,24 @@ window.WH = window.WH || {};
                 currentState = reducers.reduce(currentState, action);
                 document.dispatchEvent(new CustomEvent(STATE_CHANGE, { detail: {
                     previousState: previousState, 
-                    currentState: currentState
+                    state: currentState
                 }}));
+            },
+            
+            getActions = () => {
+                return actions;
+            },
+            
+            getState = () => {
+                return currentState;
             };
 
         that = specs.that || {};
         
         that.STATE_CHANGE = STATE_CHANGE;
-        that.actions = actions;
         that.dispatch = dispatch;
+        that.getActions = getActions;
+        that.getState = getState;
         return that;
     }
 

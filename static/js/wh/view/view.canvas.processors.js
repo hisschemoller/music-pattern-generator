@@ -149,7 +149,7 @@ window.WH = window.WH || {};
              * Update all processor views with changed theme.
              */
             setThemeOnViews = function() {
-                for (let i = 0, n = my.views.length; i < n; i++) {
+                for (let i = 0, n = views.length; i < n; i++) {
                     if (views[i].setTheme instanceof Function) {
                         views[i].setTheme(my.theme);
                     }

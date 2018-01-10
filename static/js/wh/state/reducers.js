@@ -14,10 +14,17 @@ window.WH = window.WH || {};
             reduce = function(state = initialState, action = {}) {
                 switch(action.type) {
 
-                    case store.actions.SET_PREFERENCES:
+                    case store.getActions().SET_PREFERENCES:
                         return Object.assign({}, state, {
                             preferences: {
                                 isDarkTheme: action.data.isDarkTheme || false
+                            }
+                        });
+
+                    case store.getActions().SET_THEME:
+                        return Object.assign({}, state, {
+                            preferences: {
+                                isDarkTheme: action.data || false
                             }
                         });
                     

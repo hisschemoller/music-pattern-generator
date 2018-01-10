@@ -24,6 +24,7 @@ window.WH = window.WH || {};
     
     function createCanvasView(specs, my) {
         var that,
+            store = specs.store,
             midiNetwork = specs.midiNetwork,
             rootEl,
             staticCanvas,
@@ -47,6 +48,11 @@ window.WH = window.WH || {};
                 rootEl.addEventListener(WH.util.eventType.start, onTouchStart);
                 rootEl.addEventListener(WH.util.eventType.move, dragMove);
                 rootEl.addEventListener(WH.util.eventType.end, dragEnd);
+
+                document.addEventListener(store.STATE_CHANGE, (e) => {
+                    const themeName = e.detail.state.preferences.isDarkTheme ? 'dark' : '';
+                    setTheme(themeName);
+                });
                 
                 my.addWindowResizeCallback(onWindowResize);
                 onWindowResize();
@@ -183,10 +189,17 @@ window.WH = window.WH || {};
             
             /**
              * Set the theme colours of the processor canvas views.
-             * @param {Object} theme Theme settings object.
+             * @param {String} theme Theme name, 'dark' or ''.
              */
             setTheme = function(theme) {
-                my.theme = theme;
+                // possibly have to set theme data attribute first
+                var themeStyles = window.getComputedStyle(document.querySelector('[data-theme]'));
+
+                my.theme = {
+                    colorHigh: themeStyles.getPropertyValue('--text-color'),
+                    colorMid: themeStyles.getPropertyValue('--border-color'),
+                    colorLow: themeStyles.getPropertyValue('--panel-bg-color')
+                };
                 my.setThemeOnViews();
                 my.setThemeOnConnections();
                 my.markDirty();
