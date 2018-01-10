@@ -53,6 +53,7 @@ window.WH = window.WH || {};
                     if (!loadProjectFromStorage()) {
                         createNew();
                     }
+                    resolve();
                 });
             },
 
@@ -87,7 +88,8 @@ window.WH = window.WH || {};
              * Clear all settings and set default values..
              */
             createNew = function() {
-                setData();
+                // setData();
+                store.dispatch(store.getActions().setProject());
             },
 
             /**
@@ -97,11 +99,11 @@ window.WH = window.WH || {};
             loadProjectFromStorage = function() {
                 let data = localStorage.getItem(projectName);
                 if (data) {
-                    // store.dispatch(store.actions.setProject(JSON.parse(data)));
+                    store.dispatch(store.getActions().setProject(JSON.parse(data)));
                     // data = JSON.parse(data);
                     // setData(data);
                 } else {
-                    console.log('No data in LocalStorage with name "' + projectName + '".');
+                    console.log(`No data in LocalStorage with name "${projectName}".`);
                     return false;
                 }
                 return true;

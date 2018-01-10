@@ -6,9 +6,12 @@ window.WH = window.WH || {};
         const store = specs.store,
             
             initialState = {
+                bpm: 120,
+                network: {},
                 preferences: {
                     isDarkTheme: false
-                }
+                },
+                remote: {}
             },
             
             reduce = function(state = initialState, action = {}) {
@@ -19,6 +22,13 @@ window.WH = window.WH || {};
                             preferences: {
                                 isDarkTheme: action.data.isDarkTheme || false
                             }
+                        });
+
+                    case store.getActions().SET_PROJECT:
+                        return Object.assign({}, state, {
+                            bpm: action.data.bpm || initialState.bpm,
+                            network: action.data.network || initialState.network,
+                            remote: action.data.remote || initialState.remote
                         });
 
                     case store.getActions().SET_THEME:
