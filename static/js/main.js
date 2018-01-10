@@ -33,7 +33,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
         midiNetwork = {},
         midiRemote = {},
         midiSync = {},
-        preferences = {},
         preferencesView = {},
         remoteView = {},
         store = {},
@@ -66,15 +65,10 @@ document.addEventListener('DOMContentLoaded', function(e) {
         store: store,
         midiNetwork: midiNetwork
     });
-    WH.createPreferences({
-        that: preferences,
-        store: store
-    });
     WH.createPreferencesView({
         that: preferencesView,
         store: store,
         canvasView: canvasView
-        // preferences: preferences
     });
     WH.createRemoteView({
         that: remoteView,
@@ -87,7 +81,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
         midi: midi,
         midiNetwork: midiNetwork,
         midiRemote: midiRemote,
-        preferences: preferences,
         transport: transport
     });
     WH.createFileView({

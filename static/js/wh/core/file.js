@@ -17,7 +17,6 @@ window.WH = window.WH || {};
             midi = specs.midi,
             midiNetwork = specs.midiNetwork,
             midiRemote = specs.midiRemote,
-            preferences = specs.preferences,
             transport = specs.transport,
             projectName = 'project',
             preferencesName = 'preferences',
@@ -79,10 +78,6 @@ window.WH = window.WH || {};
              * @param {Object} data Object with preferences data to save.
              */
             savePreferences = function() {
-                // var data = {
-                //     midi: midi.getData(),
-                //     preferences: preferences.getData()
-                // }
                 const data = store.getState().preferences;
                 localStorage.setItem(preferencesName, JSON.stringify(data));
             },
