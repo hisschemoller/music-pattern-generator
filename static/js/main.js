@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     WH.createCanvasView({
         that: canvasView,
         store: store,
-        midiNetwork: midiNetwork
+        // midiNetwork: midiNetwork
     });
     WH.createPreferencesView({
         that: preferencesView,

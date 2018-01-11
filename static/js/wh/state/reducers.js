@@ -18,11 +18,9 @@ window.WH = window.WH || {};
                 switch(action.type) {
 
                     case store.getActions().SET_PREFERENCES:
-                        return Object.assign({}, state, {
-                            preferences: {
-                                isDarkTheme: action.data.isDarkTheme || false
-                            }
-                        });
+                        const newState = Object.assign({}, state);
+                        newState.preferences.isDarkTheme = action.data.isDarkTheme || false;
+                        return newState;
 
                     case store.getActions().SET_PROJECT:
                         return Object.assign({}, state, {
