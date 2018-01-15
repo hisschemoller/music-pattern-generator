@@ -13,11 +13,12 @@ export default function createReducers(specs = {}, my = {}) {
         },
         
         reduce = function(state = initialState, action = {}, actions) {
+            let newState;
             switch(action.type) {
 
                 case actions.SET_PREFERENCES:
-                    const newState = Object.assign({}, state);
-                    newState.preferences.isDarkTheme = action.data.isDarkTheme || false;
+                    newState = Object.assign({}, state);
+                    newState.preferences.isDarkTheme = action.data ? action.data.isDarkTheme : false;
                     return newState;
 
                 case actions.SET_PROJECT:
@@ -35,7 +36,7 @@ export default function createReducers(specs = {}, my = {}) {
                     });
 
                 case actions.CREATE_PROCESSOR:
-                    const newState = Object.assign({}, state);
+                    newState = Object.assign({}, state);
                     const processor = {};
                     // array index depends on processor type
                     switch (action.data.type) {

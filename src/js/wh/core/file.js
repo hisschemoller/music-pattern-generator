@@ -54,8 +54,8 @@ export default function createFile(specs, my) {
          * Get the stored preferences, if any.
          */
         loadPreferences = function() {
-            var data = localStorage.getItem(preferencesName) || {};
-            store.dispatch(store.getActions().setPreferences(JSON.parse(data)));
+            var data = localStorage.getItem(preferencesName);
+            store.dispatch(store.getActions().setPreferences(data));
             // if (data) {
             //     data = JSON.parse(data);
             //     midi.setData(data.midi);

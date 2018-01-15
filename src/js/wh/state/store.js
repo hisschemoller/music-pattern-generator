@@ -5,7 +5,7 @@ export default function createStore(specs = {}, my = {}) {
     let that = {},
         actions = specs.actions,
         reducers = specs.reducers,
-        currentState = {},
+        currentState,
         
         dispatch = (action) => {
             // thunk or not

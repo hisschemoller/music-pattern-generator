@@ -74,7 +74,7 @@ export function createSequencer (specs, my) {
          */
         tick2msec = function (tick) {
             return tick * tickInMilliseconds;
-        }
+        },
         
         /**
          * Set Beats Per Minute.
