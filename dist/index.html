@@ -1,0 +1,361 @@
+<!doctype html>
+<html>
+<head>
+    <title>epg</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+    <div id="app" data-theme="dev">
+        <header class="controlbar controls file">
+            <button class="file__new btn" title="New project">
+                <span class="icon-new"></span>
+            </button>
+            <input type="file" multiple="false" id="file-import" class="file__import">
+            <label for="file-import" class="btn" title="Import project...">
+                <span class="icon-open"></span>
+            </label>
+            <button class="file__export btn" title="Export project...">
+                <span class="icon-save"></span>
+            </button>
+            <input type="checkbox" id="play-check" class="toggle__check" />
+            <label for="play-check" class="toggle__label btn" title="Play/Stop">
+                <span class="icon-new" data-on="&#xe804;" data-off="&#xe802;"></span>
+            </label>
+            <input type="number" id="bpm-number" class="bpm" min="1" max="1000" value="" />
+            <input type="checkbox" id="prefs-check" class="toggle__check" />
+            <label for="prefs-check" class="toggle__label btn" title="Preferences">
+                <span class="icon-cog" data-on="&#xe805;" data-off="&#xe805;"></span>
+            </label>
+            <input type="checkbox" id="learn-check" class="toggle__check" />
+            <label for="learn-check" class="toggle__label btn" title="MIDI learn">
+                <span class="icon-midi" data-on="&#xe900;" data-off="&#xe900;"></span>
+            </label>
+            <input type="checkbox" id="edit-check" class="toggle__check" />
+            <label for="edit-check" class="toggle__label btn" title="Edit settings">
+                <span class="icon-help" data-on="&#xe808;" data-off="&#xe808;"></span>
+            </label>
+            <input type="checkbox" id="connections-check" class="toggle__check" />
+            <label for="connections-check" class="toggle__label btn" title="Edit connections">
+                <span class="icon-connections" data-on="&#xf1e0;" data-off="&#xf1e0;"></span>
+            </label>
+            <input type="checkbox" id="help-check" class="toggle__check" />
+            <label for="help-check" class="toggle__label btn" title="Help">
+                <span class="icon-help" data-on="&#xf128;" data-off="&#xf128;"></span>
+            </label>
+            <div class="controlbar__info">
+                <span class="controlbar__name">EPG</span>
+                <span class="controlbar__version">2.1</span>
+            </div>
+        </header>
+        <main class="main">
+            <div class="canvas-container">
+                <canvas class="canvas-static"></canvas>
+                <canvas class="canvas-dynamic"></canvas>
+                <canvas class="canvas-connect"></canvas>
+            </div>
+            <div class="panels">
+                <div class="panels__left">
+                    <div class="panel prefs">
+                        <div class="panel__header">
+                            <span class="header__label">Preferences</span>
+                        </div>
+                        <div class="panel__viewport">
+                            <div class="panel__content">
+                                <div class="prefs__midi-in">
+                                    <div class="prefs__subheader panel__header panel__header--sub">
+                                        <div class="prefs__subheader-title header__label">MIDI Inputs</div>
+                                        <div class="prefs__subheader-network header__label">Network</div>
+                                        <div class="prefs__subheader-sync header__label">Sync</div>
+                                        <div class="prefs__subheader-remote header__label">Remote</div>
+                                    </div>
+                                    <ul class="prefs__inputs"></ul>
+                                </div>
+                                <div class="prefs__midi-out">
+                                    <div class="prefs__subheader panel__header panel__header--sub">
+                                        <div class="prefs__subheader-title header__label">MIDI Outputs</div>
+                                        <div class="prefs__subheader-network header__label">Network</div>
+                                        <div class="prefs__subheader-sync header__label">Sync</div>
+                                        <div class="prefs__subheader-remote header__label">Remote</div>
+                                    </div>
+                                    <ul class="prefs__outputs"></ul>
+                                </div>
+                                <div class="panel__header panel__header--sub">
+                                    <span class="header__label">Interface</span>
+                                </div>
+                                <div class="prefs__setting">
+                                    <span class="prefs__label">Dark theme</span>
+                                    <div class="prefs__input">
+                                        <label class="btn prefs__btn" title="Dark theme">
+                                            <input type="checkbox" class="prefs__btn-check prefs__dark-theme" />
+                                            <span data-on="On" data-off="Off" class="prefs__btn-text"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel remote">
+                        <div class="panel__header">
+                            <span class="header__label">Assignments</span>
+                        </div>
+                        <div class="panel__viewport">
+                            <ul class="panel__content remote__list"></ul>
+                        </div>
+                    </div>
+                </div><!-- /panels__left -->
+                <div class="panels__right">
+                    <div class="panel help">
+                        <div class="panel__header">
+                            <span class="header__label">Help</span>
+                        </div>
+                        <div class="panel__viewport">
+                            <div class="panel__content help__content">
+                                <div class="help__nav">
+                                    <div class="help__nav-column">
+                                        <a href="#introduction" class="help__nav-item">Introduction</a>
+                                        <a href="#euclidean-rhythms" class="help__nav-item">Euclidean rhythms</a>
+                                        <a href="#download-and-installation" class="help__nav-item">Installation</a>
+                                    </div>
+                                    <div class="help__nav-column">
+                                        <a href="#quick-start" class="help__nav-item">Quick start</a>
+                                        <a href="#application-overview" class="help__nav-item">Overview</a>
+                                        <a href="#midi-learn-mode" class="help__nav-item">MIDI learn mode</a>
+                                    </div>
+                                </div>
+                                <div class="help__viewport">
+                                    <div class="help__copy">
+                                        <h2 id="introduction">Introduction</h2>
+                                        <p>This is an application to create rhythm patterns that can be used in music. It doesn't produce any sounds by itself, but sends MIDI messages for other applications to receive. These applications are typically music programs like Ableton Live, Cubase or FL Studio. But MIDI messages can also be sent to external hardware instruments like drum machines, samplers or synthesizers. </p>
+                                        <p>The application creates a specific type of patterns, known as Euclidean rhythms. These are generated by a mathematical algorithm and often resemble African and South-American traditional drum and percussion patterns. The application makes it easy to create polyrhythms, where patterns of different length play together to create interesting slowly evolving rhythms.</p>
+                                        <p>A desktop application can be downloaded for Windows, Mac and Linux, and it can be used as an online app that runs in the browser as well (Chrome and Chromium only at the moment). It is written in Javascript and uses the Electron framework to create the desktop versions.</p>
+                                        <h2 id="euclidean-rhythms">Euclidean rhythms</h2>
+                                        <p>Euclidean rhythms are generated with a simple mathematical formula. It distributes an amount of pulses as evenly as possible over a period of time, where time is divided in equal parts. So, say you have four notes to divide over a sequence of sixteen steps, the result is:</p>
+                                        <p><code>x . . . x . . . x . . . x . . .</code></p>
+                                        <p>Each note is separated from the next by three rests, a typical house and techno kick drum pattern. 4 steps can be very evenly distributed over 16 steps: 16 / 4 = 4. More uneven divisions create more complex rhythms. 5 notes over 16 steps for example results in this pattern:</p>
+                                        <p><code>x . . . x . . x . . x . . x . .</code></p>
+                                        <p>Interesting polyrhythms can be created by combining patterns of different length. The patterns in the application go up to 64 steps in length.</p>
+                                        <p>Patterns can also be rotated to create more variation, because without rotation they always start with a note on the first step. This is the 4 on 16 pattern from before followed by rotations of 1 and 2:</p>
+                                        <p><code>x . . . x . . . x . . . x . . .</code></p>
+                                        <p><code>. x . . . x . . . x . . . x . .</code></p>
+                                        <p><code>. . x . . . x . . . x . . . x .</code></p>
+                                        <p>The generation of Euclidean rhythms in music was discovered by Godfried Toussaint in 2004. His paper on this theory is online as a PDF file: <a href="http://cgm.cs.mcgill.ca/~godfried/publications/banff.pdf">The Euclidean Algorithm Generates Traditional Musical Rhythms</a></p>
+                                        <h2 id="download-and-installation">Download and installation</h2>
+                                        <p>Desktop applications will be available for Linux, Mac and Windows.</p>
+                                        <h2 id="quick-start">Quick start</h2>
+                                        <p>The application opens with just the controlbar visible at the top and the empty pattern area below.</p>
+                                        <ul>
+                                        <li>Create a pattern by double clicking the pattern area. A pattern wheel appears and its Settings panel opens at the right.</li>
+                                        <li>You can start and stop the pattern with the play button in the controlbar.</li>
+                                        <li>Open the Preferences panel with the 'cogwheel' button in the controlbar.</li>
+                                        <li>Choose the MIDI output you want by toggling its button in the Network column. 'Network' is the term for the network of patterns that outputs MIDI notes on this port.</li>
+                                        <li>The pattern you created will now send notes to your MIDI port on Channel 1 with Pitch 60 and Velocity 100, the default values of a new pattern (as you can see in the Settings panel).</li>
+                                        </ul>
+                                        <h2 id="application-overview">Application overview</h2>
+                                        <p>The application window shows a controlbar at the top. The rest of the window is the pattern area. Panels can be opened and closed as necessary.</p>
+                                        <h3 id="controlbar">Controlbar</h3>
+                                        <p>The controlbar is permanently visible and shows a row of buttons and other controls.</p>
+                                        <ul>
+                                        <li><strong>New Project</strong> - Create an empty new project. All previous existing patterns are lost.</li>
+                                        <li><strong>Open Project</strong> - Opens a file browser to select and load a project file that was saved earlier.</li>
+                                        <li><strong>Save Project</strong> - Opens a file browser to save the current project to a file.</li>
+                                        <li><strong>Play / Stop</strong> - Starts and stops playback of the patterns.</li>
+                                        <li><strong>BPM Tempo</strong> - A number input to set the tempo in Beats Per Minute.</li>
+                                        <li><strong>Preferences</strong> - Toggles the Preferences panel.</li>
+                                        <li><strong>MIDI Learn</strong> - Toggles 'MIDI Learn' mode and the associated Remote MIDI Assignments panel.</li>
+                                        <li><strong>Settings</strong> - Toggles the panel with settings of the currently selected pattern.</li>
+                                        <li><p><strong>Help</strong> - Toggles the Help text panel.</p>
+                                        <h3 id="pattern-area">Pattern area</h3>
+                                        </li>
+                                        <li><p>Doubleclick the background to create a pattern.</p>
+                                        </li>
+                                        <li>Click a pattern to select or drag it.</li>
+                                        <li>Drag the background to move all patterns at once.</li>
+                                        </ul>
+                                        <h3 id="settings-panel">Settings panel</h3>
+                                        <p>The Settings panel shows the settings for the currently selected pattern.</p>
+                                        <ul>
+                                        <li><strong>Steps, Pulses, Rotation</strong> - The Euclidean settings that determine the pattern.</li>
+                                        <li><strong>Rate</strong> - The duration of one step in the pattern. Default is 1/16, where one step is a 16th note. If you change that rate to 1/8 the pattern play half speed.</li>
+                                        <li><strong>Note length</strong> - The length of a played note. Default is 1/16, which is a 16th note.</li>
+                                        <li><strong>MIDI Out Channel, Pitch, Velocity</strong> - Properties of the MIDI notes that the pattern will output.</li>
+                                        <li><strong>Name</strong> - All patterns get a default name which can be changed here.</li>
+                                        <li><strong>Delete</strong> - Button to delete the current pattern.</li>
+                                        </ul>
+                                        <h3 id="preferences-panel">Preferences panel</h3>
+                                        <p>Preferences are loaded when the program starts. They are not stored in project files.</p>
+                                        <ul>
+                                        <li><strong>MIDI Inputs</strong> - All MIDI input ports are listed here.<ul>
+                                        <li><strong>Sync</strong> - MIDI start and stop messages received on the port will start and stop playback.</li>
+                                        <li><strong>Remote</strong> - MIDI CC messages received on the port can be assigned to remotely control pattern parameters.</li>
+                                        </ul>
+                                        </li>
+                                        <li><strong>MIDI Outputs</strong> - All MIDI output ports are listed here.<ul>
+                                        <li><strong>Network</strong> - MIDI notes are sent to the selected output port. 'Network' is the term for the network of patterns that generates MIDI notes.</li>
+                                        </ul>
+                                        </li>
+                                        </ul>
+                                        <p>MIDI devices that are connected or disconnected will automatically appear or disappear in this list. If a device is accidentally diconnected and reconnected, it's settings are attempted to be restored.</p>
+                                        <ul>
+                                        <li><strong>Dark theme</strong> - An inverse colour theme with light content on a dark background. To comfortably use the application in dark environments.</li>
+                                        </ul>
+                                        <h3 id="midi-assignments-panel">MIDI Assignments panel</h3>
+                                        <p>A list of all the pattern parameters that have a MIDI CC assigned to them so they can be remotely controlled. The assignments are grouped by pattern. Creating remote assignments is explained elsewhere in this text.</p>
+                                        <p>Each assignment in the list shows these fields:</p>
+                                        <ul>
+                                        <li>Name of the parameter.</li>
+                                        <li>MIDI Channel of he assigned CC.</li>
+                                        <li>MIDI CC (Continuous Control) number.</li>
+                                        <li>A 'X' button to remove the assignment.</li>
+                                        </ul>
+                                        <h2 id="midi-learn-mode">MIDI learn mode</h2>
+                                        <p>Several pattern parameters can be remotely controlled by MIDI CC messages. A CC is associated with a parameter by its MIDI Channel and its Controller number. To set this up 'MIDI learn mode' is used. The following example presumes you use a hardware MIDI controller with knobs or sliders that send MIDI CC messages.</p>
+                                        <ul>
+                                        <li>Connect your MIDI Controller hardware to a MIDI input.</li>
+                                        <li>In the Preferences panel make sure that the MIDI input port has its Remote option enabled.</li>
+                                        <li>Click the 'MIDI Learn' button (MIDI connector icon) in the controlbar to enter MIDI learn mode.<ul>
+                                        <li>The Remote Assignments panel appears, showing all existing assignments.</li>
+                                        <li>The selected pattern's Settings panel shows a dashed border around each parameter that is not yet assigned.</li>
+                                        <li>Parameters that have already been assigned show a solid unbroken line as their border.</li>
+                                        </ul>
+                                        </li>
+                                        <li>Select a pattern and click an assignable parameter in the Settings panel. The parameter will turn slightly darker to indicate it's selected.</li>
+                                        <li>Turn a knob on the hardware controller that sends MIDI CC messages.</li>
+                                        <li>The MIDI Channel and CC Number is now assigned to the parameter.<ul>
+                                        <li>The paremeter's border turns from dashed to a solid line.</li>
+                                        <li>The assignent appears in the Assignments panel list.</li>
+                                        </ul>
+                                        </li>
+                                        <li>Click the 'MIDI Learn' button in the controlbar to exit MIDI learn mode.</li>
+                                        <li>Now, if you turn the knob on the hardware, the pattern's parameter will change accordingly.</li>
+                                        </ul>
+                                        <p>The assignments are saved in the project file. So save the project to keep the assignments for later use in the project.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel edit">
+                        <div class="panel__header">
+                            <span class="header__label">Settings</span>
+                        </div>
+                        <div class="panel__viewport">
+                            <div class="panel__content"></div>
+                        </div>
+                    </div>
+                </div><!-- /panels__right -->
+            </div><!-- /panels -->
+        </main>
+    </app>
+
+    <template id="template-settings-epg">
+        <div class="settings settings--epg">
+            <form><!-- form element separates radio groups of the same name -->
+                <div class="panel__header panel__header--sub">
+                    <span class="header__label">Euclidean Rhythm</span>
+                </div>
+                <fieldset class="settings__fieldset">
+                    <div class="settings__row steps"></div>
+                    <div class="settings__row pulses"></div>
+                    <div class="settings__row rotation"></div>
+                </fieldset>
+                <div class="panel__header panel__header--sub">
+                    <span class="header__label">Playback</span>
+                </div>
+                <fieldset class="settings__fieldset">
+                    <div class="settings__row rate"></div>
+                    <div class="settings__row note_length"></div>
+                    <div class="settings__row is_triplets"></div>
+                    <div class="settings__row is_mute"></div>
+                </fieldset>
+                <div class="panel__header panel__header--sub">
+                    <span class="header__label">MIDI Out</span>
+                </div>
+                <fieldset class="settings__fieldset">
+                    <div class="settings__row channel_out"></div>
+                    <div class="settings__row pitch_out"></div>
+                    <div class="settings__row velocity_out"></div>
+                </fieldset>
+                <div class="panel__header panel__header--sub">
+                    <span class="header__label">Other</span>
+                </div>
+                <fieldset class="settings__fieldset">
+                    <div class="settings__row name"></div>
+                    <span class="setting__label-text"></span>
+                    <button type="button" class="settings__delete btn">Delete</button>
+                </fieldset>
+            </form>
+        </div>
+    </template><!-- /template-settings-epg -->
+    <template id="template-setting-integer">
+        <label class="setting__label setting__integer">
+            <span class="setting__label-text"></span>
+            <input type="range" min="" max="" step="1" class="setting__range" />
+            <input type="number" min="" max="" class="setting__number" />
+        </label>
+    </template><!-- /template-setting-integer -->
+    <template id="template-setting-boolean">
+        <span class="setting__label"><span class="setting__label-text"></span>
+            <input type="checkbox" id="" class="setting__check toggle__check" />
+            <label for="" class="toggle__label btn" title="">
+                <span class="" data-on="On" data-off="Off"></span>
+            </label>
+        </span>
+    </template><!-- /template-setting-boolean -->
+    <template id="template-setting-itemized">
+        <div class="setting__itemized">
+            <label class="setting__label-text"></label>
+            <span class="setting__radios"></span>
+        </div>
+    </template><!-- /template-setting-itemized -->
+    <template id="template-setting-itemized-item">
+        <input type="radio" id="" class="setting__radio" />
+        <label for="" class="setting__label-radio-text btn"></label>
+    </template><!-- /template-setting-itemized-item -->
+    <template id="template-setting-string">
+        <label class="setting__label"><span class="setting__label-text"></span>
+            <input type="text" class="setting__text" />
+        </label>
+    </template><!-- /template-setting-string -->
+    <template id="template-setting-learnmode">
+        <div class="setting__learnmode"></div>
+    </template><!-- /template-setting-learnmode -->
+    <template id="template-remote-group">
+        <li class="remote__group">
+            <div class="remote__group-header panel__header panel__header--sub">
+                <div class="remote__group-header-label header__label"></div>
+                <div class="remote__group-header-channel header__label">Channel</div>
+                <div class="remote__group-header-control header__label">Control</div>
+                <div class="remote__group-header-delete header__label"></div>
+            </div>
+            <ul class="remote__group-list"></ul>
+        </li>
+    </template><!-- /template-remote-group -->
+    <template id="template-remote-item">
+        <li class="remote__item">
+            <span class="remote__item-label"></span>
+            <span class="remote__item-channel"></span>
+            <span class="remote__item-control"></span>
+            <button class="remote__item-delete btn"><span class="icon-cancel"></span></button>
+        </li>
+    </template><!-- /template-remote-item -->
+    <template id="template-midi-port">
+        <li class="midi-port">
+            <span class="midi-port__label"></span>
+            <label class="btn midi-port__btn midi-port__network" title="Network">
+                <input type="checkbox" class="midi-port__btn-check" />
+                <span data-on="On" data-off="Off" data-disabled="-" class="midi-port__btn-text"></span>
+            </label>
+            <label class="btn midi-port__btn midi-port__sync" title="Sync">
+                <input type="checkbox" class="midi-port__btn-check" />
+                <span data-on="On" data-off="Off" data-disabled="-" class="midi-port__btn-text"></span>
+            </label>
+            <label class="btn midi-port__btn midi-port__remote" title="Remote">
+                <input type="checkbox" class="midi-port__btn-check" />
+                <span data-on="On" data-off="Off" data-disabled="-" class="midi-port__btn-text"></span>
+            </label>
+        </li>
+    </template><!-- /template-midi-port -->
+    <script src="bundle.js"></script>
+</body>
+</html>
