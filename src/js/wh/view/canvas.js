@@ -2,6 +2,7 @@ import { util } from '../core/util';
 import addWindowResize from './windowresize';
 import createCanvasProcessorsView from './canvasprocessors';
 import createCanvasConnectionsView from './canvasconnections';
+import TWEEN from '@tweenjs/tween.js';
 
 /**
  * Graphic 2D view of the processor network.

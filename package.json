@@ -23,6 +23,9 @@
         "url": "https://github.com/wouterhisschemoller/js-epg"
     },
     "author": "Wouter Hisschemoller",
+    "dependencies": {
+        "@tweenjs/tween.js": "16.6.0"
+    },
     "devDependencies": {
         "electron": "^1.6.11",
         "electron-packager": "^8.7.2",
