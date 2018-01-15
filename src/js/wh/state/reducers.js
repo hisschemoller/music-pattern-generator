@@ -3,9 +3,7 @@ export default function createReducers(specs = {}, my = {}) {
 
     const initialState = {
             bpm: 120,
-            network: {
-                processors: []
-            },
+            processors: [],
             preferences: {
                 isDarkTheme: false
             },
@@ -37,18 +35,18 @@ export default function createReducers(specs = {}, my = {}) {
 
                 case actions.CREATE_PROCESSOR:
                     newState = Object.assign({}, state);
-                    const processor = {};
+                    const numInputProcessors = newState.processors.filter((item) => item.type === 'input').length;
                     // array index depends on processor type
                     switch (action.data.type) {
                         case 'input':
-                            processors.unshift(processor);
+                            newState.processors.unshift(action.data);
                             numInputProcessors++;
                             break;
                         case 'output':
-                            processors.push(processor);
+                            newState.processors.push(action.data);
                             break;
                         default:
-                            processors.splice(numInputProcessors, 0, processor);
+                            newState.processors.splice(numInputProcessors, 0, action.data);
                     }
                     return newState;
                 

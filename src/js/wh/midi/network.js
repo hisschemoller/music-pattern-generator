@@ -6,6 +6,7 @@ import createMIDINetworkConnections from './networkconnections'
  */
 export default function createMIDINetwork(specs, my) {
     var that,
+        store = specs.store,
         app = specs.app,
         appView = specs.appView,
         canvasView = specs.canvasView,
@@ -16,13 +17,26 @@ export default function createMIDINetwork(specs, my) {
         numInputProcessors = 0,
         connections = [],
 
+        init = function() {
+            document.addEventListener(store.STATE_CHANGE, (e) => {
+                switch (e.detail.action.type) {
+                    case e.detail.actions.CREATE_PROCESSOR:
+                        createProcessor(e.detail.state.processors);
+                        break;
+                }
+            });
+        },
+
         /**
          * Create a new processor in the network.
-         * @param {Object} specs Processor specifications.
-         * @param {Boolean} isRestore True if this is called as part of restoring a project.
-         * @return {Object} The new processor.
+         * @param {Array} state Array of all processor data.
          */
-        createProcessor = function(specs, isRestore) {
+        createProcessor = function(state) {
+            console.log('createProcessor', specs);
+
+            
+
+
             if (midiProcessors[specs.type]) {
                 specs = specs || {};
                 specs.that = {};
@@ -346,6 +360,8 @@ export default function createMIDINetwork(specs, my) {
     my = my || {};
 
     that = createMIDINetworkConnections(specs, my);
+
+    init();
 
     that.createProcessor = createProcessor;
     that.deleteProcessor = deleteProcessor;

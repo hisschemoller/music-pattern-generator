@@ -114,6 +114,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     createMIDINetwork({
         that: midiNetwork,
+        store: store,
         app: app,
         appView: appView,
         canvasView: canvasView,
