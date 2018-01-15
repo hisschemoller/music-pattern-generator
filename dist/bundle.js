@@ -198,7 +198,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__wh_view_file__ = __webpack_require__(25);
 /**
     Euclidean Pattern Generator
-    Copyright (C) 2017  Wouter Hisschemoller
+    Copyright (C) 2017, 2018  Wouter Hisschemoller
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -312,6 +312,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     Object(__WEBPACK_IMPORTED_MODULE_4__wh_midi_network__["a" /* default */])({
         that: midiNetwork,
+        store: store,
         app: app,
         appView: appView,
         canvasView: canvasView,
@@ -1481,6 +1482,7 @@ function createMIDI(specs) {
  */
 function createMIDINetwork(specs, my) {
     var that,
+        store = specs.store,
         app = specs.app,
         appView = specs.appView,
         canvasView = specs.canvasView,
@@ -1491,6 +1493,16 @@ function createMIDINetwork(specs, my) {
         numInputProcessors = 0,
         connections = [],
 
+        init = function() {
+            document.addEventListener(store.STATE_CHANGE, (e) => {
+                switch (e.detail.action.type) {
+                    case e.detail.actions.CREATE_PROCESSOR:
+                        createProcessor(e.detail.state.processors);
+                        break;
+                }
+            });
+        },
+
         /**
          * Create a new processor in the network.
          * @param {Object} specs Processor specifications.
@@ -1498,6 +1510,7 @@ function createMIDINetwork(specs, my) {
          * @return {Object} The new processor.
          */
         createProcessor = function(specs, isRestore) {
+            console.log('createProcessor', specs);
             if (__WEBPACK_IMPORTED_MODULE_0__processors__["a" /* midiProcessors */][specs.type]) {
                 specs = specs || {};
                 specs.that = {};
@@ -1821,6 +1834,8 @@ function createMIDINetwork(specs, my) {
     my = my || {};
 
     that = Object(__WEBPACK_IMPORTED_MODULE_1__networkconnections__["a" /* default */])(specs, my);
+
+    init();
 
     that.createProcessor = createProcessor;
     that.deleteProcessor = deleteProcessor;
@@ -2435,7 +2450,6 @@ function createActions(specs = {}, my = {}) {
         CREATE_PROCESSOR: CREATE_PROCESSOR,
         createProcessor: (data) => {
             data.id = `${data.type}_${__WEBPACK_IMPORTED_MODULE_0__core_util__["a" /* util */].createUUID()}`;
-            console.log(data);
             return { type: CREATE_PROCESSOR, data: data };
         }
     };
@@ -2453,9 +2467,7 @@ function createReducers(specs = {}, my = {}) {
 
     const initialState = {
             bpm: 120,
-            network: {
-                processors: []
-            },
+            processors: [],
             preferences: {
                 isDarkTheme: false
             },
@@ -2487,18 +2499,18 @@ function createReducers(specs = {}, my = {}) {
 
                 case actions.CREATE_PROCESSOR:
                     newState = Object.assign({}, state);
-                    const processor = {};
+                    const numInputProcessors = newState.processors.filter((item) => item.type === 'input').length;
                     // array index depends on processor type
                     switch (action.data.type) {
                         case 'input':
-                            processors.unshift(processor);
+                            newState.processors.unshift(action.data);
                             numInputProcessors++;
                             break;
                         case 'output':
-                            processors.push(processor);
+                            newState.processors.push(action.data);
                             break;
                         default:
-                            processors.splice(numInputProcessors, 0, processor);
+                            newState.processors.splice(numInputProcessors, 0, action.data);
                     }
                     return newState;
                 

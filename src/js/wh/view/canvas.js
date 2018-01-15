@@ -97,14 +97,6 @@ export default function createCanvasView(specs, my) {
         },
         
         /**
-         * [description]
-         * @param  {[type]} e [description]
-         */
-        onClick = function(e) {
-            
-        },
-        
-        /**
          * Handler for the custom doubleclick event detection.
          * Create a new pattern at the location of the doubleclick.
          */
