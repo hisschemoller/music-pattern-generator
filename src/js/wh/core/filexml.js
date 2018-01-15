@@ -1,12 +1,9 @@
 /**
- * Saves state to - or restores it from localstorage.
- * Saves state to file, opens external files.
- *
- * @namespace WH
+ * 
  */
-window.WH = window.WH || {};
+export default function addXMLFileParser(specs, my) {
 
-(function (ns) {
+    let that;
     
     const convertLegacyFile = function(xmlString) {
             const xmlData = parseXML(xmlString),
@@ -212,18 +209,11 @@ window.WH = window.WH || {};
 
             return result;
         };
-
-    function addXMLFileParser(specs, my) {
-        let that;
-        
-        my = my || {};
-        my.convertLegacyFile = convertLegacyFile;
-        
-        that = specs.that;
-        
-        return that;
-    }
-
-    ns.addXMLFileParser = addXMLFileParser;
-
-})(WH);
+    
+    my = my || {};
+    my.convertLegacyFile = convertLegacyFile;
+    
+    that = specs.that;
+    
+    return that;
+}

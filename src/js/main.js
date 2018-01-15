@@ -16,7 +16,21 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-'use strict';
+import createApp from './wh/core/app';
+import createFile from './wh/core/file';
+import createTransport from './wh/core/transport';
+import createMIDI from './wh/midi/midi';
+import createMIDINetwork from './wh/midi/network';
+import createMIDIRemote from './wh/midi/remote';
+import createMIDISync from './wh/midi/sync';
+import createActions from './wh/state/actions';
+import createReducers from './wh/state/reducers';
+import createStore from './wh/state/store';
+import createAppView from './wh/view/app';
+import createCanvasView from './wh/view/canvas';
+import createPreferencesView from './wh/view/preferences';
+import createRemoteView from './wh/view/remote';
+import createFileView from './wh/view/file';
 
 /**
  * Application startup.
@@ -35,47 +49,42 @@ document.addEventListener('DOMContentLoaded', function(e) {
         midiSync = {},
         preferencesView = {},
         remoteView = {},
-        store = {},
         transport = {};
     
-    WH.createStore({
-        that: store,
-        actions: WH.createActions(),
-        reducers: WH.createReducers({
-            store: store
-        })
+    const store = createStore({
+        actions: createActions(),
+        reducers: createReducers()
     });
 
     // Add functionality to the modules and inject dependencies.
-    WH.createApp({
+    createApp({
         that: app,
         appView: appView,
         midiNetwork: midiNetwork,
         midiRemote: midiRemote,
         transport: transport
     });
-    WH.createAppView({
+    createAppView({
         that: appView,
         store: store,
         app: app,
         midiNetwork: midiNetwork
     });
-    WH.createCanvasView({
+    createCanvasView({
         that: canvasView,
-        store: store,
-        // midiNetwork: midiNetwork
+        store: store
     });
-    WH.createPreferencesView({
+    createPreferencesView({
         that: preferencesView,
         store: store,
         canvasView: canvasView
     });
-    WH.createRemoteView({
+    createRemoteView({
         that: remoteView,
         appView: appView,
         midiRemote: midiRemote
     });
-    WH.createFile({
+    createFile({
         that: file,
         store: store,
         midi: midi,
@@ -83,27 +92,27 @@ document.addEventListener('DOMContentLoaded', function(e) {
         midiRemote: midiRemote,
         transport: transport
     });
-    WH.createFileView({
+    createFileView({
         that: fileView,
         file: file
     });
-    WH.createMIDI({
+    createMIDI({
         that: midi,
         preferencesView: preferencesView,
         midiNetwork: midiNetwork,
         midiRemote: midiRemote,
         midiSync: midiSync
     });
-    WH.createMIDIRemote({
+    createMIDIRemote({
         that: midiRemote,
         app: app,
         remoteView: remoteView
     });
-    WH.createMIDISync({
+    createMIDISync({
         that: midiSync,
         transport: transport
     });
-    WH.createMIDINetwork({
+    createMIDINetwork({
         that: midiNetwork,
         app: app,
         appView: appView,
@@ -111,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         midiRemote: midiRemote,
         preferencesView: preferencesView
     });
-    WH.createTransport({
+    createTransport({
         that: transport,
         app: app,
         canvasView: canvasView,
