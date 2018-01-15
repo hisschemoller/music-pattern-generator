@@ -226,7 +226,7 @@ export default function createTransport(specs, my) {
         position = 0,
         origin = 0,
         scanStart = 0,
-        scanEnd = 0;
+        scanEnd = 0,
         lookAhead = 200,
         loopStart = 0,
         loopEnd = 0,
