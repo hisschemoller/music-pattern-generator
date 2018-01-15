@@ -1,3 +1,4 @@
+import { util } from '../core/util';
 
 export default function createActions(specs = {}, my = {}) {
     const SET_PREFERENCES = 'SET_PREFERENCES';
@@ -23,6 +24,7 @@ export default function createActions(specs = {}, my = {}) {
 
         CREATE_PROCESSOR: CREATE_PROCESSOR,
         createProcessor: (data) => {
+            data.id = `${data.type}_${util.createUUID()}`;
             return { type: CREATE_PROCESSOR, data: data };
         }
     };
