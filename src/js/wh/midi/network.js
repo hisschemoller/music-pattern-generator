@@ -1,4 +1,3 @@
-import { midiProcessors } from './processors';
 import createMIDINetworkConnections from './networkconnections'
 
 /**

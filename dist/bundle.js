@@ -186,16 +186,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__wh_core_transport__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__wh_midi_midi__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__wh_midi_network__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__wh_midi_remote__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__wh_midi_sync__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__wh_state_actions__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__wh_state_reducers__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__wh_state_store__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__wh_view_app__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__wh_view_canvas__ = __webpack_require__(18);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__wh_view_preferences__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__wh_view_remote__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__wh_view_file__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__wh_midi_remote__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__wh_midi_sync__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__wh_state_actions__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__wh_state_reducers__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__wh_state_store__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__wh_view_app__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__wh_view_canvas__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__wh_view_preferences__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__wh_core_processors__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__wh_view_remote__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__wh_view_file__ = __webpack_require__(28);
 /**
     Euclidean Pattern Generator
     Copyright (C) 2017, 2018  Wouter Hisschemoller
@@ -230,6 +231,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
+
 /**
  * Application startup.
  */
@@ -246,6 +248,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         midiRemote = {},
         midiSync = {},
         preferencesView = {},
+        processors = {},
         remoteView = {},
         transport = {};
     
@@ -277,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         store: store,
         canvasView: canvasView
     });
-    Object(__WEBPACK_IMPORTED_MODULE_13__wh_view_remote__["a" /* default */])({
+    Object(__WEBPACK_IMPORTED_MODULE_14__wh_view_remote__["a" /* default */])({
         that: remoteView,
         appView: appView,
         midiRemote: midiRemote
@@ -290,7 +293,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         midiRemote: midiRemote,
         transport: transport
     });
-    Object(__WEBPACK_IMPORTED_MODULE_14__wh_view_file__["a" /* default */])({
+    Object(__WEBPACK_IMPORTED_MODULE_15__wh_view_file__["a" /* default */])({
         that: fileView,
         file: file
     });
@@ -318,6 +321,10 @@ document.addEventListener('DOMContentLoaded', function(e) {
         canvasView: canvasView,
         midiRemote: midiRemote,
         preferencesView: preferencesView
+    });
+    Object(__WEBPACK_IMPORTED_MODULE_13__wh_core_processors__["a" /* default */])({
+        that: processors,
+        store: store
     });
     Object(__WEBPACK_IMPORTED_MODULE_2__wh_core_transport__["a" /* default */])({
         that: transport,
@@ -1472,9 +1479,7 @@ function createMIDI(specs) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createMIDINetwork;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__processors__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__networkconnections__ = __webpack_require__(10);
-
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__networkconnections__ = __webpack_require__(9);
 
 
 /**
@@ -1505,17 +1510,19 @@ function createMIDINetwork(specs, my) {
 
         /**
          * Create a new processor in the network.
-         * @param {Object} specs Processor specifications.
-         * @param {Boolean} isRestore True if this is called as part of restoring a project.
-         * @return {Object} The new processor.
+         * @param {Array} state Array of all processor data.
          */
-        createProcessor = function(specs, isRestore) {
+        createProcessor = function(state) {
             console.log('createProcessor', specs);
-            if (__WEBPACK_IMPORTED_MODULE_0__processors__["a" /* midiProcessors */][specs.type]) {
+
+            
+
+
+            if (midiProcessors[specs.type]) {
                 specs = specs || {};
                 specs.that = {};
                 specs.id = specs.id || specs.type + performance.now() + '_' + Math.random();
-                var processor = __WEBPACK_IMPORTED_MODULE_0__processors__["a" /* midiProcessors */][specs.type].createProcessor(specs);
+                var processor = midiProcessors[specs.type].createProcessor(specs);
 
                 // insert the processor at the right position
                 switch (specs.type) {
@@ -1833,7 +1840,7 @@ function createMIDINetwork(specs, my) {
 
     my = my || {};
 
-    that = Object(__WEBPACK_IMPORTED_MODULE_1__networkconnections__["a" /* default */])(specs, my);
+    that = Object(__WEBPACK_IMPORTED_MODULE_0__networkconnections__["a" /* default */])(specs, my);
 
     init();
 
@@ -1853,15 +1860,6 @@ function createMIDINetwork(specs, my) {
 
 /***/ }),
 /* 9 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-const midiProcessors = [];
-/* harmony export (immutable) */ __webpack_exports__["a"] = midiProcessors;
-
-
-/***/ }),
-/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1895,7 +1893,7 @@ function createMIDINetworkConnections(specs, my) {
 
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2321,7 +2319,7 @@ function createMIDIRemote(specs) {
 
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2417,7 +2415,7 @@ function createMIDISync(specs) {
 
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2457,7 +2455,7 @@ function createActions(specs = {}, my = {}) {
 
 
 /***/ }),
-/* 14 */
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2526,7 +2524,7 @@ function createReducers(specs = {}, my = {}) {
 
 
 /***/ }),
-/* 15 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2574,12 +2572,12 @@ function createStore(specs = {}, my = {}) {
 
 
 /***/ }),
-/* 16 */
+/* 15 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createAppView;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__settings__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__settings__ = __webpack_require__(16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowresize__ = __webpack_require__(1);
 
 
@@ -2848,7 +2846,7 @@ function createAppView(specs, my) {
 
 
 /***/ }),
-/* 17 */
+/* 16 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2958,16 +2956,16 @@ function createSettingsPanel(specs, my) {
 
 
 /***/ }),
-/* 18 */
+/* 17 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createCanvasView;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__core_util__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowresize__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__canvasprocessors__ = __webpack_require__(19);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__canvasconnections__ = __webpack_require__(20);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__tweenjs_tween_js__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__canvasprocessors__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__canvasconnections__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__tweenjs_tween_js__ = __webpack_require__(20);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__tweenjs_tween_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__tweenjs_tween_js__);
 
 
@@ -3232,7 +3230,7 @@ function createCanvasView(specs, my) {
 
 
 /***/ }),
-/* 19 */
+/* 18 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3408,7 +3406,7 @@ function createCanvasProcessorsView(specs, my) {
             
 
 /***/ }),
-/* 20 */
+/* 19 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3727,7 +3725,7 @@ function createCanvasConnectionsView(specs, my) {
 
 
 /***/ }),
-/* 21 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -4614,10 +4612,10 @@ TWEEN.Interpolation = {
 
 })(this);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21)))
 
 /***/ }),
-/* 22 */
+/* 21 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -4807,7 +4805,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 23 */
+/* 22 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4906,7 +4904,95 @@ function createPreferencesView(specs) {
 
 
 /***/ }),
+/* 23 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = createProcessors;
+function createProcessors(specs, my) {
+    const that = specs.that,
+        store = specs.store,
+
+        init = function() {
+            const context = __webpack_require__(24);
+            context.keys().forEach(key => {
+                // console.log('key', key, context(key), context(key).getType);
+                if (typeof context(key).getType === 'function') {
+                    console.log(`found processor ${context(key).getType()}`);
+                }
+            });
+        };
+    
+    init();
+
+    return that;
+}
+
+/***/ }),
 /* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var map = {
+	"./epg/processor.js": 25,
+	"./example/processor.js": 26
+};
+function webpackContext(req) {
+	return __webpack_require__(webpackContextResolve(req));
+};
+function webpackContextResolve(req) {
+	var id = map[req];
+	if(!(id + 1)) // check for number or string
+		throw new Error("Cannot find module '" + req + "'.");
+	return id;
+};
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = 24;
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports) {
+
+
+
+/***/ }),
+/* 26 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (immutable) */ __webpack_exports__["default"] = createMIDIProcessor;
+/* harmony export (immutable) */ __webpack_exports__["getType"] = getType;
+function createMIDIProcessor(specs) {
+    let that;
+
+    const initialize = function() {
+            console.log(midiProcessors);
+        },
+
+        terminate = function() {},
+
+        process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset) {},
+
+    that = createMIDIProcessorBase(specs, my);
+
+    initialize();
+
+    that.terminate = terminate;
+    that.process = process;
+    that.render = render;
+    return that;
+}
+
+function getType() {
+    return 'example';
+}
+
+/***/ }),
+/* 27 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4992,7 +5078,7 @@ function createRemoteView(specs, my) {
 
 
 /***/ }),
-/* 25 */
+/* 28 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
