@@ -24,8 +24,10 @@ export default function createActions(specs = {}, my = {}) {
 
         CREATE_PROCESSOR: CREATE_PROCESSOR,
         createProcessor: (data) => {
-            data.id = `${data.type}_${util.createUUID()}`;
-            return { type: CREATE_PROCESSOR, data: data };
+            const config = require(`json-loader!../processors/${data.type}/config.json`);
+            return { type: CREATE_PROCESSOR, data: Object.assign(data, config, {
+                id: `${data.type}_${util.createUUID()}`
+            })};
         }
     };
 }
