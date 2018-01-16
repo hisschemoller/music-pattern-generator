@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -68,78 +68,167 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (immutable) */ __webpack_exports__["createProcessor"] = createProcessor;
-/* harmony export (immutable) */ __webpack_exports__["getType"] = getType;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__midi_processorbase__ = __webpack_require__(13);
- 
+/* harmony export (immutable) */ __webpack_exports__["a"] = createBaseParameter;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__remote__ = __webpack_require__(15);
 
-function createProcessor(specs, my) {
-    let that;
 
-    const initialize = function() {},
-
-        terminate = function() {},
-
-        process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset) {},
+/**
+ * Base parameter functionality.
+ */
+function createBaseParameter(specs, my) {
+    var that,
+        defaultValue = specs.default,
+        changedCallbacks = [],
         
-        render = function(pos) {};
-
-    my = my || {};
-    my.info = {
-        inputs: 0,
-        outputs: 1
-    };
+        /**
+         * Call all callbacks if the parameter's value changed.
+         * @param {Number|String|Boolean|Array} oldValue Value before change.
+         */
+        valueChanged = function(oldValue) {
+            if (oldValue == my.props.value) {
+                return;
+            }
+            
+            for (var i = 0, n = changedCallbacks.length; i < n; i++) {
+                changedCallbacks[i](that, oldValue, my.props.value);
+            }
+        },
     
-    that = Object(__WEBPACK_IMPORTED_MODULE_0__midi_processorbase__["a" /* default */])(specs, my);
+        /**
+         * Adds a callback function, invoked on value changed.
+         * @param {Function} callback The function, that will be invoked on value changed.
+         */
+        addChangedCallback = function(callback) {
+            changedCallbacks.push(callback);
+        },
 
-    initialize();
+        /**
+         * Removes a callback function.
+         * @param {Function} callback The function that will be removed.
+         */
+        removeChangedCallback = function(callback) {
+            var index = changedCallbacks.indexOf(callback);
+            if (index > -1) {
+                changedCallbacks.splice(index, 1);
+            }
+        },
+    
+        /**
+         * Reset value to its initial default value.
+         */
+        reset = function() {
+            setValue(defaultValue);
+        },
 
-    that.terminate = terminate;
-    that.process = process;
-    that.render = render;
+        /**
+         * Sets the current value of the parameter.
+         * If changed, inform all callbacks.
+         */
+        setValue = function(newValue) {
+            var oldValue = my.props.value;
+            my.props.value = newValue;
+            valueChanged(oldValue);
+        },
+    
+        /**
+         * Returns the current value of the parameter.
+         * @return {*} Parameter value.
+         */
+        getValue = function() {
+            return my.props.value;
+        },
+    
+        /**
+         * Sets the current value of the parameter
+         * by passing a normalized value between 0 and 1.
+         * If changed, inform all callbacks.
+         * @param normalizedValue A normalized value between 0 and 1.
+         */
+        setValueNormalized = function(normalizedValue) {
+            var oldValue = my.props.value;
+            my.props.value = my.deNormalize(normalizedValue);
+            valueChanged(oldValue);
+        },
+
+        /**
+         * Returns the current normalized value of the parameter between 0 and 1.
+         * @return {Number} Normalized value.
+         */
+        getValueNormalized = function() {
+            return my.normalize(my.props.value);
+        },
+        
+        /**
+         * Get a property's value.
+         * @param  {String} key Property name.
+         * @return {*} Property value.
+         */
+        getProperty = function(key) {
+            let propValue;
+            if (my.hasOwnProperty(key)) {
+                propValue =  my[key];
+            } else if (my.props.hasOwnProperty(key)) {
+                propValue =  my.props[key];
+            }
+            return propValue;
+        },
+        
+        /**
+         * Restore processor from data object.
+         * @param {Object} data Preferences data object.
+         */
+        setData = function(data) {
+            for (var key in my.props) {
+                if (my.props.hasOwnProperty(key)) {
+                    my.props[key] = data.props[key];
+                }
+            }
+            // use setValue to trigger callbacks
+            my.props.value = defaultValue;
+            setValue(data.props.value);
+        }, 
+        
+        /**
+         * Write parameter properties to data object.
+         * @return {Object} Data object.
+         */
+        getData = function() {
+            var data = {
+                props: my.props
+            };
+            return data;
+        };
+        
+    my = my || {};
+    my.props = {
+        value: specs.value || specs.default,
+    };
+    my.type = specs.type;
+    my.label = specs.label;
+    my.key = specs.key;
+    my.isMidiControllable = specs.isMidiControllable;
+    
+    that = specs.that || {};
+    if (my.isMidiControllable) {
+        that = ns.createRemoteParameter(specs, my);
+    }
+    
+    that.addChangedCallback = addChangedCallback;
+    that.removeChangedCallback = removeChangedCallback;
+    that.reset = reset;
+    that.setValue = setValue;
+    that.getValue = getValue;
+    that.setValueNormalized = setValueNormalized;
+    that.getValueNormalized = getValueNormalized;
+    that.getProperty = getProperty;
+    that.setData = setData;
+    that.getData = getData;
     return that;
 }
 
-function getType() {
-    return 'epg';
-}
 
 /***/ }),
 /* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (immutable) */ __webpack_exports__["createMIDIProcessor"] = createMIDIProcessor;
-/* harmony export (immutable) */ __webpack_exports__["getType"] = getType;
-function createMIDIProcessor(specs) {
-    let that;
-
-    const initialize = function() {
-            console.log(midiProcessors);
-        },
-
-        terminate = function() {},
-
-        process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset) {},
-
-    that = createMIDIProcessorBase(specs, my);
-
-    initialize();
-
-    that.terminate = terminate;
-    that.process = process;
-    that.render = render;
-    return that;
-}
-
-function getType() {
-    return 'example';
-}
-
-/***/ }),
-/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -182,7 +271,7 @@ const util = ( function() {
 
 
 /***/ }),
-/* 3 */
+/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -251,27 +340,26 @@ function addWindowResize(specs, my) {
 }
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__wh_core_app__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__wh_core_file__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__wh_core_transport__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__wh_midi_midi__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__wh_midi_network__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__wh_midi_remote__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__wh_midi_sync__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__wh_state_actions__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__wh_state_reducers__ = __webpack_require__(17);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__wh_state_store__ = __webpack_require__(18);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__wh_view_app__ = __webpack_require__(19);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__wh_view_canvas__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__wh_view_preferences__ = __webpack_require__(26);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__wh_core_processors__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__wh_view_remote__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__wh_view_file__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__wh_core_app__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__wh_core_file__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__wh_core_transport__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__wh_midi_midi__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__wh_midi_network__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__wh_midi_remote__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__wh_midi_sync__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__wh_state_actions__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__wh_state_reducers__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__wh_state_store__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__wh_view_app__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__wh_view_canvas__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__wh_view_preferences__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__wh_view_remote__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__wh_view_file__ = __webpack_require__(37);
 /**
     Euclidean Pattern Generator
     Copyright (C) 2017, 2018  Wouter Hisschemoller
@@ -289,7 +377,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 
 
 
@@ -354,7 +441,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         store: store,
         canvasView: canvasView
     });
-    Object(__WEBPACK_IMPORTED_MODULE_14__wh_view_remote__["a" /* default */])({
+    Object(__WEBPACK_IMPORTED_MODULE_13__wh_view_remote__["a" /* default */])({
         that: remoteView,
         appView: appView,
         midiRemote: midiRemote
@@ -367,7 +454,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         midiRemote: midiRemote,
         transport: transport
     });
-    Object(__WEBPACK_IMPORTED_MODULE_15__wh_view_file__["a" /* default */])({
+    Object(__WEBPACK_IMPORTED_MODULE_14__wh_view_file__["a" /* default */])({
         that: fileView,
         file: file
     });
@@ -405,14 +492,13 @@ document.addEventListener('DOMContentLoaded', function(e) {
 
     // initialise
     midi.connect()
-        .then(__WEBPACK_IMPORTED_MODULE_13__wh_core_processors__["a" /* scanForProcessors */])
         .then(file.loadLocalStorage)
         .then(transport.run);
 });
 
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -471,12 +557,12 @@ function createApp(specs, my) {
 
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createFile;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__filexml__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__filexml__ = __webpack_require__(6);
 
 
 /**
@@ -703,7 +789,7 @@ function createFile(specs, my) {
 
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -929,7 +1015,7 @@ function addXMLFileParser(specs, my) {
 }
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1311,7 +1397,7 @@ function createTransport(specs, my) {
 
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1545,12 +1631,12 @@ function createMIDI(specs) {
 
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createMIDINetwork;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__networkconnections__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__networkconnections__ = __webpack_require__(10);
 
 
 /**
@@ -1590,7 +1676,7 @@ function createMIDINetwork(specs, my) {
                 // }
             });
 
-            const module = __webpack_require__(12)(`./${state[0].type}/processor`);
+            const module = __webpack_require__(11)(`./${state[0].type}/processor`);
             const proc = module.createProcessor(state[0]);
             console.log('processor', proc);
             return;
@@ -1937,7 +2023,7 @@ function createMIDINetwork(specs, my) {
 
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1971,12 +2057,12 @@ function createMIDINetworkConnections(specs, my) {
 
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./epg/processor": 0,
-	"./example/processor": 1
+	"./epg/processor": 12,
+	"./example/processor": 22
 };
 function webpackContext(req) {
 	return __webpack_require__(webpackContextResolve(req));
@@ -1992,7 +2078,49 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 12;
+webpackContext.id = 11;
+
+/***/ }),
+/* 12 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (immutable) */ __webpack_exports__["createProcessor"] = createProcessor;
+/* harmony export (immutable) */ __webpack_exports__["getType"] = getType;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__midi_processorbase__ = __webpack_require__(13);
+ 
+
+function createProcessor(specs, my) {
+    let that;
+
+    const initialize = function() {},
+
+        terminate = function() {},
+
+        process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset) {},
+        
+        render = function(pos) {};
+
+    my = my || {};
+    my.info = {
+        inputs: 0,
+        outputs: 1
+    };
+    
+    that = Object(__WEBPACK_IMPORTED_MODULE_0__midi_processorbase__["a" /* default */])(specs, my);
+
+    initialize();
+
+    that.terminate = terminate;
+    that.process = process;
+    that.render = render;
+    return that;
+}
+
+function getType() {
+    return 'epg';
+}
 
 /***/ }),
 /* 13 */
@@ -2000,6 +2128,21 @@ webpackContext.id = 12;
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createMIDIProcessorBase;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parameter_boolean__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parameter_integer__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parameter_itemized__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parameter_string__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parameter_vector2d__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__connectorin__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__connectorout__ = __webpack_require__(21);
+
+
+
+
+
+
+
+
 /**
  * Base functionality for all MIDI processors.
  */
@@ -2017,19 +2160,19 @@ function createMIDIProcessorBase(specs, my) {
                 paramSpecs[key].key = key;
                 switch(paramSpecs[key].type) {
                     case 'integer':
-                        my.params[key] = WH.createIntegerParameter(paramSpecs[key]);
+                        my.params[key] = Object(__WEBPACK_IMPORTED_MODULE_1__parameter_integer__["a" /* default */])(paramSpecs[key]);
                         break;
                     case 'boolean':
-                        my.params[key] = WH.createBooleanParameter(paramSpecs[key]);
+                        my.params[key] = Object(__WEBPACK_IMPORTED_MODULE_0__parameter_boolean__["a" /* default */])(paramSpecs[key]);
                         break;
                     case 'itemized':
-                        my.params[key] = WH.createItemizedParameter(paramSpecs[key]);
+                        my.params[key] = Object(__WEBPACK_IMPORTED_MODULE_2__parameter_itemized__["a" /* default */])(paramSpecs[key]);
                         break;
                     case 'string':
-                        my.params[key] = WH.createStringParameter(paramSpecs[key]);
+                        my.params[key] = Object(__WEBPACK_IMPORTED_MODULE_3__parameter_string__["a" /* default */])(paramSpecs[key]);
                         break;
                     case 'vector2d':
-                        my.params[key] = WH.createVector2DParameter(paramSpecs[key]);
+                        my.params[key] = Object(__WEBPACK_IMPORTED_MODULE_4__parameter_vector2d__["a" /* default */])(paramSpecs[key]);
                         break;
                 }
                 my.params[key].addChangedCallback(paramChangedCallback);
@@ -2150,10 +2293,10 @@ function createMIDIProcessorBase(specs, my) {
     
     that = specs.that || {};
     if (my.info.inputs == 1) {
-        that = WH.createMIDIConnectorIn(specs, my);
+        that = Object(__WEBPACK_IMPORTED_MODULE_5__connectorin__["a" /* default */])(specs, my);
     }
     if (my.info.outputs == 1) {
-        that = WH.createMIDIConnectorOut(specs, my);
+        that = Object(__WEBPACK_IMPORTED_MODULE_6__connectorout__["a" /* default */])(specs, my);
     }
     
     that.setParamValue = setParamValue;
@@ -2173,6 +2316,527 @@ function createMIDIProcessorBase(specs, my) {
 
 /***/ }),
 /* 14 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = createBooleanParameter;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base__ = __webpack_require__(0);
+
+
+/**
+ * Parameter for Boolean values.
+ */
+function createBooleanParameter(specs, my) {
+    var that,
+        
+        normalize = function(value) {
+            return value ? 1 : 0;
+        },
+        
+        deNormalize = function(normalizedValue) {
+            return normalizedValue > .5;
+        };
+    
+    my = my || {};
+    my.normalize = normalize;
+    my.deNormalize = deNormalize;
+    
+    that = Object(__WEBPACK_IMPORTED_MODULE_0__base__["a" /* default */])(specs, my);
+    
+    return that;
+}
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export default */
+/**
+ * Functionality for parameters that are controllable by external MIDI CC values.
+ * Also includes functionality for MIDI learn mode.
+ */
+function createRemoteParameter(specs, my) {
+    var that,
+        remoteStateChangeCallbacks = [],
+        
+        /**
+         * Set the remote state of the parameter.
+         * This calls the setting view associated with this parameter, so that
+         * it goes into learn mode or shows it's selected or assigned.
+         * @param {String} state Remote assignment state, for example 'selected' or 'assigned'
+         * @param {Function} callback Function to call when in learn mode (ugly, improve some day)
+         */
+        setRemoteState = function(state, callback) {
+            for (var i = 0, n = remoteStateChangeCallbacks.length; i < n; i++) {
+                remoteStateChangeCallbacks[i](state, callback);
+            }
+        },
+        
+        /**
+         * Add a callback function to update the remote overlay on the
+         * parameter's setting view, so that the setting view can go
+         * into learn mode, or show that it's selected or assigned.
+         * It also updates the remote view entries of assigned parameters.
+         * @param {Function} callback Callback function.
+         */
+        addRemoteStateCallback = function(callback) {
+            remoteStateChangeCallbacks.push(callback);
+        },
+
+        /**
+         * Removes a callback function.
+         * @param {Function} callback The function that will be removed.
+         */
+        removeRemoteStateCallback = function(callback) {
+            var index = remoteStateChangeCallbacks.indexOf(callback);
+            if (index > -1) {
+                remoteStateChangeCallbacks.splice(index, 1);
+            }
+        },
+        
+        setRemoteProperty = function(key, value) {
+            if (my.remoteProps.hasOwnProperty(key)) {
+                my.remoteProps[key] = value;
+            }
+        },
+        
+        getRemoteProperty = function(key) {
+            if (my.remoteProps.hasOwnProperty(key)) {
+                return my.remoteProps[key];
+            }
+        },
+        
+        getRemoteData = function() {
+            return my.remoteProps;
+        };
+    
+    my = my || {};
+    my.remoteProps = {
+        channel: null,
+        controller: null
+    };
+    
+    that = specs.that || {};
+    
+    that.setRemoteState = setRemoteState;
+    that.addRemoteStateCallback = addRemoteStateCallback;
+    that.removeRemoteStateCallback = removeRemoteStateCallback;
+    that.setRemoteProperty = setRemoteProperty;
+    that.getRemoteProperty = getRemoteProperty;
+    that.getRemoteData = getRemoteData;
+    return that;
+}
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = createIntegerParameter;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base__ = __webpack_require__(0);
+
+
+/**
+ * Parameter for integer values between a minimum and maximum.
+ */
+function createIntegerParameter(specs, my) {
+    var that,
+        changedMaxCallbacks = [],
+        
+        init = function() {
+            my.props.min = specs.min;
+            my.props.max = specs.max;
+        },
+        
+        /**
+         * Convert value to number between 0 and 1.
+         * @param  {Number} value Parameter's value.
+         * @return {Number} Normalised value between 0 and 1.
+         */
+        normalize = function(value) {
+            return (value - my.props.min) / (my.props.max - my.props.min);
+        },
+        
+        /**
+         * Get value from number between 0 and 1.
+         * @param  {Number} normalizedValue Normalised value between 0 and 1.
+         * @return {Number} Parameter's value.
+         */
+        deNormalize = function(normalizedValue) {
+            return Math.round(my.props.min + normalizedValue * (my.props.max - my.props.min));
+        },
+        
+        /**
+         * Set a new maximum value.
+         * This happens to EPG pulses and rotation when steps change.
+         * @param {Number} newMax The new Maximum value for this parameter.
+         */
+        setMax = function(newMax) {
+            my.props.max = newMax;
+            var n = changedMaxCallbacks.length;
+            for (var i = 0; i < n; i++) {
+                changedMaxCallbacks[i](my.props.max);
+            }
+        },
+    
+        /**
+         * Adds a max callback function.
+         * @param {Function} callback The function, that will be invoked on max value changed.
+         */
+        addChangedMaxCallback = function(callback) {
+            changedMaxCallbacks.push(callback);
+        },
+
+        /**
+         * Removes a max callback function.
+         * @param {Function} callback The function that will be removed.
+         */
+        removeChangedMaxCallback = function(callback) {
+            var index = changedMaxCallbacks.indexOf(callback);
+            if (index > -1) {
+                changedMaxCallbacks.splice(index, 1);
+            }
+        };
+    
+    my = my || {};
+    my.normalize = normalize;
+    my.deNormalize = deNormalize;
+    
+    that = Object(__WEBPACK_IMPORTED_MODULE_0__base__["a" /* default */])(specs, my);
+    
+    init();
+    
+    that.setMax = setMax;
+    that.addChangedMaxCallback = addChangedMaxCallback;
+    that.removeChangedMaxCallback = removeChangedMaxCallback;
+    return that;
+}
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = createItemizedParameter;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base__ = __webpack_require__(0);
+
+
+/**
+ * Parameter for integer values between an minimum and maximum.
+ */
+function createItemizedParameter(specs, my) {
+    var that,
+        
+        normalize = function(value) {
+            return (value - my.min) / (my.max - my.min);
+        },
+        
+        deNormalize = function(normalizedValue) {
+            if (normalizedValue == 1) {
+                return values[my.model[my.model.length - 1].value];
+            }
+            return my.model[Math.floor(normalizedValue * my.model.length)].value;
+        },
+        
+        getModel = function() {
+            return my.model;
+        };
+    
+    my = my || {};
+    my.model = specs.model;
+    my.normalize = normalize;
+    my.deNormalize = deNormalize;
+    
+    that = Object(__WEBPACK_IMPORTED_MODULE_0__base__["a" /* default */])(specs, my);
+    
+    that.getModel = getModel;
+    return that;
+}
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = createStringParameter;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base__ = __webpack_require__(0);
+
+
+/**
+ * Parameter for String values.
+ */
+function createStringParameter(specs, my) {
+    var that,
+        
+        normalize = function(value) {
+            return value ? 1 : 0;
+        },
+        
+        deNormalize = function(normalizedValue) {
+            return value;
+        };
+    
+    my = my || {};
+    my.normalize = normalize;
+    my.deNormalize = deNormalize;
+    
+    that = Object(__WEBPACK_IMPORTED_MODULE_0__base__["a" /* default */])(specs, my);
+    
+    return that;
+}
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = createVector2DParameter;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base__ = __webpack_require__(0);
+
+
+/**
+ * Parameter for Boolean values.
+ */
+function createVector2DParameter(specs, my) {
+    var that,
+        
+        normalize = function(value) {
+            return value ? 1 : 0;
+        },
+        
+        deNormalize = function(normalizedValue) {
+            return value;
+        };
+    
+    my = my || {};
+    my.normalize = normalize;
+    my.deNormalize = deNormalize;
+    
+    that = Object(__WEBPACK_IMPORTED_MODULE_0__base__["a" /* default */])(specs, my);
+    
+    return that;
+}
+
+
+/***/ }),
+/* 20 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = createMIDIConnectorIn;
+/**
+ * MIDI network processor in connector.
+ */
+function createMIDIConnectorIn(specs, my) {
+    var that,
+        sources = [],
+        numSources = 0,
+        
+        /**
+         * Collects data from all processors this input is connected to.
+         * @return {Array} MIDI event data from all connected processors.
+         */
+        getInputData = function() {
+            var outputData = [], 
+                data = [];
+            for (var i = 0; i < numSources; i++) {
+                data = sources[i].getOutputData();
+                outputData = outputData.concat(data);
+                data.length = 0;
+            }
+            return outputData;
+        },
+        
+        /**
+         * Connect a processor as source for this processor.
+         * @param  {Object} processor Network MIDI processor.
+         */
+        addConnection = function(processor) {
+            sources.push(processor);
+            numSources = sources.length;
+            console.log('Connect ' + processor.getType() + ' (id ' + processor.getID() + ') to ' + that.getType() + ' (id ' + that.getID() + ')');
+        },
+        
+        /**
+         * Remove a processor as source for this processor.
+         * @param  {Object} processor Network MIDI processor.
+         */
+        removeConnection = function(processor) {
+            var n = sources.length;
+            while (--n >= 0) {
+                if (processor === sources[n]) {
+                    sources.splice(n, 1);
+                    numSources = sources.length;
+                    console.log('Disconnect ' + processor.getType() + ' (id ' + processor.getID() + ') from ' + that.getType() + ' (id ' + that.getID() + ')');
+                    break;
+                }
+            }
+        },
+        
+        /**
+         * Get number of connections.
+         * Used by the output port module to determine if 
+         * @return {Number} Number of connections to this output processor.
+         */
+        hasInputConnections = function() {
+            return numSources > 0;
+        };
+    
+    my = my || {};
+    my.getInputData = getInputData;
+
+    that = specs.that || {};
+    that.addConnection = addConnection;
+    that.removeConnection = removeConnection;
+    that.hasInputConnections = hasInputConnections;
+    return that;
+}
+
+
+/***/ }),
+/* 21 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = createMIDIConnectorOut;
+/**
+ * MIDI network processor out connector.
+ */
+function createMIDIConnectorOut(specs, my) {
+    var that,
+        outputData = [],
+        destinations = [],
+        
+        /**
+         * Set output data that is the result of this processor's processing.
+         * It will be collected by the processors attached to this output.
+         * @param {Object} eventData MIDI event data.
+         */
+        setOutputData = function(eventData) {
+            outputData.push(eventData);
+        },
+        
+        /**
+         * Public function for processors connected to this output to
+         * collect the data this processor's process function has produced.
+         * @return {Object} MIDI event data.
+         */
+        getOutputData = function() {
+            return outputData;
+        },
+        
+        /**
+         * Connect this processor's output to another processor's input.
+         * @param  {Object} processor Processor to connect to.
+         */
+        connect = function(processor) {
+            var isConnected = false,
+                n = destinations.length;
+            for (var i = 0; i < n; i++) {
+                if (processor === destinations[i]) {
+                    isConnected = true;
+                    break;
+                }
+            }
+            if (!isConnected) {
+                processor.addConnection(that);
+                destinations.push(processor);
+            }
+        },
+        
+        /**
+         * Disconnect this processor's output from another processor's input.
+         * @param  {Object} processor Processor to disconnect from, or undefined to remove all.
+         */
+        disconnect = function(processor) {
+            var n = destinations.length;
+            while (--n >= 0) {
+                if (!processor || (processor && processor === destinations[n])) {
+                    destinations[n].removeConnection(that);
+                    destinations.splice(n, 1);
+                }
+            }
+        },
+        
+        /**
+         * Get destination processors.
+         * Used to draw the connection cables on canvas.
+         * @return {Array} Processors this output connects to.
+         */
+        getDestinations = function() {
+            return destinations;
+        },
+        
+        /**
+         * The destinations are the processors this output is connected to.
+         * This function collects the ID's of these processors and adds them
+         * to a data object that can be stored.
+         * So this project and its processor connections can be restored.
+         * @param  {Object} data Project data object.
+         */
+        getDestinationsData = function(data) {
+            data.destinations = [];
+            var n = destinations.length;
+            for (var i = 0; i < n; i++) {
+                data.destinations.push(destinations[i].getID());
+            }
+        };
+    
+    my = my || {};
+    my.setOutputData = setOutputData;
+    my.getDestinationsData = getDestinationsData;
+
+    that = specs.that || {};
+    
+    that.getDestinations = getDestinations;
+    that.getOutputData = getOutputData;
+    that.connect = connect;
+    that.disconnect = disconnect;
+    return that;
+}
+
+
+/***/ }),
+/* 22 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (immutable) */ __webpack_exports__["createMIDIProcessor"] = createMIDIProcessor;
+/* harmony export (immutable) */ __webpack_exports__["getType"] = getType;
+function createMIDIProcessor(specs) {
+    let that;
+
+    const initialize = function() {
+            console.log(midiProcessors);
+        },
+
+        terminate = function() {},
+
+        process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset) {},
+
+    that = createMIDIProcessorBase(specs, my);
+
+    initialize();
+
+    that.terminate = terminate;
+    that.process = process;
+    that.render = render;
+    return that;
+}
+
+function getType() {
+    return 'example';
+}
+
+/***/ }),
+/* 23 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2598,7 +3262,7 @@ function createMIDIRemote(specs) {
 
 
 /***/ }),
-/* 15 */
+/* 24 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2694,12 +3358,12 @@ function createMIDISync(specs) {
 
 
 /***/ }),
-/* 16 */
+/* 25 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createActions;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__core_util__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__core_util__ = __webpack_require__(1);
 
 
 function createActions(specs = {}, my = {}) {
@@ -2734,7 +3398,7 @@ function createActions(specs = {}, my = {}) {
 
 
 /***/ }),
-/* 17 */
+/* 26 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2803,7 +3467,7 @@ function createReducers(specs = {}, my = {}) {
 
 
 /***/ }),
-/* 18 */
+/* 27 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2851,13 +3515,13 @@ function createStore(specs = {}, my = {}) {
 
 
 /***/ }),
-/* 19 */
+/* 28 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createAppView;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__settings__ = __webpack_require__(20);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowresize__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__settings__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowresize__ = __webpack_require__(2);
 
 
 
@@ -3125,7 +3789,7 @@ function createAppView(specs, my) {
 
 
 /***/ }),
-/* 20 */
+/* 29 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3235,16 +3899,16 @@ function createSettingsPanel(specs, my) {
 
 
 /***/ }),
-/* 21 */
+/* 30 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createCanvasView;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__core_util__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowresize__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__canvasprocessors__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__canvasconnections__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__tweenjs_tween_js__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__core_util__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowresize__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__canvasprocessors__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__canvasconnections__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__tweenjs_tween_js__ = __webpack_require__(33);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__tweenjs_tween_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__tweenjs_tween_js__);
 
 
@@ -3509,7 +4173,7 @@ function createCanvasView(specs, my) {
 
 
 /***/ }),
-/* 22 */
+/* 31 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3685,7 +4349,7 @@ function createCanvasProcessorsView(specs, my) {
             
 
 /***/ }),
-/* 23 */
+/* 32 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4004,7 +4668,7 @@ function createCanvasConnectionsView(specs, my) {
 
 
 /***/ }),
-/* 24 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -4891,10 +5555,10 @@ TWEEN.Interpolation = {
 
 })(this);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(34)))
 
 /***/ }),
-/* 25 */
+/* 34 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -5084,7 +5748,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 26 */
+/* 35 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5183,111 +5847,7 @@ function createPreferencesView(specs) {
 
 
 /***/ }),
-/* 27 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = scanForProcessors;
-/* unused harmony export getProcessorCreator */
-const processors = {};
-
-function scanForProcessors() {
-    return new Promise((resolve, reject) => {
-        const context = __webpack_require__(28);
-        console.log(context.keys());
-        context.keys().forEach(key => {
-            if (typeof context(key).getType === 'function') {
-                let type = context(key).getType();
-                processors[type] = {
-                    processorCreator: context(key)
-                };
-                console.log(`found processor ${context(key).getType()}`);
-            }
-        });
-        resolve();
-    });
-    
-}
-
-/**
- * @return {Function} 
- */
-function getProcessorCreator(type) {
-    console.log(processors);
-    if (processors[type]) {
-        console.log('ja');
-        return processors[type].createProcessor;
-    }
-}
-
-/***/ }),
-/* 28 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var map = {
-	"./epg/graphic.js": 29,
-	"./epg/info.json": 30,
-	"./epg/processor.js": 0,
-	"./epg/settings.html": 31,
-	"./example/graphic.js": 32,
-	"./example/info.json": 33,
-	"./example/processor.js": 1,
-	"./example/settings.html": 34
-};
-function webpackContext(req) {
-	return __webpack_require__(webpackContextResolve(req));
-};
-function webpackContextResolve(req) {
-	var id = map[req];
-	if(!(id + 1)) // check for number or string
-		throw new Error("Cannot find module '" + req + "'.");
-	return id;
-};
-webpackContext.keys = function webpackContextKeys() {
-	return Object.keys(map);
-};
-webpackContext.resolve = webpackContextResolve;
-module.exports = webpackContext;
-webpackContext.id = 28;
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports) {
-
-
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports) {
-
-module.exports = {}
-
-/***/ }),
-/* 31 */
-/***/ (function(module, exports) {
-
-
-
-/***/ }),
-/* 32 */
-/***/ (function(module, exports) {
-
-
-
-/***/ }),
-/* 33 */
-/***/ (function(module, exports) {
-
-module.exports = {"info":{"name":"","version":"0.0.0"},"params":{}}
-
-/***/ }),
-/* 34 */
-/***/ (function(module, exports) {
-
-
-
-/***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5373,7 +5933,7 @@ function createRemoteView(specs, my) {
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

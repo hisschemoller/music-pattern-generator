@@ -1,3 +1,11 @@
+import createBooleanParameter from '../parameter/boolean';
+import createIntegerParameter from '../parameter/integer';
+import createItemizedParameter from '../parameter/itemized';
+import createStringParameter from '../parameter/string';
+import createVector2DParameter from '../parameter/vector2d';
+import createMIDIConnectorIn from './connectorin';
+import createMIDIConnectorOut from './connectorout';
+
 /**
  * Base functionality for all MIDI processors.
  */
@@ -15,19 +23,19 @@ export default function createMIDIProcessorBase(specs, my) {
                 paramSpecs[key].key = key;
                 switch(paramSpecs[key].type) {
                     case 'integer':
-                        my.params[key] = WH.createIntegerParameter(paramSpecs[key]);
+                        my.params[key] = createIntegerParameter(paramSpecs[key]);
                         break;
                     case 'boolean':
-                        my.params[key] = WH.createBooleanParameter(paramSpecs[key]);
+                        my.params[key] = createBooleanParameter(paramSpecs[key]);
                         break;
                     case 'itemized':
-                        my.params[key] = WH.createItemizedParameter(paramSpecs[key]);
+                        my.params[key] = createItemizedParameter(paramSpecs[key]);
                         break;
                     case 'string':
-                        my.params[key] = WH.createStringParameter(paramSpecs[key]);
+                        my.params[key] = createStringParameter(paramSpecs[key]);
                         break;
                     case 'vector2d':
-                        my.params[key] = WH.createVector2DParameter(paramSpecs[key]);
+                        my.params[key] = createVector2DParameter(paramSpecs[key]);
                         break;
                 }
                 my.params[key].addChangedCallback(paramChangedCallback);
@@ -148,10 +156,10 @@ export default function createMIDIProcessorBase(specs, my) {
     
     that = specs.that || {};
     if (my.info.inputs == 1) {
-        that = WH.createMIDIConnectorIn(specs, my);
+        that = createMIDIConnectorIn(specs, my);
     }
     if (my.info.outputs == 1) {
-        that = WH.createMIDIConnectorOut(specs, my);
+        that = createMIDIConnectorOut(specs, my);
     }
     
     that.setParamValue = setParamValue;
