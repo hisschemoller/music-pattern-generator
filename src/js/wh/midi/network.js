@@ -32,61 +32,63 @@ export default function createMIDINetwork(specs, my) {
          */
         createProcessor = function(state) {
             state.forEach((data, i) => {
-                // if (data.id !== processors[i].getID()) {
-
-                // }
+                if (!processors[i] || (data.id !== processors[i].getID())) {
+                    const module = require(`../processors/${data.type}/processor`);
+                    const processor = module.createProcessor(data);
+                    processors.splice(i, 0, processor);
+                }
             });
 
-            const module = require(`../processors/${state[0].type}/processor`);
-            const proc = module.createProcessor(state[0]);
-            console.log('processor', proc);
+            
+            
+            
             return;
 
 
-            if (midiProcessors[specs.type]) {
-                specs = specs || {};
-                specs.that = {};
-                specs.id = specs.id || specs.type + performance.now() + '_' + Math.random();
-                var processor = midiProcessors[specs.type].createProcessor(specs);
+            // if (midiProcessors[specs.type]) {
+            //     specs = specs || {};
+            //     specs.that = {};
+            //     specs.id = specs.id || specs.type + performance.now() + '_' + Math.random();
+            //     var processor = midiProcessors[specs.type].createProcessor(specs);
 
-                // insert the processor at the right position
-                switch (specs.type) {
-                    case 'input':
-                        processors.unshift(processor);
-                        numInputProcessors++;
-                        break;
-                    case 'output':
-                        processors.push(processor);
-                        break;
-                    default:
-                        processors.splice(numInputProcessors, 0, processor);
-                }
+            //     // insert the processor at the right position
+            //     switch (specs.type) {
+            //         case 'input':
+            //             processors.unshift(processor);
+            //             numInputProcessors++;
+            //             break;
+            //         case 'output':
+            //             processors.push(processor);
+            //             break;
+            //         default:
+            //             processors.splice(numInputProcessors, 0, processor);
+            //     }
 
-                console.log('Create processor ' + processor.getType() + ' (id ' + processor.getID() + ')');
-                numProcessors = processors.length;
+            //     console.log('Create processor ' + processor.getType() + ' (id ' + processor.getID() + ')');
+            //     numProcessors = processors.length;
                 
-                setProcessorDefaultName(processor);
+            //     setProcessorDefaultName(processor);
 
-                // create the views for the processor
-                switch (specs.type) {
-                    case 'input':
-                        break;
-                    case 'output':
-                        canvasView.createProcessorView(processor);
-                        break;
-                    case 'epg':
-                        appView.createSettingsView(processor);
-                        canvasView.createProcessorView(processor);
-                        midiRemote.registerProcessor(processor);
-                        selectProcessor(processor);
-                        // canvasView.markDirty();
-                        break;
-                }
-            } else {
-                console.error('No MIDI processor found of type: ', specs.type);
-            }
+            //     // create the views for the processor
+            //     switch (specs.type) {
+            //         case 'input':
+            //             break;
+            //         case 'output':
+            //             canvasView.createProcessorView(processor);
+            //             break;
+            //         case 'epg':
+            //             appView.createSettingsView(processor);
+            //             canvasView.createProcessorView(processor);
+            //             midiRemote.registerProcessor(processor);
+            //             selectProcessor(processor);
+            //             // canvasView.markDirty();
+            //             break;
+            //     }
+            // } else {
+            //     console.error('No MIDI processor found of type: ', specs.type);
+            // }
             
-            return processor;
+            // return processor;
         },
 
         /**
