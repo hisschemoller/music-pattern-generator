@@ -51,6 +51,15 @@ document.addEventListener('DOMContentLoaded', function(e) {
         remoteView = {},
         transport = {};
     
+    // processors
+    const context = require.context('./wh/processors', true, /\processor.js$/);
+    context.keys().forEach(key => {
+        // console.log('key', key, context(key), context(key).getType);
+        if (typeof context(key).getType === 'function') {
+            console.log(`found processor ${context(key).getType()}`);
+        }
+    });
+    
     const store = createStore({
         actions: createActions(),
         reducers: createReducers()
