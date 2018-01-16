@@ -29,7 +29,6 @@ import createStore from './wh/state/store';
 import createAppView from './wh/view/app';
 import createCanvasView from './wh/view/canvas';
 import createPreferencesView from './wh/view/preferences';
-import createProcessors from './wh/core/processors';
 import createRemoteView from './wh/view/remote';
 import createFileView from './wh/view/file';
 
@@ -49,7 +48,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
         midiRemote = {},
         midiSync = {},
         preferencesView = {},
-        processors = {},
         remoteView = {},
         transport = {};
     
@@ -122,10 +120,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
         canvasView: canvasView,
         midiRemote: midiRemote,
         preferencesView: preferencesView
-    });
-    createProcessors({
-        that: processors,
-        store: store
     });
     createTransport({
         that: transport,

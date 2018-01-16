@@ -1,4 +1,4 @@
-import createMIDINetworkConnections from './networkconnections'
+import createMIDINetworkConnections from './networkconnections';
 
 /**
  * Manages the graph of midi processors.
@@ -31,9 +31,16 @@ export default function createMIDINetwork(specs, my) {
          * @param {Array} state Array of all processor data.
          */
         createProcessor = function(state) {
-            console.log('createProcessor', specs);
+            state.forEach((data, i) => {
+                // if (data.id !== processors[i].getID()) {
 
-            
+                // }
+            });
+
+            const module = require(`../processors/${state[0].type}/processor`);
+            const proc = module.createProcessor(state[0]);
+            console.log('processor', proc);
+            return;
 
 
             if (midiProcessors[specs.type]) {

@@ -1,4 +1,4 @@
-export default function createMIDIProcessor(specs) {
+export function createMIDIProcessor(specs) {
     let that;
 
     const initialize = function() {
