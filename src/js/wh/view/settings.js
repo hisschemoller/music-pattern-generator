@@ -3,15 +3,22 @@
  */
 export default function createSettingsPanel(specs, my) {
     var that,
-        midiNetwork = specs.midiNetwork,
-        processor = specs.processor,
-        parentEl = specs.parentEl,
+        // midiNetwork = specs.midiNetwork,
+        // processor = specs.processor,
         settingViews = [],
         el,
         
         initialize = function() {
+            el = require(`html-loader!../processors/${specs.type}/settings.html`);
+
+            console.log(specs.id);
+            console.log(el);
+
+            return;
+
+
             const params = processor.getParameters();
-            let template = document.querySelector('#template-settings-' + processor.getType());
+            // let template = document.querySelector('#template-settings-' + processor.getType());
             let clone = template.content.cloneNode(true);
             el = clone.firstElementChild;
             
@@ -88,8 +95,12 @@ export default function createSettingsPanel(specs, my) {
          * @param  {Object} proc MIDI processor object.
          * @return {Boolean} True if the processors match.
          */
-        hasProcessor = function(proc) {
-            return proc === processor;
+        // hasProcessor = function(proc) {
+        //     return proc === processor;
+        // },
+        
+        getID = function() {
+            return specs.id;
         };
     
     that = specs.that || {};
@@ -97,6 +108,7 @@ export default function createSettingsPanel(specs, my) {
     initialize();
     
     that.terminate = terminate;
-    that.hasProcessor = hasProcessor;
+    // that.hasProcessor = hasProcessor;
+    that.getID = getID;
     return that;
 }

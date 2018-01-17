@@ -29,6 +29,7 @@
     "devDependencies": {
         "electron": "^1.6.11",
         "electron-packager": "^8.7.2",
-        "webpack": "^3.10.0"
+        "webpack": "^3.10.0",
+        "html-loader": "^0.5.4"
     }
 }

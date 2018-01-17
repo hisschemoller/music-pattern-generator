@@ -91,6 +91,10 @@ export default function createAppView(specs, my) {
                     case e.detail.actions.SET_THEME:
                         rootEl.dataset.theme = e.detail.state.preferences.isDarkTheme ? 'dark' : '';
                         break;
+                    
+                    case e.detail.actions.CREATE_PROCESSOR:
+                        createSettingsViews(e.detail.state.processors);
+                        break;
                 }
             });
             
@@ -101,19 +105,27 @@ export default function createAppView(specs, my) {
             my.addWindowResizeCallback(renderLayout);
             renderLayout();
         },
-        
+
         /**
          * Create settings controls view for a processor.
          * @param  {Object} processor MIDI processor to control with the settings.
          */
-        createSettingsView = function(processor) {
-            var settingsView = createSettingsView({
-                midiNetwork: midiNetwork,
-                processor: processor,
-                parentEl: editContentEl
+        createSettingsViews = function(state) {
+            state.forEach((data, i) => {
+                if (!settingsViews[i] || (data.id !== settingsViews[i].getID())) {
+                    settingsViews.splice(i, 0, createSettingsPanel(data));
+                }
             });
-            settingsViews.push(settingsView);
         },
+
+        // createSettingsView = function(processor) {
+        //     var settingsView = createSettingsView({
+        //         midiNetwork: midiNetwork,
+        //         processor: processor,
+        //         parentEl: editContentEl
+        //     });
+        //     settingsViews.push(settingsView);
+        // },
         
         /**
          * Delete settings controls view for a processor.
@@ -256,7 +268,7 @@ export default function createAppView(specs, my) {
     init();
     
     that.renderLayout = renderLayout;
-    that.createSettingsView = createSettingsView;
+    // that.createSettingsView = createSettingsView;
     that.deleteSettingsView = deleteSettingsView;
     that.updateControl = updateControl;
     that.showPanel = showPanel;

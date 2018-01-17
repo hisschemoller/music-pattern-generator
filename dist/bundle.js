@@ -356,10 +356,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__wh_state_reducers__ = __webpack_require__(29);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__wh_state_store__ = __webpack_require__(30);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__wh_view_app__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__wh_view_canvas__ = __webpack_require__(33);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__wh_view_preferences__ = __webpack_require__(38);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__wh_view_remote__ = __webpack_require__(39);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__wh_view_file__ = __webpack_require__(40);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__wh_view_canvas__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__wh_view_preferences__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__wh_view_remote__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__wh_view_file__ = __webpack_require__(43);
 /**
     Euclidean Pattern Generator
     Copyright (C) 2017, 2018  Wouter Hisschemoller
@@ -1672,7 +1672,6 @@ function createMIDINetwork(specs, my) {
         createProcessor = function(state) {
             state.forEach((data, i) => {
                 if (!processors[i] || (data.id !== processors[i].getID())) {
-                    console.log(data);
                     const module = __webpack_require__(11)(`./${data.type}/processor`);
                     const processor = module.createProcessor(data);
                     processors.splice(i, 0, processor);
@@ -3394,7 +3393,6 @@ function createActions(specs = {}, my = {}) {
         CREATE_PROCESSOR: CREATE_PROCESSOR,
         createProcessor: (data) => {
             const config = __webpack_require__(26)(`./${data.type}/config.json`);
-            // data.id = `${data.type}_${util.createUUID()}`;
             return { type: CREATE_PROCESSOR, data: Object.assign(data, config, {
                 id: `${data.type}_${__WEBPACK_IMPORTED_MODULE_0__core_util__["a" /* util */].createUUID()}`
             })};
@@ -3657,6 +3655,10 @@ function createAppView(specs, my) {
                     case e.detail.actions.SET_THEME:
                         rootEl.dataset.theme = e.detail.state.preferences.isDarkTheme ? 'dark' : '';
                         break;
+                    
+                    case e.detail.actions.CREATE_PROCESSOR:
+                        createSettingsViews(e.detail.state.processors);
+                        break;
                 }
             });
             
@@ -3667,19 +3669,27 @@ function createAppView(specs, my) {
             my.addWindowResizeCallback(renderLayout);
             renderLayout();
         },
-        
+
         /**
          * Create settings controls view for a processor.
          * @param  {Object} processor MIDI processor to control with the settings.
          */
-        createSettingsView = function(processor) {
-            var settingsView = createSettingsView({
-                midiNetwork: midiNetwork,
-                processor: processor,
-                parentEl: editContentEl
+        createSettingsViews = function(state) {
+            state.forEach((data, i) => {
+                if (!settingsViews[i] || (data.id !== settingsViews[i].getID())) {
+                    settingsViews.splice(i, 0, Object(__WEBPACK_IMPORTED_MODULE_0__settings__["a" /* default */])(data));
+                }
             });
-            settingsViews.push(settingsView);
         },
+
+        // createSettingsView = function(processor) {
+        //     var settingsView = createSettingsView({
+        //         midiNetwork: midiNetwork,
+        //         processor: processor,
+        //         parentEl: editContentEl
+        //     });
+        //     settingsViews.push(settingsView);
+        // },
         
         /**
          * Delete settings controls view for a processor.
@@ -3822,7 +3832,7 @@ function createAppView(specs, my) {
     init();
     
     that.renderLayout = renderLayout;
-    that.createSettingsView = createSettingsView;
+    // that.createSettingsView = createSettingsView;
     that.deleteSettingsView = deleteSettingsView;
     that.updateControl = updateControl;
     that.showPanel = showPanel;
@@ -3835,21 +3845,28 @@ function createAppView(specs, my) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* unused harmony export default */
+/* harmony export (immutable) */ __webpack_exports__["a"] = createSettingsPanel;
 /**
  * Processor settings view.
  */
 function createSettingsPanel(specs, my) {
     var that,
-        midiNetwork = specs.midiNetwork,
-        processor = specs.processor,
-        parentEl = specs.parentEl,
+        // midiNetwork = specs.midiNetwork,
+        // processor = specs.processor,
         settingViews = [],
         el,
         
         initialize = function() {
+            el = __webpack_require__(33)(`./${specs.type}/settings.html`);
+
+            console.log(specs.id);
+            console.log(el);
+
+            return;
+
+
             const params = processor.getParameters();
-            let template = document.querySelector('#template-settings-' + processor.getType());
+            // let template = document.querySelector('#template-settings-' + processor.getType());
             let clone = template.content.cloneNode(true);
             el = clone.firstElementChild;
             
@@ -3926,8 +3943,12 @@ function createSettingsPanel(specs, my) {
          * @param  {Object} proc MIDI processor object.
          * @return {Boolean} True if the processors match.
          */
-        hasProcessor = function(proc) {
-            return proc === processor;
+        // hasProcessor = function(proc) {
+        //     return proc === processor;
+        // },
+        
+        getID = function() {
+            return specs.id;
         };
     
     that = specs.that || {};
@@ -3935,22 +3956,59 @@ function createSettingsPanel(specs, my) {
     initialize();
     
     that.terminate = terminate;
-    that.hasProcessor = hasProcessor;
+    // that.hasProcessor = hasProcessor;
+    that.getID = getID;
     return that;
 }
 
 
 /***/ }),
 /* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var map = {
+	"./epg/settings.html": 34,
+	"./example/settings.html": 35
+};
+function webpackContext(req) {
+	return __webpack_require__(webpackContextResolve(req));
+};
+function webpackContextResolve(req) {
+	var id = map[req];
+	if(!(id + 1)) // check for number or string
+		throw new Error("Cannot find module '" + req + "'.");
+	return id;
+};
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = 33;
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"settings settings--epg\">\n    <form>\n        <div class=\"panel__header panel__header--sub\">\n            <span class=\"header__label\">Euclidean Rhythm</span>\n        </div>\n        <fieldset class=\"settings__fieldset\">\n            <div class=\"settings__row steps\"></div>\n            <div class=\"settings__row pulses\"></div>\n            <div class=\"settings__row rotation\"></div>\n        </fieldset>\n        <div class=\"panel__header panel__header--sub\">\n            <span class=\"header__label\">Playback</span>\n        </div>\n        <fieldset class=\"settings__fieldset\">\n            <div class=\"settings__row rate\"></div>\n            <div class=\"settings__row note_length\"></div>\n            <div class=\"settings__row is_triplets\"></div>\n            <div class=\"settings__row is_mute\"></div>\n        </fieldset>\n        <div class=\"panel__header panel__header--sub\">\n            <span class=\"header__label\">MIDI Out</span>\n        </div>\n        <fieldset class=\"settings__fieldset\">\n            <div class=\"settings__row channel_out\"></div>\n            <div class=\"settings__row pitch_out\"></div>\n            <div class=\"settings__row velocity_out\"></div>\n        </fieldset>\n        <div class=\"panel__header panel__header--sub\">\n            <span class=\"header__label\">Other</span>\n        </div>\n        <fieldset class=\"settings__fieldset\">\n            <div class=\"settings__row name\"></div>\n            <span class=\"setting__label-text\"></span>\n            <button type=\"button\" class=\"settings__delete btn\">Delete</button>\n        </fieldset>\n    </form>\n</div>";
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports) {
+
+module.exports = "";
+
+/***/ }),
+/* 36 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createCanvasView;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__core_util__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowresize__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__canvasprocessors__ = __webpack_require__(34);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__canvasconnections__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__tweenjs_tween_js__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__canvasprocessors__ = __webpack_require__(37);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__canvasconnections__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__tweenjs_tween_js__ = __webpack_require__(39);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__tweenjs_tween_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__tweenjs_tween_js__);
 
 
@@ -4215,7 +4273,7 @@ function createCanvasView(specs, my) {
 
 
 /***/ }),
-/* 34 */
+/* 37 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4391,7 +4449,7 @@ function createCanvasProcessorsView(specs, my) {
             
 
 /***/ }),
-/* 35 */
+/* 38 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4710,7 +4768,7 @@ function createCanvasConnectionsView(specs, my) {
 
 
 /***/ }),
-/* 36 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -5597,10 +5655,10 @@ TWEEN.Interpolation = {
 
 })(this);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(37)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(40)))
 
 /***/ }),
-/* 37 */
+/* 40 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -5790,7 +5848,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 38 */
+/* 41 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5889,7 +5947,7 @@ function createPreferencesView(specs) {
 
 
 /***/ }),
-/* 39 */
+/* 42 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5975,7 +6033,7 @@ function createRemoteView(specs, my) {
 
 
 /***/ }),
-/* 40 */
+/* 43 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
