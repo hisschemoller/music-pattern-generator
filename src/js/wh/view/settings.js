@@ -1,3 +1,8 @@
+import createBooleanSettingView from './setting/boolean';
+import createIntegerSettingView from './setting/integer';
+import createItemizedSettingView from './setting/itemized';
+import createStringSettingView from './setting/string';
+
 /**
  * Processor settings view.
  */
@@ -9,53 +14,40 @@ export default function createSettingsPanel(specs, my) {
         el,
         
         initialize = function() {
-            el = require(`html-loader!../processors/${specs.type}/settings.html`);
-
-            console.log(specs.id);
-            console.log(el);
-
-            return;
-
-
-            const params = processor.getParameters();
-            // let template = document.querySelector('#template-settings-' + processor.getType());
-            let clone = template.content.cloneNode(true);
-            el = clone.firstElementChild;
-            
-            if (typeof processor.addSelectCallback === 'function') {
-                processor.addSelectCallback(show);
-            }
-            
+            const htmlString = require(`html-loader!../processors/${specs.type}/settings.html`);
+            const element = document.createElement('div');
+            element.innerHTML = htmlString;
+            console.log(specs);
             // loop through all processor parameters and add setting view if required
-            for (var key in params) {
-                if (params.hasOwnProperty(key)) {
+            for (var key in specs.params) {
+                if (specs.params.hasOwnProperty(key)) {
+                    console.log(key);
                     // only create setting if there's a container element for it in the settings panel
-                    var settingContainerEl = el.querySelector('.' + key);
+                    var settingContainerEl = element.querySelector('.' + key);
                     if (settingContainerEl) {
-                        var param = params[key],
+                        let paramData = specs.params[key],
                             settingView = {},
                             settingViewSpecs = {
-                                that: settingView,
-                                param: param,
-                                containerEl: settingContainerEl
+                                key: key,
+                                data: paramData,
+                                parentEl: settingContainerEl
                             };
+                        console.log(paramData.type);
                         // create the setting view based on the parameter type
-                        switch (param.getProperty('type')) {
+                        switch (paramData.type) {
                             case 'integer':
-                                settingView = ns.createIntegerSettingView(settingViewSpecs);
+                                settingView = createIntegerSettingView(settingViewSpecs);
                                 break;
                             case 'boolean':
-                                settingView = ns.createBooleanSettingView(settingViewSpecs);
+                                settingView = createBooleanSettingView(settingViewSpecs);
                                 break;
                             case 'itemized':
-                                settingView = ns.createItemizedSettingView(settingViewSpecs);
+                                settingView = createItemizedSettingView(settingViewSpecs);
                                 break;
                             case 'string':
-                                settingView = ns.createStringSettingView(settingViewSpecs);
+                                settingView = createStringSettingView(settingViewSpecs);
                                 break;
                         }
-                        // add view to list for future reference
-                        settingViews.push(settingView);
                     }
                 }
             }
@@ -64,9 +56,66 @@ export default function createSettingsPanel(specs, my) {
             if (el) {
                 el.querySelector('.settings__delete').addEventListener('click', function(e) {
                     e.preventDefault();
-                    midiNetwork.deleteProcessor(processor);
+                    // midiNetwork.deleteProcessor(processor);
                 });
             }
+
+            console.log(specs.id);
+            console.log(el);
+
+            return;
+
+
+            // const params = processor.getParameters();
+            // let template = document.querySelector('#template-settings-' + processor.getType());
+            // let clone = template.content.cloneNode(true);
+            // el = clone.firstElementChild;
+            
+            // if (typeof processor.addSelectCallback === 'function') {
+            //     processor.addSelectCallback(show);
+            // }
+            
+            // // loop through all processor parameters and add setting view if required
+            // for (var key in params) {
+            //     if (params.hasOwnProperty(key)) {
+            //         // only create setting if there's a container element for it in the settings panel
+            //         var settingContainerEl = el.querySelector('.' + key);
+            //         if (settingContainerEl) {
+            //             var param = params[key],
+            //                 settingView = {},
+            //                 settingViewSpecs = {
+            //                     that: settingView,
+            //                     param: param,
+            //                     containerEl: settingContainerEl
+            //                 };
+            //             // create the setting view based on the parameter type
+            //             switch (param.getProperty('type')) {
+            //                 case 'integer':
+            //                     settingView = ns.createIntegerSettingView(settingViewSpecs);
+            //                     break;
+            //                 case 'boolean':
+            //                     settingView = ns.createBooleanSettingView(settingViewSpecs);
+            //                     break;
+            //                 case 'itemized':
+            //                     settingView = ns.createItemizedSettingView(settingViewSpecs);
+            //                     break;
+            //                 case 'string':
+            //                     settingView = ns.createStringSettingView(settingViewSpecs);
+            //                     break;
+            //             }
+            //             // add view to list for future reference
+            //             settingViews.push(settingView);
+            //         }
+            //     }
+            // }
+            
+            // // default delete button of the settings panel
+            // if (el) {
+            //     el.querySelector('.settings__delete').addEventListener('click', function(e) {
+            //         e.preventDefault();
+            //         midiNetwork.deleteProcessor(processor);
+            //     });
+            // }
         },
         
         /**

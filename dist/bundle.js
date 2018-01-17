@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -69,7 +69,7 @@
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createBaseParameter;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__remote__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__remote__ = __webpack_require__(16);
 
 
 /**
@@ -232,6 +232,48 @@ function createBaseParameter(specs, my) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = createBaseSettingView;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__remote__ = __webpack_require__(35);
+
+
+/**
+ * Processor setting view for a linear integer type parameter,
+ * which has a slider and a number field.
+ */
+function createBaseSettingView(specs, my) {
+    var that,
+        
+        init = function() {
+            // find template, add clone to settings panel
+            let template = document.querySelector('#template-setting-' + my.param.type);
+            let clone = template.content.cloneNode(true);
+            my.el = clone.firstElementChild;
+            specs.parentEl.appendChild(my.el);
+            
+            // show label
+            my.el.querySelector('.setting__label-text').innerHTML = my.param.label;
+        };
+        
+    my = my || {};
+    my.param = specs.data;
+    my.el;
+    
+    that = that || {};
+    if (my.param.isMidiControllable) {
+        that = Object(__WEBPACK_IMPORTED_MODULE_0__remote__["a" /* default */])(specs, my);
+    }
+    
+    init();
+
+    return that;
+}
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /**
  * Utilities
  * Mouse or touch event detection.
@@ -271,7 +313,7 @@ const util = ( function() {
 
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -340,26 +382,26 @@ function addWindowResize(specs, my) {
 }
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__wh_core_app__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__wh_core_file__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__wh_core_transport__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__wh_midi_midi__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__wh_midi_network__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__wh_midi_remote__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__wh_midi_sync__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__wh_state_actions__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__wh_state_reducers__ = __webpack_require__(29);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__wh_state_store__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__wh_view_app__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__wh_view_canvas__ = __webpack_require__(36);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__wh_view_preferences__ = __webpack_require__(41);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__wh_view_remote__ = __webpack_require__(42);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__wh_view_file__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__wh_core_app__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__wh_core_file__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__wh_core_transport__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__wh_midi_midi__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__wh_midi_network__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__wh_midi_remote__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__wh_midi_sync__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__wh_state_actions__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__wh_state_reducers__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__wh_state_store__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__wh_view_app__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__wh_view_canvas__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__wh_view_preferences__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__wh_view_remote__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__wh_view_file__ = __webpack_require__(49);
 /**
     Euclidean Pattern Generator
     Copyright (C) 2017, 2018  Wouter Hisschemoller
@@ -498,7 +540,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -557,12 +599,12 @@ function createApp(specs, my) {
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createFile;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__filexml__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__filexml__ = __webpack_require__(7);
 
 
 /**
@@ -789,7 +831,7 @@ function createFile(specs, my) {
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1015,7 +1057,7 @@ function addXMLFileParser(specs, my) {
 }
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1397,7 +1439,7 @@ function createTransport(specs, my) {
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1631,12 +1673,12 @@ function createMIDI(specs) {
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createMIDINetwork;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__networkconnections__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__networkconnections__ = __webpack_require__(11);
 
 
 /**
@@ -1672,7 +1714,7 @@ function createMIDINetwork(specs, my) {
         createProcessor = function(state) {
             state.forEach((data, i) => {
                 if (!processors[i] || (data.id !== processors[i].getID())) {
-                    const module = __webpack_require__(11)(`./${data.type}/processor`);
+                    const module = __webpack_require__(12)(`./${data.type}/processor`);
                     const processor = module.createProcessor(data);
                     processors.splice(i, 0, processor);
                 }
@@ -2025,7 +2067,7 @@ function createMIDINetwork(specs, my) {
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2059,12 +2101,12 @@ function createMIDINetworkConnections(specs, my) {
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./epg/processor": 12,
-	"./example/processor": 22
+	"./epg/processor": 13,
+	"./example/processor": 23
 };
 function webpackContext(req) {
 	return __webpack_require__(webpackContextResolve(req));
@@ -2080,17 +2122,17 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 11;
+webpackContext.id = 12;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["createProcessor"] = createProcessor;
 /* harmony export (immutable) */ __webpack_exports__["getType"] = getType;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__midi_processorbase__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__midi_processorbase__ = __webpack_require__(14);
  
 
 function createProcessor(specs, my) {
@@ -2125,18 +2167,18 @@ function getType() {
 }
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createMIDIProcessorBase;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parameter_boolean__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parameter_integer__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parameter_itemized__ = __webpack_require__(17);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parameter_string__ = __webpack_require__(18);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parameter_vector2d__ = __webpack_require__(19);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__connectorin__ = __webpack_require__(20);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__connectorout__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parameter_boolean__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__parameter_integer__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__parameter_itemized__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__parameter_string__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__parameter_vector2d__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__connectorin__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__connectorout__ = __webpack_require__(22);
 
 
 
@@ -2317,7 +2359,7 @@ function createMIDIProcessorBase(specs, my) {
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2350,7 +2392,7 @@ function createBooleanParameter(specs, my) {
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2433,7 +2475,7 @@ function createRemoteParameter(specs, my) {
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2519,7 +2561,7 @@ function createIntegerParameter(specs, my) {
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2561,7 +2603,7 @@ function createItemizedParameter(specs, my) {
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2594,7 +2636,7 @@ function createStringParameter(specs, my) {
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2627,7 +2669,7 @@ function createVector2DParameter(specs, my) {
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2702,7 +2744,7 @@ function createMIDIConnectorIn(specs, my) {
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2805,7 +2847,7 @@ function createMIDIConnectorOut(specs, my) {
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2838,7 +2880,7 @@ function getType() {
 }
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3264,7 +3306,7 @@ function createMIDIRemote(specs) {
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3360,12 +3402,12 @@ function createMIDISync(specs) {
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createActions;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__core_util__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__core_util__ = __webpack_require__(2);
 
 
 function createActions(specs = {}, my = {}) {
@@ -3392,7 +3434,7 @@ function createActions(specs = {}, my = {}) {
 
         CREATE_PROCESSOR: CREATE_PROCESSOR,
         createProcessor: (data) => {
-            const config = __webpack_require__(26)(`./${data.type}/config.json`);
+            const config = __webpack_require__(27)(`./${data.type}/config.json`);
             return { type: CREATE_PROCESSOR, data: Object.assign(data, config, {
                 id: `${data.type}_${__WEBPACK_IMPORTED_MODULE_0__core_util__["a" /* util */].createUUID()}`
             })};
@@ -3402,12 +3444,12 @@ function createActions(specs = {}, my = {}) {
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./epg/config.json": 27,
-	"./example/config.json": 28
+	"./epg/config.json": 28,
+	"./example/config.json": 29
 };
 function webpackContext(req) {
 	return __webpack_require__(webpackContextResolve(req));
@@ -3423,22 +3465,22 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 26;
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports) {
-
-module.exports = {"name":"Euclidean","inputs":0,"outputs":1}
+webpackContext.id = 27;
 
 /***/ }),
 /* 28 */
 /***/ (function(module, exports) {
 
-module.exports = {"info":{"name":"","version":"0.0.0"},"params":{}}
+module.exports = {"name":"Euclidean","inputs":0,"outputs":1,"params":{"steps":{"label":"Steps","type":"integer","default":16,"min":1,"max":64,"isMidiControllable":true},"pulses":{"label":"Pulses","type":"integer","default":4,"min":0,"max":16,"isMidiControllable":true},"rotation":{"label":"Rotation","type":"integer","default":0,"min":0,"max":15,"isMidiControllable":true},"channel_out":{"label":"Channel","type":"integer","default":1,"min":1,"max":16,"isMidiControllable":false},"pitch_out":{"label":"Pitch","type":"integer","default":60,"min":0,"max":127,"isMidiControllable":false},"velocity_out":{"label":"Velocity","type":"integer","default":100,"min":0,"max":127,"isMidiControllable":false},"rate":{"label":"Rate","type":"itemized","default":0.25,"model":[{"label":"1","value":4},{"label":"1/2","value":2},{"label":"1/4","value":1},{"label":"1/8","value":0.5},{"label":"1/16","value":0.25},{"label":"1/32","value":0.125}],"isMidiControllable":false},"is_triplets":{"label":"Triplets","type":"boolean","default":false,"isMidiControllable":false},"note_length":{"label":"Note length","type":"itemized","default":0.25,"model":[{"label":"1","value":4},{"label":"1/2","value":2},{"label":"1/4","value":1},{"label":"1/8","value":0.5},{"label":"1/16","value":0.25},{"label":"1/32","value":0.125}],"isMidiControllable":false},"is_mute":{"label":"Mute","type":"boolean","default":false,"isMidiControllable":true},"name":{"label":"Name","type":"string","default":"Unnamed","isMidiControllable":false},"position2d":{"label":"2D position","type":"vector2d","default":{"x":0,"y":0},"isMidiControllable":false}}}
 
 /***/ }),
 /* 29 */
+/***/ (function(module, exports) {
+
+module.exports = {"info":{"name":"","version":"0.0.0"},"params":{}}
+
+/***/ }),
+/* 30 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3507,7 +3549,7 @@ function createReducers(specs = {}, my = {}) {
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3555,13 +3597,13 @@ function createStore(specs = {}, my = {}) {
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createAppView;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__settings__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowresize__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__settings__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowresize__ = __webpack_require__(3);
 
 
 
@@ -3841,11 +3883,20 @@ function createAppView(specs, my) {
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createSettingsPanel;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__setting_boolean__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__setting_integer__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__setting_itemized__ = __webpack_require__(37);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__setting_string__ = __webpack_require__(38);
+
+
+
+
+
 /**
  * Processor settings view.
  */
@@ -3857,53 +3908,40 @@ function createSettingsPanel(specs, my) {
         el,
         
         initialize = function() {
-            el = __webpack_require__(33)(`./${specs.type}/settings.html`);
-
-            console.log(specs.id);
-            console.log(el);
-
-            return;
-
-
-            const params = processor.getParameters();
-            // let template = document.querySelector('#template-settings-' + processor.getType());
-            let clone = template.content.cloneNode(true);
-            el = clone.firstElementChild;
-            
-            if (typeof processor.addSelectCallback === 'function') {
-                processor.addSelectCallback(show);
-            }
-            
+            const htmlString = __webpack_require__(39)(`./${specs.type}/settings.html`);
+            const element = document.createElement('div');
+            element.innerHTML = htmlString;
+            console.log(specs);
             // loop through all processor parameters and add setting view if required
-            for (var key in params) {
-                if (params.hasOwnProperty(key)) {
+            for (var key in specs.params) {
+                if (specs.params.hasOwnProperty(key)) {
+                    console.log(key);
                     // only create setting if there's a container element for it in the settings panel
-                    var settingContainerEl = el.querySelector('.' + key);
+                    var settingContainerEl = element.querySelector('.' + key);
                     if (settingContainerEl) {
-                        var param = params[key],
+                        let paramData = specs.params[key],
                             settingView = {},
                             settingViewSpecs = {
-                                that: settingView,
-                                param: param,
-                                containerEl: settingContainerEl
+                                key: key,
+                                data: paramData,
+                                parentEl: settingContainerEl
                             };
+                        console.log(paramData.type);
                         // create the setting view based on the parameter type
-                        switch (param.getProperty('type')) {
+                        switch (paramData.type) {
                             case 'integer':
-                                settingView = ns.createIntegerSettingView(settingViewSpecs);
+                                settingView = Object(__WEBPACK_IMPORTED_MODULE_1__setting_integer__["a" /* default */])(settingViewSpecs);
                                 break;
                             case 'boolean':
-                                settingView = ns.createBooleanSettingView(settingViewSpecs);
+                                settingView = Object(__WEBPACK_IMPORTED_MODULE_0__setting_boolean__["a" /* default */])(settingViewSpecs);
                                 break;
                             case 'itemized':
-                                settingView = ns.createItemizedSettingView(settingViewSpecs);
+                                settingView = Object(__WEBPACK_IMPORTED_MODULE_2__setting_itemized__["a" /* default */])(settingViewSpecs);
                                 break;
                             case 'string':
-                                settingView = ns.createStringSettingView(settingViewSpecs);
+                                settingView = Object(__WEBPACK_IMPORTED_MODULE_3__setting_string__["a" /* default */])(settingViewSpecs);
                                 break;
                         }
-                        // add view to list for future reference
-                        settingViews.push(settingView);
                     }
                 }
             }
@@ -3912,9 +3950,66 @@ function createSettingsPanel(specs, my) {
             if (el) {
                 el.querySelector('.settings__delete').addEventListener('click', function(e) {
                     e.preventDefault();
-                    midiNetwork.deleteProcessor(processor);
+                    // midiNetwork.deleteProcessor(processor);
                 });
             }
+
+            console.log(specs.id);
+            console.log(el);
+
+            return;
+
+
+            // const params = processor.getParameters();
+            // let template = document.querySelector('#template-settings-' + processor.getType());
+            // let clone = template.content.cloneNode(true);
+            // el = clone.firstElementChild;
+            
+            // if (typeof processor.addSelectCallback === 'function') {
+            //     processor.addSelectCallback(show);
+            // }
+            
+            // // loop through all processor parameters and add setting view if required
+            // for (var key in params) {
+            //     if (params.hasOwnProperty(key)) {
+            //         // only create setting if there's a container element for it in the settings panel
+            //         var settingContainerEl = el.querySelector('.' + key);
+            //         if (settingContainerEl) {
+            //             var param = params[key],
+            //                 settingView = {},
+            //                 settingViewSpecs = {
+            //                     that: settingView,
+            //                     param: param,
+            //                     containerEl: settingContainerEl
+            //                 };
+            //             // create the setting view based on the parameter type
+            //             switch (param.getProperty('type')) {
+            //                 case 'integer':
+            //                     settingView = ns.createIntegerSettingView(settingViewSpecs);
+            //                     break;
+            //                 case 'boolean':
+            //                     settingView = ns.createBooleanSettingView(settingViewSpecs);
+            //                     break;
+            //                 case 'itemized':
+            //                     settingView = ns.createItemizedSettingView(settingViewSpecs);
+            //                     break;
+            //                 case 'string':
+            //                     settingView = ns.createStringSettingView(settingViewSpecs);
+            //                     break;
+            //             }
+            //             // add view to list for future reference
+            //             settingViews.push(settingView);
+            //         }
+            //     }
+            // }
+            
+            // // default delete button of the settings panel
+            // if (el) {
+            //     el.querySelector('.settings__delete').addEventListener('click', function(e) {
+            //         e.preventDefault();
+            //         midiNetwork.deleteProcessor(processor);
+            //     });
+            // }
         },
         
         /**
@@ -3963,12 +4058,344 @@ function createSettingsPanel(specs, my) {
 
 
 /***/ }),
-/* 33 */
+/* 34 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = createBooleanSettingView;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base__ = __webpack_require__(1);
+
+
+/**
+ * Processor setting view for a Boolean type parameter,
+ * which has a checkbox input.
+ */
+function createBooleanSettingView(specs, my) {
+    var that,
+        checkEl,
+        
+        init = function() {
+            let id = getTemporaryInputAndLabelId();
+            
+            checkEl = my.el.querySelector('.setting__check');
+            checkEl.value = my.param.default;
+            checkEl.setAttribute('id', id);
+            checkEl.addEventListener('change', onChange);
+            
+            let labelEl = my.el.querySelector('.toggle__label');
+            labelEl.setAttribute('for', id);
+            
+            // my.param.addChangedCallback(changedCallback);
+        },
+        
+        /**
+         * A quick ID to tie label to input elements.
+         * @return {Number} Unique ID.
+         */
+        getTemporaryInputAndLabelId = function() {
+            return 'id' + Math.random() + performance.now();
+        },
+        
+        onChange = function(e) {
+            my.param.setValue(e.target.checked);
+        },
+        
+        changedCallback = function(parameter, oldValue, newValue) {
+            checkEl.checked = newValue;
+        };
+    
+    my = my || {};
+    
+    that = Object(__WEBPACK_IMPORTED_MODULE_0__base__["a" /* default */])(specs, my);
+    
+    init();
+    
+    return that;
+}
+
+
+/***/ }),
+/* 35 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = createRemoteSettingView;
+/**
+ * Processor setting overlay for assinging MIDI control to the parameter.
+ */
+function createRemoteSettingView(specs, my) {
+    var that,
+        learnClickLayer,
+        learnCallback,
+        
+        init = function() {
+            if (my.param.isMidiControllable) {
+                
+                // set callback on parameter
+                // my.param.addRemoteStateCallback(changeRemoteState);
+                
+                let template = document.querySelector('#template-setting-learnmode');
+                let clone = template.content.cloneNode(true);
+                learnClickLayer = clone.firstElementChild;
+            }
+        },
+        
+        /**
+         * State of the parameter in the assignment process changed,
+         * the element will show this visually.
+         * @param {String} state New state of the parameter.
+         * @param {Function} callback In learn mode, the function to call on click.
+         */
+        changeRemoteState = function(state, callback) {
+            switch (state) {
+                case 'enter':
+                    my.el.appendChild(learnClickLayer);
+                    learnCallback = callback;
+                    learnClickLayer.addEventListener('click', onLearnLayerClick);
+                    break;
+                case 'exit':
+                    if (my.el.contains(learnClickLayer)) {
+                        my.el.removeChild(learnClickLayer);
+                        learnCallback = null;
+                        learnClickLayer.removeEventListener('click', onLearnLayerClick);
+                    }
+                    break;
+                case 'selected':
+                    learnClickLayer.dataset.selected = true;
+                    break;
+                case 'deselected':
+                    learnClickLayer.dataset.selected = false;
+                    break;
+                case 'assigned':
+                    learnClickLayer.dataset.assigned = true;
+                    break;
+                case 'unassigned':
+                    learnClickLayer.dataset.assigned = false;
+                    break;
+                default:
+                    console.log('Unknown remote state: ', state);
+                    break;
+            }
+        },
+        
+        onLearnLayerClick = function(e) {
+            learnCallback(my.param);
+        };
+    
+    my = my || {};
+    
+    that = that || {};
+    
+    init();
+    
+    that.changeRemoteState = changeRemoteState;
+    return that;
+}
+
+
+/***/ }),
+/* 36 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = createIntegerSettingView;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base__ = __webpack_require__(1);
+
+
+/**
+ * Processor setting view for a linear integer type parameter,
+ * which has a slider and a number field.
+ */
+function createIntegerSettingView(specs, my) {
+    var that,
+        rangeEl,
+        numberEl,
+        
+        init = function() {
+            rangeEl = my.el.getElementsByClassName('setting__range')[0];
+            rangeEl.setAttribute('min', my.param.min);
+            rangeEl.setAttribute('max', my.param.max);
+            rangeEl.value = my.param.default;
+            rangeEl.addEventListener('input', onChange);
+            rangeEl.addEventListener('change', onChange);
+            
+            numberEl = my.el.getElementsByClassName('setting__number')[0];
+            numberEl.setAttribute('min', my.param.min);
+            numberEl.setAttribute('max', my.param.max);
+            numberEl.value = my.param.default;
+            numberEl.addEventListener('change', onChange);
+            
+            // my.param.addChangedCallback(changedCallback);
+            // my.param.addChangedMaxCallback(changedMaxCallback);
+        },
+        
+        onChange = function(e) {
+            my.param.setValue(parseInt(e.target.value, 10));
+        },
+        
+        changedCallback = function(parameter, oldValue, newValue) {
+            rangeEl.value = newValue;
+            numberEl.value = newValue;
+        },
+        
+        /**
+         * The maximum value of the parameter has changed.
+         * @param {Number} max New maximum value. 
+         */
+        changedMaxCallback = function(max) {
+            rangeEl.setAttribute('max', max);
+            numberEl.setAttribute('max', max);
+        };
+    
+    my = my || {};
+    
+    that = Object(__WEBPACK_IMPORTED_MODULE_0__base__["a" /* default */])(specs, my);
+    
+    init();
+    
+    return that;
+}
+
+
+/***/ }),
+/* 37 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = createItemizedSettingView;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base__ = __webpack_require__(1);
+
+
+/**
+ * Processor setting view for a itemized type parameter,
+ * which has a radio buttons for item selection.
+ */
+function createItemizedSettingView(specs, my) {
+    var that,
+        radioInputs = [],
+        numInputs,
+        
+        init = function() {
+            let parentEl = my.el.parentNode;
+            
+            // add the main label
+            let label = my.el.querySelector('.setting__label-text');
+            parentEl.appendChild(label);
+            
+            // add the radio buttons
+            let radioTemplate = document.querySelector('#template-setting-itemized-item'),
+                model = my.param.model;
+            numInputs = model.length;
+            for (var i = 0; i < numInputs; i++) {
+                let id = getTemporaryInputAndLabelId();
+                
+                // add a new cloned radio element
+                let radioInputEl = radioTemplate.content.children[0].cloneNode(true);
+                parentEl.appendChild(radioInputEl);
+                radioInputEl.setAttribute('name', specs.key);
+                radioInputEl.setAttribute('id', id);
+                radioInputEl.value = model[i].value;
+                radioInputEl.checked = model[i].value == my.param.default;
+                radioInputEl.addEventListener('change', onChange);
+                radioInputs.push(radioInputEl);
+                
+                // add a new cloned label element
+                let radioLabelEl = radioTemplate.content.children[1].cloneNode(true);
+                parentEl.appendChild(radioLabelEl);
+                radioLabelEl.setAttribute('for', id);
+                radioLabelEl.innerHTML = model[i].label;
+            }
+            
+            // remove the original element
+            parentEl.removeChild(my.el);
+            
+            // my.param.addChangedCallback(changedCallback);
+        },
+        
+        /**
+         * A quick ID to tie label to input elements.
+         * @return {Number} Unique ID.
+         */
+        getTemporaryInputAndLabelId = function() {
+            return 'id' + Math.random() + performance.now();
+        },
+        
+        onChange = function(e) {
+            my.param.setValue(e.target.value);
+        },
+        
+        changedCallback = function(parameter, oldValue, newValue) {
+            for (i = 0; i < numInputs; i++) {
+                radioInputs[i].checked = (radioInputs[i].value == newValue);
+            }
+        };
+        
+    my = my || {};
+    
+    that = Object(__WEBPACK_IMPORTED_MODULE_0__base__["a" /* default */])(specs, my);
+    
+    init();
+    
+    return that;
+}
+
+
+/***/ }),
+/* 38 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = createStringSettingView;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base__ = __webpack_require__(1);
+
+
+/**
+ * Processor setting view for a Boolean type parameter,
+ * which has a checkbox input.
+ */
+ 
+function createStringSettingView(specs, my) {
+    var that,
+        textEl,
+        
+        init = function() {
+            textEl = my.el.getElementsByClassName('setting__text')[0];
+            textEl.value = my.param.default;
+            textEl.addEventListener('input', onChange);
+            
+            // my.param.addChangedCallback(changedCallback);
+        },
+        
+        onChange = function(e) {
+            e.preventDefault();
+            my.param.setValue(e.target.value);
+        },
+        
+        changedCallback = function(parameter, oldValue, newValue) {
+            // only update if the text input doesn't have focus,
+            // else value gets refreshed and cursor jumps to end
+            if (textEl != document.activeElement) {
+                textEl.value = newValue;
+            }
+        };
+    
+    my = my || {};
+    
+    that = Object(__WEBPACK_IMPORTED_MODULE_0__base__["a" /* default */])(specs, my);
+    
+    init();
+    
+    return that;
+}
+
+
+/***/ }),
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./epg/settings.html": 34,
-	"./example/settings.html": 35
+	"./epg/settings.html": 40,
+	"./example/settings.html": 41
 };
 function webpackContext(req) {
 	return __webpack_require__(webpackContextResolve(req));
@@ -3984,31 +4411,31 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 33;
+webpackContext.id = 39;
 
 /***/ }),
-/* 34 */
+/* 40 */
 /***/ (function(module, exports) {
 
 module.exports = "<div class=\"settings settings--epg\">\n    <form>\n        <div class=\"panel__header panel__header--sub\">\n            <span class=\"header__label\">Euclidean Rhythm</span>\n        </div>\n        <fieldset class=\"settings__fieldset\">\n            <div class=\"settings__row steps\"></div>\n            <div class=\"settings__row pulses\"></div>\n            <div class=\"settings__row rotation\"></div>\n        </fieldset>\n        <div class=\"panel__header panel__header--sub\">\n            <span class=\"header__label\">Playback</span>\n        </div>\n        <fieldset class=\"settings__fieldset\">\n            <div class=\"settings__row rate\"></div>\n            <div class=\"settings__row note_length\"></div>\n            <div class=\"settings__row is_triplets\"></div>\n            <div class=\"settings__row is_mute\"></div>\n        </fieldset>\n        <div class=\"panel__header panel__header--sub\">\n            <span class=\"header__label\">MIDI Out</span>\n        </div>\n        <fieldset class=\"settings__fieldset\">\n            <div class=\"settings__row channel_out\"></div>\n            <div class=\"settings__row pitch_out\"></div>\n            <div class=\"settings__row velocity_out\"></div>\n        </fieldset>\n        <div class=\"panel__header panel__header--sub\">\n            <span class=\"header__label\">Other</span>\n        </div>\n        <fieldset class=\"settings__fieldset\">\n            <div class=\"settings__row name\"></div>\n            <span class=\"setting__label-text\"></span>\n            <button type=\"button\" class=\"settings__delete btn\">Delete</button>\n        </fieldset>\n    </form>\n</div>";
 
 /***/ }),
-/* 35 */
+/* 41 */
 /***/ (function(module, exports) {
 
 module.exports = "";
 
 /***/ }),
-/* 36 */
+/* 42 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = createCanvasView;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__core_util__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowresize__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__canvasprocessors__ = __webpack_require__(37);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__canvasconnections__ = __webpack_require__(38);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__tweenjs_tween_js__ = __webpack_require__(39);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__core_util__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowresize__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__canvasprocessors__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__canvasconnections__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__tweenjs_tween_js__ = __webpack_require__(45);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__tweenjs_tween_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__tweenjs_tween_js__);
 
 
@@ -4273,7 +4700,7 @@ function createCanvasView(specs, my) {
 
 
 /***/ }),
-/* 37 */
+/* 43 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4449,7 +4876,7 @@ function createCanvasProcessorsView(specs, my) {
             
 
 /***/ }),
-/* 38 */
+/* 44 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4768,7 +5195,7 @@ function createCanvasConnectionsView(specs, my) {
 
 
 /***/ }),
-/* 39 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -5655,10 +6082,10 @@ TWEEN.Interpolation = {
 
 })(this);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(40)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(46)))
 
 /***/ }),
-/* 40 */
+/* 46 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -5848,7 +6275,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 41 */
+/* 47 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5947,7 +6374,7 @@ function createPreferencesView(specs) {
 
 
 /***/ }),
-/* 42 */
+/* 48 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6033,7 +6460,7 @@ function createRemoteView(specs, my) {
 
 
 /***/ }),
-/* 43 */
+/* 49 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
