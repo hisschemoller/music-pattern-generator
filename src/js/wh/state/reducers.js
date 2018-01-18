@@ -4,6 +4,7 @@ export default function createReducers(specs = {}, my = {}) {
     const initialState = {
             bpm: 120,
             processors: [],
+            selectedID: null,
             preferences: {
                 isDarkTheme: false
             },
@@ -49,6 +50,11 @@ export default function createReducers(specs = {}, my = {}) {
                             newState.processors.splice(numInputProcessors, 0, action.data);
                     }
                     return newState;
+                
+                case actions.SELECT_PROCESSOR:
+                    return Object.assign({}, state, {
+                        selectedID: action.id
+                    });
                 
                 default:
                     return state;

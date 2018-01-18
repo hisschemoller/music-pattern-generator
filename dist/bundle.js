@@ -3443,12 +3443,6 @@ function createActions(specs = {}, my = {}) {
                 dispatch(getActions().createProcessor(fullData));
                 dispatch(getActions().selectProcessor(id));
             }
-
-            // const config = require(`json-loader!../processors/${data.type}/config.json`),
-            //     id = `${data.type}_${util.createUUID()}`;
-            // data = Object.assign(data, config, { id: id });
-            // createProcessor(data);
-            // selectProcessor(id);
         },
 
         CREATE_PROCESSOR: CREATE_PROCESSOR,
@@ -3514,6 +3508,7 @@ function createReducers(specs = {}, my = {}) {
     const initialState = {
             bpm: 120,
             processors: [],
+            selectedID: null,
             preferences: {
                 isDarkTheme: false
             },
@@ -3559,6 +3554,11 @@ function createReducers(specs = {}, my = {}) {
                             newState.processors.splice(numInputProcessors, 0, action.data);
                     }
                     return newState;
+                
+                case actions.SELECT_PROCESSOR:
+                    return Object.assign({}, state, {
+                        selectedID: action.id
+                    });
                 
                 default:
                     return state;
@@ -3723,6 +3723,10 @@ function createAppView(specs, my) {
                     case e.detail.actions.CREATE_PROCESSOR:
                         createSettingsViews(e.detail.state.processors);
                         break;
+
+                    case e.detail.actions.SELECT_PROCESSOR:
+                        showPanel('settings', true);
+                        break;
                 }
             });
             
@@ -3741,7 +3745,11 @@ function createAppView(specs, my) {
         createSettingsViews = function(state) {
             state.forEach((data, i) => {
                 if (!settingsViews[i] || (data.id !== settingsViews[i].getID())) {
-                    settingsViews.splice(i, 0, Object(__WEBPACK_IMPORTED_MODULE_0__settings__["a" /* default */])(data));
+                    settingsViews.splice(i, 0, Object(__WEBPACK_IMPORTED_MODULE_0__settings__["a" /* default */])({
+                        data: data,
+                        store: store,
+                        parentEl: editContentEl
+                    }));
                 }
             });
         },
@@ -3924,24 +3932,27 @@ function createAppView(specs, my) {
  */
 function createSettingsPanel(specs, my) {
     var that,
+        store = specs.store,
+        data = specs.data,
+        parentEl = specs.parentEl,
         // midiNetwork = specs.midiNetwork,
         // processor = specs.processor,
         settingViews = [],
         el,
         
         initialize = function() {
-            const htmlString = __webpack_require__(39)(`./${specs.type}/settings.html`);
-            const element = document.createElement('div');
-            element.innerHTML = htmlString;
+            const htmlString = __webpack_require__(39)(`./${data.type}/settings.html`);
+            el = document.createElement('div');
+            el.innerHTML = htmlString;
             
             // loop through all processor parameters and add setting view if required
-            for (var key in specs.params) {
-                if (specs.params.hasOwnProperty(key)) {
+            for (var key in data.params) {
+                if (data.params.hasOwnProperty(key)) {
                     
-                    // only create setting if there's a container element for it in the settings panel
-                    var settingContainerEl = element.querySelector('.' + key);
+                    // only create setting if there's a container el for it in the settings panel
+                    var settingContainerEl = el.querySelector('.' + key);
                     if (settingContainerEl) {
-                        let paramData = specs.params[key],
+                        let paramData = data.params[key],
                             settingView = {},
                             settingViewSpecs = {
                                 key: key,
@@ -3970,13 +3981,22 @@ function createSettingsPanel(specs, my) {
             
             // default delete button of the settings panel
             if (el) {
+                console.log('el', el);
                 el.querySelector('.settings__delete').addEventListener('click', function(e) {
                     e.preventDefault();
                     // midiNetwork.deleteProcessor(processor);
                 });
             }
 
-            console.log(specs.id);
+            document.addEventListener(store.STATE_CHANGE, (e) => {
+                switch (e.detail.action.type) {
+                    case e.detail.actions.SELECT_PROCESSOR:
+                        show(e.detail.action.id === data.id);
+                        break;
+                }
+            });
+
+            console.log(data.id);
             console.log(el);
 
             return;
@@ -3994,7 +4014,7 @@ function createSettingsPanel(specs, my) {
             // // loop through all processor parameters and add setting view if required
             // for (var key in params) {
             //     if (params.hasOwnProperty(key)) {
-            //         // only create setting if there's a container element for it in the settings panel
+            //         // only create setting if there's a container el for it in the settings panel
             //         var settingContainerEl = el.querySelector('.' + key);
             //         if (settingContainerEl) {
             //             var param = params[key],
@@ -4065,10 +4085,10 @@ function createSettingsPanel(specs, my) {
         // },
         
         getID = function() {
-            return specs.id;
+            return data.id;
         };
     
-    that = specs.that || {};
+    that = data.that || {};
     
     initialize();
     

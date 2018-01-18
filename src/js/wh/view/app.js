@@ -95,6 +95,10 @@ export default function createAppView(specs, my) {
                     case e.detail.actions.CREATE_PROCESSOR:
                         createSettingsViews(e.detail.state.processors);
                         break;
+
+                    case e.detail.actions.SELECT_PROCESSOR:
+                        showPanel('settings', true);
+                        break;
                 }
             });
             
@@ -113,7 +117,11 @@ export default function createAppView(specs, my) {
         createSettingsViews = function(state) {
             state.forEach((data, i) => {
                 if (!settingsViews[i] || (data.id !== settingsViews[i].getID())) {
-                    settingsViews.splice(i, 0, createSettingsPanel(data));
+                    settingsViews.splice(i, 0, createSettingsPanel({
+                        data: data,
+                        store: store,
+                        parentEl: editContentEl
+                    }));
                 }
             });
         },

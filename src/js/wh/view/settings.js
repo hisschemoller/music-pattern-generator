@@ -8,24 +8,27 @@ import createStringSettingView from './setting/string';
  */
 export default function createSettingsPanel(specs, my) {
     var that,
+        store = specs.store,
+        data = specs.data,
+        parentEl = specs.parentEl,
         // midiNetwork = specs.midiNetwork,
         // processor = specs.processor,
         settingViews = [],
         el,
         
         initialize = function() {
-            const htmlString = require(`html-loader!../processors/${specs.type}/settings.html`);
-            const element = document.createElement('div');
-            element.innerHTML = htmlString;
+            const htmlString = require(`html-loader!../processors/${data.type}/settings.html`);
+            el = document.createElement('div');
+            el.innerHTML = htmlString;
             
             // loop through all processor parameters and add setting view if required
-            for (var key in specs.params) {
-                if (specs.params.hasOwnProperty(key)) {
+            for (var key in data.params) {
+                if (data.params.hasOwnProperty(key)) {
                     
-                    // only create setting if there's a container element for it in the settings panel
-                    var settingContainerEl = element.querySelector('.' + key);
+                    // only create setting if there's a container el for it in the settings panel
+                    var settingContainerEl = el.querySelector('.' + key);
                     if (settingContainerEl) {
-                        let paramData = specs.params[key],
+                        let paramData = data.params[key],
                             settingView = {},
                             settingViewSpecs = {
                                 key: key,
@@ -60,7 +63,15 @@ export default function createSettingsPanel(specs, my) {
                 });
             }
 
-            console.log(specs.id);
+            document.addEventListener(store.STATE_CHANGE, (e) => {
+                switch (e.detail.action.type) {
+                    case e.detail.actions.SELECT_PROCESSOR:
+                        show(e.detail.action.id === data.id);
+                        break;
+                }
+            });
+
+            console.log(data.id);
             console.log(el);
 
             return;
@@ -78,7 +89,7 @@ export default function createSettingsPanel(specs, my) {
             // // loop through all processor parameters and add setting view if required
             // for (var key in params) {
             //     if (params.hasOwnProperty(key)) {
-            //         // only create setting if there's a container element for it in the settings panel
+            //         // only create setting if there's a container el for it in the settings panel
             //         var settingContainerEl = el.querySelector('.' + key);
             //         if (settingContainerEl) {
             //             var param = params[key],
@@ -149,10 +160,10 @@ export default function createSettingsPanel(specs, my) {
         // },
         
         getID = function() {
-            return specs.id;
+            return data.id;
         };
     
-    that = specs.that || {};
+    that = data.that || {};
     
     initialize();
     
