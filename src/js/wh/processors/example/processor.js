@@ -18,7 +18,3 @@ export function createMIDIProcessor(specs) {
     that.render = render;
     return that;
 }
-
-export function getType() {
-    return 'example';
-}

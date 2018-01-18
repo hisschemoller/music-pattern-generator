@@ -1,16 +1,10 @@
-/**
- * Base functionality for processor canvas views.
- */
 
-window.WH = window.WH || {};
+export default function createCanvasProcessorBaseView(specs, my) {
+    var that,
+        connectorGraphic,
 
-(function (WH) {
-    
-    var connectorGraphic,
-        
         /**
-         * Singleton canvas graphic for processor view connection point.
-         * @return {Object} Connector graphic.
+         * Base functionality for processor canvas views.
          */
         getConnectorGraphic = function() {
             if (!connectorGraphic) {
@@ -41,41 +35,35 @@ window.WH = window.WH || {};
                 connectorGraphic = resource;
             }
             return connectorGraphic;
+        },
+    
+        getProcessor = function() {
+            return my.processor;
+        },
+        
+        setPosition2d = function(position2d) {
+            my.processor.setParamValue('position2d', position2d);
+        },
+        
+        getPosition2d = function() {
+            return my.processor.getParamValue('position2d');
+        },
+        
+        getID = function() {
+            return my.data.id;
         };
     
-    // Create the connector graphic.
-    getConnectorGraphic().setTheme();
+    my = my || {};
+    my.processor = specs.processor;
+    my.getConnectorGraphic = getConnectorGraphic;
+    my.colorHigh = '#cccccc';
+    my.colorMid = '#dddddd';
+    my.colorLow = '#eeeeee';
     
-    function createCanvasProcessorBaseView(specs, my) {
-        var that,
-        
-            getProcessor = function() {
-                return my.processor;
-            },
-            
-            setPosition2d = function(position2d) {
-                my.processor.setParamValue('position2d', position2d);
-            },
-            
-            getPosition2d = function() {
-                return my.processor.getParamValue('position2d');
-            };
-        
-        my = my || {};
-        my.processor = specs.processor;
-        my.getConnectorGraphic = getConnectorGraphic;
-        my.colorHigh = '#cccccc';
-        my.colorMid = '#dddddd';
-        my.colorLow = '#eeeeee';
-        
-        that = specs.that || {};
-        
-        that.getProcessor = getProcessor;
-        that.setPosition2d = setPosition2d;
-        that.getPosition2d = getPosition2d;
-        return that;
-    }
+    that = specs.that || {};
     
-    WH.createCanvasProcessorBaseView = createCanvasProcessorBaseView;
-
-})(WH);
+    that.getProcessor = getProcessor;
+    that.setPosition2d = setPosition2d;
+    that.getPosition2d = getPosition2d;
+    return that;
+}

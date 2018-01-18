@@ -5,7 +5,7 @@
  * - Processor view dragging.
  * - Processor view theme changes.
  */
-export default function createCanvasProcessorsView(specs, my) {
+export default function createCanvasProcessorViews(specs, my) {
     var that,
         midiNetwork = specs.midiNetwork,
         views = [],
@@ -17,9 +17,27 @@ export default function createCanvasProcessorsView(specs, my) {
         
         /**
          * Create canvas 2D object if it exists for the type.
-         * @param  {Object} processor MIDI processor for which the 3D object will be a view.
+         * @param  {Array} data Array of current processors' state.
          */
-        createProcessorView = function(processor) {
+        createProcessorViews = function(state) {
+            state.forEach((data, i) => {
+                if (!views[i] || (data.id !== views[i].getID())) {
+                    const module = require(`../processors/${data.type}/graphic`);
+                    const view = module.createGraphic({ 
+                        data: data,
+                        canvasDirtyCallback: my.markDirty
+                    });
+                    views.splice(i, 0, view);
+                }
+            });
+
+
+            return;
+
+
+
+
+
             let view,
                 specs = {
                     processor: processor,
@@ -152,6 +170,7 @@ export default function createCanvasProcessorsView(specs, my) {
         };
 
     my = my || {};
+    my.createProcessorViews = createProcessorViews;
     my.intersectsProcessor = intersectsProcessor;
     my.intersectsInConnector = intersectsInConnector;
     my.intersectsOutConnector = intersectsOutConnector;
@@ -162,8 +181,8 @@ export default function createCanvasProcessorsView(specs, my) {
     
     that = specs.that || {};
     
-    that.createProcessorView = createProcessorView;
-    that.deleteProcessorView = deleteProcessorView;
+    // that.createProcessorView = createProcessorView;
+    // that.deleteProcessorView = deleteProcessorView;
     return that;
 }
             

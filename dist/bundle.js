@@ -274,6 +274,7 @@ function createBaseSettingView(specs, my) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = createUUID;
 /**
  * Utilities
  * Mouse or touch event detection.
@@ -292,24 +293,26 @@ const util = ( function() {
         move: isTouchDevice ? 'touchmove' : 'mousemove',
     };
 
-    /**
-     * @see https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
-     */
-    const createUUID = () => {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
-    };
+    
 
     return {
         isTouchDevice: isTouchDevice,
-        eventType: eventType,
-        createUUID: createUUID
+        eventType: eventType
     }
 })();
-/* harmony export (immutable) */ __webpack_exports__["a"] = util;
+/* harmony export (immutable) */ __webpack_exports__["b"] = util;
 
+
+/**
+ * Create a fairly unique ID.
+ * @see https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+ */
+function createUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
 
 
 /***/ }),
@@ -399,9 +402,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__wh_state_store__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__wh_view_app__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__wh_view_canvas__ = __webpack_require__(42);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__wh_view_preferences__ = __webpack_require__(47);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__wh_view_remote__ = __webpack_require__(48);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__wh_view_file__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__wh_view_preferences__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__wh_view_remote__ = __webpack_require__(52);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__wh_view_file__ = __webpack_require__(53);
 /**
     Euclidean Pattern Generator
     Copyright (C) 2017, 2018  Wouter Hisschemoller
@@ -2131,7 +2134,6 @@ webpackContext.id = 12;
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["createProcessor"] = createProcessor;
-/* harmony export (immutable) */ __webpack_exports__["getType"] = getType;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__midi_processorbase__ = __webpack_require__(14);
  
 
@@ -2160,10 +2162,6 @@ function createProcessor(specs, my) {
     that.process = process;
     that.render = render;
     return that;
-}
-
-function getType() {
-    return 'epg';
 }
 
 /***/ }),
@@ -2853,7 +2851,6 @@ function createMIDIConnectorOut(specs, my) {
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["createMIDIProcessor"] = createMIDIProcessor;
-/* harmony export (immutable) */ __webpack_exports__["getType"] = getType;
 function createMIDIProcessor(specs) {
     let that;
 
@@ -2873,10 +2870,6 @@ function createMIDIProcessor(specs) {
     that.process = process;
     that.render = render;
     return that;
-}
-
-function getType() {
-    return 'example';
 }
 
 /***/ }),
@@ -3437,9 +3430,11 @@ function createActions(specs = {}, my = {}) {
         CREATE_NEW_PROCESSOR: CREATE_NEW_PROCESSOR,
         createNewProcessor: (data) => {
             return (dispatch, getState, getActions) => {
-                const config = __webpack_require__(27)(`./${data.type}/config.json`),
-                    id = `${data.type}_${__WEBPACK_IMPORTED_MODULE_0__core_util__["a" /* util */].createUUID()}`,
-                    fullData = Object.assign(data, config, { id: id });
+                const fullData = __webpack_require__(27)(`./${data.type}/config.json`);
+                const id = `${data.type}_${Object(__WEBPACK_IMPORTED_MODULE_0__core_util__["a" /* createUUID */])()}`;
+                fullData.type = data.type;
+                fullData.id = id;
+                fullData.params.position2d.value = data.position2d;
                 dispatch(getActions().createProcessor(fullData));
                 dispatch(getActions().selectProcessor(id));
             }
@@ -3447,13 +3442,11 @@ function createActions(specs = {}, my = {}) {
 
         CREATE_PROCESSOR: CREATE_PROCESSOR,
         createProcessor: (data) => {
-            console.log('createProcessor', data);
             return { type: CREATE_PROCESSOR, data: data };
         },
 
         SELECT_PROCESSOR: SELECT_PROCESSOR,
         selectProcessor: (id) => {
-            console.log('selectProcessor', id);
             return { type: SELECT_PROCESSOR, id: id };
         },
     };
@@ -3488,7 +3481,7 @@ webpackContext.id = 27;
 /* 28 */
 /***/ (function(module, exports) {
 
-module.exports = {"name":"Euclidean","inputs":0,"outputs":1,"params":{"steps":{"label":"Steps","type":"integer","default":16,"min":1,"max":64,"isMidiControllable":true},"pulses":{"label":"Pulses","type":"integer","default":4,"min":0,"max":16,"isMidiControllable":true},"rotation":{"label":"Rotation","type":"integer","default":0,"min":0,"max":15,"isMidiControllable":true},"channel_out":{"label":"Channel","type":"integer","default":1,"min":1,"max":16,"isMidiControllable":false},"pitch_out":{"label":"Pitch","type":"integer","default":60,"min":0,"max":127,"isMidiControllable":false},"velocity_out":{"label":"Velocity","type":"integer","default":100,"min":0,"max":127,"isMidiControllable":false},"rate":{"label":"Rate","type":"itemized","default":0.25,"model":[{"label":"1","value":4},{"label":"1/2","value":2},{"label":"1/4","value":1},{"label":"1/8","value":0.5},{"label":"1/16","value":0.25},{"label":"1/32","value":0.125}],"isMidiControllable":false},"is_triplets":{"label":"Triplets","type":"boolean","default":false,"isMidiControllable":false},"note_length":{"label":"Note length","type":"itemized","default":0.25,"model":[{"label":"1","value":4},{"label":"1/2","value":2},{"label":"1/4","value":1},{"label":"1/8","value":0.5},{"label":"1/16","value":0.25},{"label":"1/32","value":0.125}],"isMidiControllable":false},"is_mute":{"label":"Mute","type":"boolean","default":false,"isMidiControllable":true},"name":{"label":"Name","type":"string","default":"Unnamed","isMidiControllable":false},"position2d":{"label":"2D position","type":"vector2d","default":{"x":0,"y":0},"isMidiControllable":false}}}
+module.exports = {"name":"Euclidean","inputs":0,"outputs":1,"euclid":[1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],"params":{"steps":{"label":"Steps","type":"integer","default":16,"value":16,"min":1,"max":64,"isMidiControllable":true},"pulses":{"label":"Pulses","type":"integer","default":4,"value":4,"min":0,"max":16,"isMidiControllable":true},"rotation":{"label":"Rotation","type":"integer","default":0,"value":0,"min":0,"max":15,"isMidiControllable":true},"channel_out":{"label":"Channel","type":"integer","default":1,"value":1,"min":1,"max":16,"isMidiControllable":false},"pitch_out":{"label":"Pitch","type":"integer","default":60,"value":60,"min":0,"max":127,"isMidiControllable":false},"velocity_out":{"label":"Velocity","type":"integer","default":100,"value":100,"min":0,"max":127,"isMidiControllable":false},"rate":{"label":"Rate","type":"itemized","default":0.25,"value":0.25,"model":[{"label":"1","value":4},{"label":"1/2","value":2},{"label":"1/4","value":1},{"label":"1/8","value":0.5},{"label":"1/16","value":0.25},{"label":"1/32","value":0.125}],"isMidiControllable":false},"is_triplets":{"label":"Triplets","type":"boolean","default":false,"value":false,"isMidiControllable":false},"note_length":{"label":"Note length","type":"itemized","default":0.25,"value":0.25,"model":[{"label":"1","value":4},{"label":"1/2","value":2},{"label":"1/4","value":1},{"label":"1/8","value":0.5},{"label":"1/16","value":0.25},{"label":"1/32","value":0.125}],"isMidiControllable":false},"is_mute":{"label":"Mute","type":"boolean","default":false,"value":false,"isMidiControllable":true},"name":{"label":"Name","type":"string","default":"Unnamed","value":"Unnamed","isMidiControllable":false},"position2d":{"label":"2D position","type":"vector2d","default":{"x":0,"y":0},"value":{"x":0,"y":0},"isMidiControllable":false}}}
 
 /***/ }),
 /* 29 */
@@ -3981,7 +3974,6 @@ function createSettingsPanel(specs, my) {
             
             // default delete button of the settings panel
             if (el) {
-                console.log('el', el);
                 el.querySelector('.settings__delete').addEventListener('click', function(e) {
                     e.preventDefault();
                     // midiNetwork.deleteProcessor(processor);
@@ -3997,7 +3989,6 @@ function createSettingsPanel(specs, my) {
             });
 
             console.log(data.id);
-            console.log(el);
 
             return;
 
@@ -4476,8 +4467,8 @@ module.exports = "";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__core_util__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowresize__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__canvasprocessors__ = __webpack_require__(43);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__canvasconnections__ = __webpack_require__(44);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__tweenjs_tween_js__ = __webpack_require__(45);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__canvasconnections__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__tweenjs_tween_js__ = __webpack_require__(49);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__tweenjs_tween_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__tweenjs_tween_js__);
 
 
@@ -4525,10 +4516,10 @@ function createCanvasView(specs, my) {
             staticCtx = staticCanvas.getContext('2d');
             dynamicCtx = dynamicCanvas.getContext('2d');
             
-            rootEl.addEventListener(__WEBPACK_IMPORTED_MODULE_0__core_util__["a" /* util */].eventType.click, onClick);
-            rootEl.addEventListener(__WEBPACK_IMPORTED_MODULE_0__core_util__["a" /* util */].eventType.start, onTouchStart);
-            rootEl.addEventListener(__WEBPACK_IMPORTED_MODULE_0__core_util__["a" /* util */].eventType.move, dragMove);
-            rootEl.addEventListener(__WEBPACK_IMPORTED_MODULE_0__core_util__["a" /* util */].eventType.end, dragEnd);
+            rootEl.addEventListener(__WEBPACK_IMPORTED_MODULE_0__core_util__["b" /* util */].eventType.click, onClick);
+            rootEl.addEventListener(__WEBPACK_IMPORTED_MODULE_0__core_util__["b" /* util */].eventType.start, onTouchStart);
+            rootEl.addEventListener(__WEBPACK_IMPORTED_MODULE_0__core_util__["b" /* util */].eventType.move, dragMove);
+            rootEl.addEventListener(__WEBPACK_IMPORTED_MODULE_0__core_util__["b" /* util */].eventType.end, dragEnd);
 
             document.addEventListener(store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
@@ -4536,6 +4527,10 @@ function createCanvasView(specs, my) {
                     case e.detail.actions.SET_THEME:
                         const themeName = e.detail.state.preferences.isDarkTheme ? 'dark' : '';
                         setTheme(themeName);
+                        break;
+                    
+                    case e.detail.actions.CREATE_PROCESSOR:
+                        my.createProcessorViews(e.detail.state.processors);
                         break;
                 }
             });
@@ -4746,7 +4741,7 @@ function createCanvasView(specs, my) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = createCanvasProcessorsView;
+/* harmony export (immutable) */ __webpack_exports__["a"] = createCanvasProcessorViews;
 /**
  * Manages the canvas views of the processors in the network.
  * - Processor view lifecycle.
@@ -4754,7 +4749,7 @@ function createCanvasView(specs, my) {
  * - Processor view dragging.
  * - Processor view theme changes.
  */
-function createCanvasProcessorsView(specs, my) {
+function createCanvasProcessorViews(specs, my) {
     var that,
         midiNetwork = specs.midiNetwork,
         views = [],
@@ -4766,9 +4761,27 @@ function createCanvasProcessorsView(specs, my) {
         
         /**
          * Create canvas 2D object if it exists for the type.
-         * @param  {Object} processor MIDI processor for which the 3D object will be a view.
+         * @param  {Array} data Array of current processors' state.
          */
-        createProcessorView = function(processor) {
+        createProcessorViews = function(state) {
+            state.forEach((data, i) => {
+                if (!views[i] || (data.id !== views[i].getID())) {
+                    const module = __webpack_require__(44)(`./${data.type}/graphic`);
+                    const view = module.createGraphic({ 
+                        data: data,
+                        canvasDirtyCallback: my.markDirty
+                    });
+                    views.splice(i, 0, view);
+                }
+            });
+
+
+            return;
+
+
+
+
+
             let view,
                 specs = {
                     processor: processor,
@@ -4901,6 +4914,7 @@ function createCanvasProcessorsView(specs, my) {
         };
 
     my = my || {};
+    my.createProcessorViews = createProcessorViews;
     my.intersectsProcessor = intersectsProcessor;
     my.intersectsInConnector = intersectsInConnector;
     my.intersectsOutConnector = intersectsOutConnector;
@@ -4911,14 +4925,694 @@ function createCanvasProcessorsView(specs, my) {
     
     that = specs.that || {};
     
-    that.createProcessorView = createProcessorView;
-    that.deleteProcessorView = deleteProcessorView;
+    // that.createProcessorView = createProcessorView;
+    // that.deleteProcessorView = deleteProcessorView;
     return that;
 }
             
 
 /***/ }),
 /* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var map = {
+	"./epg/graphic": 45,
+	"./example/graphic": 47
+};
+function webpackContext(req) {
+	return __webpack_require__(webpackContextResolve(req));
+};
+function webpackContextResolve(req) {
+	var id = map[req];
+	if(!(id + 1)) // check for number or string
+		throw new Error("Cannot find module '" + req + "'.");
+	return id;
+};
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = 44;
+
+/***/ }),
+/* 45 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (immutable) */ __webpack_exports__["createGraphic"] = createGraphic;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view_canvasprocessorbase__ = __webpack_require__(46);
+
+
+/**
+ * Euclidean pattern animated necklace wheel drawn on canvas.
+ */
+function createGraphic(specs, my) {
+    let that,
+        data = specs.data,
+        canvasDirtyCallback = specs.canvasDirtyCallback,
+        staticCanvas,
+        staticCtx,
+        necklaceCanvas,
+        necklaceCtx,
+        nameCanvas,
+        nameCtx,
+
+        pointerCanvas,
+        pointerCtx,
+        pointerRotation,
+        pointerRotationPrevious = 0,
+        pointerMutedRadius = 30,
+        pointerCanvasCenter,
+        
+        radius = 110,
+        necklaceMinRadius = 50,
+        necklaceRadius,
+        centerDotFullRadius = 10,
+        centerDotRadius,
+        centerDotSize,
+        centerDotX,
+        centerDotY,
+        centerDotStartTween,
+        centerDotEndTween,
+        
+        centerRadius = 20,
+        outConnectorY = 35,
+        selectRadius = 15,
+        dotRadius,
+        dotMaxRadius = 10,
+        dotActiveRadius,
+        zeroMarkerRadius = 3,
+        lineWidth = 2,
+        position2d,
+        isSelected = false,
+        doublePI = Math.PI * 2,
+        dotAnimations = {},
+        isNoteActive = false,
+        necklace = [],
+        
+        initialise = function() {
+            // offscreen canvas for static shapes
+            staticCanvas = document.createElement('canvas');
+            staticCanvas.height = radius * 2;
+            staticCanvas.width = radius * 2;
+            staticCtx = staticCanvas.getContext('2d');
+            staticCtx.lineWidth = lineWidth;
+            staticCtx.strokeStyle = my.colorHigh;
+            
+            // offscreen canvas for dots ring and polygon
+            necklaceCanvas = document.createElement('canvas');
+            necklaceCanvas.height = radius * 2;
+            necklaceCanvas.width = radius * 2;
+            necklaceCtx = necklaceCanvas.getContext('2d');
+            necklaceCtx.fillStyle = my.colorHigh;
+            necklaceCtx.lineWidth = lineWidth;
+            necklaceCtx.strokeStyle = my.colorHigh;
+            
+            // offscreen canvas for the pointer
+            pointerCanvas = document.createElement('canvas');
+            pointerCanvas.height = radius;
+            pointerCanvas.width = centerRadius * 2;
+            pointerCtx = pointerCanvas.getContext('2d');
+            pointerCtx.lineWidth = lineWidth;
+            pointerCtx.strokeStyle = my.colorHigh;
+            pointerCanvasCenter = pointerCanvas.width / 2;
+            
+            // offscreen canvas for the name
+            nameCanvas = document.createElement('canvas');
+            nameCanvas.height = 40;
+            nameCanvas.width = radius * 2;
+            nameCtx = nameCanvas.getContext('2d');
+            nameCtx.fillStyle = my.colorMid;
+            nameCtx.font = '14px sans-serif';
+            nameCtx.textAlign = 'center';
+            
+            // width and height to clear center dot 
+            centerDotSize = (centerDotFullRadius + 1) * 2;
+            
+            // add callback to update before render.
+            // my.processor.addRenderCallback(showPlaybackPosition);
+            // my.processor.addProcessCallback(showNote);
+            // my.processor.addSelectCallback(updateSelectCircle);
+            
+            // add listeners to parameters
+            // let params = my.processor.getParameters();
+            // params.steps.addChangedCallback(updateNecklace);
+            // params.pulses.addChangedCallback(updateNecklace);
+            // params.rotation.addChangedCallback(updateNecklace);
+            // params.is_mute.addChangedCallback(updatePointer);
+            // params.position2d.addChangedCallback(updatePosition);
+            // params.name.addChangedCallback(updateName);
+            console.log(data);
+            // set drawing values
+            position2d = data.params.position2d.value;
+            updatePosition(position2d, position2d)
+            updateName();
+            updateNecklace();
+            redrawStaticCanvas();
+        },
+        
+        /**
+         * Called before this view is deleted.
+         */
+        terminate = function() {
+            // let params = my.processor.getParameters();
+            // params.steps.removeChangedCallback(updateNecklace);
+            // params.pulses.removeChangedCallback(updateNecklace);
+            // params.rotation.removeChangedCallback(updateNecklace);
+            // params.is_mute.removeChangedCallback(updatePointer);
+            // params.position2d.removeChangedCallback(updatePosition);
+            // params.name.removeChangedCallback(updateName);
+            canvasDirtyCallback = null;
+        },
+        
+        /**
+         * Show the playback position within the pattern.
+         * Indicated by the pointer's rotation.
+         * @param  {Number} position Position within pattern in ticks.
+         * @param  {Number} duration Pattern length in ticks.
+         */
+        showPlaybackPosition = function(position, duration) {
+            pointerRotationPrevious = pointerRotation;
+            pointerRotation = doublePI * (position / duration);
+        },
+        
+        /**
+         * Show animation of the pattern dot that is about to play. 
+         * @param {Number} stepIndex Index of the step to play.
+         * @param {Number} noteStartDelay Delay from now until note start in ms.
+         * @param {Number} noteStopDelay Delay from now until note end in ms.
+         */
+        showNote = function(stepIndex, noteStartDelay, noteStopDelay) {
+            // get the coordinates of the dot for this step
+            let steps = my.processor.getParamValue('steps');
+            
+            // retain necklace dot state in object
+            dotAnimations[stepIndex] = {
+                position2d: necklace[stepIndex].center,
+                boundingBox: necklace[stepIndex].rect,
+                dotRadius: 0
+            }
+            
+            let tweeningDot = dotAnimations[stepIndex];
+            
+            // animate the necklace dot
+            new TWEEN.Tween({currentRadius: dotActiveRadius})
+                .to({currentRadius: dotRadius}, 300)
+                .onUpdate(function() {
+                        // store new dot size
+                        tweeningDot.dotRadius = this.currentRadius;
+                    })
+                .onComplete(function() {
+                        // delete dot state object
+                        delete dotAnimations[stepIndex];
+                    })
+                .delay(noteStartDelay)
+                .start();
+        },
+        
+        /**
+         * Update the pattern dots.
+         * If the steps, pulses or rotation properties have changed.
+         * If steps change it might invalidate the pointer.
+         */
+        updateNecklace = function() {
+            let steps = data.params.steps.value,
+                pulses = data.params.pulses.value,
+                rotation = data.params.rotation.value,
+                euclid = data.euclid,
+                rad, x, y;
+            
+            necklace = [];
+            
+            // calculate the dot positions
+            necklaceRadius = necklaceMinRadius + (Math.max(0, steps - 16) * 0.8);
+            for (let i = 0; i < steps; i++) {
+                rad = doublePI * (i / steps);
+                x = Math.sin(rad) * necklaceRadius;
+                y = Math.cos(rad) * necklaceRadius;
+                necklace.push({
+                    center: {
+                        x: x,
+                        y: y
+                    },
+                    rect: {
+                        x: x - dotMaxRadius * 2,
+                        y: y + dotMaxRadius * 2,
+                        xAbs: 0,
+                        yAbs: 0,
+                        height: dotMaxRadius * 4,
+                        width: dotMaxRadius * 4
+                    }
+                });
+            }
+            
+            necklaceCtx.clearRect(0, 0, necklaceCanvas.width, necklaceCanvas.height);
+            
+            updateNecklaceAbsolute();
+            updatePolygon(steps, pulses, euclid, necklace);
+            updateDots(steps, euclid, necklace);
+            updatePointer();
+            updateZeroMarker(steps, rotation);
+            updateRotatedMarker(steps, rotation);
+            redrawStaticCanvas();
+            canvasDirtyCallback();
+        },
+        
+        /**
+         * Update the coordinates of the necklace nodes relative to the main canvas.
+         */
+        updateNecklaceAbsolute = function() {
+            let rect;
+            for (let i = 0, n = necklace.length; i < n; i++) {
+                rect = necklace[i].rect;
+                rect.xAbs = position2d.x + rect.x;
+                rect.yAbs = position2d.y - rect.y;
+            }
+        },
+        
+        /**
+         * Show circle if the my.processor is selected, else hide.
+         * @param {Boolean} isSelectedView True if selected.
+         */
+        updateSelectCircle = function(isSelectedView) {
+            isSelected = isSelectedView;
+            if (typeof redrawStaticCanvas == 'function' && typeof canvasDirtyCallback == 'function') {
+                redrawStaticCanvas();
+                canvasDirtyCallback();
+            }
+        },
+        
+        /**
+         * Update pattern's position on the 2D canvas.
+         * @param  {Object} oldValue Previous 2D position as object.
+         * @param  {Object} newValue New 2D position as object.
+         */
+        updatePosition = function(oldValue, newValue) {
+            position2d = newValue;
+            centerDotX = position2d.x - centerDotFullRadius - 1;
+            centerDotY = position2d.y - centerDotFullRadius - 1;
+            updateNecklaceAbsolute();
+            redrawStaticCanvas();
+            canvasDirtyCallback();
+        },
+        
+        /**
+         * Draw polygon.
+         */
+        updatePolygon = function(steps, pulses, euclid, necklace) {
+            if (pulses > 1) {
+                necklaceCtx.fillStyle = my.colorLow;
+                necklaceCtx.strokeStyle = my.colorLow;
+                necklaceCtx.beginPath();
+                let isFirstPoint = true,
+                    firstPoint,
+                    dotCenter;
+                for (let i = 0; i < steps; i++) {
+                    if (euclid[i]) {
+                        dotCenter = necklace[i].center;
+                        if (isFirstPoint) {
+                            isFirstPoint = false;
+                            firstPoint = dotCenter;
+                            necklaceCtx.moveTo(radius + firstPoint.x, radius - firstPoint.y);
+                        } else {
+                            necklaceCtx.lineTo(radius + dotCenter.x, radius - dotCenter.y);
+                        }
+                    }
+                }
+                necklaceCtx.lineTo(radius + firstPoint.x, radius - firstPoint.y);
+                necklaceCtx.stroke();
+                necklaceCtx.globalAlpha = 0.6;
+                necklaceCtx.fill();
+                necklaceCtx.globalAlpha = 1.0;
+            }
+        },
+        
+        /**
+         * Draw the necklace dots in their inactive state.
+         */
+        updateDots = function(steps, euclid, necklace) {
+            dotRadius = dotMaxRadius - 3 - (Math.max(0, steps - 16) * 0.09);
+            dotActiveRadius = dotRadius * 2;
+            
+            necklaceCtx.fillStyle = my.colorHigh;
+            necklaceCtx.strokeStyle = my.colorHigh;
+            let point;
+            for (let i = 0; i < steps; i++) {
+                point = necklace[i].center;
+                if (euclid[i]) {
+                    // active dot
+                    necklaceCtx.beginPath();
+                    necklaceCtx.moveTo(radius + point.x + dotRadius, radius - point.y);
+                    necklaceCtx.arc(radius + point.x, radius - point.y, dotRadius, 0, doublePI, true);
+                    necklaceCtx.fill();
+                    necklaceCtx.stroke();
+                } else {
+                    // passive dot
+                    necklaceCtx.beginPath();
+                    necklaceCtx.moveTo(radius + point.x + dotRadius, radius - point.y);
+                    necklaceCtx.arc(radius + point.x, radius - point.y, dotRadius, 0, doublePI, true);
+                    necklaceCtx.stroke();
+                }
+            }
+        },
+        
+        /**
+         * Update the pointer that connects the dots.
+         */
+        updatePointer = function() {
+            let isMute = data.params.is_mute.value,
+                pointerRadius = isMute ? pointerMutedRadius : necklaceRadius,
+                pointerX = isMute ? 15 : 19,
+                pointerY = isMute ? 15 : 6;
+            
+            pointerCtx.clearRect(0, 0, pointerCanvas.width, pointerCanvas.height);
+            pointerCtx.beginPath();
+            pointerCtx.moveTo(pointerCanvasCenter - pointerX, pointerCanvas.height - pointerY);
+            pointerCtx.lineTo(pointerCanvasCenter, pointerCanvas.height - pointerRadius);
+            pointerCtx.lineTo(pointerCanvasCenter + pointerX, pointerCanvas.height - pointerY);
+            pointerCtx.stroke();
+        },
+        
+        /**
+         * Update the zero marker.
+         * @param {Number} steps Euclidean necklace node amount.
+         * @param {Number} rotation Euclidean necklace rotation.
+         */
+        updateZeroMarker = function(steps, rotation) {
+            var rad = doublePI * (-rotation / steps),
+                markerRadius = necklaceRadius + 15,
+                x = radius + (Math.sin(rad) * markerRadius),
+                y = radius - (Math.cos(rad) * markerRadius);
+            
+            necklaceCtx.beginPath();
+            necklaceCtx.moveTo(x, y + zeroMarkerRadius);
+            necklaceCtx.arc(x, y, zeroMarkerRadius, 0, doublePI, true);
+            necklaceCtx.stroke();
+        },
+        
+        /**
+         * Update the marker that indicates if the pattern is rotated.
+         * @param {Number} steps Euclidean necklace node amount.
+         * @param {Number} rotation Euclidean necklace rotation.
+         */
+        updateRotatedMarker = function(steps, rotation) {
+            if (rotation !== 0) {
+                var x = radius,
+                    y = radius - necklaceRadius - 10;
+                
+                necklaceCtx.beginPath();
+                necklaceCtx.moveTo(x, y);
+                necklaceCtx.lineTo(x, y - 10);
+                necklaceCtx.lineTo(x + 6, y - 7);
+                necklaceCtx.lineTo(x, y - 4);
+                necklaceCtx.stroke();
+            }
+        },
+        
+        /**
+         * Update the pattern's name.
+         */
+        updateName = function() {
+            // let name = my.processor.getParamValue('name');
+            nameCtx.clearRect(0, 0, nameCanvas.width, nameCanvas.height);
+            nameCtx.fillText(data.params.name.value, nameCanvas.width / 2, nameCanvas.height / 2);
+            canvasDirtyCallback();
+        },
+        
+        /**
+         * Redraw the pattern's static shapes canvas.
+         */
+        redrawStaticCanvas = function() {
+            staticCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
+            staticCtx.beginPath();
+            
+            // necklace
+            staticCtx.drawImage(necklaceCanvas, 0, 0);
+            
+            // center ring
+            staticCtx.moveTo(radius + centerRadius, radius);
+            staticCtx.arc(radius, radius, centerRadius, 0, doublePI, true);
+            
+            // select circle
+            if (isSelected) {
+                staticCtx.moveTo(radius + selectRadius, radius);
+                staticCtx.arc(radius, radius, selectRadius, 0, doublePI, true);
+            }
+            staticCtx.stroke();
+        },
+        
+        /**
+         * Add the pattern's static canvas to the main static canvas.
+         * @param  {Object} mainStaticCtx 2D canvas context.
+         */
+        addToStaticView = function(mainStaticCtx) {
+            mainStaticCtx.drawImage(
+                staticCanvas,
+                position2d.x - radius,
+                position2d.y - radius);
+            mainStaticCtx.drawImage(
+                nameCanvas,
+                position2d.x - radius,
+                position2d.y + necklaceRadius + 4);
+        },
+        
+        /**
+         * Draw the pattern's dynamic shapes on the main dymamic canvas
+         * @param  {Object} mainStaticCtx 2D canvas context.
+         */
+        addToDynamicView = function(mainDynamicCtx) {
+            // draw rotating pointer
+            mainDynamicCtx.save();
+            mainDynamicCtx.translate(position2d.x, position2d.y);
+            mainDynamicCtx.rotate(pointerRotation);
+            mainDynamicCtx.drawImage(pointerCanvas, -pointerCanvasCenter, -pointerCanvas.height);
+            mainDynamicCtx.restore();
+            
+            mainDynamicCtx.fillStyle = my.colorHigh;
+            mainDynamicCtx.strokeStyle = my.colorHigh;
+            mainDynamicCtx.beginPath();
+            
+            // necklace dots
+            isNoteActive = false;
+            let n = dotAnimations.length,
+                largestDot = dotRadius,
+                hasDotAnimations = false,
+                dotState, x, y;
+            for (let key in dotAnimations) {
+                if (dotAnimations.hasOwnProperty(key)) {
+                    dotState = dotAnimations[key];
+                    x = position2d.x + dotState.position2d.x;
+                    y = position2d.y - dotState.position2d.y;
+                    mainDynamicCtx.moveTo(x + dotState.dotRadius, y);
+                    mainDynamicCtx.arc(x, y, dotState.dotRadius, 0, doublePI, true);
+                    largestDot = Math.max(largestDot, dotState.dotRadius);
+                    isNoteActive = true;
+                }
+            }
+            
+            // center dot
+            if (isNoteActive) {
+                let largestDotNormalised = (largestDot - dotRadius) / (dotActiveRadius - dotRadius);
+                centerDotRadius = largestDotNormalised * centerDotFullRadius;
+                mainDynamicCtx.moveTo(position2d.x + centerDotRadius, position2d.y);
+                mainDynamicCtx.arc(position2d.x, position2d.y, centerDotRadius, 0, doublePI, true);
+            }
+            
+            mainDynamicCtx.fill();
+            mainDynamicCtx.stroke();
+        },
+        
+        /**
+         * Clear all this pattern's elements from the dynamic context.
+         * These are the center dot, necklace dots and pointer.
+         * @param  {Object} mainDynamicCtx 2D canvas context.
+         */
+        clearFromDynamicView = function(mainDynamicCtx) {
+            // center dot
+            if (isNoteActive) {
+                mainDynamicCtx.clearRect(centerDotX, centerDotY, centerDotSize, centerDotSize);
+            }
+            
+            // necklace dots
+            let rect;
+            for (let key in dotAnimations) {
+                if (dotAnimations.hasOwnProperty(key)) {
+                    rect = dotAnimations[key].boundingBox;
+                    mainDynamicCtx.clearRect(rect.xAbs, rect.yAbs, rect.height, rect.width);
+                }
+            }
+            
+            // pointer
+            mainDynamicCtx.save();
+            mainDynamicCtx.translate(position2d.x, position2d.y);
+            mainDynamicCtx.rotate(pointerRotationPrevious);
+            mainDynamicCtx.clearRect(-pointerCanvasCenter, -pointerCanvas.height, pointerCanvas.width, pointerCanvas.height);
+            mainDynamicCtx.restore();
+        },
+        
+        /**
+         * Test if a coordinate intersects with the graphic's hit area.
+         * @param  {Number} x Horizontal coordinate.
+         * @param  {Number} y Vertical coordinate.
+         * @param  {String} type Hit area type, 'processor|inconnector|outconnector'
+         * @return {Boolean} True if the point intersects. 
+         */
+        intersectsWithPoint = function(x, y, type) {
+            let distance;
+            switch (type) {
+                case 'processor':
+                    distance = Math.sqrt(Math.pow(x - position2d.x, 2) + Math.pow(y - position2d.y, 2));
+                    return distance <= necklaceRadius + dotRadius;
+                case 'inconnector':
+                    return false;
+                case 'outconnector':
+                    distance = Math.sqrt(Math.pow(x - position2d.x, 2) + Math.pow(y - position2d.y - outConnectorY, 2));
+                    return distance <= my.getConnectorGraphic().canvas.width / 2;
+            }
+        },
+        
+        /**
+         * Set the theme colours of the processor view.
+         * @param {Object} theme Theme settings object.
+         */
+        setTheme = function(theme) {
+            my.colorHigh = theme.colorHigh;
+            my.colorMid = theme.colorMid;
+            my.colorLow = theme.colorLow;
+            staticCtx.strokeStyle = my.colorHigh;
+            necklaceCtx.fillStyle = my.colorHigh;
+            necklaceCtx.strokeStyle = my.colorHigh;
+            pointerCtx.strokeStyle = my.colorHigh;
+            nameCtx.fillStyle = my.colorMid;
+            updateName();
+            updateNecklace();
+            my.getConnectorGraphic().setTheme(theme);
+        },
+        
+        getOutConnectorPoint = function() {
+            return {
+                x: position2d.x,
+                y: position2d.y + outConnectorY
+            }
+        },
+        
+        /**
+         * Provide output connector image for editing connections.
+         * @return {Object} Contains canvas and coordinates.
+         */
+        getOutConnectorGraphic = function() {
+            const canvas = my.getConnectorGraphic().canvas,
+                point = getOutConnectorPoint();
+            return {
+                canvas: canvas,
+                x: point.x - (canvas.width / 2),
+                y: point.y - (canvas.height / 2)
+            };
+        };
+        
+    my = my || {};
+    
+    that = Object(__WEBPACK_IMPORTED_MODULE_0__view_canvasprocessorbase__["a" /* default */])(specs, my);
+    
+    initialise();
+    
+    that.terminate = terminate;
+    that.addToStaticView = addToStaticView;
+    that.addToDynamicView = addToDynamicView;
+    that.clearFromDynamicView = clearFromDynamicView;
+    that.intersectsWithPoint = intersectsWithPoint;
+    that.setTheme = setTheme;
+    that.getOutConnectorPoint = getOutConnectorPoint;
+    that.getOutConnectorGraphic = getOutConnectorGraphic;
+    return that;
+}
+
+/***/ }),
+/* 46 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = createCanvasProcessorBaseView;
+
+function createCanvasProcessorBaseView(specs, my) {
+    var that,
+        connectorGraphic,
+
+        /**
+         * Base functionality for processor canvas views.
+         */
+        getConnectorGraphic = function() {
+            if (!connectorGraphic) {
+                const canvas = document.createElement('canvas'),
+                    ctx = canvas.getContext('2d'),
+                    radius = 12,
+                    lineWidth = 2,
+                    resource = {
+                        radius: radius,
+                        lineWidth: lineWidth,
+                        canvas: canvas,
+                        ctx: ctx,
+                        setTheme: function(theme) {
+                            console.log(theme);
+                            this.ctx.lineWidth = this.lineWidth;
+                            this.ctx.strokeStyle = theme ? theme.colorHigh : '#333';
+                            this.ctx.setLineDash([4, 4]);
+                            this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
+                            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                            this.ctx.moveTo(this.radius, 0);
+                            this.ctx.arc(0, 0, this.radius, 0, Math.PI * 2, true);
+                            this.ctx.stroke();
+                        }
+                    };
+                    
+                canvas.width = (radius + lineWidth) * 2;
+                canvas.height = (radius + lineWidth) * 2;
+                connectorGraphic = resource;
+            }
+            return connectorGraphic;
+        },
+    
+        getProcessor = function() {
+            return my.processor;
+        },
+        
+        setPosition2d = function(position2d) {
+            my.processor.setParamValue('position2d', position2d);
+        },
+        
+        getPosition2d = function() {
+            return my.processor.getParamValue('position2d');
+        },
+        
+        getID = function() {
+            return my.data.id;
+        };
+    
+    my = my || {};
+    my.processor = specs.processor;
+    my.getConnectorGraphic = getConnectorGraphic;
+    my.colorHigh = '#cccccc';
+    my.colorMid = '#dddddd';
+    my.colorLow = '#eeeeee';
+    
+    that = specs.that || {};
+    
+    that.getProcessor = getProcessor;
+    that.setPosition2d = setPosition2d;
+    that.getPosition2d = getPosition2d;
+    return that;
+}
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports) {
+
+
+
+/***/ }),
+/* 48 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5237,7 +5931,7 @@ function createCanvasConnectionsView(specs, my) {
 
 
 /***/ }),
-/* 45 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -6124,10 +6818,10 @@ TWEEN.Interpolation = {
 
 })(this);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(46)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(50)))
 
 /***/ }),
-/* 46 */
+/* 50 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -6317,7 +7011,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 47 */
+/* 51 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6416,7 +7110,7 @@ function createPreferencesView(specs) {
 
 
 /***/ }),
-/* 48 */
+/* 52 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6502,7 +7196,7 @@ function createRemoteView(specs, my) {
 
 
 /***/ }),
-/* 49 */
+/* 53 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

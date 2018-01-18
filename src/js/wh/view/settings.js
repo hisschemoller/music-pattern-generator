@@ -72,7 +72,6 @@ export default function createSettingsPanel(specs, my) {
             });
 
             console.log(data.id);
-            console.log(el);
 
             return;
 

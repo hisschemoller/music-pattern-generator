@@ -1,6 +1,6 @@
 import { util } from '../core/util';
 import addWindowResize from './windowresize';
-import createCanvasProcessorsView from './canvasprocessors';
+import createCanvasProcessorViews from './canvasprocessors';
 import createCanvasConnectionsView from './canvasconnections';
 import TWEEN from '@tweenjs/tween.js';
 
@@ -55,6 +55,10 @@ export default function createCanvasView(specs, my) {
                     case e.detail.actions.SET_THEME:
                         const themeName = e.detail.state.preferences.isDarkTheme ? 'dark' : '';
                         setTheme(themeName);
+                        break;
+                    
+                    case e.detail.actions.CREATE_PROCESSOR:
+                        my.createProcessorViews(e.detail.state.processors);
                         break;
                 }
             });
@@ -249,7 +253,7 @@ export default function createCanvasView(specs, my) {
     my.markDirty = markDirty;
     
     that = addWindowResize(specs, my);
-    that = createCanvasProcessorsView(specs, my);
+    that = createCanvasProcessorViews(specs, my);
     that = createCanvasConnectionsView(specs, my);
     
     init();

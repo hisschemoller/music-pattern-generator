@@ -26,7 +26,3 @@ export function createProcessor(specs, my) {
     that.render = render;
     return that;
 }
-
-export function getType() {
-    return 'epg';
-}
