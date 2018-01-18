@@ -17,11 +17,11 @@ export default function createSettingsPanel(specs, my) {
             const htmlString = require(`html-loader!../processors/${specs.type}/settings.html`);
             const element = document.createElement('div');
             element.innerHTML = htmlString;
-            console.log(specs);
+            
             // loop through all processor parameters and add setting view if required
             for (var key in specs.params) {
                 if (specs.params.hasOwnProperty(key)) {
-                    console.log(key);
+                    
                     // only create setting if there's a container element for it in the settings panel
                     var settingContainerEl = element.querySelector('.' + key);
                     if (settingContainerEl) {
@@ -32,7 +32,7 @@ export default function createSettingsPanel(specs, my) {
                                 data: paramData,
                                 parentEl: settingContainerEl
                             };
-                        console.log(paramData.type);
+                        
                         // create the setting view based on the parameter type
                         switch (paramData.type) {
                             case 'integer':

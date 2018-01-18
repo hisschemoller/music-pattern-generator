@@ -102,7 +102,7 @@ export default function createCanvasView(specs, my) {
          */
         onDoubleClick = function(e) {
             // create a new processor
-            store.dispatch(store.getActions().createProcessor({
+            store.dispatch(store.getActions().createNewProcessor({
                 type: 'epg',
                 position2d: {
                     x: e.clientX - my.canvasRect.left + window.scrollX,

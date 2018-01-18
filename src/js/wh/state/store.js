@@ -10,16 +10,15 @@ export default function createStore(specs = {}, my = {}) {
         dispatch = (action) => {
             // thunk or not
             if (typeof action === 'function') {
-                
+                action(dispatch, getState, getActions);
             } else {
-
+                currentState = reducers.reduce(currentState, action, actions);
+                document.dispatchEvent(new CustomEvent(STATE_CHANGE, { detail: {
+                    state: currentState,
+                    action: action,
+                    actions: actions
+                }}));
             }
-            currentState = reducers.reduce(currentState, action, actions);
-            document.dispatchEvent(new CustomEvent(STATE_CHANGE, { detail: {
-                state: currentState,
-                action: action,
-                actions: actions
-            }}));
         },
         
         getActions = () => {
