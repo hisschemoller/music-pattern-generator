@@ -79,6 +79,16 @@ export default function createCanvasConnectionsView(specs, my) {
         },
         
         updateConnectorsInfo = function() {
+            return;
+
+
+
+
+
+
+
+
+
             // clear the old info
             inConnectors = {};
             outConnectors = {};
@@ -116,6 +126,15 @@ export default function createCanvasConnectionsView(specs, my) {
          * or when Connect Mode is entered or exited.
          */
         drawOfflineCanvas = function() {
+            return;
+
+
+
+
+
+
+
+            
             // clear the canvas
             offlineCtx.clearRect(0, 0, offlineCanvas.width, offlineCanvas.height);
             
