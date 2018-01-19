@@ -329,9 +329,10 @@ div[data-theme] {
 .controlbar__name {
     font-size: 12px;
     line-height: 12px;
+    padding-top: 2px;
 }
 .controlbar__version {
-    font-size: 18px;
+    font-size: 16px;
     line-height: 16px;
 }
 .controls .btn,

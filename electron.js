@@ -16,7 +16,10 @@ function createWindow () {
 mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
-    icon: path.join(__dirname, 'assets/icons/png/128x128.png')
+    icon: path.join(__dirname, 'assets/icons/png/128x128.png'),
+    webPreferences: {
+        backgroundThrottling: false
+    }
 })
 
 // and load the index.html of the app.
@@ -36,7 +39,13 @@ mainWindow.on('closed', function () {
     // when you should delete the corresponding element.
     mainWindow = null
     })
+
+    mainWindow.setMinimizable(false);
 }
+
+// Keep requestAnimationFrame going if window in background.
+// https://pracucci.com/electron-slow-background-performances.html
+app.commandLine.appendSwitch('disable-renderer-backgrounding');
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
