@@ -54,6 +54,7 @@ export default function createCanvasProcessorBaseView(specs, my) {
         };
     
     my = my || {};
+    my.data = specs.data;
     my.processor = specs.processor;
     my.getConnectorGraphic = getConnectorGraphic;
     my.colorHigh = '#cccccc';
@@ -65,5 +66,6 @@ export default function createCanvasProcessorBaseView(specs, my) {
     that.getProcessor = getProcessor;
     that.setPosition2d = setPosition2d;
     that.getPosition2d = getPosition2d;
+    that.getID = getID;
     return that;
 }

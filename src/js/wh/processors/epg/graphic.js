@@ -5,7 +5,6 @@ import createCanvasProcessorBaseView from '../../view/canvasprocessorbase'
  */
 export function createGraphic(specs, my) {
     let that,
-        data = specs.data,
         canvasDirtyCallback = specs.canvasDirtyCallback,
         staticCanvas,
         staticCtx,
@@ -99,9 +98,9 @@ export function createGraphic(specs, my) {
             // params.is_mute.addChangedCallback(updatePointer);
             // params.position2d.addChangedCallback(updatePosition);
             // params.name.addChangedCallback(updateName);
-            console.log(data);
+            console.log(my.data);
             // set drawing values
-            position2d = data.params.position2d.value;
+            position2d = my.data.params.position2d.value;
             updatePosition(position2d, position2d)
             updateName();
             updateNecklace();
@@ -173,10 +172,10 @@ export function createGraphic(specs, my) {
          * If steps change it might invalidate the pointer.
          */
         updateNecklace = function() {
-            let steps = data.params.steps.value,
-                pulses = data.params.pulses.value,
-                rotation = data.params.rotation.value,
-                euclid = data.euclid,
+            let steps = my.data.params.steps.value,
+                pulses = my.data.params.pulses.value,
+                rotation = my.data.params.rotation.value,
+                euclid = my.data.euclid,
                 rad, x, y;
             
             necklace = [];
@@ -317,7 +316,7 @@ export function createGraphic(specs, my) {
          * Update the pointer that connects the dots.
          */
         updatePointer = function() {
-            let isMute = data.params.is_mute.value,
+            let isMute = my.data.params.is_mute.value,
                 pointerRadius = isMute ? pointerMutedRadius : necklaceRadius,
                 pointerX = isMute ? 15 : 19,
                 pointerY = isMute ? 15 : 6;
@@ -372,7 +371,7 @@ export function createGraphic(specs, my) {
         updateName = function() {
             // let name = my.processor.getParamValue('name');
             nameCtx.clearRect(0, 0, nameCanvas.width, nameCanvas.height);
-            nameCtx.fillText(data.params.name.value, nameCanvas.width / 2, nameCanvas.height / 2);
+            nameCtx.fillText(my.data.params.name.value, nameCanvas.width / 2, nameCanvas.height / 2);
             canvasDirtyCallback();
         },
         

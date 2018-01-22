@@ -38,31 +38,31 @@ export default function createCanvasProcessorViews(specs, my) {
 
 
 
-            let view,
-                specs = {
-                    processor: processor,
-                    canvasDirtyCallback: my.markDirty
-                };
+            // let view,
+            //     specs = {
+            //         processor: processor,
+            //         canvasDirtyCallback: my.markDirty
+            //     };
             
-            switch (processor.getType()) {
-                case 'epg':
-                    view = WH.midiProcessors[processor.getType()].createCanvasView(specs);
-                    break;
-                case 'output':
-                    specs.initialPosition = {x: my.canvasRect.width / 2, y: my.canvasRect.height - 70};
-                    view = WH.midiProcessors[processor.getType()].createCanvasView(specs);
-                    break;
-            }
+            // switch (processor.getType()) {
+            //     case 'epg':
+            //         view = WH.midiProcessors[processor.getType()].createCanvasView(specs);
+            //         break;
+            //     case 'output':
+            //         specs.initialPosition = {x: my.canvasRect.width / 2, y: my.canvasRect.height - 70};
+            //         view = WH.midiProcessors[processor.getType()].createCanvasView(specs);
+            //         break;
+            // }
             
-            views.push(view);
-            numViews = views.length;
+            // views.push(view);
+            // numViews = views.length;
             
             // set theme on the new view
             if (my.theme && typeof view.setTheme == 'function') {
                 view.setTheme(my.theme);
             }
             
-            my.updateConnectorsInfo();
+            // my.updateConnectorsInfo();
         },
         
         /**
