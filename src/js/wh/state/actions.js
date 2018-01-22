@@ -6,7 +6,9 @@ export default function createActions(specs = {}, my = {}) {
         SET_THEME = 'SET_THEME',
         CREATE_NEW_PROCESSOR = 'CREATE_NEW_PROCESSOR',
         CREATE_PROCESSOR = 'CREATE_PROCESSOR',
-        SELECT_PROCESSOR = 'SELECT_PROCESSOR';
+        SELECT_PROCESSOR = 'SELECT_PROCESSOR',
+        DRAG_SELECTED_PROCESSOR = 'DRAG_SELECTED_PROCESSOR',
+        DRAG_ALL_PROCESSORS = 'DRAG_ALL_PROCESSORS';
 
     return {
         SET_PREFERENCES: SET_PREFERENCES,
@@ -46,5 +48,15 @@ export default function createActions(specs = {}, my = {}) {
         selectProcessor: (id) => {
             return { type: SELECT_PROCESSOR, id: id };
         },
+
+        DRAG_SELECTED_PROCESSOR: DRAG_SELECTED_PROCESSOR,
+        dragSelectedProcessor: (x, y) => {
+            return { type: DRAG_SELECTED_PROCESSOR, x: x, y: y };
+        },
+
+        DRAG_ALL_PROCESSORS: DRAG_ALL_PROCESSORS,
+        dragAllProcessors: (x, y) => {
+            return { type: DRAG_ALL_PROCESSORS, x: x, y: y };
+        }
     };
 }

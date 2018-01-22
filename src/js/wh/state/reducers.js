@@ -36,7 +36,7 @@ export default function createReducers(specs = {}, my = {}) {
 
                 case actions.CREATE_PROCESSOR:
                     newState = Object.assign({}, state);
-                    const numInputProcessors = newState.processors.filter((item) => item.type === 'input').length;
+                    const numInputProcessors = newState.processors.filter(item => item.type === 'input').length;
                     // array index depends on processor type
                     switch (action.data.type) {
                         case 'input':
@@ -55,6 +55,24 @@ export default function createReducers(specs = {}, my = {}) {
                     return Object.assign({}, state, {
                         selectedID: action.id
                     });
+                
+                case actions.DRAG_SELECTED_PROCESSOR:
+                    newState = Object.assign({}, state);
+                    newState.processors.forEach(processor => {
+                        if (processor.id === newState.selectedID) {
+                            processor.params.position2d.value.x += action.x;
+                            processor.params.position2d.value.y += action.y;
+                        }
+                    });
+                    return newState;
+
+                case actions.DRAG_ALL_PROCESSORS:
+                    newState = Object.assign({}, state);
+                    newState.processors.forEach(processor => {
+                        processor.params.position2d.value.x += action.x;
+                        processor.params.position2d.value.y += action.y;
+                    });
+                    return newState;
                 
                 default:
                     return state;

@@ -120,6 +120,10 @@ export function createGraphic(specs, my) {
             // params.name.removeChangedCallback(updateName);
             canvasDirtyCallback = null;
         },
+
+        setSelected = function(isSelected) {
+            updateSelectCircle(isSelected);
+        },
         
         /**
          * Show the playback position within the pattern.
@@ -240,11 +244,10 @@ export function createGraphic(specs, my) {
         
         /**
          * Update pattern's position on the 2D canvas.
-         * @param  {Object} oldValue Previous 2D position as object.
-         * @param  {Object} newValue New 2D position as object.
+         * @param  {Object} value New 2D position as object.
          */
-        updatePosition = function(oldValue, newValue) {
-            position2d = newValue;
+        updatePosition = function(value) {
+            position2d = value;
             centerDotX = position2d.x - centerDotFullRadius - 1;
             centerDotY = position2d.y - centerDotFullRadius - 1;
             updateNecklaceAbsolute();
@@ -553,6 +556,8 @@ export function createGraphic(specs, my) {
     initialise();
     
     that.terminate = terminate;
+    that.setSelected = setSelected;
+    that.updatePosition = updatePosition;
     that.addToStaticView = addToStaticView;
     that.addToDynamicView = addToDynamicView;
     that.clearFromDynamicView = clearFromDynamicView;

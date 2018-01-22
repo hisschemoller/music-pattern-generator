@@ -60,6 +60,18 @@ export default function createCanvasView(specs, my) {
                     case e.detail.actions.CREATE_PROCESSOR:
                         my.createProcessorViews(e.detail.state.processors);
                         break;
+                    
+                    case e.detail.actions.SELECT_PROCESSOR:
+                        my.selectProcessorView(e.detail.state.selectedID);
+                        break;
+                    
+                    case e.detail.actions.DRAG_SELECTED_PROCESSOR:
+                        my.setProcessorPositions(e.detail.state.processors, e.detail.state.selectedID);
+                        break;
+                    
+                    case e.detail.actions.DRAG_ALL_PROCESSORS:
+                        my.setProcessorPositions(e.detail.state.processors);
+                        break;
                 }
             });
             
@@ -90,7 +102,6 @@ export default function createCanvasView(specs, my) {
                 doubleClickTimer = setTimeout(function() {
                     doubleClickCounter = 0;
                     // implement single click behaviour here
-                    onClick();
                 }, doubleClickDelay);
             } else {
                 clearTimeout(doubleClickTimer);
@@ -161,7 +172,7 @@ export default function createCanvasView(specs, my) {
                         break;
                     case 'background':
                         my.dragAllProcessors(canvasX, canvasY);
-                        my.updateConnectorsInfo();
+                        // my.updateConnectorsInfo();
                         my.drawOfflineCanvas();
                         break;
                 }
