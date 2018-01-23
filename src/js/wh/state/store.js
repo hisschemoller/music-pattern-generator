@@ -1,3 +1,4 @@
+import { memoize } from './selectors';
 
 export default function createStore(specs = {}, my = {}) {
     const STATE_CHANGE = 'STATE_CHANGE';
@@ -13,6 +14,7 @@ export default function createStore(specs = {}, my = {}) {
                 action(dispatch, getState, getActions);
             } else {
                 currentState = reducers.reduce(currentState, action, actions);
+                memoize(currentState, action, actions);
                 document.dispatchEvent(new CustomEvent(STATE_CHANGE, { detail: {
                     state: currentState,
                     action: action,
