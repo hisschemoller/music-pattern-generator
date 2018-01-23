@@ -26,6 +26,7 @@ export default function createCanvasProcessorViews(specs, my) {
                     const module = require(`../processors/${data.type}/graphic`);
                     const view = module.createGraphic({ 
                         data: data,
+                        store: store,
                         canvasDirtyCallback: my.markDirty
                     });
                     views.splice(i, 0, view);

@@ -55,6 +55,7 @@ export default function createCanvasProcessorBaseView(specs, my) {
     
     my = my || {};
     my.data = specs.data;
+    my.store = specs.store;
     my.processor = specs.processor;
     my.getConnectorGraphic = getConnectorGraphic;
     my.colorHigh = '#cccccc';

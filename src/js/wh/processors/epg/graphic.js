@@ -1,4 +1,5 @@
-import createCanvasProcessorBaseView from '../../view/canvasprocessorbase'
+import createCanvasProcessorBaseView from '../../view/canvasprocessorbase';
+import { getProcessorByID } from '../../state/selectors';
 
 /**
  * Euclidean pattern animated necklace wheel drawn on canvas.
@@ -47,6 +48,29 @@ export function createGraphic(specs, my) {
         necklace = [],
         
         initialise = function() {
+            document.addEventListener(my.store.STATE_CHANGE, (e) => {
+                switch (e.detail.action.type) {
+                    case e.detail.actions.CHANGE_PARAMETER:
+                        if (e.detail.action.processorID === my.data.id) {
+                            switch (e.detail.action.paramKey) {
+                                case 'steps':
+                                case 'pulses':
+                                case 'rotation':
+                                    updateNecklace();
+                                    break;
+                                case 'is_mute':
+                                    updatePointer();
+                                    break;
+                                case 'name':
+                                    updateName();
+                                    break;
+                            }
+                        }
+                        break;
+                }
+            });
+
+
             // offscreen canvas for static shapes
             staticCanvas = document.createElement('canvas');
             staticCanvas.height = radius * 2;
@@ -176,9 +200,10 @@ export function createGraphic(specs, my) {
          * If steps change it might invalidate the pointer.
          */
         updateNecklace = function() {
-            let steps = my.data.params.steps.value,
-                pulses = my.data.params.pulses.value,
-                rotation = my.data.params.rotation.value,
+            let params = getProcessorByID(my.data.id).params,
+                steps = params.steps.value,
+                pulses = params.pulses.value,
+                rotation = params.rotation.value,
                 euclid = my.data.euclid,
                 rad, x, y;
             
@@ -319,7 +344,8 @@ export function createGraphic(specs, my) {
          * Update the pointer that connects the dots.
          */
         updatePointer = function() {
-            let isMute = my.data.params.is_mute.value,
+            let params = getProcessorByID(my.data.id).params,
+                isMute = params.is_mute.value,
                 pointerRadius = isMute ? pointerMutedRadius : necklaceRadius,
                 pointerX = isMute ? 15 : 19,
                 pointerY = isMute ? 15 : 6;
@@ -373,6 +399,8 @@ export function createGraphic(specs, my) {
          */
         updateName = function() {
             // let name = my.processor.getParamValue('name');
+            let params = getProcessorByID(my.data.id).params,
+                name = params.name.value;
             nameCtx.clearRect(0, 0, nameCanvas.width, nameCanvas.height);
             nameCtx.fillText(my.data.params.name.value, nameCanvas.width / 2, nameCanvas.height / 2);
             canvasDirtyCallback();
