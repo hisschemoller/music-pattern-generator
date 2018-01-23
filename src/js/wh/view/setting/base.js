@@ -19,11 +19,13 @@ export default function createBaseSettingView(specs, my) {
         };
         
     my = my || {};
-    my.param = specs.data;
+    my.store = specs.store;
+    my.key = specs.key;
+    my.data = specs.data;
     my.el;
     
     that = that || {};
-    if (my.param.isMidiControllable) {
+    if (my.data.isMidiControllable) {
         that = createRemoteSettingView(specs, my);
     }
     

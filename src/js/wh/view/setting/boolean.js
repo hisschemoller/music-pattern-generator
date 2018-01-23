@@ -12,7 +12,7 @@ export default function createBooleanSettingView(specs, my) {
             let id = getTemporaryInputAndLabelId();
             
             checkEl = my.el.querySelector('.setting__check');
-            checkEl.value = my.param.default;
+            checkEl.value = my.data.default;
             checkEl.setAttribute('id', id);
             checkEl.addEventListener('change', onChange);
             
@@ -31,7 +31,7 @@ export default function createBooleanSettingView(specs, my) {
         },
         
         onChange = function(e) {
-            my.param.setValue(e.target.checked);
+            my.data.setValue(e.target.checked);
         },
         
         changedCallback = function(parameter, oldValue, newValue) {

@@ -11,7 +11,7 @@ export default function createStringSettingView(specs, my) {
         
         init = function() {
             textEl = my.el.getElementsByClassName('setting__text')[0];
-            textEl.value = my.param.default;
+            textEl.value = my.data.value;
             textEl.addEventListener('input', onChange);
             
             // my.param.addChangedCallback(changedCallback);

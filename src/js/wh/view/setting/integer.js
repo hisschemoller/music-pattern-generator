@@ -11,16 +11,16 @@ export default function createIntegerSettingView(specs, my) {
         
         init = function() {
             rangeEl = my.el.getElementsByClassName('setting__range')[0];
-            rangeEl.setAttribute('min', my.param.min);
-            rangeEl.setAttribute('max', my.param.max);
-            rangeEl.value = my.param.default;
+            rangeEl.setAttribute('min', my.data.min);
+            rangeEl.setAttribute('max', my.data.max);
+            rangeEl.value = my.data.default;
             rangeEl.addEventListener('input', onChange);
             rangeEl.addEventListener('change', onChange);
             
             numberEl = my.el.getElementsByClassName('setting__number')[0];
-            numberEl.setAttribute('min', my.param.min);
-            numberEl.setAttribute('max', my.param.max);
-            numberEl.value = my.param.default;
+            numberEl.setAttribute('min', my.data.min);
+            numberEl.setAttribute('max', my.data.max);
+            numberEl.value = my.data.default;
             numberEl.addEventListener('change', onChange);
             
             // my.param.addChangedCallback(changedCallback);
@@ -43,9 +43,15 @@ export default function createIntegerSettingView(specs, my) {
         changedMaxCallback = function(max) {
             rangeEl.setAttribute('max', max);
             numberEl.setAttribute('max', max);
+        },
+        
+        setValue = function(value) {
+            rangeEl.value = value;
+            numberEl.value = value;
         };
     
     my = my || {};
+    my.setValue = setValue;
     
     that = createBaseSettingView(specs, my);
     

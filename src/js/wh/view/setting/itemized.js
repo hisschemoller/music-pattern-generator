@@ -18,7 +18,7 @@ export default function createItemizedSettingView(specs, my) {
             
             // add the radio buttons
             let radioTemplate = document.querySelector('#template-setting-itemized-item'),
-                model = my.param.model;
+                model = my.data.model;
             numInputs = model.length;
             for (var i = 0; i < numInputs; i++) {
                 let id = getTemporaryInputAndLabelId();
@@ -29,7 +29,7 @@ export default function createItemizedSettingView(specs, my) {
                 radioInputEl.setAttribute('name', specs.key);
                 radioInputEl.setAttribute('id', id);
                 radioInputEl.value = model[i].value;
-                radioInputEl.checked = model[i].value == my.param.default;
+                radioInputEl.checked = model[i].value == my.data.default;
                 radioInputEl.addEventListener('change', onChange);
                 radioInputs.push(radioInputEl);
                 
@@ -55,7 +55,7 @@ export default function createItemizedSettingView(specs, my) {
         },
         
         onChange = function(e) {
-            my.param.setValue(e.target.value);
+            my.data.setValue(e.target.value);
         },
         
         changedCallback = function(parameter, oldValue, newValue) {

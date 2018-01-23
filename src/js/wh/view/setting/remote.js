@@ -7,7 +7,7 @@ export default function createRemoteSettingView(specs, my) {
         learnCallback,
         
         init = function() {
-            if (my.param.isMidiControllable) {
+            if (my.data.isMidiControllable) {
                 
                 // set callback on parameter
                 // my.param.addRemoteStateCallback(changeRemoteState);
@@ -57,7 +57,7 @@ export default function createRemoteSettingView(specs, my) {
         },
         
         onLearnLayerClick = function(e) {
-            learnCallback(my.param);
+            learnCallback(my.data);
         };
     
     my = my || {};
