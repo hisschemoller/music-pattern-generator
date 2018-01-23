@@ -38,7 +38,7 @@ export default function createMIDIProcessorBase(specs, my) {
                         my.params[key] = createVector2DParameter(paramSpecs[key]);
                         break;
                 }
-                my.params[key].addChangedCallback(paramChangedCallback);
+                // my.params[key].addChangedCallback(paramChangedCallback);
             }
             initParams();
         },
@@ -59,22 +59,22 @@ export default function createMIDIProcessorBase(specs, my) {
         /**
          * Called by the processor's parameters if their value is changed.
          */
-        paramChangedCallback = function(parameter, oldValue, newValue) {
-            // call the plugin's handler for this parameter
-            my['$' + parameter.getProperty('key')](newValue);
-        },
+        // paramChangedCallback = function(parameter, oldValue, newValue) {
+        //     // call the plugin's handler for this parameter
+        //     my['$' + parameter.getProperty('key')](newValue);
+        // },
         
-        setParamValue = function(key, value) {
-            if (my.params.hasOwnProperty(key)) {
-                my.params[key].setValue(value);
-            }
-        },
+        // setParamValue = function(key, value) {
+        //     if (my.params.hasOwnProperty(key)) {
+        //         my.params[key].setValue(value);
+        //     }
+        // },
         
-        getParamValue = function(key) {
-            if (my.params.hasOwnProperty(key)) {
-                return my.params[key].getValue();
-            }
-        },
+        // getParamValue = function(key) {
+        //     if (my.params.hasOwnProperty(key)) {
+        //         return my.params[key].getValue();
+        //     }
+        // },
         
         getParameters = function() {
             return my.params;
@@ -109,69 +109,71 @@ export default function createMIDIProcessorBase(specs, my) {
         
         getID = function() {
             return id;
-        },
+        };
         
         /**
          * Restore processor from data object.
          * @param {Object} data Preferences data object.
          */
-        setData = function(data) {
-            for (var key in my.params) {
-                if (my.params.hasOwnProperty(key)) {
-                    my.params[key].setData(data[key]);
-                }
-            }
-        }, 
+        // setData = function(data) {
+        //     for (var key in my.params) {
+        //         if (my.params.hasOwnProperty(key)) {
+        //             my.params[key].setData(data[key]);
+        //         }
+        //     }
+        // }, 
         
         /**
          * Write processor settings to data object.
          */
-        getData = function() {
-            var data = {};
-            data.type = type;
-            data.id = id;
+        // getData = function() {
+        //     var data = {};
+        //     data.type = type;
+        //     data.id = id;
             
-            // parameters
-            for (var key in my.params) {
-                if (my.params.hasOwnProperty(key)) {
-                    data[key] = my.params[key].getData();
-                }
-            }
+        //     // parameters
+        //     for (var key in my.params) {
+        //         if (my.params.hasOwnProperty(key)) {
+        //             data[key] = my.params[key].getData();
+        //         }
+        //     }
             
-            // connections
-            if (typeof my.getDestinationsData == 'function') {
-                my.getDestinationsData(data);
-            }
+        //     // connections
+        //     if (typeof my.getDestinationsData == 'function') {
+        //         my.getDestinationsData(data);
+        //     }
             
-            // processor specific data
-            if (typeof my.getProcessorSpecificData == 'function') {
-                my.getProcessorSpecificData(data);
-            }
-            return data;
-        };
+        //     // processor specific data
+        //     if (typeof my.getProcessorSpecificData == 'function') {
+        //         my.getProcessorSpecificData(data);
+        //     }
+        //     return data;
+        // };
     
     my = my || {};
-    my.params = my.param || {};
-    my.defineParams = defineParams;
+    my.params = {};
+    // my.defineParams = defineParams;
     
     that = specs.that || {};
-    if (my.info.inputs == 1) {
+    if (specs.inputs == 1) {
         that = createMIDIConnectorIn(specs, my);
     }
-    if (my.info.outputs == 1) {
+    if (specs.outputs == 1) {
         that = createMIDIConnectorOut(specs, my);
     }
+
+    defineParams(specs.params);
     
-    that.setParamValue = setParamValue;
-    that.getParamValue = getParamValue;
+    // that.setParamValue = setParamValue;
+    // that.getParamValue = getParamValue;
     that.getParameters = getParameters;
     that.hasParameter = hasParameter;
     that.getInfo = getInfo;
     that.getType = getType;
     that.setID = setID;
     that.getID = getID;
-    that.setData = setData;
-    that.getData = getData;
+    // that.setData = setData;
+    // that.getData = getData;
     
     return that;
 }

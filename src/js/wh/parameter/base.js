@@ -138,7 +138,7 @@ export default function createBaseParameter(specs, my) {
     
     that = specs.that || {};
     if (my.isMidiControllable) {
-        that = ns.createRemoteParameter(specs, my);
+        that = createRemoteParameter(specs, my);
     }
     
     that.addChangedCallback = addChangedCallback;
