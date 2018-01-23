@@ -31,14 +31,23 @@ export default function createBooleanSettingView(specs, my) {
         },
         
         onChange = function(e) {
-            my.data.setValue(e.target.checked);
+            // my.data.setValue(e.target.checked);
+            my.store.dispatch(my.store.getActions().changeParameter(
+                my.processorID, 
+                my.key, 
+                e.target.checked));
         },
         
-        changedCallback = function(parameter, oldValue, newValue) {
-            checkEl.checked = newValue;
+        // changedCallback = function(parameter, oldValue, newValue) {
+        //     checkEl.checked = newValue;
+        // },
+        
+        setValue = function(value) {
+            checkEl.checked = value;
         };
     
     my = my || {};
+    my.setValue = setValue;
     
     that = createBaseSettingView(specs, my);
     

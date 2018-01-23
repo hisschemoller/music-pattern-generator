@@ -19,18 +19,31 @@ export default function createStringSettingView(specs, my) {
         
         onChange = function(e) {
             e.preventDefault();
-            my.param.setValue(e.target.value);
+            // my.param.setValue(e.target.value);
+            my.store.dispatch(my.store.getActions().changeParameter(
+                my.processorID, 
+                my.key, 
+                e.target.value));
         },
         
-        changedCallback = function(parameter, oldValue, newValue) {
+        // changedCallback = function(parameter, oldValue, newValue) {
+        //     // only update if the text input doesn't have focus,
+        //     // else value gets refreshed and cursor jumps to end
+        //     if (textEl != document.activeElement) {
+        //         textEl.value = newValue;
+        //     }
+        // };
+        
+        setValue = function(value) {
             // only update if the text input doesn't have focus,
             // else value gets refreshed and cursor jumps to end
             if (textEl != document.activeElement) {
-                textEl.value = newValue;
+                textEl.value = value;
             }
         };
     
     my = my || {};
+    my.setValue = setValue;
     
     that = createBaseSettingView(specs, my);
     

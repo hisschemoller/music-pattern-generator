@@ -83,6 +83,15 @@ export default function createReducers() {
                                 case 'integer':
                                     param.value = Math.max(param.min, Math.min(action.paramValue, param.max));
                                     break;
+                                case 'boolean':
+                                    param.value = !!action.paramValue;
+                                    break;
+                                case 'itemized':
+                                    param.value = action.paramValue;
+                                    break;
+                                case 'string':
+                                    param.value = action.paramValue;
+                                    break;
                             }
                         }
                     });

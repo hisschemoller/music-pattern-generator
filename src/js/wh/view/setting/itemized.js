@@ -55,16 +55,27 @@ export default function createItemizedSettingView(specs, my) {
         },
         
         onChange = function(e) {
-            my.data.setValue(e.target.value);
+            // my.data.setValue(e.target.value);
+            my.store.dispatch(my.store.getActions().changeParameter(
+                my.processorID, 
+                my.key, 
+                e.target.value));
         },
         
-        changedCallback = function(parameter, oldValue, newValue) {
-            for (i = 0; i < numInputs; i++) {
-                radioInputs[i].checked = (radioInputs[i].value == newValue);
+        // changedCallback = function(parameter, oldValue, newValue) {
+        //     for (i = 0; i < numInputs; i++) {
+        //         radioInputs[i].checked = (radioInputs[i].value == newValue);
+        //     }
+        // };
+
+        setValue = function(value) {
+            for (let i = 0; i < numInputs; i++) {
+                radioInputs[i].checked = (radioInputs[i].value == value);
             }
         };
         
     my = my || {};
+    my.setValue = setValue;
     
     that = createBaseSettingView(specs, my);
     
