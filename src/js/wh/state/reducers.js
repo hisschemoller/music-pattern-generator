@@ -1,5 +1,5 @@
 
-export default function createReducers(specs = {}, my = {}) {
+export default function createReducers() {
 
     const initialState = {
             bpm: 120,
@@ -71,6 +71,20 @@ export default function createReducers(specs = {}, my = {}) {
                     newState.processors.forEach(processor => {
                         processor.params.position2d.value.x += action.x;
                         processor.params.position2d.value.y += action.y;
+                    });
+                    return newState;
+                
+                case actions.CHANGE_PARAMETER:
+                    newState = Object.assign({}, state);
+                    newState.processors.forEach(processor => {
+                        if (processor.id === action.processorID) {
+                            const param = processor.params[action.paramKey];
+                            switch (param.type) {
+                                case 'integer':
+                                    param.value = Math.max(param.min, Math.min(action.paramValue, param.max));
+                                    break;
+                            }
+                        }
                     });
                     return newState;
                 

@@ -8,7 +8,8 @@ export default function createActions(specs = {}, my = {}) {
         CREATE_PROCESSOR = 'CREATE_PROCESSOR',
         SELECT_PROCESSOR = 'SELECT_PROCESSOR',
         DRAG_SELECTED_PROCESSOR = 'DRAG_SELECTED_PROCESSOR',
-        DRAG_ALL_PROCESSORS = 'DRAG_ALL_PROCESSORS';
+        DRAG_ALL_PROCESSORS = 'DRAG_ALL_PROCESSORS',
+        CHANGE_PARAMETER = 'CHANGE_PARAMETER';
 
     return {
         SET_PREFERENCES: SET_PREFERENCES,
@@ -57,6 +58,11 @@ export default function createActions(specs = {}, my = {}) {
         DRAG_ALL_PROCESSORS: DRAG_ALL_PROCESSORS,
         dragAllProcessors: (x, y) => {
             return { type: DRAG_ALL_PROCESSORS, x: x, y: y };
+        },
+
+        CHANGE_PARAMETER: CHANGE_PARAMETER,
+        changeParameter: (processorID, paramKey, paramValue) => {
+            return { type: CHANGE_PARAMETER, processorID: processorID, paramKey: paramKey, paramValue: paramValue };
         }
     };
 }

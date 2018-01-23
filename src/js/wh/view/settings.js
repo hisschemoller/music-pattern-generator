@@ -29,11 +29,13 @@ export default function createSettingsPanel(specs, my) {
                     var settingContainerEl = el.querySelector('.' + key);
                     if (settingContainerEl) {
                         let paramData = data.params[key],
-                            settingView = {},
+                            settingView,
                             settingViewSpecs = {
+                                store: store,
                                 key: key,
                                 data: paramData,
-                                parentEl: settingContainerEl
+                                parentEl: settingContainerEl,
+                                processorID: data.id
                             };
                         
                         // create the setting view based on the parameter type

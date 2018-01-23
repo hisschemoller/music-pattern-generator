@@ -28,13 +28,17 @@ export default function createIntegerSettingView(specs, my) {
         },
         
         onChange = function(e) {
-            my.param.setValue(parseInt(e.target.value, 10));
+            // my.param.setValue(parseInt(e.target.value, 10));
+            my.store.dispatch(my.store.getActions().changeParameter(
+                my.processorID, 
+                my.key, 
+                parseInt(e.target.value, 10)));
         },
         
-        changedCallback = function(parameter, oldValue, newValue) {
-            rangeEl.value = newValue;
-            numberEl.value = newValue;
-        },
+        // changedCallback = function(parameter, oldValue, newValue) {
+        //     rangeEl.value = newValue;
+        //     numberEl.value = newValue;
+        // },
         
         /**
          * The maximum value of the parameter has changed.
