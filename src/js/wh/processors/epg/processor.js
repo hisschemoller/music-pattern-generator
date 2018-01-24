@@ -1,7 +1,7 @@
 import createMIDIProcessorBase from '../../midi/processorbase';
 import { PPQN } from '../../core/config';
 import { getProcessorByID } from '../../state/selectors';
-import getEuclidPattern from './euclid';
+import { getEuclidPattern, rotateEuclidPattern } from './euclid';
 
 export function createProcessor(specs, my) {
     let that,
@@ -149,11 +149,10 @@ export function createProcessor(specs, my) {
             // euclidean pattern properties, changes in steps, pulses, rotation
             if (isEuclidChange) {
                 euclidPattern = getEuclidPattern(my.params.steps.value, my.params.pulses.value);
-                var elementsToShift = euclidPattern.splice(my.params.rotation.value);
-                euclidPattern = elementsToShift.concat(euclidPattern);
+                euclidPattern = rotateEuclidPattern(euclidPattern, my.params.rotation.value);
             }
             
-            // playback properties, changes in isTriplets, rate, noteLength
+            // playback propertie)s, changes in isTriplets, rate, noteLength
             var rate = my.params.is_triplets.value ? my.params.rate.value * (2 / 3) : my.params.rate.value,
                 stepDuration = rate * PPQN;
             noteDuration = my.params.note_length.value * PPQN;

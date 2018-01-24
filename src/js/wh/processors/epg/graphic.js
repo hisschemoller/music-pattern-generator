@@ -1,6 +1,6 @@
 import createCanvasProcessorBaseView from '../../view/canvasprocessorbase';
 import { getProcessorByID } from '../../state/selectors';
-import getEuclidPattern from './euclid';
+import { getEuclidPattern, rotateEuclidPattern } from './euclid';
 
 /**
  * Euclidean pattern animated necklace wheel drawn on canvas.
@@ -123,7 +123,7 @@ export function createGraphic(specs, my) {
             // params.is_mute.addChangedCallback(updatePointer);
             // params.position2d.addChangedCallback(updatePosition);
             // params.name.addChangedCallback(updateName);
-            console.log(my.data);
+            
             // set drawing values
             position2d = my.data.params.position2d.value;
             updatePosition(position2d, position2d)
@@ -205,8 +205,10 @@ export function createGraphic(specs, my) {
                 steps = params.steps.value,
                 pulses = params.pulses.value,
                 rotation = params.rotation.value,
-                euclid = getEuclidPattern(steps, pulses),
-                rad, x, y;
+                euclid, rad, x, y;
+            
+            euclid = getEuclidPattern(steps, pulses);
+            euclid = rotateEuclidPattern(euclid, rotation);
             
             necklace = [];
             

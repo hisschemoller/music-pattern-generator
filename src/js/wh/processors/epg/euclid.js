@@ -1,12 +1,17 @@
 
 const cache = {};
 
-export default function getEuclidPattern(steps, pulses) {
+export function getEuclidPattern(steps, pulses) {
     const cacheKey = `${steps}_${pulses}`;
     if (!cache[cacheKey]) {
         cache[cacheKey] = createBjorklund(steps, pulses);
     }
-    return cache[cacheKey];
+    return cache[cacheKey].slice(0);
+}
+
+export function rotateEuclidPattern(pattern, rotation) {
+    const elementsToShift = pattern.splice(rotation);
+    return elementsToShift.concat(pattern);
 }
 
 /**
