@@ -36,6 +36,7 @@ export default function createActions(specs = {}, my = {}) {
                 fullData.type = data.type;
                 fullData.id = id;
                 fullData.params.position2d.value = data.position2d;
+                fullData.params.name.value = getProcessorDefaultName(getState().processors);
                 dispatch(getActions().createProcessor(fullData));
                 dispatch(getActions().selectProcessor(id));
             }
@@ -71,4 +72,27 @@ export default function createActions(specs = {}, my = {}) {
             return { type: RECREATE_PARAMETER, processorID: processorID, paramKey : paramKey, paramObj: paramObj };
         }
     };
+}
+        
+/**
+ * Set default processor name.
+ * @param {Object} processor Processor to name.
+ */
+function getProcessorDefaultName(processors) {
+    let name, number, spaceIndex, 
+        highestNumber = 0,
+        staticName = 'Processor';
+    for (let i = 0, n = processors.length; i < n; i++) {
+        name = processors[i].getParamValue('name');
+        if (name && name.indexOf(staticName) == 0) {
+            spaceIndex = name.lastIndexOf(' ');
+            if (spaceIndex != -1) {
+                number = parseInt(name.substr(spaceIndex), 10);
+                if (!isNaN(number)) {
+                    highestNumber = Math.max(highestNumber, number);
+                }
+            }
+        }
+    }
+    return `${staticName} ${highestNumber + 1}`;
 }

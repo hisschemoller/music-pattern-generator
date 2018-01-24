@@ -207,24 +207,24 @@ export default function createMIDINetwork(specs, my) {
          * Set default processor name.
          * @param {Object} processor Processor to name.
          */
-        setProcessorDefaultName = function(processor) {
-            let name, number, spaceIndex, 
-                highestNumber = 0,
-                staticName = 'Processor';
-            for (let i = 0; i < numProcessors; i++) {
-                name = processors[i].getParamValue('name');
-                if (name && name.indexOf(staticName) == 0) {
-                    spaceIndex = name.lastIndexOf(' ');
-                    if (spaceIndex != -1) {
-                        number = parseInt(name.substr(spaceIndex), 10);
-                        if (!isNaN(number)) {
-                            highestNumber = Math.max(highestNumber, number);
-                        }
-                    }
-                }
-            }
-            processor.setParamValue('name', 'Processor ' + (highestNumber + 1));
-        },
+        // setProcessorDefaultName = function(processor) {
+        //     let name, number, spaceIndex, 
+        //         highestNumber = 0,
+        //         staticName = 'Processor';
+        //     for (let i = 0; i < numProcessors; i++) {
+        //         name = processors[i].getParamValue('name');
+        //         if (name && name.indexOf(staticName) == 0) {
+        //             spaceIndex = name.lastIndexOf(' ');
+        //             if (spaceIndex != -1) {
+        //                 number = parseInt(name.substr(spaceIndex), 10);
+        //                 if (!isNaN(number)) {
+        //                     highestNumber = Math.max(highestNumber, number);
+        //                 }
+        //             }
+        //         }
+        //     }
+        //     processor.setParamValue('name', 'Processor ' + (highestNumber + 1));
+        // },
 
         /**
          * Let all processors process their data.
