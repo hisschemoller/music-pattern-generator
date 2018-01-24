@@ -97,6 +97,17 @@ export default function createReducers() {
                     });
                     return newState;
                 
+                case actions.RECREATE_PARAMETER:
+                    newState = Object.assign({}, state);
+                    newState.processors.forEach(processor => {
+                        if (processor.id === action.processorID) {
+                            processor.params[action.paramKey] = Object.assign(
+                                processor.params[action.paramKey],
+                                action.paramObj);
+                        }
+                    });
+                    return newState;
+                
                 default:
                     return state;
             }
