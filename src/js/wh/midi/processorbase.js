@@ -105,9 +105,9 @@ export default function createMIDIProcessorBase(specs, my) {
         //     id = newId;
         // },
         
-        // getID = function() {
-        //     return id;
-        // };
+        getID = function() {
+            return my.id;
+        };
         
         /**
          * Restore processor from data object.
@@ -171,7 +171,7 @@ export default function createMIDIProcessorBase(specs, my) {
     // that.getInfo = getInfo;
     // that.getType = getType;
     // that.setID = setID;
-    // that.getID = getID;
+    that.getID = getID;
     // that.setData = setData;
     // that.getData = getData;
     

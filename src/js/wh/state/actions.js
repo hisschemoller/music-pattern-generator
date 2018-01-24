@@ -83,7 +83,7 @@ function getProcessorDefaultName(processors) {
         highestNumber = 0,
         staticName = 'Processor';
     for (let i = 0, n = processors.length; i < n; i++) {
-        name = processors[i].getParamValue('name');
+        name = processors[i].params.name.value;
         if (name && name.indexOf(staticName) == 0) {
             spaceIndex = name.lastIndexOf(' ');
             if (spaceIndex != -1) {
