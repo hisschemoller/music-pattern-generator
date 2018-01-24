@@ -11,20 +11,32 @@ export default function createIntegerSettingView(specs, my) {
         
         init = function() {
             rangeEl = my.el.getElementsByClassName('setting__range')[0];
-            rangeEl.setAttribute('min', my.data.min);
-            rangeEl.setAttribute('max', my.data.max);
-            rangeEl.value = my.data.default;
+            // rangeEl.setAttribute('min', my.data.min);
+            // rangeEl.setAttribute('max', my.data.max);
+            // rangeEl.value = my.data.default;
             rangeEl.addEventListener('input', onChange);
             rangeEl.addEventListener('change', onChange);
             
             numberEl = my.el.getElementsByClassName('setting__number')[0];
-            numberEl.setAttribute('min', my.data.min);
-            numberEl.setAttribute('max', my.data.max);
-            numberEl.value = my.data.default;
+            // numberEl.setAttribute('min', my.data.min);
+            // numberEl.setAttribute('max', my.data.max);
+            // numberEl.value = my.data.default;
             numberEl.addEventListener('change', onChange);
             
             // my.param.addChangedCallback(changedCallback);
             // my.param.addChangedMaxCallback(changedMaxCallback);
+
+            initData();
+        },
+
+        initData = function() {
+            rangeEl.setAttribute('min', my.data.min);
+            rangeEl.setAttribute('max', my.data.max);
+            rangeEl.value = my.data.value;
+
+            numberEl.setAttribute('min', my.data.min);
+            numberEl.setAttribute('max', my.data.max);
+            numberEl.value = my.data.value;
         },
         
         onChange = function(e) {
@@ -44,10 +56,10 @@ export default function createIntegerSettingView(specs, my) {
          * The maximum value of the parameter has changed.
          * @param {Number} max New maximum value. 
          */
-        changedMaxCallback = function(max) {
-            rangeEl.setAttribute('max', max);
-            numberEl.setAttribute('max', max);
-        },
+        // changedMaxCallback = function(max) {
+        //     rangeEl.setAttribute('max', max);
+        //     numberEl.setAttribute('max', max);
+        // },
         
         setValue = function(value) {
             rangeEl.value = value;
@@ -55,6 +67,7 @@ export default function createIntegerSettingView(specs, my) {
         };
     
     my = my || {};
+    my.initData = initData;
     my.setValue = setValue;
     
     that = createBaseSettingView(specs, my);

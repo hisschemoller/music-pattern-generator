@@ -21,6 +21,9 @@ export function createProcessor(specs, my) {
                             my.params = getProcessorByID(my.id).params;
                             switch (e.detail.action.paramKey) {
                                 case 'steps':
+                                    updatePulsesAndRotation();
+                                    updatePattern(true);
+                                    break;
                                 case 'pulses':
                                     updatePattern(true);
                                     break;
@@ -139,6 +142,16 @@ export function createProcessor(specs, my) {
                     my.setOutputData(noteOffEvents.splice(i, 1)[0]);
                 }
             }
+        },
+
+        /**
+         * After a change of the steps parameter update the pulses and rotation parameters.
+         */
+        updatePulsesAndRotation = function() {
+            store.dispatch(store.getActions().recreateParameter(my.id, 'pulses', { max: my.params.steps.value }));
+            store.dispatch(store.getActions().recreateParameter(my.id, 'rotation', { max: my.params.steps.value - 1 }));
+            store.dispatch(store.getActions().changeParameter(my.id, 'pulses', my.params.pulses.value));
+            store.dispatch(store.getActions().changeParameter(my.id, 'rotation', my.params.rotation.value));
         },
             
         /**

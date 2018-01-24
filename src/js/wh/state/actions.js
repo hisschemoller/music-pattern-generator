@@ -67,8 +67,8 @@ export default function createActions(specs = {}, my = {}) {
         },
 
         RECREATE_PARAMETER: RECREATE_PARAMETER,
-        recreateParameter: (processorID, paramObj) => {
-            return { type: RECREATE_PARAMETER, paramObj: paramObj, paramObj: paramObj }
+        recreateParameter: (processorID, paramKey, paramObj) => {
+            return { type: RECREATE_PARAMETER, processorID: processorID, paramKey : paramKey, paramObj: paramObj };
         }
     };
 }

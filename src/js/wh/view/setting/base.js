@@ -26,6 +26,14 @@ export default function createBaseSettingView(specs, my) {
                             my.setValue(getProcessorByID(my.processorID).params[my.key].value);
                         }
                         break;
+                    
+                    case e.detail.actions.RECREATE_PARAMETER:
+                        if (e.detail.action.processorID === my.processorID && 
+                            e.detail.action.paramKey === my.key) {
+                            my.data = getProcessorByID(my.processorID).params[my.key];
+                            my.initData();
+                        }
+                        break;
                 }
             });
         };
