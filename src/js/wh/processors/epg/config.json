@@ -2,7 +2,6 @@
     "name": "Euclidean",
     "inputs": 0,
     "outputs": 1,
-    "euclid": [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
     "params": {
         "steps": {
             "label": "Steps",

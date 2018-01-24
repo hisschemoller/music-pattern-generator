@@ -1,5 +1,6 @@
 import createCanvasProcessorBaseView from '../../view/canvasprocessorbase';
 import { getProcessorByID } from '../../state/selectors';
+import getEuclidPattern from './euclid';
 
 /**
  * Euclidean pattern animated necklace wheel drawn on canvas.
@@ -204,7 +205,7 @@ export function createGraphic(specs, my) {
                 steps = params.steps.value,
                 pulses = params.pulses.value,
                 rotation = params.rotation.value,
-                euclid = my.data.euclid,
+                euclid = getEuclidPattern(steps, pulses),
                 rad, x, y;
             
             necklace = [];
