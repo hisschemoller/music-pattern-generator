@@ -1,8 +1,11 @@
 import createMIDIProcessorBase from '../../midi/processorbase';
 import { PPQN } from '../../core/config';
+import { getProcessorByID } from '../../state/selectors';
+import getEuclidPattern from './euclid';
 
 export function createProcessor(specs, my) {
     let that,
+        store = specs.store,
         position = 0,
         duration = 0,
         noteDuration,
@@ -11,7 +14,30 @@ export function createProcessor(specs, my) {
         pulsesOnly = [];
 
     const initialize = function() {
-            updatePattern(true);
+            document.addEventListener(store.STATE_CHANGE, (e) => {
+                switch (e.detail.action.type) {
+                    case e.detail.actions.CHANGE_PARAMETER:
+                        if (e.detail.action.processorID === my.id) {
+                            my.params = getProcessorByID(my.id).params;
+                            switch (e.detail.action.paramKey) {
+                                case 'steps':
+                                case 'pulses':
+                                    updatePattern(true);
+                                    break;
+                                case 'rotation':
+                                case 'is_triplets':
+                                case 'rate':
+                                case 'note_length':
+                                    updatePattern();
+                                    break;
+                                case 'is_mute':
+                                    break;
+                            }
+                        }
+                        break;
+                }
+                updatePattern(true);
+            });        
         },
 
         terminate = function() {},
@@ -122,16 +148,16 @@ export function createProcessor(specs, my) {
         updatePattern = function(isEuclidChange) {
             // euclidean pattern properties, changes in steps, pulses, rotation
             if (isEuclidChange) {
-                euclidPattern = createBjorklund(my.params.steps.getValue(), my.params.pulses.getValue());
-                var elementsToShift = euclidPattern.splice(my.params.rotation.getValue());
+                euclidPattern = getEuclidPattern(my.params.steps.value, my.params.pulses.value);
+                var elementsToShift = euclidPattern.splice(my.params.rotation.value);
                 euclidPattern = elementsToShift.concat(euclidPattern);
             }
             
             // playback properties, changes in isTriplets, rate, noteLength
-            var rate = my.params.is_triplets.getValue() ? my.params.rate.getValue() * (2 / 3) : my.params.rate.getValue(),
+            var rate = my.params.is_triplets.value ? my.params.rate.value * (2 / 3) : my.params.rate.value,
                 stepDuration = rate * PPQN;
-            noteDuration = my.params.note_length.getValue() * PPQN;
-            duration = my.params.steps.getValue() * stepDuration;
+            noteDuration = my.params.note_length.value * PPQN;
+            duration = my.params.steps.value * stepDuration;
             position = position % duration;
             
             // create array of note start times in ticks
