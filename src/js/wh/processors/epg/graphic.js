@@ -3,6 +3,8 @@ import { getProcessorByID } from '../../state/selectors';
 import { getEuclidPattern, rotateEuclidPattern } from './euclid';
 import TWEEN from '@tweenjs/tween.js';
 
+import { PPQN } from '../../core/config';
+
 /**
  * Euclidean pattern animated necklace wheel drawn on canvas.
  */
@@ -48,15 +50,18 @@ export function createGraphic(specs, my) {
         dotAnimations = {},
         isNoteActive = false,
         necklace = [],
+        duration = 0,
         
         initialise = function() {
             document.addEventListener(my.store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
                     case e.detail.actions.CHANGE_PARAMETER:
                         if (e.detail.action.processorID === my.data.id) {
+                            my.data.params = getProcessorByID(my.data.id).params;
                             switch (e.detail.action.paramKey) {
                                 case 'steps':
                                 case 'pulses':
+                                    updateDuration();
                                 case 'rotation':
                                     updateNecklace();
                                     break;
@@ -66,12 +71,16 @@ export function createGraphic(specs, my) {
                                 case 'name':
                                     updateName();
                                     break;
+                                case 'is_triplets':
+                                case 'rate':
+                                case 'note_length':
+                                    updateDuration();
+                                    break;
                             }
                         }
                         break;
                 }
             });
-
 
             // offscreen canvas for static shapes
             staticCanvas = document.createElement('canvas');
@@ -131,6 +140,7 @@ export function createGraphic(specs, my) {
             updateName();
             updateNecklace();
             redrawStaticCanvas();
+            updateDuration();
         },
         
         /**
@@ -152,10 +162,9 @@ export function createGraphic(specs, my) {
         },
 
         draw = function(position, processorEvents) {
-            // showPlaybackPosition();
+            showPlaybackPosition(position);
             let event;
             if (processorEvents[my.data.id] && processorEvents[my.data.id].length) {
-                console.log(processorEvents[my.data.id].length);
                 for (let i = 0, n = processorEvents[my.data.id].length; i < n; i++) {
                     event = processorEvents[my.data.id][i];
                     showNote(event.stepIndex, event.delayFromNowToNoteStart, event.delayFromNowToNoteEnd);
@@ -167,11 +176,10 @@ export function createGraphic(specs, my) {
          * Show the playback position within the pattern.
          * Indicated by the pointer's rotation.
          * @param  {Number} position Position within pattern in ticks.
-         * @param  {Number} duration Pattern length in ticks.
          */
-        showPlaybackPosition = function(position, duration) {
+        showPlaybackPosition = function(position) {
             pointerRotationPrevious = pointerRotation;
-            pointerRotation = doublePI * (position / duration);
+            pointerRotation = doublePI * (position % duration / duration);
         },
         
         /**
@@ -209,6 +217,12 @@ export function createGraphic(specs, my) {
             
             console.log(noteStartDelay);
         },
+
+        updateDuration = function() {
+            const rate = my.data.params.is_triplets.value ? my.data.params.rate.value * (2 / 3) : my.data.params.rate.value,
+                stepDuration = rate * PPQN;
+            duration = my.data.params.steps.value * stepDuration;
+        },
         
         /**
          * Update the pattern dots.
@@ -216,10 +230,9 @@ export function createGraphic(specs, my) {
          * If steps change it might invalidate the pointer.
          */
         updateNecklace = function() {
-            let params = getProcessorByID(my.data.id).params,
-                steps = params.steps.value,
-                pulses = params.pulses.value,
-                rotation = params.rotation.value,
+            let steps = my.data.params.steps.value,
+                pulses = my.data.params.pulses.value,
+                rotation = my.data.params.rotation.value,
                 euclid, rad, x, y;
             
             euclid = getEuclidPattern(steps, pulses);
@@ -362,8 +375,7 @@ export function createGraphic(specs, my) {
          * Update the pointer that connects the dots.
          */
         updatePointer = function() {
-            let params = getProcessorByID(my.data.id).params,
-                isMute = params.is_mute.value,
+            let isMute = my.data.params.is_mute.value,
                 pointerRadius = isMute ? pointerMutedRadius : necklaceRadius,
                 pointerX = isMute ? 15 : 19,
                 pointerY = isMute ? 15 : 6;
@@ -417,8 +429,7 @@ export function createGraphic(specs, my) {
          */
         updateName = function() {
             // let name = my.processor.getParamValue('name');
-            let params = getProcessorByID(my.data.id).params,
-                name = params.name.value;
+            let name = my.data.params.name.value;
             nameCtx.clearRect(0, 0, nameCanvas.width, nameCanvas.height);
             nameCtx.fillText(my.data.params.name.value, nameCanvas.width / 2, nameCanvas.height / 2);
             canvasDirtyCallback();
