@@ -45,7 +45,7 @@ export default function createMIDINetwork(specs, my) {
                     processors.splice(i, 0, processor);
                 }
             });
-
+            numProcessors = processors.length;
             
             
             
@@ -103,7 +103,6 @@ export default function createMIDINetwork(specs, my) {
          * @param {String} id ID of processor to delete.
          */
         deleteProcessor = function(id) {
-            // find the processor
             var processor;
             for (var i = 0, n = processors.length; i < n; i++) {
                 if (processors[i].getID() === id) {
@@ -115,6 +114,7 @@ export default function createMIDINetwork(specs, my) {
                     break;
                 }
             }
+            numProcessors = processors.length;
             
             // if (processor) {
             //     console.log('Delete processor ' + processor.getType() + ' (id ' + processor.getID() + ')');

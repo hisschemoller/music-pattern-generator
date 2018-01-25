@@ -11,7 +11,8 @@ export function createProcessor(specs, my) {
         noteDuration,
         euclidPattern = [],
         noteOffEvents = [],
-        pulsesOnly = [];
+        pulsesOnly = [],
+        processCallback;
 
     const initialize = function() {
             document.addEventListener(store.STATE_CHANGE, (e) => {
@@ -58,9 +59,9 @@ export function createProcessor(specs, my) {
          * @param {Number} offset Time from doc start to timeline start in ticks.
          */
         process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset) {
-                
+            
             // if the processor is muted only process remaining note offs.
-            if (my.params.is_mute.getValue()) {
+            if (my.params.is_mute.value) {
                 processNoteOffs(scanStart, scanEnd);
                 return;
             }
@@ -91,9 +92,9 @@ export function createProcessor(specs, my) {
                 
                 // if a note should play
                 if (isOn) {
-                    var channel = my.params.channel_out.getValue(),
-                        pitch = my.params.pitch_out.getValue(),
-                        velocity = my.params.velocity_out.getValue(),
+                    var channel = my.params.channel_out.value,
+                        pitch = my.params.pitch_out.value,
+                        velocity = my.params.velocity_out.value,
                         pulseStartTimestamp = scanStart + scanStartToNoteStart;
                     
                     // send the Note On message
@@ -115,10 +116,12 @@ export function createProcessor(specs, my) {
                     });
                     
                     // update pattern graphic view
-                    var stepIndex = pulsesOnly[i].stepIndex,
-                        delayFromNowToNoteStart = (nowToScanStart + scanStartToNoteStart) * ticksToMsMultiplier,
-                        delayFromNowToNoteEnd = (delayFromNowToNoteStart + noteDuration) * ticksToMsMultiplier;
-                    processCallback(stepIndex, delayFromNowToNoteStart, delayFromNowToNoteEnd);
+                    if (processCallback) {
+                        var stepIndex = pulsesOnly[i].stepIndex,
+                            delayFromNowToNoteStart = (nowToScanStart + scanStartToNoteStart) * ticksToMsMultiplier,
+                            delayFromNowToNoteEnd = (delayFromNowToNoteStart + noteDuration) * ticksToMsMultiplier;
+                        processCallback(stepIndex, delayFromNowToNoteStart, delayFromNowToNoteEnd);
+                    }
                 }
             }
             
