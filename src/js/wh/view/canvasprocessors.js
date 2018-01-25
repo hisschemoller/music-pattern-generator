@@ -1,3 +1,5 @@
+import { getProcessorByID } from '../state/selectors';
+
 /**
  * Manages the canvas views of the processors in the network.
  * - Processor view lifecycle.
@@ -68,23 +70,23 @@ export default function createCanvasProcessorViews(specs, my) {
         },
 
         selectProcessorView = function(id) {
-            for (let i = 0, n = views.length; i < n; i++) {
-                views[i].setSelected(views[i].getID() === id);
-            }
+            views.forEach(view => {
+                // console.log(view.getID() === id, view.getID());
+                view.setSelected(view.getID() === id);
+            });
         },
         
         /**
          * Delete canvas 2D object when the processor is deleted.
          * @param  {Object} processor MIDI processor for which the 3D object will be a view.
          */
-        deleteProcessorView = function(processor) {
-            let i = numViews;
+        deleteProcessorView = function(id) {
+            let i = views.length;
             while (--i >= 0) {
-                if (views[i].getProcessor() === processor) {
+                if (views[i].getID() === id) {
                     views[i].terminate();
                     views.splice(i, 1);
-                    numViews = views.length;
-                    my.updateConnectorsInfo();
+                    // my.updateConnectorsInfo();
                     my.markDirty();
                     return;
                 }
@@ -141,11 +143,12 @@ export default function createCanvasProcessorViews(specs, my) {
         },
         
         dragSelectedProcessor = function(x, y) {
-            let newX = x - dragOffsetX,
-                newY = y - dragOffsetY;
-            dragOffsetX = x;
-            dragOffsetY = y;
-            store.dispatch(store.getActions().dragSelectedProcessor(newX, newY));
+            store.dispatch(store.getActions().dragSelectedProcessor(x - dragOffsetX, y - dragOffsetY));
+
+            // let newX = x - dragOffsetX,
+            //     newY = y - dragOffsetY;
+            // dragOffsetX = x;
+            // dragOffsetY = y;
             // selectedView.setPosition2d({
             //     x: x - dragOffsetX,
             //     y: y - dragOffsetY
@@ -153,12 +156,10 @@ export default function createCanvasProcessorViews(specs, my) {
         },
         
         dragAllProcessors = function(x, y) {
-            // drag background, so all views
             let newX = x - dragOffsetX,
                 newY = y - dragOffsetY;
             dragOffsetX = x;
             dragOffsetY = y;
-            console.log(newX, newY);
             store.dispatch(store.getActions().dragAllProcessors(newX, newY));
             // for (let i = 0, n = views.length, view, position2d; i < n; i++) {
             //     view = views[i];
@@ -171,16 +172,31 @@ export default function createCanvasProcessorViews(specs, my) {
             // }
         },
 
-        setProcessorPositions = function(state, selectedID) {
-            state.forEach((data, i) => {
-                if (!selectedID || selectedID === data.id) {
-                    views[i].updatePosition({
-                        x: data.params.position2d.value.x,
-                        y: data.params.position2d.value.y
-                    });
-                }
-            });
-        },
+        // setProcessorPosition = function(state, id) {
+            // for (let i = 0, n = views.length; i < n; i++) {
+            //     if (id === views[i].getID()) {
+            //         const pos = getProcessorByID(id).params.position2d.value;
+            //         views[i].updatePosition({
+            //             x: pos.x,
+            //             y: pos.y
+            //         });
+            //         break;
+            //     }
+            // }
+        // },
+
+        // setAllProcessorPositions = function(state) {
+            // state.forEach((data) => {
+            //     for (let i = 0, n = views.length; i < n; i++) {
+            //         if (data.id === views[i].getID()) {
+            //             views[i].updatePosition({
+            //                 x: data.params.position2d.value.x,
+            //                 y: data.params.position2d.value.y
+            //             });
+            //         }
+            //     }
+            // });
+        // },
         
         getProcessorViews = function() {
             return views;
@@ -200,12 +216,14 @@ export default function createCanvasProcessorViews(specs, my) {
     my = my || {};
     my.createProcessorViews = createProcessorViews;
     my.selectProcessorView = selectProcessorView;
+    my.deleteProcessorView = deleteProcessorView;
     my.intersectsProcessor = intersectsProcessor;
     my.intersectsInConnector = intersectsInConnector;
     my.intersectsOutConnector = intersectsOutConnector;
     my.dragSelectedProcessor = dragSelectedProcessor;
     my.dragAllProcessors = dragAllProcessors;
-    my.setProcessorPositions = setProcessorPositions;
+    // my.setProcessorPosition = setProcessorPosition
+    // my.setAllProcessorPositions = setAllProcessorPositions;
     my.getProcessorViews = getProcessorViews;
     my.setThemeOnViews = setThemeOnViews;
     

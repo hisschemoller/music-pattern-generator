@@ -6,6 +6,7 @@ export default function createActions(specs = {}, my = {}) {
         SET_THEME = 'SET_THEME',
         CREATE_NEW_PROCESSOR = 'CREATE_NEW_PROCESSOR',
         CREATE_PROCESSOR = 'CREATE_PROCESSOR',
+        DELETE_PROCESSOR = 'DELETE_PROCESSOR',
         SELECT_PROCESSOR = 'SELECT_PROCESSOR',
         DRAG_SELECTED_PROCESSOR = 'DRAG_SELECTED_PROCESSOR',
         DRAG_ALL_PROCESSORS = 'DRAG_ALL_PROCESSORS',
@@ -31,7 +32,8 @@ export default function createActions(specs = {}, my = {}) {
         CREATE_NEW_PROCESSOR: CREATE_NEW_PROCESSOR,
         createNewProcessor: (data) => {
             return (dispatch, getState, getActions) => {
-                const fullData = require(`json-loader!../processors/${data.type}/config.json`);
+                const dataTemplate = require(`json-loader!../processors/${data.type}/config.json`);
+                const fullData = JSON.parse(JSON.stringify(dataTemplate));
                 const id = `${data.type}_${createUUID()}`;
                 fullData.type = data.type;
                 fullData.id = id;
@@ -47,8 +49,13 @@ export default function createActions(specs = {}, my = {}) {
             return { type: CREATE_PROCESSOR, data: data };
         },
 
+        DELETE_PROCESSOR: DELETE_PROCESSOR,
+        deleteProcessor: id => {
+            return { type: DELETE_PROCESSOR, id: id };
+        },
+
         SELECT_PROCESSOR: SELECT_PROCESSOR,
-        selectProcessor: (id) => {
+        selectProcessor: id => {
             return { type: SELECT_PROCESSOR, id: id };
         },
 

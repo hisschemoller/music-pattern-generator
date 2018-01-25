@@ -61,16 +61,17 @@ export default function createCanvasView(specs, my) {
                         my.createProcessorViews(e.detail.state.processors);
                         break;
                     
+                    case e.detail.actions.DELETE_PROCESSOR:
+                        my.deleteProcessorView(e.detail.action.id);
+                        break;
+                    
                     case e.detail.actions.SELECT_PROCESSOR:
                         my.selectProcessorView(e.detail.state.selectedID);
                         break;
                     
                     case e.detail.actions.DRAG_SELECTED_PROCESSOR:
-                        my.setProcessorPositions(e.detail.state.processors, e.detail.state.selectedID);
-                        break;
-                    
                     case e.detail.actions.DRAG_ALL_PROCESSORS:
-                        my.setProcessorPositions(e.detail.state.processors);
+                        my.markDirty();
                         break;
                 }
             });
@@ -167,7 +168,7 @@ export default function createCanvasView(specs, my) {
                         break;
                     case 'processor':
                         my.dragSelectedProcessor(canvasX, canvasY);
-                        my.updateConnectorsInfo();
+                        // my.updateConnectorsInfo();
                         my.drawOfflineCanvas();
                         break;
                     case 'background':
@@ -177,7 +178,7 @@ export default function createCanvasView(specs, my) {
                         break;
                 }
                 
-                my.markDirty();
+                // my.markDirty();
             }
         },
         
@@ -202,7 +203,7 @@ export default function createCanvasView(specs, my) {
                         break;
                 }
                 dragObjectType = null;
-                my.markDirty();
+                // my.markDirty();
             }
         },
         

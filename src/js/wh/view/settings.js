@@ -62,6 +62,7 @@ export default function createSettingsPanel(specs, my) {
                 el.querySelector('.settings__delete').addEventListener('click', function(e) {
                     e.preventDefault();
                     // midiNetwork.deleteProcessor(processor);
+                    store.dispatch(store.getActions().deleteProcessor(data.id));
                 });
             }
 
@@ -72,8 +73,6 @@ export default function createSettingsPanel(specs, my) {
                         break;
                 }
             });
-
-            console.log(data.id);
 
             return;
 

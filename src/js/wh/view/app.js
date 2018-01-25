@@ -95,6 +95,10 @@ export default function createAppView(specs, my) {
                     case e.detail.actions.CREATE_PROCESSOR:
                         createSettingsViews(e.detail.state.processors);
                         break;
+                    
+                    case e.detail.actions.DELETE_PROCESSOR:
+                        deleteSettingsView(e.detail.action.id);
+                        break;
 
                     case e.detail.actions.SELECT_PROCESSOR:
                         showPanel('settings', true);
@@ -137,12 +141,12 @@ export default function createAppView(specs, my) {
         
         /**
          * Delete settings controls view for a processor.
-         * @param  {Object} processor MIDI processor to control with the settings.
+         * @param  {String} id MIDI processor ID.
          */
-        deleteSettingsView = function(processor) {
+        deleteSettingsView = function(id) {
             var n = settingsViews.length;
             while (--n >= 0) {
-                if (settingsViews[n].hasProcessor(processor)) {
+                if (settingsViews[n].getID() === id) {
                     settingsViews[n].terminate();
                     settingsViews.splice(n, 1);
                     return false;

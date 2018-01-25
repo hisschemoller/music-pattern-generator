@@ -51,6 +51,11 @@ export default function createReducers() {
                     }
                     return newState;
                 
+                case actions.DELETE_PROCESSOR:
+                    return Object.assign({}, state, {
+                        processors: state.processors.filter(processor => processor.id !== action.id)
+                    });
+                
                 case actions.SELECT_PROCESSOR:
                     return Object.assign({}, state, {
                         selectedID: action.id
@@ -60,8 +65,8 @@ export default function createReducers() {
                     newState = Object.assign({}, state);
                     newState.processors.forEach(processor => {
                         if (processor.id === newState.selectedID) {
-                            processor.params.position2d.value.x += action.x;
-                            processor.params.position2d.value.y += action.y;
+                            processor.params.position2d.value.x = action.x;
+                            processor.params.position2d.value.y = action.y;
                         }
                     });
                     return newState;

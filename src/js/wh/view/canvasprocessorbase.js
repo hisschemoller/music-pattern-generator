@@ -37,9 +37,9 @@ export default function createCanvasProcessorBaseView(specs, my) {
             return connectorGraphic;
         },
     
-        getProcessor = function() {
-            return my.processor;
-        },
+        // getProcessor = function() {
+        //     return my.processor;
+        // },
         
         // setPosition2d = function(position2d) {
         //     my.processor.setParamValue('position2d', position2d);
@@ -52,11 +52,11 @@ export default function createCanvasProcessorBaseView(specs, my) {
         getID = function() {
             return my.data.id;
         };
-    
+        
     my = my || {};
     my.data = specs.data;
     my.store = specs.store;
-    my.processor = specs.processor;
+    // my.processor = specs.processor;
     my.getConnectorGraphic = getConnectorGraphic;
     my.colorHigh = '#cccccc';
     my.colorMid = '#dddddd';
@@ -64,7 +64,7 @@ export default function createCanvasProcessorBaseView(specs, my) {
     
     that = specs.that || {};
     
-    that.getProcessor = getProcessor;
+    // that.getProcessor = getProcessor;
     // that.setPosition2d = setPosition2d;
     that.getPosition2d = getPosition2d;
     that.getID = getID;

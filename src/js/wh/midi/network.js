@@ -22,6 +22,10 @@ export default function createMIDINetwork(specs, my) {
                     case e.detail.actions.CREATE_PROCESSOR:
                         createProcessor(e.detail.state.processors);
                         break;
+                    
+                    case e.detail.actions.DELETE_PROCESSOR:
+                        deleteProcessor(e.detail.action.id);
+                        break;
                 }
             });
         },
@@ -96,60 +100,64 @@ export default function createMIDINetwork(specs, my) {
 
         /**
          * Delete a processor.
-         * @param {String} processor Processor to delete.
+         * @param {String} id ID of processor to delete.
          */
-        deleteProcessor = function(processor) {
+        deleteProcessor = function(id) {
             // find the processor
             var processor;
-            for (var i = 0; i < numProcessors; i++) {
-                if (processors[i] === processor) {
+            for (var i = 0, n = processors.length; i < n; i++) {
+                if (processors[i].getID() === id) {
                     processor = processors[i];
+                    if (typeof processor.terminate === 'function') {
+                        processor.terminate();
+                    }
+                    processors.splice(processors.indexOf(processor), 1);
                     break;
                 }
             }
             
-            if (processor) {
-                console.log('Delete processor ' + processor.getType() + ' (id ' + processor.getID() + ')');
+            // if (processor) {
+            //     console.log('Delete processor ' + processor.getType() + ' (id ' + processor.getID() + ')');
                 
                 // disconnect other processors that have this processor as destination
-                for (var i = 0; i < numProcessors; i++) {
-                    if (typeof processors[i].disconnect === 'function') {
-                        disconnectProcessors(processors[i], processor);
-                    }
-                }
+                // for (var i = 0; i < numProcessors; i++) {
+                //     if (typeof processors[i].disconnect === 'function') {
+                //         disconnectProcessors(processors[i], processor);
+                //     }
+                // }
                 
                 // delete the views for the processor
-                switch (processor.getType()) {
-                    case 'input':
-                        numInputProcessors--;
-                        break;
-                    case 'output':
-                        canvasView.deleteProcessorView(processor);
-                        break;
-                    case 'epg':
-                        appView.deleteSettingsView(processor);
-                        canvasView.deleteProcessorView(processor);
-                        midiRemote.unregisterProcessor(processor);
-                        break;
-                }
+                // switch (processor.getType()) {
+                //     case 'input':
+                //         numInputProcessors--;
+                //         break;
+                //     case 'output':
+                //         canvasView.deleteProcessorView(processor);
+                //         break;
+                //     case 'epg':
+                //         appView.deleteSettingsView(processor);
+                //         canvasView.deleteProcessorView(processor);
+                //         midiRemote.unregisterProcessor(processor);
+                //         break;
+                // }
 
                 // disconnect this processor from its destinations
-                if (typeof processor.disconnect === 'function') {
-                    const destinationProcessors = processor.getDestinations();
-                    for (let i = 0, n = destinationProcessors.length; i < n; i++) {
-                        disconnectProcessors(processor, destinationProcessors[i]);
-                    }
-                }
+                // if (typeof processor.disconnect === 'function') {
+                //     const destinationProcessors = processor.getDestinations();
+                //     for (let i = 0, n = destinationProcessors.length; i < n; i++) {
+                //         disconnectProcessors(processor, destinationProcessors[i]);
+                //     }
+                // }
                 
-                selectNextProcessor(processor);
+                // selectNextProcessor(processor);
                 
-                if (typeof processor.terminate === 'function') {
-                    processor.terminate();
-                }
+                // if (typeof processor.terminate === 'function') {
+                //     processor.terminate();
+                // }
                 
-                processors.splice(processors.indexOf(processor), 1);
-                numProcessors = processors.length;
-            }
+                // processors.splice(processors.indexOf(processor), 1);
+                // numProcessors = processors.length;
+            // }
         },
 
         /**
