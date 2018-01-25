@@ -1,6 +1,7 @@
 import createCanvasProcessorBaseView from '../../view/canvasprocessorbase';
 import { getProcessorByID } from '../../state/selectors';
 import { getEuclidPattern, rotateEuclidPattern } from './euclid';
+import TWEEN from '@tweenjs/tween.js';
 
 /**
  * Euclidean pattern animated necklace wheel drawn on canvas.
@@ -149,6 +150,18 @@ export function createGraphic(specs, my) {
         setSelected = function(isSelected) {
             updateSelectCircle(isSelected);
         },
+
+        draw = function(position, processorEvents) {
+            // showPlaybackPosition();
+            let event;
+            if (processorEvents[my.data.id] && processorEvents[my.data.id].length) {
+                console.log(processorEvents[my.data.id].length);
+                for (let i = 0, n = processorEvents[my.data.id].length; i < n; i++) {
+                    event = processorEvents[my.data.id][i];
+                    showNote(event.stepIndex, event.delayFromNowToNoteStart, event.delayFromNowToNoteEnd);
+                }
+            }
+        },
         
         /**
          * Show the playback position within the pattern.
@@ -169,7 +182,7 @@ export function createGraphic(specs, my) {
          */
         showNote = function(stepIndex, noteStartDelay, noteStopDelay) {
             // get the coordinates of the dot for this step
-            let steps = my.processor.getParamValue('steps');
+            let steps = my.data.params.steps.value;
             
             // retain necklace dot state in object
             dotAnimations[stepIndex] = {
@@ -193,6 +206,8 @@ export function createGraphic(specs, my) {
                     })
                 .delay(noteStartDelay)
                 .start();
+            
+            console.log(noteStartDelay);
         },
         
         /**
@@ -588,6 +603,7 @@ export function createGraphic(specs, my) {
     
     that.terminate = terminate;
     that.setSelected = setSelected;
+    that.draw = draw;
     that.updatePosition = updatePosition;
     that.addToStaticView = addToStaticView;
     that.addToDynamicView = addToDynamicView;

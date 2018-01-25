@@ -11,8 +11,7 @@ export function createProcessor(specs, my) {
         noteDuration,
         euclidPattern = [],
         noteOffEvents = [],
-        pulsesOnly = [],
-        processCallback;
+        pulsesOnly = [];
 
     const initialize = function() {
             document.addEventListener(store.STATE_CHANGE, (e) => {
@@ -57,8 +56,9 @@ export function createProcessor(specs, my) {
          * @param {Number} nowToScanStart Timespan from current timeline position to scanStart.
          * @param {Number} ticksToMsMultiplier Duration of one tick in milliseconds.
          * @param {Number} offset Time from doc start to timeline start in ticks.
+         * @param {Array} processorEvents Array to collect processor generated events to displayin the view.
          */
-        process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset) {
+        process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset, processorEvents) {
             
             // if the processor is muted only process remaining note offs.
             if (my.params.is_mute.value) {
@@ -116,12 +116,20 @@ export function createProcessor(specs, my) {
                     });
                     
                     // update pattern graphic view
-                    if (processCallback) {
-                        var stepIndex = pulsesOnly[i].stepIndex,
-                            delayFromNowToNoteStart = (nowToScanStart + scanStartToNoteStart) * ticksToMsMultiplier,
-                            delayFromNowToNoteEnd = (delayFromNowToNoteStart + noteDuration) * ticksToMsMultiplier;
-                        processCallback(stepIndex, delayFromNowToNoteStart, delayFromNowToNoteEnd);
+                    // var stepIndex = pulsesOnly[i].stepIndex,
+                    //     delayFromNowToNoteStart = (nowToScanStart + scanStartToNoteStart) * ticksToMsMultiplier,
+                    //     delayFromNowToNoteEnd = (delayFromNowToNoteStart + noteDuration) * ticksToMsMultiplier;
+                    // processCallback(stepIndex, delayFromNowToNoteStart, delayFromNowToNoteEnd);
+                    
+                    if (!processorEvents[my.id]) {
+                        processorEvents[my.id] = [];
                     }
+                    const delayFromNowToNoteStart = (nowToScanStart + scanStartToNoteStart) * ticksToMsMultiplier;
+                    processorEvents[my.id].push({
+                        stepIndex: pulsesOnly[i].stepIndex,
+                        delayFromNowToNoteStart: delayFromNowToNoteStart,
+                        delayFromNowToNoteEnd: (delayFromNowToNoteStart + noteDuration) * ticksToMsMultiplier
+                    });
                 }
             }
             

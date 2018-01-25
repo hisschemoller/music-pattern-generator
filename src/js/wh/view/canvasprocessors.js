@@ -35,13 +35,6 @@ export default function createCanvasProcessorViews(specs, my) {
                 }
             });
 
-
-            return;
-
-
-
-
-
             // let view,
             //     specs = {
             //         processor: processor,
@@ -62,16 +55,15 @@ export default function createCanvasProcessorViews(specs, my) {
             // numViews = views.length;
             
             // set theme on the new view
-            if (my.theme && typeof view.setTheme == 'function') {
-                view.setTheme(my.theme);
-            }
+            // if (my.theme && typeof view.setTheme == 'function') {
+            //     view.setTheme(my.theme);
+            // }
             
             // my.updateConnectorsInfo();
         },
 
         selectProcessorView = function(id) {
             views.forEach(view => {
-                // console.log(view.getID() === id, view.getID());
                 view.setSelected(view.getID() === id);
             });
         },

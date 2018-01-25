@@ -36,6 +36,7 @@ export function createSequencer (specs, my) {
         timelineOffset = 0,
         playbackQueue = [],
         renderThrottleCounter = 0,
+        processorEvents = {},
         
         /**
          * Scan the arrangement for events and send them to concerned components.
@@ -45,9 +46,7 @@ export function createSequencer (specs, my) {
          * @param {Number} offset Position of transport playhead in ms.
          */
         scanEvents = function(scanStart, scanEnd, nowToScanStart, offset) {
-            var scanStartTimeline = msec2tick(scanStart),
-                scanEndTimeline = msec2tick(scanEnd);
-            midiNetwork.process(scanStartTimeline, scanEndTimeline, msec2tick(nowToScanStart), tickInMilliseconds, msec2tick(offset));
+            midiNetwork.process(msec2tick(scanStart), msec2tick(scanEnd), msec2tick(nowToScanStart), tickInMilliseconds, msec2tick(offset), processorEvents);
         },
         
         /**
@@ -56,8 +55,9 @@ export function createSequencer (specs, my) {
          */
         updateView = function(position) {
             if (renderThrottleCounter % 2 === 0) {
-                midiNetwork.render(msec2tick(position));
-                canvasView.draw();
+                // midiNetwork.render(msec2tick(position));
+                canvasView.draw(position, processorEvents);
+                Object.keys(processorEvents).forEach(v => processorEvents[v] = []);
             }
             renderThrottleCounter++;
         },

@@ -241,10 +241,11 @@ export default function createMIDINetwork(specs, my) {
          * @param {Number} nowToScanStart Duration from now until start time in ticks.
          * @param {Number} ticksToMsMultiplier Ticks to ms. conversion multiplier.
          * @param {Number} offset Position of transport playhead in ticks.
+         * @param {Object} processorEvents Object to collect processor generated events to displayin the view.
          */
-        process = function(start, end, nowToScanStart, ticksToMsMultiplier, offset) {
+        process = function(start, end, nowToScanStart, ticksToMsMultiplier, offset, processorEvents) {
             for (var i = 0; i < numProcessors; i++) {
-                processors[i].process(start, end, nowToScanStart, ticksToMsMultiplier, offset);
+                processors[i].process(start, end, nowToScanStart, ticksToMsMultiplier, offset, processorEvents);
             }
         },
 
@@ -252,13 +253,13 @@ export default function createMIDINetwork(specs, my) {
          * Update view. At requestAnimationFrame speed.
          * @param  {Number} position Transport playback position in ticks.
          */
-        render = function(position) {
-            for (var i = 0; i < numProcessors; i++) {
-                if (processors[i].render) {
-                    processors[i].render(position);
-                }
-            }
-        },
+        // render = function(position) {
+        //     for (var i = 0; i < numProcessors; i++) {
+        //         if (processors[i].render) {
+        //             processors[i].render(position);
+        //         }
+        //     }
+        // },
 
         /**
          * Clear the whole network.
@@ -388,7 +389,7 @@ export default function createMIDINetwork(specs, my) {
     that.connectProcessors = connectProcessors;
     that.disconnectProcessors = disconnectProcessors;
     that.process = process;
-    that.render = render;
+    // that.render = render;
     that.clear = clear;
     that.setData = setData;
     that.getData = getData;

@@ -235,12 +235,17 @@ export default function createCanvasView(specs, my) {
         /**
          * Update any tween animations that are going on and
          * redraw the canvases if needed.
+         * @param {Number} position Transport playback position in ticks.
+         * @param {Array} processorEvents Array to processor generated events to displayin the view.
          */
-        draw = function() {
+        draw = function(position, processorEvents) {
             TWEEN.update();
             let i,
                 views = my.getProcessorViews(),
                 n = views.length;
+            for (i = 0; i < n; i++) {
+                views[i].draw(position, processorEvents);
+            }
             if (isDirty) {
                 isDirty = false;
                 staticCtx.clearRect(0, 0, staticCanvas.width, staticCanvas.height);
