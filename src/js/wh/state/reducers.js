@@ -8,7 +8,8 @@ export default function createReducers() {
             preferences: {
                 isDarkTheme: false
             },
-            remote: {}
+            remote: {},
+            isPlaying: false
         },
         
         reduce = function(state = initialState, action = {}, actions) {
@@ -112,6 +113,9 @@ export default function createReducers() {
                         }
                     });
                     return newState;
+                
+                case actions.TOGGLE_PLAY:
+                    return Object.assign({}, state, { isPlaying: !state.isPlaying });
                 
                 default:
                     return state;

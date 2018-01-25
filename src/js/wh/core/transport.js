@@ -108,6 +108,7 @@ export function createSequencer (specs, my) {
         };
     
     my = my || {};
+    my.store = specs.store;
     my.scanEvents = scanEvents;
     my.updateView = updateView;
     
@@ -233,6 +234,16 @@ export default function createTransport(specs, my) {
         isRunning = false,
         isLooping = false,
         needsScan = false,
+
+        init = function() {
+            document.addEventListener(my.store.STATE_CHANGE, (e) => {
+                switch (e.detail.action.type) {
+                    case e.detail.actions.TOGGLE_PLAY:
+                        toggleStartStop(e.detail.state.isPlaying);
+                        break;
+                }
+            });
+        },
         
         /**
          * Set the scan range.
@@ -356,6 +367,8 @@ export default function createTransport(specs, my) {
     
     that = createSequencer(specs, my);
     that = createExternalClock(specs, my);
+
+    init();
     
     that.start = start;
     that.pause = pause;

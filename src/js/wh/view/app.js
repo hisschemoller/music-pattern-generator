@@ -51,7 +51,7 @@ export default function createAppView(specs, my) {
         
         init = function() {
             controls.play.input.addEventListener('change', function(e) {
-                app.updateApp('play');
+                store.dispatch(store.getActions().togglePlay());
             });
             controls.bpm.input.addEventListener('change', function(e) {
                 app.updateApp('bpm', e.target.value);
@@ -102,6 +102,10 @@ export default function createAppView(specs, my) {
 
                     case e.detail.actions.SELECT_PROCESSOR:
                         showPanel('settings', true);
+                        break;
+
+                    case e.detail.actions.TOGGLE_PLAY:
+                        controls.play.input.checked = e.detail.state.isPlaying;
                         break;
                 }
             });

@@ -214,8 +214,6 @@ export function createGraphic(specs, my) {
                     })
                 .delay(noteStartDelay)
                 .start();
-            
-            console.log(noteStartDelay);
         },
 
         updateDuration = function() {
