@@ -80,7 +80,7 @@ export default function createAppView(specs, my) {
                         if (e.target.tagName.toLowerCase() == 'input' && e.target.getAttribute('type') == 'text') {
                             return;
                         }
-                        app.updateApp('play');
+                        store.dispatch(store.getActions().togglePlay());
                         break;
                 }
             });
