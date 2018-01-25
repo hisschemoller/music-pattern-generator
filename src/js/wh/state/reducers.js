@@ -117,6 +117,9 @@ export default function createReducers() {
                 case actions.TOGGLE_PLAY:
                     return Object.assign({}, state, { isPlaying: !state.isPlaying });
                 
+                case actions.SET_TEMPO:
+                    return Object.assign({}, state, { bpm: action.value });
+                
                 default:
                     return state;
             }

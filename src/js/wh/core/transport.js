@@ -108,13 +108,12 @@ export function createSequencer (specs, my) {
         };
     
     my = my || {};
+    my.setBPM = setBPM;
     my.store = specs.store;
     my.scanEvents = scanEvents;
     my.updateView = updateView;
     
     that = specs.that || {};
-    
-    setBPM(bpm);
     
     that.setBPM = setBPM;
     that.getBPM = getBPM;
@@ -240,6 +239,11 @@ export default function createTransport(specs, my) {
                 switch (e.detail.action.type) {
                     case e.detail.actions.TOGGLE_PLAY:
                         toggleStartStop(e.detail.state.isPlaying);
+                        break;
+                    
+                    case e.detail.actions.SET_PROJECT:
+                    case e.detail.actions.SET_TEMPO:
+                        my.setBPM(e.detail.state.bpm);
                         break;
                 }
             });

@@ -12,7 +12,8 @@ export default function createActions(specs = {}, my = {}) {
         DRAG_ALL_PROCESSORS = 'DRAG_ALL_PROCESSORS',
         CHANGE_PARAMETER = 'CHANGE_PARAMETER',
         RECREATE_PARAMETER = 'RECREATE_PARAMETER',
-        TOGGLE_PLAY = 'TOGGLE_PLAY';
+        TOGGLE_PLAY = 'TOGGLE_PLAY',
+        SET_TEMPO = 'SET_TEMPO';
 
     return {
         SET_PREFERENCES: SET_PREFERENCES,
@@ -81,7 +82,10 @@ export default function createActions(specs = {}, my = {}) {
         },
 
         TOGGLE_PLAY: TOGGLE_PLAY,
-        togglePlay: value => { return { type:TOGGLE_PLAY, value: value } }
+        togglePlay: value => { return { type: TOGGLE_PLAY, value: value } },
+
+        SET_TEMPO: SET_TEMPO,
+        setTempo: value => { return { type: SET_TEMPO, value: value } }
     };
 }
         

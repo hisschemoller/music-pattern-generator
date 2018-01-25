@@ -54,7 +54,7 @@ export default function createAppView(specs, my) {
                 store.dispatch(store.getActions().togglePlay());
             });
             controls.bpm.input.addEventListener('change', function(e) {
-                app.updateApp('bpm', e.target.value);
+                store.dispatch(store.getActions().setTempo(controls.bpm.input.value));
             });
             controls.remote.input.addEventListener('change', function(e) {
                 app.updateApp('remote', e.target.checked);
@@ -106,6 +106,10 @@ export default function createAppView(specs, my) {
 
                     case e.detail.actions.TOGGLE_PLAY:
                         controls.play.input.checked = e.detail.state.isPlaying;
+                        break;
+
+                    case e.detail.actions.SET_TEMPO:
+                        controls.bpm.input.value = e.detail.state.bpm;
                         break;
                 }
             });
