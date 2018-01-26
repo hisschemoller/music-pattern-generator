@@ -8,7 +8,6 @@ export default function createAppView(specs, my) {
     var that,
         store = specs.store,
         app = specs.app,
-        midiNetwork = specs.midiNetwork,
         rootEl = document.querySelector('#app'),
         panelsEl = document.querySelector('.panels'),
         helpEl = document.querySelector('.help'),
@@ -77,10 +76,9 @@ export default function createAppView(specs, my) {
                 switch (e.keyCode) {
                     case 32:
                         // don't toggle play while typing space key in a text field.
-                        if (e.target.tagName.toLowerCase() == 'input' && e.target.getAttribute('type') == 'text') {
-                            return;
+                        if (!(e.target.tagName.toLowerCase() == 'input' && e.target.getAttribute('type') == 'text')) {
+                            store.dispatch(store.getActions().togglePlay());
                         }
-                        store.dispatch(store.getActions().togglePlay());
                         break;
                 }
             });

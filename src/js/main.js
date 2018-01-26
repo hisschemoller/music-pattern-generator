@@ -67,8 +67,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     createAppView({
         that: appView,
         store: store,
-        app: app,
-        midiNetwork: midiNetwork
+        app: app
     });
     createCanvasView({
         that: canvasView,
