@@ -89,7 +89,8 @@ export default function createPreferencesView(specs) {
                         store: store,
                         id: data[i].id,
                         name: data[i].name,
-                        parentEl: parentEl
+                        parentEl: parentEl,
+                        isInput: isInput
                     });
                     views.splice(i, 0, view);
                 }
@@ -148,6 +149,6 @@ export default function createPreferencesView(specs) {
     that = specs.that;
 
     init();
-    
+
     return that;
 }

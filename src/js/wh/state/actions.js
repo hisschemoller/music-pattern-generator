@@ -15,7 +15,8 @@ export default function createActions(specs = {}, my = {}) {
         TOGGLE_PLAY = 'TOGGLE_PLAY',
         SET_TEMPO = 'SET_TEMPO',
         ADD_MIDI_PORT = 'ADD_MIDI_PORT',
-        REMOVE_MIDI_PORT = 'REMOVE_MIDI_PORT';
+        REMOVE_MIDI_PORT = 'REMOVE_MIDI_PORT',
+        TOGGLE_PORT_NETWORK = 'TOGGLE_PORT_NETWORK';
 
     return {
         SET_PREFERENCES: SET_PREFERENCES,
@@ -93,7 +94,10 @@ export default function createActions(specs = {}, my = {}) {
         addMIDIPort: (id, name, isInput) => { return { type: ADD_MIDI_PORT, id: id, name: name, isInput: isInput } },
 
         REMOVE_MIDI_PORT: REMOVE_MIDI_PORT,
-        removeMIDIPort: id => { return { type: REMOVE_MIDI_PORT, id: id } }
+        removeMIDIPort: id => { return { type: REMOVE_MIDI_PORT, id: id } },
+
+        TOGGLE_PORT_NETWORK: TOGGLE_PORT_NETWORK,
+        togglePortNetwork: (id, isInput) => { return { type: TOGGLE_PORT_NETWORK, id: id, isInput: isInput } }
     };
 }
         

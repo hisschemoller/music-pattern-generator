@@ -124,7 +124,13 @@ export default function createReducers() {
                 
                 case actions.ADD_MIDI_PORT:
                     newState = Object.assign({}, state);
-                    let portObj = { id: action.id, name: action.name };
+                    let portObj = { 
+                        id: action.id, 
+                        name: action.name,
+                        networkEnabled: false,
+                        syncEnabled: false,
+                        remoteEnabled: false
+                    };
                     if (action.isInput) {
                         newState.inputs = [ ...state.inputs, portObj ]
                         newState.inputs.sort((a, b) => {
@@ -148,6 +154,25 @@ export default function createReducers() {
                         newState.inputs = newState.inputs.filter(input => input.id !== action.id);
                     } else {
                         newState.outputs = newState.outputs.filter(output => output.id !== action.id);
+                    }
+                    return newState;
+                
+                case actions.TOGGLE_PORT_NETWORK:
+                    newState = Object.assign({}, state);
+                    if (action.isInput) {
+                        newState.inputs = newState.inputs.map((item, index) => {
+                            if (item.id === action.id) {
+                                item = Object.assign({}, item, { networkEnabled: !item.networkEnabled });
+                            }
+                            return item;
+                        });
+                    } else {
+                        newState.outputs = newState.outputs.map((item, index) => {
+                            if (item.id === action.id) {
+                                item = Object.assign({}, item, { networkEnabled: !item.networkEnabled });
+                            }
+                            return item;
+                        });
                     }
                     return newState;
 
