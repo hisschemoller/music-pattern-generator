@@ -142,6 +142,15 @@ export default function createReducers() {
                     }
                     return newState;
                 
+                case actions.REMOVE_MIDI_PORT:
+                    newState = Object.assign({}, state);
+                    if (action.isInput) {
+                        newState.inputs = newState.inputs.filter(input => input.id !== action.id);
+                    } else {
+                        newState.outputs = newState.outputs.filter(output => output.id !== action.id);
+                    }
+                    return newState;
+
                 default:
                     return state;
             }

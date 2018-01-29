@@ -35,6 +35,10 @@ export default function createPreferencesView(specs) {
                     case e.detail.actions.ADD_MIDI_PORT:
                         createMIDIPortView(e.detail.state, e.detail.action.isInput);
                         break;
+                    
+                    case e.detail.actions.REMOVE_MIDI_PORT:
+                        deleteMIDIPortView(e.detail.state, e.detail.action.isInput);
+                        break;
                 }
             });
         },
@@ -110,22 +114,40 @@ export default function createPreferencesView(specs) {
          * Delete view for a MIDI input or output processor.
          * @param  {Object} processor MIDI processor for a MIDI input or output.
          */
-        deleteMIDIPortView = function(processor) {
-            var n = midiPortViews.length;
+        deleteMIDIPortView = function(state, isInput) {
+            if (isInput) {
+                data = state.inputs;
+                views = midiInputsViews;
+            } else {
+                data = state.outputs;
+                views = midiOutputsViews;
+            }
+            var n = views.length;
             while (--n >= 0) {
-                if (midiPortViews[n].hasProcessor(processor)) {
-                    midiPortViews[n].terminate();
-                    midiPortViews.splice(n, 1);
-                    return false;
+                let isFound = false;
+                for (let i = 0, p = data.length; i < p; i++) {
+                    if (data[i].id === views[n].getID()) {
+                        isFound = true;
+                        break
+                    }
                 }
+                if (!isFound) {
+                    views[n].terminate();
+                    views.splice(n, 1);
+                    return;
+                }
+
+                // if (midiPortViews[n].hasProcessor(processor)) {
+                //     midiPortViews[n].terminate();
+                //     midiPortViews.splice(n, 1);
+                //     return false;
+                // }
             }
         };
 
     that = specs.that;
 
     init();
-
-    that.createMIDIPortView = createMIDIPortView;
-    that.deleteMIDIPortView = deleteMIDIPortView;
+    
     return that;
 }
