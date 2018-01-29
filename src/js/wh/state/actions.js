@@ -13,7 +13,9 @@ export default function createActions(specs = {}, my = {}) {
         CHANGE_PARAMETER = 'CHANGE_PARAMETER',
         RECREATE_PARAMETER = 'RECREATE_PARAMETER',
         TOGGLE_PLAY = 'TOGGLE_PLAY',
-        SET_TEMPO = 'SET_TEMPO';
+        SET_TEMPO = 'SET_TEMPO',
+        ADD_MIDI_PORT = 'ADD_MIDI_PORT',
+        REMOVE_MIDI_PORT = 'REMOVE_MIDI_PORT';
 
     return {
         SET_PREFERENCES: SET_PREFERENCES,
@@ -85,7 +87,13 @@ export default function createActions(specs = {}, my = {}) {
         togglePlay: value => { return { type: TOGGLE_PLAY, value: value } },
 
         SET_TEMPO: SET_TEMPO,
-        setTempo: value => { return { type: SET_TEMPO, value: value } }
+        setTempo: value => { return { type: SET_TEMPO, value: value } },
+
+        ADD_MIDI_PORT: ADD_MIDI_PORT,
+        addMIDIPort: (id, name, isInput) => { return { type: ADD_MIDI_PORT, id: id, name: name, isInput: isInput } },
+
+        REMOVE_MIDI_PORT: REMOVE_MIDI_PORT,
+        removeMIDIPort: id => { return { type: REMOVE_MIDI_PORT, id: id } }
     };
 }
         

@@ -3,6 +3,7 @@
  */
 export default function createMIDI(specs) {
     var that,
+        store = specs.store,
         preferencesView = specs.preferencesView,
         midiNetwork = specs.midiNetwork,
         midiRemote = specs.midiRemote,
@@ -33,8 +34,8 @@ export default function createMIDI(specs) {
                     if (!_midiAccess.inputs.size && !_midiAccess.outputs.size) {
                         failureCallback('No MIDI devices found on this system.');
                     } else {
-                        midiAccess = _midiAccess;
-                        successCallback(_midiAccess);
+                        onAccessSuccess(_midiAccess);
+                        successCallback();
                     }
                 }, function() {
                     failureCallback('RequestMIDIAccess failed.');
@@ -56,24 +57,27 @@ export default function createMIDI(specs) {
          * MIDI access request succeeded.
          * @param {Object} midiAccessObj MidiAccess object.
          */
-        // onAccessSuccess = function(midiAccessObj) {
-        //     console.log('MIDI enabled.');
-        //     midiAccess = midiAccessObj;
-        //     var inputs = midiAccess.inputs.values();
-        //     var outputs = midiAccess.outputs.values();
-            
-        //     for (var port = inputs.next(); port && !port.done; port = inputs.next()) {
-        //         createInput(port.value);
-        //     }
-            
-        //     for (var port = outputs.next(); port && !port.done; port = outputs.next()) {
-        //         createOutput(port.value);
-        //     }
-            
-        //     restorePortSettings();
+        onAccessSuccess = function(_midiAccess) {
+            console.log('MIDI enabled.');
+            midiAccess = _midiAccess;
 
-        //     midiAccess.onstatechange = onAccessStateChange;
-        // },
+            const inputs = midiAccess.inputs.values();
+            const outputs = midiAccess.outputs.values();
+            
+            for (let port = inputs.next(); port && !port.done; port = inputs.next()) {
+                store.dispatch(store.getActions().addMIDIPort(port.value.id, port.value.name, true));
+                // createInput(port.value);
+            }
+            
+            for (let port = outputs.next(); port && !port.done; port = outputs.next()) {
+                store.dispatch(store.getActions().addMIDIPort(port.value.id, port.value.name, false));
+                // createOutput(port.value);
+            }
+            
+            // restorePortSettings();
+
+            midiAccess.onstatechange = onAccessStateChange;
+        },
 
         /**
          * MIDIAccess object statechange handler.

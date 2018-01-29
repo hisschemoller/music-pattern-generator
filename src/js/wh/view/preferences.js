@@ -1,14 +1,18 @@
+import createMIDIInputView from './midi_input';
+import createMIDIOutputView from './midi_output';
+
 /**
  * Preferences settings view.
  */
 export default function createPreferencesView(specs) {
     var that,
         store = specs.store,
-        canvasView = specs.canvasView,
         preferencesEl = document.querySelector('.prefs'),
         midiInputsEl = document.querySelector('.prefs__inputs'),
         midiOutputsEl = document.querySelector('.prefs__outputs'),
-        midiPortViews = [],
+        // midiPortViews = [],
+        midiInputsViews = [],
+        midiOutputsViews = [],
         controls = {
             darkTheme: {
                 type: 'checkbox',
@@ -26,6 +30,10 @@ export default function createPreferencesView(specs) {
                     case e.detail.actions.SET_PREFERENCES:
                     case e.detail.actions.SET_THEME:
                         updateControl('dark-theme', e.detail.state.preferences.isDarkTheme);
+                        break;
+                    
+                    case e.detail.actions.ADD_MIDI_PORT:
+                        createMIDIPortView(e.detail.state, e.detail.action.isInput);
                         break;
                 }
             });
@@ -50,20 +58,52 @@ export default function createPreferencesView(specs) {
          * @param {Boolean} isInput True if the port in an input.
          * @param {Object} port MIDI port object.
          */
-        createMIDIPortView = function(isInput, port) {
-            var view;
+        createMIDIPortView = function(state, isInput) {
+            let data, views, createFunction, parentEl;
             if (isInput) {
-                view = ns.createMIDIInputView({
-                    parentEl: midiInputsEl,
-                    port: port
-                });
+                data = state.inputs;
+                views = midiInputsViews;
+                createFunction = createMIDIInputView;
+                parentEl = midiInputsEl;
             } else {
-                view = ns.createMIDIOutputView({
-                    parentEl: midiOutputsEl,
-                    port: port
-                });
+                data = state.outputs;
+                views = midiOutputsViews;
+                createFunction = createMIDIOutputView;
+                parentEl = midiOutputsEl;
             }
-            midiPortViews.push(view);
+
+            for (let i = 0, n = data.length; i < n; i++) {
+                let isFound = false;
+                for (let j = 0, p = views.length; j < p; j++) {
+                    if (data[i].id === views[j].getID()) {
+                        isFound = true;
+                        break;
+                    }
+                }
+                if (!isFound) {
+                    let view = createFunction({
+                        store: store,
+                        id: data[i].id,
+                        name: data[i].name,
+                        parentEl: parentEl
+                    });
+                    views.splice(i, 0, view);
+                }
+            }
+
+            // var view;
+            // if (isInput) {
+            //     view = ns.createMIDIInputView({
+            //         parentEl: midiInputsEl,
+            //         port: port
+            //     });
+            // } else {
+            //     view = ns.createMIDIOutputView({
+            //         parentEl: midiOutputsEl,
+            //         port: port
+            //     });
+            // }
+            // midiPortViews.push(view);
         },
 
         /**

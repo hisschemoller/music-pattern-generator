@@ -21,7 +21,7 @@ export default function createStore(specs = {}, my = {}) {
                     actions: actions
                 }}));
             }
-        },
+        }, 
         
         getActions = () => {
             return actions;

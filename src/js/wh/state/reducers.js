@@ -9,7 +9,9 @@ export default function createReducers() {
                 isDarkTheme: false
             },
             remote: {},
-            isPlaying: false
+            isPlaying: false,
+            inputs: [],
+            outputs: []
         },
         
         reduce = function(state = initialState, action = {}, actions) {
@@ -119,6 +121,26 @@ export default function createReducers() {
                 
                 case actions.SET_TEMPO:
                     return Object.assign({}, state, { bpm: action.value });
+                
+                case actions.ADD_MIDI_PORT:
+                    newState = Object.assign({}, state);
+                    let portObj = { id: action.id, name: action.name };
+                    if (action.isInput) {
+                        newState.inputs = [ ...state.inputs, portObj ]
+                        newState.inputs.sort((a, b) => {
+                            if (a.name < b.name) { return -1 }
+                            if (a.name > b.name) { return 1 }
+                            return 0;
+                        });
+                    } else {
+                        newState.outputs = [ ...state.outputs, portObj ]
+                        newState.inputs.sort((a, b) => {
+                            if (a.name < b.name) { return -1 }
+                            if (a.name > b.name) { return 1 }
+                            return 0;
+                        });
+                    }
+                    return newState;
                 
                 default:
                     return state;

@@ -75,8 +75,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     createPreferencesView({
         that: preferencesView,
-        store: store,
-        canvasView: canvasView
+        store: store
     });
     createRemoteView({
         that: remoteView,
@@ -97,6 +96,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     createMIDI({
         that: midi,
+        store: store,
         preferencesView: preferencesView,
         midiNetwork: midiNetwork,
         midiRemote: midiRemote,
