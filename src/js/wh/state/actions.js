@@ -16,7 +16,9 @@ export default function createActions(specs = {}, my = {}) {
         SET_TEMPO = 'SET_TEMPO',
         ADD_MIDI_PORT = 'ADD_MIDI_PORT',
         REMOVE_MIDI_PORT = 'REMOVE_MIDI_PORT',
-        TOGGLE_PORT_NETWORK = 'TOGGLE_PORT_NETWORK';
+        TOGGLE_PORT_NETWORK = 'TOGGLE_PORT_NETWORK',
+        TOGGLE_PORT_SYNC = 'TOGGLE_PORT_SYNC',
+        TOGGLE_PORT_REMOTE = 'TOGGLE_PORT_REMOTE';
 
     return {
         SET_PREFERENCES: SET_PREFERENCES,
@@ -97,9 +99,27 @@ export default function createActions(specs = {}, my = {}) {
         removeMIDIPort: id => { return { type: REMOVE_MIDI_PORT, id: id } },
 
         TOGGLE_PORT_NETWORK: TOGGLE_PORT_NETWORK,
-        togglePortNetwork: (id, isInput) => { return { type: TOGGLE_PORT_NETWORK, id: id, isInput: isInput } }
+        togglePortNetwork: (id, isInput) => { return { type: TOGGLE_PORT_NETWORK, id: id, isInput: isInput } },
+
+        TOGGLE_PORT_SYNC: TOGGLE_PORT_SYNC,
+        togglePortSync: (id, isInput) => { return { type: TOGGLE_PORT_SYNC, id: id, isInput: isInput } },
+
+        TOGGLE_PORT_REMOTE: TOGGLE_PORT_REMOTE,
+        togglePortRemote: (id, isInput) => { return { type: TOGGLE_PORT_REMOTE, id: id, isInput: isInput } }
     };
 }
+
+/**
+ * network
+ * - output processor created or activated
+ * - output processor canvas view created or enabled
+ * 
+ * remote
+ * - remote object starts listening on activated port
+ * 
+ * sync
+ * - sync object starts listening on activated port
+ */
         
 /**
  * Set default processor name.

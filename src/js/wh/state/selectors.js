@@ -7,7 +7,7 @@ function updateProcessors(state) {
     })
 }
 
-export function memoize(state = initialState, action = {}, actions) {
+export function memoize(state, action = {}, actions) {
     switch(action.type) {
         case actions.CREATE_PROCESSOR:
         case actions.DELETE_PROCESSOR:

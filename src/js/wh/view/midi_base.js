@@ -35,12 +35,12 @@ export default function createMIDIBaseView(specs, my) {
             });
             my.syncEl.addEventListener('change', function(e) {
                 if (!e.currentTarget.dataset.disabled) {
-                    port.toggleSync();
+                    my.store.dispatch(my.store.getActions().togglePortSync(my.id, my.isInput));
                 }
             });
             my.remoteEl.addEventListener('change', function(e) {
                 if (!e.currentTarget.dataset.disabled) {
-                    port.toggleRemote();
+                    my.store.dispatch(my.store.getActions().togglePortRemote(my.id, my.isInput));
                 }
             });
 
@@ -48,11 +48,15 @@ export default function createMIDIBaseView(specs, my) {
             document.addEventListener(my.store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
                     case e.detail.actions.TOGGLE_PORT_NETWORK:
+                    case e.detail.actions.TOGGLE_PORT_SYNC:
+                    case e.detail.actions.TOGGLE_PORT_REMOTE:
                         if (e.detail.action.id === my.id) {
                             const ports = e.detail.action.isInput ? e.detail.state.inputs : e.detail.state.outputs;
                             ports.forEach(port => {
                                 if (port.id === my.id) {
                                     my.networkEl.querySelector('[type=checkbox]').checked = port.networkEnabled;
+                                    my.syncEl.querySelector('[type=checkbox]').checked = port.syncEnabled;
+                                    my.remoteEl.querySelector('[type=checkbox]').checked = port.remoteEnabled;
                                 }
                             });
                         }

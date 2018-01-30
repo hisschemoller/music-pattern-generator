@@ -158,22 +158,15 @@ export default function createReducers() {
                     return newState;
                 
                 case actions.TOGGLE_PORT_NETWORK:
-                    newState = Object.assign({}, state);
-                    if (action.isInput) {
-                        newState.inputs = newState.inputs.map((item, index) => {
-                            if (item.id === action.id) {
-                                item = Object.assign({}, item, { networkEnabled: !item.networkEnabled });
-                            }
-                            return item;
-                        });
-                    } else {
-                        newState.outputs = newState.outputs.map((item, index) => {
-                            if (item.id === action.id) {
-                                item = Object.assign({}, item, { networkEnabled: !item.networkEnabled });
-                            }
-                            return item;
-                        });
-                    }
+                    newState = toggleMIDIPreference(state, action.id, action.isInput, 'networkEnabled');
+                    return newState;
+                
+                case actions.TOGGLE_PORT_SYNC:
+                    newState = toggleMIDIPreference(state, action.id, action.isInput, 'syncEnabled');
+                    return newState;
+            
+                case actions.TOGGLE_PORT_REMOTE:
+                    newState = toggleMIDIPreference(state, action.id, action.isInput, 'remoteEnabled');
                     return newState;
 
                 default:
@@ -184,4 +177,26 @@ export default function createReducers() {
     return {
         reduce: reduce
     }
+}
+
+function toggleMIDIPreference(state, id, isInput, preferenceName) {
+    const newState = Object.assign({}, state);
+    if (isInput) {
+        newState.inputs = newState.inputs.map((item, index) => {
+            if (item.id === id) {
+                item = Object.assign({}, item);
+                item[preferenceName] = !item[preferenceName];
+            }
+            return item;
+        });
+    } else {
+        newState.outputs = newState.outputs.map((item, index) => {
+            if (item.id === id) {
+                item = Object.assign({}, item);
+                item[preferenceName] = !item[preferenceName];
+            }
+            return item;
+        });
+    }
+    return newState;
 }
