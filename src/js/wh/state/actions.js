@@ -42,9 +42,9 @@ export default function createActions(specs = {}, my = {}) {
         createProcessor: (data) => {
             return (dispatch, getState, getActions) => {
                 const dataTemplate = require(`json-loader!../processors/${data.type}/config.json`);
-                const fullData = JSON.parse(JSON.stringify(dataTemplate));
+                let fullData = JSON.parse(JSON.stringify(dataTemplate));
                 const id = `${data.type}_${createUUID()}`;
-                fullData.type = data.type;
+                fullData = Object.assign(fullData, data);
                 fullData.id = id;
                 fullData.params.position2d.value = data.position2d;
                 fullData.params.name.value = getProcessorDefaultName(getState().processors);
@@ -105,7 +105,14 @@ export default function createActions(specs = {}, my = {}) {
             return (dispatch, getState, getActions) => {
                 dispatch(getActions().toggleMIDIPreference(id, isInput, 'networkEnabled'));
                 if (getMIDIPortByID(id).networkEnabled) {
-                    dispatch(getActions().createProcessor({ type: 'output', portID: id }));
+                    dispatch(getActions().createProcessor({ 
+                        type: 'output', 
+                        portID: id, 
+                        position2d: {
+                            x: window.innerWidth / 2,
+                            y: window.innerHeight - 70
+                        }
+                    }));
                 } else {
 
                 }

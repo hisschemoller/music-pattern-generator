@@ -2,7 +2,6 @@ import createCanvasProcessorBaseView from '../../view/canvasprocessorbase';
 import { getProcessorByID } from '../../state/selectors';
 import { getEuclidPattern, rotateEuclidPattern } from './euclid';
 import TWEEN from '@tweenjs/tween.js';
-
 import { PPQN } from '../../core/config';
 
 /**
