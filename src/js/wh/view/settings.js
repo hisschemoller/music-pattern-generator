@@ -17,9 +17,9 @@ export default function createSettingsPanel(specs, my) {
         el,
         
         initialize = function() {
-            const htmlString = require(`html-loader!../processors/${data.type}/settings.html`);
+            // const htmlString = require(`html-loader!../processors/${data.type}/settings.html`);
             el = document.createElement('div');
-            el.innerHTML = htmlString;
+            el.innerHTML = specs.template;
             
             // loop through all processor parameters and add setting view if required
             for (var key in data.params) {

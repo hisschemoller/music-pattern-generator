@@ -127,11 +127,15 @@ export default function createAppView(specs, my) {
         createSettingsViews = function(state) {
             state.forEach((data, i) => {
                 if (!settingsViews[i] || (data.id !== settingsViews[i].getID())) {
-                    settingsViews.splice(i, 0, createSettingsPanel({
-                        data: data,
-                        store: store,
-                        parentEl: editContentEl
-                    }));
+                    try {
+                        const template = require(`html-loader!../processors/${data.type}/settings.html`);
+                        settingsViews.splice(i, 0, createSettingsPanel({
+                            data: data,
+                            store: store,
+                            parentEl: editContentEl,
+                            template: template
+                        }));
+                    } catch(err) {}
                 }
             });
         },
