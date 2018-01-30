@@ -90,7 +90,7 @@ export default function createAppView(specs, my) {
                         rootEl.dataset.theme = 'dev'; // e.detail.state.preferences.isDarkTheme ? 'dark' : '';
                         break;
                     
-                    case e.detail.actions.CREATE_PROCESSOR:
+                    case e.detail.actions.ADD_PROCESSOR:
                         createSettingsViews(e.detail.state.processors);
                         break;
                     

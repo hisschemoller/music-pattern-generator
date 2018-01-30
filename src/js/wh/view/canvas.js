@@ -57,7 +57,7 @@ export default function createCanvasView(specs, my) {
                         setTheme(themeName);
                         break;
                     
-                    case e.detail.actions.CREATE_PROCESSOR:
+                    case e.detail.actions.ADD_PROCESSOR:
                         my.createProcessorViews(e.detail.state.processors);
                         break;
                     
@@ -118,7 +118,7 @@ export default function createCanvasView(specs, my) {
          */
         onDoubleClick = function(e) {
             // create a new processor
-            store.dispatch(store.getActions().createNewProcessor({
+            store.dispatch(store.getActions().createProcessor({
                 type: 'epg',
                 position2d: {
                     x: e.clientX - my.canvasRect.left + window.scrollX,

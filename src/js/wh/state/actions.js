@@ -1,11 +1,12 @@
 import { createUUID } from '../core/util';
+import { getMIDIPortByID } from '../state/selectors';
 
 export default function createActions(specs = {}, my = {}) {
     const SET_PREFERENCES = 'SET_PREFERENCES',
         SET_PROJECT = 'SET_PROJECT',
         SET_THEME = 'SET_THEME',
-        CREATE_NEW_PROCESSOR = 'CREATE_NEW_PROCESSOR',
         CREATE_PROCESSOR = 'CREATE_PROCESSOR',
+        ADD_PROCESSOR = 'ADD_PROCESSOR',
         DELETE_PROCESSOR = 'DELETE_PROCESSOR',
         SELECT_PROCESSOR = 'SELECT_PROCESSOR',
         DRAG_SELECTED_PROCESSOR = 'DRAG_SELECTED_PROCESSOR',
@@ -37,8 +38,8 @@ export default function createActions(specs = {}, my = {}) {
             return { type: SET_THEME, data: value };
         },
 
-        CREATE_NEW_PROCESSOR: CREATE_NEW_PROCESSOR,
-        createNewProcessor: (data) => {
+        CREATE_PROCESSOR: CREATE_PROCESSOR,
+        createProcessor: (data) => {
             return (dispatch, getState, getActions) => {
                 const dataTemplate = require(`json-loader!../processors/${data.type}/config.json`);
                 const fullData = JSON.parse(JSON.stringify(dataTemplate));
@@ -47,14 +48,14 @@ export default function createActions(specs = {}, my = {}) {
                 fullData.id = id;
                 fullData.params.position2d.value = data.position2d;
                 fullData.params.name.value = getProcessorDefaultName(getState().processors);
-                dispatch(getActions().createProcessor(fullData));
+                dispatch(getActions().addProcessor(fullData));
                 dispatch(getActions().selectProcessor(id));
             }
         },
 
-        CREATE_PROCESSOR: CREATE_PROCESSOR,
-        createProcessor: (data) => {
-            return { type: CREATE_PROCESSOR, data: data };
+        ADD_PROCESSOR: ADD_PROCESSOR,
+        addProcessor: (data) => {
+            return { type: ADD_PROCESSOR, data: data };
         },
 
         DELETE_PROCESSOR: DELETE_PROCESSOR,
@@ -103,7 +104,11 @@ export default function createActions(specs = {}, my = {}) {
         togglePortNetwork: (id, isInput) => {
             return (dispatch, getState, getActions) => {
                 dispatch(getActions().toggleMIDIPreference(id, isInput, 'networkEnabled'));
-                
+                if (getMIDIPortByID(id).networkEnabled) {
+                    dispatch(getActions().createProcessor({ type: 'output', portID: id }));
+                } else {
+
+                }
             }
         },
 

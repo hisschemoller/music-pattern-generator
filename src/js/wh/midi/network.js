@@ -19,7 +19,7 @@ export default function createMIDINetwork(specs, my) {
         init = function() {
             document.addEventListener(store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
-                    case e.detail.actions.CREATE_PROCESSOR:
+                    case e.detail.actions.ADD_PROCESSOR:
                         createProcessor(e.detail.state.processors);
                         break;
                     

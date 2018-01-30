@@ -37,7 +37,7 @@ export default function createReducers() {
                         }
                     });
 
-                case actions.CREATE_PROCESSOR:
+                case actions.ADD_PROCESSOR:
                     newState = Object.assign({}, state);
                     const numInputProcessors = newState.processors.filter(item => item.type === 'input').length;
                     // array index depends on processor type
