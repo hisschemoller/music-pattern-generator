@@ -51,7 +51,6 @@ export function createGraphic(specs, my) {
             nameCtx.fillStyle = my.colorMid;
             nameCtx.font = '14px sans-serif';
             nameCtx.textAlign = 'center';
-            console.log(specs);
             nameCtx.fillText(getMIDIPortByID(specs.data.portID).name, nameCanvas.width / 2, nameCanvas.height / 2);
             
             // add listeners to parameters
@@ -76,15 +75,19 @@ export function createGraphic(specs, my) {
             // params.position2d.removeChangedCallback(updatePosition);
             canvasDirtyCallback = null;
         },
+
+        setSelected = function(isSelected) {
+            console.log('TODO: setSelected');
+        },
+
+        draw = function() {},
         
         /**
          * Update pattern's position on the 2D canvas.
-         * @param  {Object} param my.processor 2D position parameter.
-         * @param  {Object} oldValue Previous 2D position as object.
-         * @param  {Object} newValue New 2D position as object.
+         * @param  {Object} value New 2D position as object.
          */
-        updatePosition = function(param, oldValue, newValue) {
-            position2d = newValue;
+        updatePosition = function(value) {
+            position2d = value;
             canvasDirtyCallback();
         },
         
@@ -171,6 +174,8 @@ export function createGraphic(specs, my) {
     initialise();
     
     that.terminate = terminate;
+    that.setSelected = setSelected;
+    that.draw = draw;
     that.addToStaticView = addToStaticView;
     that.addToDynamicView = addToDynamicView;
     that.clearFromDynamicView = clearFromDynamicView;

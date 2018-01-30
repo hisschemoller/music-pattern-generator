@@ -110,7 +110,7 @@ export default function createActions(specs = {}, my = {}) {
                         portID: id, 
                         position2d: {
                             x: window.innerWidth / 2,
-                            y: window.innerHeight - 70
+                            y: window.innerHeight - 100
                         }
                     }));
                 } else {

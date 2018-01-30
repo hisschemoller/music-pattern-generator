@@ -64,7 +64,9 @@ export default function createCanvasProcessorViews(specs, my) {
 
         selectProcessorView = function(id) {
             views.forEach(view => {
-                view.setSelected(view.getID() === id);
+                if (typeof view.setSelected === 'function') {
+                    view.setSelected(view.getID() === id);
+                }
             });
         },
         
