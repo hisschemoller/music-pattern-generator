@@ -18,7 +18,8 @@ export default function createActions(specs = {}, my = {}) {
         REMOVE_MIDI_PORT = 'REMOVE_MIDI_PORT',
         TOGGLE_PORT_NETWORK = 'TOGGLE_PORT_NETWORK',
         TOGGLE_PORT_SYNC = 'TOGGLE_PORT_SYNC',
-        TOGGLE_PORT_REMOTE = 'TOGGLE_PORT_REMOTE';
+        TOGGLE_PORT_REMOTE = 'TOGGLE_PORT_REMOTE',
+        TOGGLE_MIDI_PREFERENCE = 'TOGGLE_MIDI_PREFERENCE';
 
     return {
         SET_PREFERENCES: SET_PREFERENCES,
@@ -99,13 +100,31 @@ export default function createActions(specs = {}, my = {}) {
         removeMIDIPort: id => { return { type: REMOVE_MIDI_PORT, id: id } },
 
         TOGGLE_PORT_NETWORK: TOGGLE_PORT_NETWORK,
-        togglePortNetwork: (id, isInput) => { return { type: TOGGLE_PORT_NETWORK, id: id, isInput: isInput } },
+        togglePortNetwork: (id, isInput) => {
+            return (dispatch, getState, getActions) => {
+                dispatch(getActions().toggleMIDIPreference(id, isInput, 'networkEnabled'));
+                
+            }
+        },
 
         TOGGLE_PORT_SYNC: TOGGLE_PORT_SYNC,
-        togglePortSync: (id, isInput) => { return { type: TOGGLE_PORT_SYNC, id: id, isInput: isInput } },
+        togglePortSync: (id, isInput) => {
+            return (dispatch, getState, getActions) => {
+                dispatch(getActions().toggleMIDIPreference(id, isInput, 'syncEnabled'));
+                
+            }
+        },
 
         TOGGLE_PORT_REMOTE: TOGGLE_PORT_REMOTE,
-        togglePortRemote: (id, isInput) => { return { type: TOGGLE_PORT_REMOTE, id: id, isInput: isInput } }
+        togglePortRemote: (id, isInput) => {
+            return (dispatch, getState, getActions) => {
+                dispatch(getActions().toggleMIDIPreference(id, isInput, 'remoteEnabled'));
+                
+            }
+        },
+
+        TOGGLE_MIDI_PREFERENCE: TOGGLE_MIDI_PREFERENCE,
+        toggleMIDIPreference: (id, isInput, preferenceName) => { return { type: TOGGLE_MIDI_PREFERENCE, id: id, isInput: isInput, preferenceName: preferenceName } }
     };
 }
 

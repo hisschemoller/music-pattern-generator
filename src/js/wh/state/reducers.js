@@ -157,16 +157,8 @@ export default function createReducers() {
                     }
                     return newState;
                 
-                case actions.TOGGLE_PORT_NETWORK:
-                    newState = toggleMIDIPreference(state, action.id, action.isInput, 'networkEnabled');
-                    return newState;
-                
-                case actions.TOGGLE_PORT_SYNC:
-                    newState = toggleMIDIPreference(state, action.id, action.isInput, 'syncEnabled');
-                    return newState;
-            
-                case actions.TOGGLE_PORT_REMOTE:
-                    newState = toggleMIDIPreference(state, action.id, action.isInput, 'remoteEnabled');
+                case actions.TOGGLE_MIDI_PREFERENCE:
+                    newState = toggleMIDIPreference(state, action.id, action.isInput, action.preferenceName);
                     return newState;
 
                 default:

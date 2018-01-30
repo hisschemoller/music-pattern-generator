@@ -1,3 +1,5 @@
+import { getMIDIPortByID } from '../state/selectors';
+
 /**
  * MIDI input or output port processor view.
  */
@@ -47,18 +49,14 @@ export default function createMIDIBaseView(specs, my) {
             // listen to state updates
             document.addEventListener(my.store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
-                    case e.detail.actions.TOGGLE_PORT_NETWORK:
+                    case e.detail.actions.TOGGLE_MIDI_PREFERENCE:
                     case e.detail.actions.TOGGLE_PORT_SYNC:
                     case e.detail.actions.TOGGLE_PORT_REMOTE:
                         if (e.detail.action.id === my.id) {
-                            const ports = e.detail.action.isInput ? e.detail.state.inputs : e.detail.state.outputs;
-                            ports.forEach(port => {
-                                if (port.id === my.id) {
-                                    my.networkEl.querySelector('[type=checkbox]').checked = port.networkEnabled;
-                                    my.syncEl.querySelector('[type=checkbox]').checked = port.syncEnabled;
-                                    my.remoteEl.querySelector('[type=checkbox]').checked = port.remoteEnabled;
-                                }
-                            });
+                            const port = getMIDIPortByID(my.id);
+                            my.networkEl.querySelector('[type=checkbox]').checked = port.networkEnabled;
+                            my.syncEl.querySelector('[type=checkbox]').checked = port.syncEnabled;
+                            my.remoteEl.querySelector('[type=checkbox]').checked = port.remoteEnabled;
                         }
                         break;
                 }
@@ -77,22 +75,22 @@ export default function createMIDIBaseView(specs, my) {
         /**
          * Callback for port to update view.
          */
-        updateView = function(key, value) {
-            switch (key) {
-                case 'network':
-                    my.networkEl.querySelector('[type=checkbox]').checked = value;
-                    break;
-                case 'sync':
-                    my.syncEl.querySelector('[type=checkbox]').checked = value;
-                    break;
-                case 'remote':
-                    my.remoteEl.querySelector('[type=checkbox]').checked = value;
-                    break;
-                case 'connected':
-                    my.el.dataset.connected = value;
-                    break;
-            }
-        },
+        // updateView = function(key, value) {
+        //     switch (key) {
+        //         case 'network':
+        //             my.networkEl.querySelector('[type=checkbox]').checked = value;
+        //             break;
+        //         case 'sync':
+        //             my.syncEl.querySelector('[type=checkbox]').checked = value;
+        //             break;
+        //         case 'remote':
+        //             my.remoteEl.querySelector('[type=checkbox]').checked = value;
+        //             break;
+        //         case 'connected':
+        //             my.el.dataset.connected = value;
+        //             break;
+        //     }
+        // },
         
         getID = function() {
             return my.id;
