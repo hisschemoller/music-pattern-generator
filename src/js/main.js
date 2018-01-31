@@ -123,7 +123,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
     createTransport({
         that: transport,
         store: store,
-        app: app,
         canvasView: canvasView,
         midiNetwork: midiNetwork
     });

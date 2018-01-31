@@ -25,7 +25,7 @@
  */
 export function createSequencer (specs, my) {
     var that,
-        app = specs.app,
+        // app = specs.app,
         canvasView = specs.canvasView,
         midiNetwork = specs.midiNetwork,
         ppqn = 480,
@@ -87,7 +87,7 @@ export function createSequencer (specs, my) {
             // calculate change factor
             var factor = lastBpm / bpm;
             my.setLoopByFactor(factor);
-            app.appUpdated('bpm', bpm);
+            // app.appUpdated('bpm', bpm);
         },
         
         /**
@@ -222,7 +222,7 @@ function createExternalClock (specs, my) {
  */
 export default function createTransport(specs, my) {
     var that,
-        app = specs.app,
+        // app = specs.app,
         position = 0,
         origin = 0,
         scanStart = 0,
@@ -299,7 +299,7 @@ export default function createTransport(specs, my) {
             setOrigin(position - offset);
             setScanRange(position);
             isRunning = true;
-            app.appUpdated('play', isRunning);
+            // app.appUpdated('play', isRunning);
         },
         
         /**
@@ -307,7 +307,7 @@ export default function createTransport(specs, my) {
          */
         pause = function () {
             isRunning = false;
-            app.appUpdated('play', isRunning);
+            // app.appUpdated('play', isRunning);
         },
         
         /**
