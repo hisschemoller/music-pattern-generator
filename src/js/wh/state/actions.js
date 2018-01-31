@@ -101,20 +101,24 @@ export default function createActions(specs = {}, my = {}) {
         removeMIDIPort: id => { return { type: REMOVE_MIDI_PORT, id: id } },
 
         TOGGLE_PORT_NETWORK: TOGGLE_PORT_NETWORK,
-        togglePortNetwork: (id, isInput) => {
+        togglePortNetwork: (portID, isInput) => {
             return (dispatch, getState, getActions) => {
-                dispatch(getActions().toggleMIDIPreference(id, isInput, 'networkEnabled'));
-                if (getMIDIPortByID(id).networkEnabled) {
+                dispatch(getActions().toggleMIDIPreference(portID, isInput, 'networkEnabled'));
+                if (getMIDIPortByID(portID).networkEnabled) {
                     dispatch(getActions().createProcessor({ 
                         type: 'output', 
-                        portID: id, 
+                        portID: portID, 
                         position2d: {
                             x: window.innerWidth / 2,
                             y: window.innerHeight - 100
                         }
                     }));
                 } else {
-
+                    getState().processors.forEach(processor => {
+                        if (processor.portID && processor.portID === portID) {
+                            dispatch(getActions().deleteProcessor(processor.id));
+                        }
+                    });
                 }
             }
         },

@@ -140,7 +140,7 @@ export default function createReducers() {
                         });
                     } else {
                         newState.outputs = [ ...state.outputs, portObj ]
-                        newState.inputs.sort((a, b) => {
+                        newState.outputs.sort((a, b) => {
                             if (a.name < b.name) { return -1 }
                             if (a.name > b.name) { return 1 }
                             return 0;

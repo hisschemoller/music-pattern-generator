@@ -5,7 +5,7 @@ import createMIDIProcessorBase from '../../midi/processorbase';
  */
 export function createProcessor(specs, my) {
     var that,
-        midiOutput = specs.midiOutput,
+        portID = specs.portID,
 
         /**
          * Process events to happen in a time slice.
@@ -42,23 +42,23 @@ export function createProcessor(specs, my) {
             my.isEnabled = isEnabled;
         },
 
-        getPort = function() {
-            return midiOutput;
-        },
-
-        getProcessorSpecificData = function(data) {
-            data.midiPortID = midiOutput.id;
+        getMIDIPortID = function() {
+            return portID;
         };
+
+        // getProcessorSpecificData = function(data) {
+        //     data.midiPortID = midiOutput.id;
+        // };
 
 
     my = my || {};
-    my.info = {
-        inputs: 1,
-        outputs: 0
-    };
+    // my.info = {
+    //     inputs: 1,
+    //     outputs: 0
+    // };
     my.isEnabled = true;
-    my.getProcessorSpecificData = getProcessorSpecificData;
-    my.$position2d = function(value, timestamp) {}
+    // my.getProcessorSpecificData = getProcessorSpecificData;
+    // my.$position2d = function(value, timestamp) {}
 
     that = createMIDIProcessorBase(specs, my);
     
@@ -73,6 +73,6 @@ export function createProcessor(specs, my) {
 
     that.process = process;
     that.setEnabled = setEnabled;
-    that.getPort = getPort;
+    that.getMIDIPortID = getMIDIPortID;
     return that;
 }
