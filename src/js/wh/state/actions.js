@@ -21,6 +21,7 @@ export default function createActions(specs = {}, my = {}) {
         TOGGLE_PORT_SYNC = 'TOGGLE_PORT_SYNC',
         TOGGLE_PORT_REMOTE = 'TOGGLE_PORT_REMOTE',
         TOGGLE_MIDI_PREFERENCE = 'TOGGLE_MIDI_PREFERENCE',
+        TOGGLE_MIDI_LEARN = 'TOGGLE_MIDI_LEARN',
         SET_TRANSPORT = 'SET_TRANSPORT';
 
     return {
@@ -150,6 +151,9 @@ export default function createActions(specs = {}, my = {}) {
 
         TOGGLE_MIDI_PREFERENCE: TOGGLE_MIDI_PREFERENCE,
         toggleMIDIPreference: (id, isInput, preferenceName) => { return { type: TOGGLE_MIDI_PREFERENCE, id: id, isInput: isInput, preferenceName: preferenceName } },
+
+        TOGGLE_MIDI_LEARN: TOGGLE_MIDI_LEARN,
+        toggleMIDILearn: () => { return { type: TOGGLE_MIDI_LEARN } },
 
         SET_TRANSPORT: SET_TRANSPORT,
         setTransport: value => { return { type: SET_TRANSPORT, command: value } }

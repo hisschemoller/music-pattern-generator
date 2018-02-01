@@ -13,7 +13,8 @@ export default function createReducers() {
             transport: 'stop', // 'play|pause|stop'
             // inputs: [],
             // outputs: [],
-            ports: []
+            ports: [],
+            learnModeActive: false
         },
         
         reduce = function(state = initialState, action = {}, actions) {
@@ -193,6 +194,9 @@ export default function createReducers() {
                 
                 case actions.TOGGLE_MIDI_PREFERENCE:
                     return toggleMIDIPreference(state, action.id, action.isInput, action.preferenceName);
+                
+                case actions.TOGGLE_MIDI_LEARN:
+                    return Object.assign({}, state, { learnModeActive: !state.learnModeActive });
                 
                 case actions.SET_TRANSPORT:
                     let value = action.command;

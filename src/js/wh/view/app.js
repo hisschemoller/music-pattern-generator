@@ -56,8 +56,9 @@ export default function createAppView(specs, my) {
                 store.dispatch(store.getActions().setTempo(controls.bpm.input.value));
             });
             controls.remote.input.addEventListener('change', function(e) {
-                app.updateApp('remote', e.target.checked);
-                app.togglePanel('remote', e.target.checked);
+                // app.updateApp('remote', e.target.checked);
+                // app.togglePanel('remote', e.target.checked);
+                store.dispatch(store.getActions().toggleMIDILearn());
             });
             controls.prefs.input.addEventListener('change', function(e) {
                 app.togglePanel('preferences', e.target.checked);
@@ -108,6 +109,10 @@ export default function createAppView(specs, my) {
 
                     case e.detail.actions.SET_TEMPO:
                         controls.bpm.input.value = e.detail.state.bpm;
+                        break;
+                    
+                    case e.detail.actions.TOGGLE_MIDI_LEARN:
+                        showPanel('remote', e.detail.state.learnModeActive);
                         break;
                 }
             });
