@@ -222,6 +222,7 @@ function createExternalClock (specs, my) {
  */
 export default function createTransport(specs, my) {
     var that,
+        // midi = specs.midi,
         // app = specs.app,
         position = 0,
         origin = 0,
@@ -237,11 +238,25 @@ export default function createTransport(specs, my) {
         init = function() {
             document.addEventListener(my.store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
-                    case e.detail.actions.TOGGLE_PLAY:
-                        toggleStartStop(e.detail.state.isPlaying);
+                    case e.detail.actions.SET_TRANSPORT:
+                        switch (e.detail.state.transport) {
+                            case 'pause':
+                                pause();
+                                break;
+                            case 'play':
+                                start();
+                                break;
+                            case 'stop':
+                                pause();
+                                rewind();
+                                break;
+                        }
                         break;
                     
                     case e.detail.actions.SET_PROJECT:
+                        my.setBPM(e.detail.state.bpm);
+                        break;
+
                     case e.detail.actions.SET_TEMPO:
                         my.setBPM(e.detail.state.bpm);
                         break;
@@ -374,14 +389,14 @@ export default function createTransport(specs, my) {
 
     init();
     
-    that.start = start;
-    that.pause = pause;
-    that.rewind = rewind;
-    that.toggleStartStop = toggleStartStop
+    // that.start = start;
+    // that.pause = pause;
+    // that.rewind = rewind;
+    // that.toggleStartStop = toggleStartStop
     that.run = run;
-    that.setLoopStart = setLoopStart;
-    that.setLoopEnd = setLoopEnd;
-    that.setLoop = setLoop;
+    // that.setLoopStart = setLoopStart;
+    // that.setLoopEnd = setLoopEnd;
+    // that.setLoop = setLoop;
     return that;
 };
     

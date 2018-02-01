@@ -9,7 +9,7 @@ export default function createReducers() {
                 isDarkTheme: false
             },
             remote: {},
-            isPlaying: false,
+            transport: 'stop', // 'play|pause|stop'
             inputs: [],
             outputs: []
         },
@@ -116,9 +116,6 @@ export default function createReducers() {
                     });
                     return newState;
                 
-                case actions.TOGGLE_PLAY:
-                    return Object.assign({}, state, { isPlaying: !state.isPlaying });
-                
                 case actions.SET_TEMPO:
                     return Object.assign({}, state, { bpm: action.value });
                 
@@ -160,6 +157,15 @@ export default function createReducers() {
                 case actions.TOGGLE_MIDI_PREFERENCE:
                     newState = toggleMIDIPreference(state, action.id, action.isInput, action.preferenceName);
                     return newState;
+                
+                case actions.SET_TRANSPORT:
+                    let value = action.command;
+                    if (action.command === 'toggle') {
+                        value = state.transport === 'play' ? 'pause' : 'play';
+                    }
+                    return Object.assign({}, state, { 
+                        transport: value
+                    });
 
                 default:
                     return state;

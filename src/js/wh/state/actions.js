@@ -13,7 +13,6 @@ export default function createActions(specs = {}, my = {}) {
         DRAG_ALL_PROCESSORS = 'DRAG_ALL_PROCESSORS',
         CHANGE_PARAMETER = 'CHANGE_PARAMETER',
         RECREATE_PARAMETER = 'RECREATE_PARAMETER',
-        TOGGLE_PLAY = 'TOGGLE_PLAY',
         SET_TEMPO = 'SET_TEMPO',
         ADD_MIDI_PORT = 'ADD_MIDI_PORT',
         REMOVE_MIDI_PORT = 'REMOVE_MIDI_PORT',
@@ -21,6 +20,7 @@ export default function createActions(specs = {}, my = {}) {
         TOGGLE_PORT_SYNC = 'TOGGLE_PORT_SYNC',
         TOGGLE_PORT_REMOTE = 'TOGGLE_PORT_REMOTE',
         TOGGLE_MIDI_PREFERENCE = 'TOGGLE_MIDI_PREFERENCE';
+        SET_TRANSPORT = 'SET_TRANSPORT';
 
     return {
         SET_PREFERENCES: SET_PREFERENCES,
@@ -88,9 +88,6 @@ export default function createActions(specs = {}, my = {}) {
             return { type: RECREATE_PARAMETER, processorID: processorID, paramKey : paramKey, paramObj: paramObj };
         },
 
-        TOGGLE_PLAY: TOGGLE_PLAY,
-        togglePlay: value => { return { type: TOGGLE_PLAY, value: value } },
-
         SET_TEMPO: SET_TEMPO,
         setTempo: value => { return { type: SET_TEMPO, value: value } },
 
@@ -141,6 +138,9 @@ export default function createActions(specs = {}, my = {}) {
 
         TOGGLE_MIDI_PREFERENCE: TOGGLE_MIDI_PREFERENCE,
         toggleMIDIPreference: (id, isInput, preferenceName) => { return { type: TOGGLE_MIDI_PREFERENCE, id: id, isInput: isInput, preferenceName: preferenceName } }
+
+        SET_TRANSPORT: SET_TRANSPORT,
+        setTransport: value => { return { type: SET_TRANSPORT, command: value } }
     };
 }
 

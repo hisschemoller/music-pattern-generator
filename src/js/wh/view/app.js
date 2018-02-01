@@ -50,7 +50,7 @@ export default function createAppView(specs, my) {
         
         init = function() {
             controls.play.input.addEventListener('change', function(e) {
-                store.dispatch(store.getActions().togglePlay());
+                store.dispatch(store.getActions().setTransport('toggle'));
             });
             controls.bpm.input.addEventListener('change', function(e) {
                 store.dispatch(store.getActions().setTempo(controls.bpm.input.value));
@@ -77,7 +77,7 @@ export default function createAppView(specs, my) {
                     case 32:
                         // don't toggle play while typing space key in a text field.
                         if (!(e.target.tagName.toLowerCase() == 'input' && e.target.getAttribute('type') == 'text')) {
-                            store.dispatch(store.getActions().togglePlay());
+                            store.dispatch(store.getActions().setTransport('toggle'));
                         }
                         break;
                 }
@@ -102,8 +102,8 @@ export default function createAppView(specs, my) {
                         showPanel('settings', true);
                         break;
 
-                    case e.detail.actions.TOGGLE_PLAY:
-                        controls.play.input.checked = e.detail.state.isPlaying;
+                    case e.detail.actions.SET_TRANSPORT:
+                        controls.play.input.checked = e.detail.state.transport === 'play';
                         break;
 
                     case e.detail.actions.SET_TEMPO:
