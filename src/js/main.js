@@ -22,7 +22,7 @@ import createTransport from './wh/core/transport';
 import createMIDI from './wh/midi/midi';
 import createMIDINetwork from './wh/midi/network';
 import createMIDIRemote from './wh/midi/remote';
-import createMIDISync from './wh/midi/sync';
+// import createMIDISync from './wh/midi/sync';
 import createActions from './wh/state/actions';
 import createReducers from './wh/state/reducers';
 import createStore from './wh/state/store';
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         midi = {},
         midiNetwork = {},
         midiRemote = {},
-        midiSync = {},
+        // midiSync = {},
         preferencesView = {},
         remoteView = {},
         transport = {};
@@ -97,20 +97,16 @@ document.addEventListener('DOMContentLoaded', function(e) {
     createMIDI({
         that: midi,
         store: store,
-        preferencesView: preferencesView,
-        midiNetwork: midiNetwork,
-        midiRemote: midiRemote,
-        midiSync: midiSync
     });
     createMIDIRemote({
         that: midiRemote,
         app: app,
         remoteView: remoteView
     });
-    createMIDISync({
-        that: midiSync,
-        transport: transport
-    });
+    // createMIDISync({
+    //     that: midiSync,
+    //     transport: transport
+    // });
     createMIDINetwork({
         that: midiNetwork,
         store: store,

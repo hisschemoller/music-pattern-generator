@@ -4,11 +4,11 @@
 export default function createMIDI(specs) {
     var that,
         store = specs.store,
-        preferencesView = specs.preferencesView,
-        midiNetwork = specs.midiNetwork,
-        midiRemote = specs.midiRemote,
-        midiSync = specs.midiSync,
-        transport = specs.transport,
+        // preferencesView = specs.preferencesView,
+        // midiNetwork = specs.midiNetwork,
+        // midiRemote = specs.midiRemote,
+        // midiSync = specs.midiSync,
+        // transport = specs.transport,
         midiAccess,
         inputs = [],
         outputs = [],
@@ -143,6 +143,65 @@ export default function createMIDI(specs) {
             // port initialisation last
             output.setup();
         },
+
+        onMIDIMessage = function(e) {
+            console.log(e.data[0] & 0xf0, e.data[0] & 0x0f, e.target.id, e.data[0], e.data[1], e.data[2]);
+            
+            switch (e.data[0] & 0xf0) {
+                case 240:
+                    onSystemRealtimeMessage(e);
+                    break;
+                case 176: // CC
+                    // onControlChangeMessage(e);
+                    break;
+                case 144: // note on
+                case 128: // note off
+                    // onNoteMessage(e);
+                    break;
+            }
+        },
+
+        /**
+         * Eventlistener for incoming MIDI messages.
+         * data[1] and data[2] are undefined,
+         * for e.data[0] & 0xf:
+         * 8 = clock, 248 (11110000 | 00000100)
+         * 10 = start
+         * 11 = continue
+         * 12 = stop
+         * @see https://www.w3.org/TR/webmidi/#idl-def-MIDIMessageEvent
+         * @see https://www.midi.org/specifications/item/table-1-summary-of-midi-message
+         * @param  {Object} e MIDIMessageEvent event.
+         */
+        onSystemRealtimeMessage = function(e) {
+            if (syncListeners.indexOf(e.target.id) > -1) {
+                switch (e.data[0]) {
+                    case 248:
+                        break;
+                    case 250:
+                        store.dispatch(store.getActions().setTransport('stop'));
+                        break;
+                    case 251:
+                        store.dispatch(store.getActions().setTransport('play'));
+                        break;
+                    case 252:
+                        store.dispatch(store.getActions().setTransport('pause'));
+                        break;
+                }
+            }
+        },
+
+        // addMIDIMessageListener = function(callback) {
+        //     const exists = midiMessageListeners.find(listener => listener === callback);
+        //     if (!exists) {
+        //         midiMessageListeners.push(callback);
+        //     }
+        // },
+
+        // removeMIDIMessageListener = function(callback) {
+        //     const index = midiMessageListeners.findIndex(listener => listener === callback);
+        //     midiMessageListeners.splice(index, 1);
+        // },
         
         /**
          * Restore settings at initialisation.
@@ -194,37 +253,39 @@ export default function createMIDI(specs) {
          * Restore MIDI port object settings from data object.
          * @param {Object} data Preferences data object.
          */
-        setData = function(data = {}) {
-            dataFromStorage = data;
-            clearPortSettings();
-            restorePortSettings();
-        },
+        // setData = function(data = {}) {
+        //     dataFromStorage = data;
+        //     clearPortSettings();
+        //     restorePortSettings();
+        // },
 
         /**
          * Write MIDI port object settings to data object.
          * @return {Object} MIDI port object data.
          */
-        getData = function() {
-            const data = {
-                inputs: [],
-                outputs: []
-            };
+        // getData = function() {
+        //     const data = {
+        //         inputs: [],
+        //         outputs: []
+        //     };
             
-            for (let i = 0, n = inputs.length; i < n; i++) {
-                data.inputs.push(inputs[i].getData());
-            }
+        //     for (let i = 0, n = inputs.length; i < n; i++) {
+        //         data.inputs.push(inputs[i].getData());
+        //     }
             
-            for (let i = 0, n = outputs.length; i < n; i++) {
-                data.outputs.push(outputs[i].getData());
-            }
+        //     for (let i = 0, n = outputs.length; i < n; i++) {
+        //         data.outputs.push(outputs[i].getData());
+        //     }
             
-            return data;
-        };
+        //     return data;
+        // };
 
     that = specs.that;
 
     that.connect = connect;
-    that.setData = setData;
-    that.getData = getData;
+    // that.addMIDIMessageListener = addMIDIMessageListener;
+    // that.removeMIDIMessageListener = removeMIDIMessageListener;
+    // that.setData = setData;
+    // that.getData = getData;
     return that;
 }
