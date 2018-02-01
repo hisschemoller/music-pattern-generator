@@ -1,3 +1,4 @@
+import { getMIDIPortByID } from '../state/selectors';
 
 export default function createReducers() {
 
@@ -10,8 +11,9 @@ export default function createReducers() {
             },
             remote: {},
             transport: 'stop', // 'play|pause|stop'
-            inputs: [],
-            outputs: []
+            // inputs: [],
+            // outputs: [],
+            ports: []
         },
         
         reduce = function(state = initialState, action = {}, actions) {
@@ -119,25 +121,66 @@ export default function createReducers() {
                 case actions.SET_TEMPO:
                     return Object.assign({}, state, { bpm: action.value });
                 
-                case actions.ADD_MIDI_PORT:
-                    newState = Object.assign({}, state);
-                    let portObj = { 
-                        id: action.id, 
-                        name: action.name,
-                        networkEnabled: false,
-                        syncEnabled: false,
-                        remoteEnabled: false
-                    };
-                    if (action.isInput) {
-                        newState.inputs = [ ...state.inputs, portObj ]
-                        newState.inputs.sort((a, b) => {
-                            if (a.name < b.name) { return -1 }
-                            if (a.name > b.name) { return 1 }
-                            return 0;
+                // case actions.ADD_MIDI_PORT:
+                //     newState = Object.assign({}, state);
+                //     let portObj = { 
+                //         id: action.id, 
+                //         name: action.name,
+                //         networkEnabled: false,
+                //         syncEnabled: false,
+                //         remoteEnabled: false
+                //     };
+                //     if (action.isInput) {
+                //         newState.inputs = [ ...state.inputs, portObj ]
+                //         newState.inputs.sort((a, b) => {
+                //             if (a.name < b.name) { return -1 }
+                //             if (a.name > b.name) { return 1 }
+                //             return 0;
+                //         });
+                //     } else {
+                //         newState.outputs = [ ...state.outputs, portObj ]
+                //         newState.outputs.sort((a, b) => {
+                //             if (a.name < b.name) { return -1 }
+                //             if (a.name > b.name) { return 1 }
+                //             return 0;
+                //         });
+                //     }
+                //     return newState;
+                
+                // case actions.REMOVE_MIDI_PORT:
+                //     newState = Object.assign({}, state);
+                //     if (action.isInput) {
+                //         newState.inputs = newState.inputs.filter(input => input.id !== action.id);
+                //     } else {
+                //         newState.outputs = newState.outputs.filter(output => output.id !== action.id);
+                //     }
+                //     return newState;
+                
+                case actions.MIDI_PORT_CHANGE:
+                    if (getMIDIPortByID(action.data.id)) {
+                        newState = Object.assign({}, state, {
+                            ports: state.ports.map(port => {
+                                if (port.id == action.data.id) {
+                                    port.connection = action.data.connection;
+                                    port.state = action.data.state;
+                                }
+                                return port;
+                            })
                         });
                     } else {
-                        newState.outputs = [ ...state.outputs, portObj ]
-                        newState.outputs.sort((a, b) => {
+                        newState = Object.assign({}, state, {
+                            ports: [...state.ports, {
+                                id: action.data.id, 
+                                type: action.data.type,
+                                name: action.data.name,
+                                connection: action.data.connection,
+                                state: action.data.state,
+                                networkEnabled: false,
+                                syncEnabled: false,
+                                remoteEnabled: false
+                            }]
+                        });
+                        newState.ports.sort((a, b) => {
                             if (a.name < b.name) { return -1 }
                             if (a.name > b.name) { return 1 }
                             return 0;
@@ -145,18 +188,11 @@ export default function createReducers() {
                     }
                     return newState;
                 
-                case actions.REMOVE_MIDI_PORT:
-                    newState = Object.assign({}, state);
-                    if (action.isInput) {
-                        newState.inputs = newState.inputs.filter(input => input.id !== action.id);
-                    } else {
-                        newState.outputs = newState.outputs.filter(output => output.id !== action.id);
-                    }
-                    return newState;
+                case actions.TOGGLE_PORT_SYNC:
+                    return toggleMIDIPreference(state, action.id, action.isInput, 'syncEnabled');
                 
                 case actions.TOGGLE_MIDI_PREFERENCE:
-                    newState = toggleMIDIPreference(state, action.id, action.isInput, action.preferenceName);
-                    return newState;
+                    return toggleMIDIPreference(state, action.id, action.isInput, action.preferenceName);
                 
                 case actions.SET_TRANSPORT:
                     let value = action.command;
@@ -181,16 +217,16 @@ function toggleMIDIPreference(state, id, isInput, preferenceName) {
     const newState = Object.assign({}, state);
     if (isInput) {
         newState.inputs = newState.inputs.map((item, index) => {
+            item = Object.assign({}, item);
             if (item.id === id) {
-                item = Object.assign({}, item);
                 item[preferenceName] = !item[preferenceName];
             }
             return item;
         });
     } else {
         newState.outputs = newState.outputs.map((item, index) => {
+            item = Object.assign({}, item);
             if (item.id === id) {
-                item = Object.assign({}, item);
                 item[preferenceName] = !item[preferenceName];
             }
             return item;

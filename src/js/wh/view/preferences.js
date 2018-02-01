@@ -10,9 +10,9 @@ export default function createPreferencesView(specs) {
         preferencesEl = document.querySelector('.prefs'),
         midiInputsEl = document.querySelector('.prefs__inputs'),
         midiOutputsEl = document.querySelector('.prefs__outputs'),
-        // midiPortViews = [],
-        midiInputsViews = [],
-        midiOutputsViews = [],
+        midiPortViews = [],
+        // midiInputsViews = [],
+        // midiOutputsViews = [],
         controls = {
             darkTheme: {
                 type: 'checkbox',
@@ -32,13 +32,13 @@ export default function createPreferencesView(specs) {
                         updateControl('dark-theme', e.detail.state.preferences.isDarkTheme);
                         break;
                     
-                    case e.detail.actions.ADD_MIDI_PORT:
-                        createMIDIPortView(e.detail.state, e.detail.action.isInput);
+                    case e.detail.actions.MIDI_PORT_CHANGE:
+                        updateMIDIPortViews(e.detail.state.ports);
                         break;
                     
-                    case e.detail.actions.REMOVE_MIDI_PORT:
-                        deleteMIDIPortView(e.detail.state, e.detail.action.isInput);
-                        break;
+                    // case e.detail.actions.REMOVE_MIDI_PORT:
+                    //     deleteMIDIPortView(e.detail.state, e.detail.action.isInput);
+                    //     break;
                 }
             });
         },
@@ -58,43 +58,74 @@ export default function createPreferencesView(specs) {
         },
 
         /**
+         * Update lists of ports after a change.
+         * @param {Array} ports MIDI port objects.
+         */
+        updateMIDIPortViews = function(ports) {
+            ports.forEach(port => {
+                let view = midiPortViews.find(view => port.id === view.getID());
+                if (view && port.state === 'disconnected') {
+                    view.terminate();
+                    midiPortViews.splice(midiPortViews.findIndex(view => port.id === view.getID()), 1);
+                }
+                if (!view && port.state === 'connected') {
+                    let createFunction, parentEl;
+                    if (port.type === 'input') {
+                        createFunction = createMIDIInputView;
+                        parentEl = midiInputsEl;
+                    } else {
+                        createFunction = createMIDIOutputView;
+                        parentEl = midiOutputsEl;
+                    }
+                    midiPortViews.push(createFunction({
+                        store: store,
+                        id: port.id,
+                        name: port.name,
+                        parentEl: parentEl,
+                        isInput: port.type === 'input'
+                    }));
+                }
+            });
+        };
+
+        /**
          * Create view for a MIDI input or output port.
          * @param {Boolean} isInput True if the port in an input.
          * @param {Object} port MIDI port object.
          */
-        createMIDIPortView = function(state, isInput) {
-            let data, views, createFunction, parentEl;
-            if (isInput) {
-                data = state.inputs;
-                views = midiInputsViews;
-                createFunction = createMIDIInputView;
-                parentEl = midiInputsEl;
-            } else {
-                data = state.outputs;
-                views = midiOutputsViews;
-                createFunction = createMIDIOutputView;
-                parentEl = midiOutputsEl;
-            }
+        // createMIDIPortView = function(state, isInput) {
+        //     let data, views, createFunction, parentEl;
+        //     if (isInput) {
+        //         data = state.inputs;
+        //         views = midiInputsViews;
+        //         createFunction = createMIDIInputView;
+        //         parentEl = midiInputsEl;
+        //     } else {
+        //         data = state.outputs;
+        //         views = midiOutputsViews;
+        //         createFunction = createMIDIOutputView;
+        //         parentEl = midiOutputsEl;
+        //     }
 
-            for (let i = 0, n = data.length; i < n; i++) {
-                let isFound = false;
-                for (let j = 0, p = views.length; j < p; j++) {
-                    if (data[i].id === views[j].getID()) {
-                        isFound = true;
-                        break;
-                    }
-                }
-                if (!isFound) {
-                    let view = createFunction({
-                        store: store,
-                        id: data[i].id,
-                        name: data[i].name,
-                        parentEl: parentEl,
-                        isInput: isInput
-                    });
-                    views.splice(i, 0, view);
-                }
-            }
+        //     for (let i = 0, n = data.length; i < n; i++) {
+        //         let isFound = false;
+        //         for (let j = 0, p = views.length; j < p; j++) {
+        //             if (data[i].id === views[j].getID()) {
+        //                 isFound = true;
+        //                 break;
+        //             }
+        //         }
+        //         if (!isFound) {
+        //             let view = createFunction({
+        //                 store: store,
+        //                 id: data[i].id,
+        //                 name: data[i].name,
+        //                 parentEl: parentEl,
+        //                 isInput: isInput
+        //             });
+        //             views.splice(i, 0, view);
+        //         }
+        //     }
 
             // var view;
             // if (isInput) {
@@ -109,42 +140,42 @@ export default function createPreferencesView(specs) {
             //     });
             // }
             // midiPortViews.push(view);
-        },
+        // },
 
         /**
          * Delete view for a MIDI input or output processor.
          * @param  {Object} processor MIDI processor for a MIDI input or output.
          */
-        deleteMIDIPortView = function(state, isInput) {
-            if (isInput) {
-                data = state.inputs;
-                views = midiInputsViews;
-            } else {
-                data = state.outputs;
-                views = midiOutputsViews;
-            }
-            var n = views.length;
-            while (--n >= 0) {
-                let isFound = false;
-                for (let i = 0, p = data.length; i < p; i++) {
-                    if (data[i].id === views[n].getID()) {
-                        isFound = true;
-                        break
-                    }
-                }
-                if (!isFound) {
-                    views[n].terminate();
-                    views.splice(n, 1);
-                    return;
-                }
+        // deleteMIDIPortView = function(state, isInput) {
+        //     if (isInput) {
+        //         data = state.inputs;
+        //         views = midiInputsViews;
+        //     } else {
+        //         data = state.outputs;
+        //         views = midiOutputsViews;
+        //     }
+        //     var n = views.length;
+        //     while (--n >= 0) {
+        //         let isFound = false;
+        //         for (let i = 0, p = data.length; i < p; i++) {
+        //             if (data[i].id === views[n].getID()) {
+        //                 isFound = true;
+        //                 break
+        //             }
+        //         }
+        //         if (!isFound) {
+        //             views[n].terminate();
+        //             views.splice(n, 1);
+        //             return;
+        //         }
 
-                // if (midiPortViews[n].hasProcessor(processor)) {
-                //     midiPortViews[n].terminate();
-                //     midiPortViews.splice(n, 1);
-                //     return false;
-                // }
-            }
-        };
+        //         // if (midiPortViews[n].hasProcessor(processor)) {
+        //         //     midiPortViews[n].terminate();
+        //         //     midiPortViews.splice(n, 1);
+        //         //     return false;
+        //         // }
+        //     }
+        // };
 
     that = specs.that;
 

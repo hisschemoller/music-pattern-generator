@@ -1,5 +1,12 @@
+import { getMIDIPortByID } from '../state/selectors';
+
 /**
  * Handles connection with soft- and hardware MIDI devices.
+ * 
+ * MIDI ports settings reference actual MIDI ports on the computer, hardware or virtual.
+ * MIDI ports settings remain after the actual ports are removed from the computer.
+ * MIDI ports settings can also be loaded with a project while the port is not present on the current computer.
+ * MIDI ports settings persist after a page refresh to restore the app state.
  */
 export default function createMIDI(specs) {
     var that,
@@ -10,9 +17,20 @@ export default function createMIDI(specs) {
         // midiSync = specs.midiSync,
         // transport = specs.transport,
         midiAccess,
-        inputs = [],
-        outputs = [],
-        dataFromStorage,
+        syncListeners = [],
+        // inputs = [],
+        // outputs = [],
+        // dataFromStorage,
+
+        init = function() {
+            document.addEventListener(store.STATE_CHANGE, (e) => {
+                switch (e.detail.action.type) {
+                    case e.detail.actions.TOGGLE_PORT_SYNC:
+                        updateMIDISyncListeners(e.detail.state.inputs);
+                        break;
+                }
+            });
+        },
 
         connect = function() {
             return new Promise((resolve, reject) => {
@@ -65,13 +83,13 @@ export default function createMIDI(specs) {
             const outputs = midiAccess.outputs.values();
             
             for (let port = inputs.next(); port && !port.done; port = inputs.next()) {
-                store.dispatch(store.getActions().addMIDIPort(port.value.id, port.value.name, true));
                 // createInput(port.value);
+                store.dispatch(store.getActions().midiPortChange(port.value));
             }
             
             for (let port = outputs.next(); port && !port.done; port = outputs.next()) {
-                store.dispatch(store.getActions().addMIDIPort(port.value.id, port.value.name, false));
                 // createOutput(port.value);
+                store.dispatch(store.getActions().midiPortChange(port.value));
             }
             
             // restorePortSettings();
@@ -84,64 +102,85 @@ export default function createMIDI(specs) {
          * If the change is the addition of a new port, create a port module.
          * This handles MIDI devices that are connected after the app initialisation.
          * Disconnected or reconnected ports are handled by the port modules.
+         * 
+         * If this is
          * @param {Object} e MIDIConnectionEvent object.
          */
         onAccessStateChange = function(e) {
-            let ports = (e.port.type == 'input') ? inputs : outputs,
-                exists = false,
-                n = ports.length;
+            console.log(e.port.id, e.port.type, e.port.state, e.port.connection);
+            store.dispatch(store.getActions().midiPortChange(e.port));
+            
+            // let ports = (e.port.type == 'input') ? inputs : outputs,
+            //     exists = false,
+            //     n = ports.length;
 
-            while (--n >= 0 && exists == false) {
-                exists = (e.port.id == ports[n].getID());
-            }
+            // while (--n >= 0 && exists == false) {
+            //     exists = (e.port.id == ports[n].getID());
+            // }
 
-            if (!exists) {
-                if (e.port.type == 'input') {
-                    createInput(e.port);
-                } else {
-                    createOutput(e.port);
-                }
-            }
+            // if (!exists) {
+            //     if (e.port.type == 'input') {
+            //         createInput(e.port);
+            //     } else {
+            //         createOutput(e.port);
+            //     }
+            // }
         },
         
         /**
          * Create a MIDI input model and view.
          * @param  {Object} midiPort MIDIInput module.
          */
-        createInput = function(midiPort) {
-            console.log('MIDI input port:', midiPort.name + ' (' + midiPort.manufacturer + ')', midiPort.id);
-            var input = ns.createMIDIPortInput({
-                midiPort: midiPort,
-                network: midiNetwork,
-                sync: midiSync,
-                remote: midiRemote
-            });
-            // create a view for this port in the preferences panel
-            preferencesView.createMIDIPortView(true, input);
-            // store port
-            inputs.push(input);
-            // port initialisation last
-            input.setup();
-        },
+        // createInput = function(midiPort) {
+        //     console.log(`MIDI input port: ${midiPort.name} (${midiPort.manufacturer})' ${midiPort.id}`);
+        //     midiPort.onmidimessage = onMIDIMessage;
+        //     store.dispatch(store.getActions().addMIDIPort(midiPort.id, midiPort.name, true));
+
+            // var input = ns.createMIDIPortInput({
+            //     midiPort: midiPort,
+            //     network: midiNetwork,
+            //     sync: midiSync,
+            //     remote: midiRemote
+            // });
+            // // create a view for this port in the preferences panel
+            // preferencesView.createMIDIPortView(true, input);
+            // // store port
+            // inputs.push(input);
+            // // port initialisation last
+            // input.setup();
+        // },
         
         /**
          * Create a MIDI output model and view.
          * @param  {Object} midiPort MIDIOutput module.
          */
-        createOutput = function(midiPort) {
-            console.log('MIDI output port:', midiPort.name + ' (' + midiPort.manufacturer + ')', midiPort.id);
-            var output = ns.createMIDIPortOutput({
-                midiPort: midiPort,
-                network: midiNetwork,
-                sync: midiSync,
-                remote: midiRemote
+        // createOutput = function(midiPort) {
+        //     console.log(`MIDI output port: ${midiPort.name} (${midiPort.manufacturer})' ${midiPort.id}`);
+        //     store.dispatch(store.getActions().addMIDIPort(midiPort.id, midiPort.name, false));
+            // var output = ns.createMIDIPortOutput({
+            //     midiPort: midiPort,
+            //     network: midiNetwork,
+            //     sync: midiSync,
+            //     remote: midiRemote
+            // });
+            // // create a view for this port in the preferences panel
+            // preferencesView.createMIDIPortView(false, output);
+            // // store port
+            // outputs.push(output);
+            // // port initialisation last
+            // output.setup();
+        // },
+
+        /**
+         * Listen to enabled MIDI input ports.
+         */
+        updateMIDISyncListeners = function(inputPorts) {
+            syncListeners = [];
+            inputPorts.forEach(port => {
+                if (port.syncEnabled) {
+                    syncListeners.push(port.id);
+                }
             });
-            // create a view for this port in the preferences panel
-            preferencesView.createMIDIPortView(false, output);
-            // store port
-            outputs.push(output);
-            // port initialisation last
-            output.setup();
         },
 
         onMIDIMessage = function(e) {
@@ -208,46 +247,46 @@ export default function createMIDI(specs) {
          * If port settings data from localStorage and 
          * access to MIDI ports exists, restore port settings.
          */
-        restorePortSettings = function() {
-            if (midiAccess && dataFromStorage) {
-                const data = dataFromStorage;
+        // restorePortSettings = function() {
+        //     if (midiAccess && dataFromStorage) {
+        //         const data = dataFromStorage;
                 
-                if (data.inputs) {
-                    let inputData;
-                    for (let i = 0, n = data.inputs.length; i < n; i++) {
-                        inputData = data.inputs[i];
-                        // find the input port by MIDIInput ID
-                        for (let j = 0, nn = inputs.length; j < nn; j++) {
-                            if (inputData.midiPortID == inputs[j].getID()) {
-                                inputs[j].setData(inputData);
-                            }
-                        }
-                    }
-                }
+        //         if (data.inputs) {
+        //             let inputData;
+        //             for (let i = 0, n = data.inputs.length; i < n; i++) {
+        //                 inputData = data.inputs[i];
+        //                 // find the input port by MIDIInput ID
+        //                 for (let j = 0, nn = inputs.length; j < nn; j++) {
+        //                     if (inputData.midiPortID == inputs[j].getID()) {
+        //                         inputs[j].setData(inputData);
+        //                     }
+        //                 }
+        //             }
+        //         }
                 
-                if (data.outputs) {
-                    let outputData;
-                    for (let i = 0, n = data.outputs.length; i < n; i++) {
-                        outputData = data.outputs[i];
-                        // find the output port by MIDIOutput ID
-                        for (let j = 0, nn = outputs.length; j < nn; j++) {
-                            if (outputData.midiPortID == outputs[j].getID()) {
-                                outputs[j].setData(outputData);
-                            }
-                        }
-                    }
-                }
-            }
-        },
+        //         if (data.outputs) {
+        //             let outputData;
+        //             for (let i = 0, n = data.outputs.length; i < n; i++) {
+        //                 outputData = data.outputs[i];
+        //                 // find the output port by MIDIOutput ID
+        //                 for (let j = 0, nn = outputs.length; j < nn; j++) {
+        //                     if (outputData.midiPortID == outputs[j].getID()) {
+        //                         outputs[j].setData(outputData);
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        // },
         
-        clearPortSettings = function() {
-            inputs.forEach(function(input) {
-                input.setData();
-            });
-            outputs.forEach(function(output) {
-                output.setData();
-            });
-        },
+        // clearPortSettings = function() {
+        //     inputs.forEach(function(input) {
+        //         input.setData();
+        //     });
+        //     outputs.forEach(function(output) {
+        //         output.setData();
+        //     });
+        // },
 
         /**
          * Restore MIDI port object settings from data object.
@@ -281,6 +320,8 @@ export default function createMIDI(specs) {
         // };
 
     that = specs.that;
+
+    init();
 
     that.connect = connect;
     // that.addMIDIMessageListener = addMIDIMessageListener;

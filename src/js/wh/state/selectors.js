@@ -10,11 +10,8 @@ function updateProcessors(state) {
 
 function updateMIDIPorts(state) {
     MIDIPorts = {};
-    state.inputs.forEach(input => {
-        MIDIPorts[input.id] = input;
-    });
-    state.outputs.forEach(output => {
-        MIDIPorts[output.id] = output;
+    state.ports.forEach(port => {
+        MIDIPorts[port.id] = port;
     });
 }
 
@@ -24,8 +21,11 @@ export function memoize(state, action = {}, actions) {
         case actions.DELETE_PROCESSOR:
             updateProcessors(state);
             break;
-        case actions.ADD_MIDI_PORT:
-        case actions.REMOVE_MIDI_PORT:
+        // case actions.ADD_MIDI_PORT:
+        // case actions.REMOVE_MIDI_PORT:
+        case actions.MIDI_PORT_CHANGE:
+        case actions.TOGGLE_PORT_SYNC:
+        case actions.TOGGLE_PORT_REMOTE:
         case actions.TOGGLE_MIDI_PREFERENCE:
             updateMIDIPorts(state);
             break;

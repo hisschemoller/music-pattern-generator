@@ -14,12 +14,13 @@ export default function createActions(specs = {}, my = {}) {
         CHANGE_PARAMETER = 'CHANGE_PARAMETER',
         RECREATE_PARAMETER = 'RECREATE_PARAMETER',
         SET_TEMPO = 'SET_TEMPO',
-        ADD_MIDI_PORT = 'ADD_MIDI_PORT',
-        REMOVE_MIDI_PORT = 'REMOVE_MIDI_PORT',
+        // ADD_MIDI_PORT = 'ADD_MIDI_PORT',
+        // REMOVE_MIDI_PORT = 'REMOVE_MIDI_PORT',
+        MIDI_PORT_CHANGE = 'MIDI_PORT_CHANGE',
         TOGGLE_PORT_NETWORK = 'TOGGLE_PORT_NETWORK',
         TOGGLE_PORT_SYNC = 'TOGGLE_PORT_SYNC',
         TOGGLE_PORT_REMOTE = 'TOGGLE_PORT_REMOTE',
-        TOGGLE_MIDI_PREFERENCE = 'TOGGLE_MIDI_PREFERENCE';
+        TOGGLE_MIDI_PREFERENCE = 'TOGGLE_MIDI_PREFERENCE',
         SET_TRANSPORT = 'SET_TRANSPORT';
 
     return {
@@ -91,11 +92,25 @@ export default function createActions(specs = {}, my = {}) {
         SET_TEMPO: SET_TEMPO,
         setTempo: value => { return { type: SET_TEMPO, value: value } },
 
-        ADD_MIDI_PORT: ADD_MIDI_PORT,
-        addMIDIPort: (id, name, isInput) => { return { type: ADD_MIDI_PORT, id: id, name: name, isInput: isInput } },
+        // ADD_MIDI_PORT: ADD_MIDI_PORT,
+        // addMIDIPort: (id, name, isInput) => { return { type: ADD_MIDI_PORT, id: id, name: name, isInput: isInput } },
 
-        REMOVE_MIDI_PORT: REMOVE_MIDI_PORT,
-        removeMIDIPort: id => { return { type: REMOVE_MIDI_PORT, id: id } },
+        // REMOVE_MIDI_PORT: REMOVE_MIDI_PORT,
+        // removeMIDIPort: id => { return { type: REMOVE_MIDI_PORT, id: id } },
+
+        MIDI_PORT_CHANGE: MIDI_PORT_CHANGE,
+        midiPortChange: data => { return { type: MIDI_PORT_CHANGE, data: data } },
+        // midiPortChange: (data) => {
+        //     return (dispatch, getState, getActions) => {
+        //         let port = getMIDIPortByID(data.id);
+        //         if (port) {
+
+        //         } else {
+
+        //         }
+        //         console.log(data);
+        //     }
+        // },
 
         TOGGLE_PORT_NETWORK: TOGGLE_PORT_NETWORK,
         togglePortNetwork: (portID, isInput) => {
@@ -122,10 +137,7 @@ export default function createActions(specs = {}, my = {}) {
 
         TOGGLE_PORT_SYNC: TOGGLE_PORT_SYNC,
         togglePortSync: (id, isInput) => {
-            return (dispatch, getState, getActions) => {
-                dispatch(getActions().toggleMIDIPreference(id, isInput, 'syncEnabled'));
-                
-            }
+            return { type: TOGGLE_PORT_SYNC, id: id, isInput: isInput };
         },
 
         TOGGLE_PORT_REMOTE: TOGGLE_PORT_REMOTE,
@@ -137,25 +149,13 @@ export default function createActions(specs = {}, my = {}) {
         },
 
         TOGGLE_MIDI_PREFERENCE: TOGGLE_MIDI_PREFERENCE,
-        toggleMIDIPreference: (id, isInput, preferenceName) => { return { type: TOGGLE_MIDI_PREFERENCE, id: id, isInput: isInput, preferenceName: preferenceName } }
+        toggleMIDIPreference: (id, isInput, preferenceName) => { return { type: TOGGLE_MIDI_PREFERENCE, id: id, isInput: isInput, preferenceName: preferenceName } },
 
         SET_TRANSPORT: SET_TRANSPORT,
         setTransport: value => { return { type: SET_TRANSPORT, command: value } }
     };
 }
 
-/**
- * network
- * - output processor created or activated
- * - output processor canvas view created or enabled
- * 
- * remote
- * - remote object starts listening on activated port
- * 
- * sync
- * - sync object starts listening on activated port
- */
-        
 /**
  * Set default processor name.
  * @param {Object} processor Processor to name.
