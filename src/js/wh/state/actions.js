@@ -33,6 +33,35 @@ export default function createActions(specs = {}, my = {}) {
             return { type: SET_PREFERENCES, data: data };
         },
 
+        importProject: (file) => {
+            return (dispatch, getState, getActions) => {
+                let fileReader = new FileReader();
+                // closure to capture the file information
+                fileReader.onload = (function(f) {
+                    return function(e) {
+                        let isJSON = true
+                        try {
+                            const data = JSON.parse(e.target.result);
+                            if (data) {
+                                dispatch(getActions().setProject(data));
+                            }
+                        } catch(errorMessage) {
+                            console.log(errorMessage);
+                            isJSON = false;
+                        }
+                        if (!isJSON) {
+                            // try if it's a legacy xml file
+                            const legacyData = my.convertLegacyFile(e.target.result);
+                            if (legacyData) {
+                                dispatch(getActions().setProject(legacyData));
+                            }
+                        }
+                    };
+                })(file);
+                fileReader.readAsText(file);
+            }
+        },
+
         exportProject: () => {
             return (dispatch, getState, getActions) => {
                 let jsonString = JSON.stringify(getState()),

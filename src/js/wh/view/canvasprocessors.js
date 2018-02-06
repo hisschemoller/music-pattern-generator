@@ -20,6 +20,7 @@ export default function createCanvasProcessorViews(specs, my) {
 
         setProcessorViews = function(newProcessors) {
             clearProcessorViews();
+            createProcessorViews(newProcessors);
         },
 
         clearProcessorViews = function() {

@@ -61,13 +61,11 @@ export default function createAppView(specs, my) {
         },
         
         init = function() {
-            console.log(document.querySelector('#file-new'));
-            console.log(controls);
             controls.new.input.addEventListener('click', function(e) {
                 store.dispatch(store.getActions().newProject());
             });
             controls.import.input.addEventListener('change', function(e) {
-                store.dispatch(store.getActions().importProject());
+                store.dispatch(store.getActions().importProject(e.target.files[0]));
             });
             controls.export.input.addEventListener('click', function(e) {
                 store.dispatch(store.getActions().exportProject());

@@ -32,11 +32,7 @@ export default function createReducers() {
                     return { ...initialState };
 
                 case actions.SET_PROJECT:
-                    return Object.assign({}, state, {
-                        bpm: action.data.bpm || initialState.bpm,
-                        network: action.data.network || initialState.network,
-                        remote: action.data.remote || initialState.remote
-                    });
+                    return { ...state, ...action.data };
 
                 case actions.SET_THEME:
                     return Object.assign({}, state, {
