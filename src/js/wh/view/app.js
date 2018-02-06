@@ -70,7 +70,7 @@ export default function createAppView(specs, my) {
                 store.dispatch(store.getActions().importProject());
             });
             controls.export.input.addEventListener('click', function(e) {
-                
+                store.dispatch(store.getActions().exportProject());
             });
             controls.play.input.addEventListener('change', function(e) {
                 store.dispatch(store.getActions().setTransport('toggle'));

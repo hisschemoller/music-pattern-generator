@@ -33,6 +33,17 @@ export default function createActions(specs = {}, my = {}) {
             return { type: SET_PREFERENCES, data: data };
         },
 
+        exportProject: () => {
+            return (dispatch, getState, getActions) => {
+                let jsonString = JSON.stringify(getState()),
+                blob = new Blob([jsonString], {type: 'application/json'}),
+                a = document.createElement('a');
+                a.download = 'epg.json';
+                a.href = URL.createObjectURL(blob);
+                a.click();
+            }
+        },
+
         NEW_PROJECT: NEW_PROJECT,
         newProject: (data) => {
             return { type: NEW_PROJECT };
