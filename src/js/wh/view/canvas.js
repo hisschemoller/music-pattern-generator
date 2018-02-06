@@ -56,6 +56,11 @@ export default function createCanvasView(specs, my) {
                         const themeName = e.detail.state.preferences.isDarkTheme ? 'dark' : '';
                         setTheme(themeName);
                         break;
+
+                    case e.detail.actions.NEW_PROJECT:
+                    case e.detail.actions.SET_PROJECT:
+                        my.setProcessorViews(e.detail.state.processors);
+                        break;
                     
                     case e.detail.actions.ADD_PROCESSOR:
                         my.createProcessorViews(e.detail.state.processors);

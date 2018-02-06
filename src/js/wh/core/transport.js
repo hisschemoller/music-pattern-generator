@@ -254,6 +254,7 @@ export default function createTransport(specs, my) {
                         break;
                     
                     case e.detail.actions.SET_PROJECT:
+                    case e.detail.actions.NEW_PROJECT:
                         my.setBPM(e.detail.state.bpm);
                         break;
 

@@ -28,6 +28,9 @@ export default function createReducers() {
                     newState.preferences.isDarkTheme = action.data ? action.data.isDarkTheme : false;
                     return newState;
 
+                case actions.NEW_PROJECT:
+                    return { ...initialState };
+
                 case actions.SET_PROJECT:
                     return Object.assign({}, state, {
                         bpm: action.data.bpm || initialState.bpm,

@@ -30,7 +30,7 @@ import createAppView from './wh/view/app';
 import createCanvasView from './wh/view/canvas';
 import createPreferencesView from './wh/view/preferences';
 import createRemoteView from './wh/view/remote';
-import createFileView from './wh/view/file';
+// import createFileView from './wh/view/file';
 
 /**
  * Application startup.
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         appView = {},
         canvasView = {},
         file = {},
-        fileView = {},
+        // fileView = {},
         midi = {},
         midiNetwork = {},
         midiRemote = {},
@@ -91,10 +91,10 @@ document.addEventListener('DOMContentLoaded', function(e) {
         midiRemote: midiRemote,
         transport: transport
     });
-    createFileView({
-        that: fileView,
-        file: file
-    });
+    // createFileView({
+    //     that: fileView,
+    //     file: file
+    // });
     createMIDI({
         that: midi,
         store: store,

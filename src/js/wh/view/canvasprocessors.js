@@ -17,6 +17,21 @@ export default function createCanvasProcessorViews(specs, my) {
         connectionSourceProcessor,
         dragOffsetX,
         dragOffsetY,
+
+        setProcessorViews = function(newProcessors) {
+            clearProcessorViews();
+        },
+
+        clearProcessorViews = function() {
+            let type,
+            n = views.length;
+            while (--n >= 0) {
+                type = views[n].getType();
+                if (type !== 'input' && type !== 'output') {
+                    deleteProcessorView(views[n].getID());
+                }
+            }
+        },
         
         /**
          * Create canvas 2D object if it exists for the type.
@@ -208,6 +223,7 @@ export default function createCanvasProcessorViews(specs, my) {
         };
 
     my = my || {};
+    my.setProcessorViews = setProcessorViews;
     my.createProcessorViews = createProcessorViews;
     my.selectProcessorView = selectProcessorView;
     my.deleteProcessorView = deleteProcessorView;

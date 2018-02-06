@@ -3,6 +3,7 @@ import { getMIDIPortByID } from '../state/selectors';
 
 export default function createActions(specs = {}, my = {}) {
     const SET_PREFERENCES = 'SET_PREFERENCES',
+        NEW_PROJECT = 'NEW_PROJECT',
         SET_PROJECT = 'SET_PROJECT',
         SET_THEME = 'SET_THEME',
         CREATE_PROCESSOR = 'CREATE_PROCESSOR',
@@ -30,6 +31,11 @@ export default function createActions(specs = {}, my = {}) {
         SET_PREFERENCES: SET_PREFERENCES,
         setPreferences: (data) => {
             return { type: SET_PREFERENCES, data: data };
+        },
+
+        NEW_PROJECT: NEW_PROJECT,
+        newProject: (data) => {
+            return { type: NEW_PROJECT };
         },
 
         SET_PROJECT: SET_PROJECT,

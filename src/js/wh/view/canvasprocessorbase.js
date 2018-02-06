@@ -49,6 +49,10 @@ export default function createCanvasProcessorBaseView(specs, my) {
             return my.data.params.position2d.value; //  my.processor.getParamValue('position2d');
         },
         
+        getType = function() {
+            return my.data.type;
+        },
+        
         getID = function() {
             return my.data.id;
         };
@@ -68,5 +72,6 @@ export default function createCanvasProcessorBaseView(specs, my) {
     // that.setPosition2d = setPosition2d;
     that.getPosition2d = getPosition2d;
     that.getID = getID;
+    that.getType = getType;
     return that;
 }

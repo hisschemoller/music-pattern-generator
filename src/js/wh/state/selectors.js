@@ -6,7 +6,7 @@ function updateProcessors(state) {
     processors = {};
     state.processors.forEach(processor => {
         processors[processor.id] = processor;
-    })
+    });
 }
 
 function updateMIDIPorts(state) {
@@ -17,7 +17,13 @@ function updateMIDIPorts(state) {
 }
 
 function updateRemoteControlledParameters(state) {
-
+    state.processors.forEach(processor => {
+        processor.parameters.forEach(parameter => {
+            if (parameter.remoteChannel && parameter.remoteCC) {
+                remoteControlledParameters[`${parameter.remoteChannel}-${parameter.remoteCC}`]
+            }
+        });
+    });
 }
 
 export function memoize(state, action = {}, actions) {

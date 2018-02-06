@@ -18,6 +18,18 @@ export default function createAppView(specs, my) {
         settingsViews = [],
         panelHeaderHeight,
         controls = {
+            new: {
+                type: 'checkbox',
+                input: document.querySelector('#file-new')    
+            },
+            import: {
+                type: 'checkbox',
+                input: document.querySelector('#file-import')    
+            },
+            export: {
+                type: 'checkbox',
+                input: document.querySelector('#file-export')    
+            },
             play: {
                 type: 'checkbox',
                 input: document.getElementById('play-check')
@@ -49,6 +61,17 @@ export default function createAppView(specs, my) {
         },
         
         init = function() {
+            console.log(document.querySelector('#file-new'));
+            console.log(controls);
+            controls.new.input.addEventListener('click', function(e) {
+                store.dispatch(store.getActions().newProject());
+            });
+            controls.import.input.addEventListener('change', function(e) {
+                store.dispatch(store.getActions().importProject());
+            });
+            controls.export.input.addEventListener('click', function(e) {
+                
+            });
             controls.play.input.addEventListener('change', function(e) {
                 store.dispatch(store.getActions().setTransport('toggle'));
             });
@@ -89,6 +112,11 @@ export default function createAppView(specs, my) {
                     case e.detail.actions.SET_PREFERENCES:
                     case e.detail.actions.SET_THEME:
                         rootEl.dataset.theme = 'dev'; // e.detail.state.preferences.isDarkTheme ? 'dark' : '';
+                        break;
+
+                    case e.detail.actions.SET_PROJECT:
+                    case e.detail.actions.NEW_PROJECT:
+                        setProject(e.detail.state.processors);
                         break;
                     
                     case e.detail.actions.ADD_PROCESSOR:
@@ -169,6 +197,14 @@ export default function createAppView(specs, my) {
                     return false;
                 }
             }
+        },
+
+        setProject = function(processors) {
+            var n = settingsViews.length;
+            while (--n >= 0) {
+                deleteSettingsView(settingsViews[n].getID());
+            }
+            createSettingsViews(processors);
         },
         
         renderLayout = function(leftColumn = true, rightColumn = true) {

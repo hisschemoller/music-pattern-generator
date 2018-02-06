@@ -97,9 +97,9 @@ export default function createMIDIProcessorBase(specs, my) {
         //     return my.info;
         // },
         
-        // getType = function() {
-        //     return type;
-        // },
+        getType = function() {
+            return my.type;
+        },
         
         // setID = function(newId) {
         //     id = newId;
@@ -169,7 +169,7 @@ export default function createMIDIProcessorBase(specs, my) {
     // that.getParameters = getParameters;
     // that.hasParameter = hasParameter;
     // that.getInfo = getInfo;
-    // that.getType = getType;
+    that.getType = getType;
     // that.setID = setID;
     that.getID = getID;
     // that.setData = setData;
