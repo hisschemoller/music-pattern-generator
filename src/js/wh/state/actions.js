@@ -25,7 +25,8 @@ export default function createActions(specs = {}, my = {}) {
         TOGGLE_MIDI_LEARN_MODE = 'TOGGLE_MIDI_LEARN_MODE',
         TOGGLE_MIDI_LEARN_TARGET = 'TOGGLE_MIDI_LEARN_TARGET',
         SET_TRANSPORT = 'SET_TRANSPORT',
-        RECEIVE_MIDI_CC = 'RECEIVE_MIDI_CC';
+        RECEIVE_MIDI_CC = 'RECEIVE_MIDI_CC',
+        TOGGLE_PANEL = 'TOGGLE_PANEL';
 
     return {
         SET_PREFERENCES: SET_PREFERENCES,
@@ -209,7 +210,10 @@ export default function createActions(specs = {}, my = {}) {
         setTransport: value => ({ type: SET_TRANSPORT, command: value }),
 
         RECEIVE_MIDI_CC: RECEIVE_MIDI_CC,
-        receiveMIDIControlChange: data => ({type: RECEIVE_MIDI_CC, data: data})
+        receiveMIDIControlChange: data => ({type: RECEIVE_MIDI_CC, data: data}),
+
+        TOGGLE_PANEL: TOGGLE_PANEL,
+        togglePanel: panelName =>  ({type: TOGGLE_PANEL, panelName: panelName}),
     };
 }
 

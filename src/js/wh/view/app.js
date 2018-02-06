@@ -7,7 +7,7 @@ import addWindowResize from './windowresize';
 export default function createAppView(specs, my) {
     var that,
         store = specs.store,
-        app = specs.app,
+        // app = specs.app,
         rootEl = document.querySelector('#app'),
         panelsEl = document.querySelector('.panels'),
         helpEl = document.querySelector('.help'),
@@ -82,16 +82,20 @@ export default function createAppView(specs, my) {
                 store.dispatch(store.getActions().toggleMIDILearnMode());
             });
             controls.prefs.input.addEventListener('change', function(e) {
-                app.togglePanel('preferences', e.target.checked);
+                store.dispatch(store.getActions().togglePanel('preferences'));
+                // app.togglePanel('preferences', e.target.checked);
             });
             controls.edit.input.addEventListener('change', function(e) {
-                app.togglePanel('settings', e.target.checked);
+                store.dispatch(store.getActions().togglePanel('settings'));
+                // app.togglePanel('settings', e.target.checked);
             });
             controls.connections.input.addEventListener('change', function(e) {
-                app.updateApp('connections', e.target.checked);
+                // store.dispatch(store.getActions().togglePanel('connections'));
+                // app.updateApp('connections', e.target.checked);
             });
             controls.help.input.addEventListener('change', function(e) {
-                app.togglePanel('help', e.target.checked);
+                store.dispatch(store.getActions().togglePanel('help'));
+                // app.togglePanel('help', e.target.checked);
             });
             
             document.addEventListener('keyup', function(e) {
@@ -140,7 +144,8 @@ export default function createAppView(specs, my) {
                         break;
                     
                     case e.detail.actions.TOGGLE_MIDI_LEARN_MODE:
-                        showPanel('remote', e.detail.state.learnModeActive);
+                    case e.detail.actions.TOGGLE_PANEL:
+                        showPanels(e.detail.state);
                         break;
                 }
             });
@@ -280,47 +285,33 @@ export default function createAppView(specs, my) {
             }
         },
         
-        updateControl = function(property, value) {
-            switch(property) {
-                case 'bpm':
-                    controls.bpm.input.value = value;
-                    break;
-                case 'play':
-                    controls.play.input.checked = value;
-                    break;
-                case 'remote':
-                    controls.remote.input.checked = value;
-                    break;
-                case 'settings':
-                    controls.edit.input.checked = value;
-                    break;
-                case 'connections':
-                    controls.connections.input.checked = value;
-                    break;
-                default:
-                    console.error('Unknown updateControl property:', property);
-            }
-        },
+        // updateControl = function(property, value) {
+        //     switch(property) {
+        //         case 'bpm':
+        //             controls.bpm.input.value = value;
+        //             break;
+        //         case 'play':
+        //             controls.play.input.checked = value;
+        //             break;
+        //         case 'remote':
+        //             controls.remote.input.checked = value;
+        //             break;
+        //         case 'settings':
+        //             controls.edit.input.checked = value;
+        //             break;
+        //         case 'connections':
+        //             controls.connections.input.checked = value;
+        //             break;
+        //         default:
+        //             console.error('Unknown updateControl property:', property);
+        //     }
+        // },
         
-        showPanel = function(panelID, isVisible) {
-            switch (panelID) {
-                case 'help':
-                    helpEl.dataset.show = isVisible;
-                    break;
-                case 'preferences':
-                    prefsEl.dataset.show = isVisible;
-                    break;
-                case 'remote':
-                    remoteEl.dataset.show = isVisible;
-                    break;
-                case 'settings':
-                    editEl.dataset.show = isVisible;
-                    break;
-                default:
-                    console.error('Panel ID ', panelID, 'not found.');
-                    return;
-            }
-            
+        showPanels = function(state) {
+            helpEl.dataset.show = state.showHelpPanel;
+            prefsEl.dataset.show = state.showPreferencesPanel;
+            remoteEl.dataset.show = state.learnModeActive;
+            editEl.dataset.show = state.showSettingsPanel;
             renderLayout();
         };
     
@@ -333,7 +324,6 @@ export default function createAppView(specs, my) {
     that.renderLayout = renderLayout;
     // that.createSettingsView = createSettingsView;
     that.deleteSettingsView = deleteSettingsView;
-    that.updateControl = updateControl;
-    that.showPanel = showPanel;
+    // that.updateControl = updateControl;
     return that;
 }

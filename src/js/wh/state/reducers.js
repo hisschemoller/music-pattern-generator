@@ -16,7 +16,10 @@ export default function createReducers() {
             ports: [],
             learnModeActive: false,
             learnTargetProcessorID: null,
-            learnTargetParameterKey: null
+            learnTargetParameterKey: null,
+            showHelpPanel: false,
+            showPreferencesPanel: false,
+            showSettingsPanel: false,
         },
         
         reduce = function(state = initialState, action = {}, actions) {
@@ -244,6 +247,15 @@ export default function createReducers() {
                     } else {
                         // TODO: set value of the assigned parameter, if any
                     }
+                    return state;
+                
+                case actions.TOGGLE_PANEL:
+                    return {
+                        ...state,
+                        showHelpPanel: action.panelName === 'help' ? !state.showHelpPanel : state.showHelpPanel,
+                        showPreferencesPanel: action.panelName === 'preferences' ? !state.showPreferencesPanel : state.showPreferencesPanel,
+                        showSettingsPanel: action.panelName === 'settings' ? !state.showSettingsPanel : state.showSettingsPanel
+                    };
                     return state;
 
                 default:

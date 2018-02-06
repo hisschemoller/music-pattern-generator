@@ -64,19 +64,9 @@ document.addEventListener('DOMContentLoaded', function(e) {
         midiRemote: midiRemote,
         transport: transport
     });
-    createAppView({
-        that: appView,
-        store: store,
-        app: app
-    });
-    createCanvasView({
-        that: canvasView,
-        store: store
-    });
-    createPreferencesView({
-        that: preferencesView,
-        store: store
-    });
+    createAppView({ that: appView, store: store });
+    createCanvasView({ that: canvasView, store: store });
+    createPreferencesView({ that: preferencesView, store: store });
     createRemoteView({
         that: remoteView,
         store: store,
@@ -95,10 +85,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     //     that: fileView,
     //     file: file
     // });
-    createMIDI({
-        that: midi,
-        store: store,
-    });
+    createMIDI({ that: midi, store: store, });
     createMIDIRemote({
         that: midiRemote,
         app: app,
