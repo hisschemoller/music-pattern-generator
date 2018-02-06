@@ -18,6 +18,7 @@ export default function createMIDI(specs) {
         // transport = specs.transport,
         midiAccess,
         syncListeners = [],
+        remoteListeners = [],
         // inputs = [],
         // outputs = [],
         // dataFromStorage,
@@ -27,6 +28,10 @@ export default function createMIDI(specs) {
                 switch (e.detail.action.type) {
                     case e.detail.actions.TOGGLE_PORT_SYNC:
                         updateMIDISyncListeners(e.detail.state.inputs);
+                        break;
+                    
+                    case e.detail.actions.TOGGLE_PORT_REMOTE:
+                        updateMIDIRemoteListeners(e.detail.state.inputs);
                         break;
                 }
             });
@@ -183,6 +188,18 @@ export default function createMIDI(specs) {
             });
         },
 
+        /**
+         * Listen to enabled MIDI input ports.
+         */
+        updateMIDIRemoteListeners = function(inputPorts) {
+            syncListeners = [];
+            inputPorts.forEach(port => {
+                if (port.remoteEnabled) {
+                    remoteListeners.push(port.id);
+                }
+            });
+        },
+
         onMIDIMessage = function(e) {
             console.log(e.data[0] & 0xf0, e.data[0] & 0x0f, e.target.id, e.data[0], e.data[1], e.data[2]);
             
@@ -191,7 +208,7 @@ export default function createMIDI(specs) {
                     onSystemRealtimeMessage(e);
                     break;
                 case 176: // CC
-                    // onControlChangeMessage(e);
+                    onControlChangeMessage(e);
                     break;
                 case 144: // note on
                 case 128: // note off
@@ -227,6 +244,13 @@ export default function createMIDI(specs) {
                         store.dispatch(store.getActions().setTransport('pause'));
                         break;
                 }
+            }
+        },
+
+        onControlChangeMessage = function(e) {
+            // if any ports listen to remote data
+            if (remoteListeners.indexOf(e.target.id) > -1) {
+                store.dispatch(store.getActions().receiveMIDIControlChange(e.data));
             }
         },
 

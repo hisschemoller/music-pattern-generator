@@ -1,25 +1,64 @@
+import createRemoteGroupView from './remote_group';
+
 /**
  * Overview list of all assigned MIDI controller assignments.
  */
 export default function createRemoteView(specs, my) {
     var that,
+        store = specs.store,
         appView = specs.appView,
         midiRemote = specs.midiRemote,
         rootEl = document.querySelector('.remote'),
         listEl = document.querySelector('.remote__list'),
         groupViews = [],
+
+        init = function() {
+            document.addEventListener(store.STATE_CHANGE, (e) => {
+                switch (e.detail.action.type) {
+                    case e.detail.actions.ADD_PROCESSOR:
+                        createRemoteGroup(e.detail.state.processors.find(proc => proc.id === e.detail.action.data.id));
+                        break;
+                        
+                    case e.detail.actions.DELETE_PROCESSOR:
+                        break;
+                }
+            });
+        },
         
         /**
          * Create a container view to hold assigned parameter views.
-         * @param {Object} processor Processor with assignable parameters.
+         * @param {Array} processors Processor list.
          */
         createRemoteGroup = function(processor) {
-            var remoteGroupView = ns.createRemoteGroupView({
-                processor: processor,
+            groupViews.push(createRemoteGroupView({
+                store: store,
+                id: processor.id,
+                name: processor.name,
                 parentEl: listEl
-            });
-            groupViews.push(remoteGroupView);
-            appView.renderLayout();
+            }));
+
+            // processors.forEach(processor => {
+            //     let exists = false;
+            //     for (let i = 0, n = groupViews.length; i < n; i++) {
+            //         if (groupViews.getID() === processor.id) {
+            //             exists = true;
+            //             break;
+            //         }
+            //     }
+            //     if (!exists) {
+            //         groupViews.push(createRemoteGroupView({
+            //             id: processor.id,
+            //             parentEl: listEl
+            //         }));
+            //     }
+            // });
+
+            // var remoteGroupView = ns.createRemoteGroupView({
+            //     processor: processor,
+            //     parentEl: listEl
+            // });
+            // groupViews.push(remoteGroupView);
+            // appView.renderLayout();
         },
         
         /**
@@ -69,6 +108,8 @@ export default function createRemoteView(specs, my) {
         };
     
     that = specs.that || {};
+
+    init();
     
     that.createRemoteGroup = createRemoteGroup;
     that.deleteRemoteGroup = deleteRemoteGroup;

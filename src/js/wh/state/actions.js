@@ -21,8 +21,10 @@ export default function createActions(specs = {}, my = {}) {
         TOGGLE_PORT_SYNC = 'TOGGLE_PORT_SYNC',
         TOGGLE_PORT_REMOTE = 'TOGGLE_PORT_REMOTE',
         TOGGLE_MIDI_PREFERENCE = 'TOGGLE_MIDI_PREFERENCE',
-        TOGGLE_MIDI_LEARN = 'TOGGLE_MIDI_LEARN',
-        SET_TRANSPORT = 'SET_TRANSPORT';
+        TOGGLE_MIDI_LEARN_MODE = 'TOGGLE_MIDI_LEARN_MODE',
+        TOGGLE_MIDI_LEARN_TARGET = 'TOGGLE_MIDI_LEARN_TARGET',
+        SET_TRANSPORT = 'SET_TRANSPORT',
+        RECEIVE_MIDI_CC = 'RECEIVE_MIDI_CC';
 
     return {
         SET_PREFERENCES: SET_PREFERENCES,
@@ -100,7 +102,7 @@ export default function createActions(specs = {}, my = {}) {
         // removeMIDIPort: id => { return { type: REMOVE_MIDI_PORT, id: id } },
 
         MIDI_PORT_CHANGE: MIDI_PORT_CHANGE,
-        midiPortChange: data => { return { type: MIDI_PORT_CHANGE, data: data } },
+        midiPortChange: data => ({ type: MIDI_PORT_CHANGE, data: data }),
         // midiPortChange: (data) => {
         //     return (dispatch, getState, getActions) => {
         //         let port = getMIDIPortByID(data.id);
@@ -137,26 +139,31 @@ export default function createActions(specs = {}, my = {}) {
         },
 
         TOGGLE_PORT_SYNC: TOGGLE_PORT_SYNC,
-        togglePortSync: (id, isInput) => {
-            return { type: TOGGLE_PORT_SYNC, id: id, isInput: isInput };
-        },
+        togglePortSync: (id, isInput) => ({ type: TOGGLE_PORT_SYNC, id: id, isInput: isInput }),
 
         TOGGLE_PORT_REMOTE: TOGGLE_PORT_REMOTE,
-        togglePortRemote: (id, isInput) => {
-            return (dispatch, getState, getActions) => {
-                dispatch(getActions().toggleMIDIPreference(id, isInput, 'remoteEnabled'));
+        togglePortRemote: (id, isInput) => ({ type: TOGGLE_PORT_REMOTE, id: id, isInput: isInput }),
+        // togglePortRemote: (id, isInput) => {
+        //     return (dispatch, getState, getActions) => {
+        //         dispatch(getActions().toggleMIDIPreference(id, isInput, 'remoteEnabled'));
                 
-            }
-        },
+        //     }
+        // },
 
         TOGGLE_MIDI_PREFERENCE: TOGGLE_MIDI_PREFERENCE,
-        toggleMIDIPreference: (id, isInput, preferenceName) => { return { type: TOGGLE_MIDI_PREFERENCE, id: id, isInput: isInput, preferenceName: preferenceName } },
+        toggleMIDIPreference: (id, isInput, preferenceName) => ({ type: TOGGLE_MIDI_PREFERENCE, id: id, isInput: isInput, preferenceName: preferenceName }),
 
-        TOGGLE_MIDI_LEARN: TOGGLE_MIDI_LEARN,
-        toggleMIDILearn: () => { return { type: TOGGLE_MIDI_LEARN } },
+        TOGGLE_MIDI_LEARN_MODE: TOGGLE_MIDI_LEARN_MODE,
+        toggleMIDILearnMode: () => ({ type: TOGGLE_MIDI_LEARN_MODE }),
+
+        TOGGLE_MIDI_LEARN_TARGET: TOGGLE_MIDI_LEARN_TARGET,
+        toggleMIDILearnTarget: (processorID, parameterKey) => ({ type: TOGGLE_MIDI_LEARN_TARGET, processorID: processorID, parameterKey: parameterKey }),
 
         SET_TRANSPORT: SET_TRANSPORT,
-        setTransport: value => { return { type: SET_TRANSPORT, command: value } }
+        setTransport: value => ({ type: SET_TRANSPORT, command: value }),
+
+        RECEIVE_MIDI_CC: RECEIVE_MIDI_CC,
+        receiveMIDIControlChange: data => ({type: RECEIVE_MIDI_CC, data: data})
     };
 }
 

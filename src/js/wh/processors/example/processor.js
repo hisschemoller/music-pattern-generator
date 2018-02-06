@@ -7,7 +7,7 @@ export function createMIDIProcessor(specs) {
 
         terminate = function() {},
 
-        process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset) {},
+        process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset) {};
 
     that = createMIDIProcessorBase(specs, my);
 

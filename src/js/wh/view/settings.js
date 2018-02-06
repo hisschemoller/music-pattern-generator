@@ -74,8 +74,6 @@ export default function createSettingsPanel(specs, my) {
                 }
             });
 
-            return;
-
 
             // const params = processor.getParameters();
             // let template = document.querySelector('#template-settings-' + processor.getType());

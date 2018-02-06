@@ -1,5 +1,6 @@
 let processors = {};
 let MIDIPorts = {};
+let remoteControlledParameters = {};
 
 function updateProcessors(state) {
     processors = {};
@@ -13,6 +14,10 @@ function updateMIDIPorts(state) {
     state.ports.forEach(port => {
         MIDIPorts[port.id] = port;
     });
+}
+
+function updateRemoteControlledParameters(state) {
+
 }
 
 export function memoize(state, action = {}, actions) {
@@ -29,6 +34,9 @@ export function memoize(state, action = {}, actions) {
         case actions.TOGGLE_MIDI_PREFERENCE:
             updateMIDIPorts(state);
             break;
+        // case :
+        //     updateRemoteControlledParameters(state);
+        //     break;
     }
 }
 
@@ -39,3 +47,5 @@ export function memoize(state, action = {}, actions) {
 export const getProcessorByID = id => processors[id];
 
 export const getMIDIPortByID = id => MIDIPorts[id];
+
+export const getRemoteControlledParameters = (processorID, parameterKey) => remoteControlledParameters[processorID][parameterKey];

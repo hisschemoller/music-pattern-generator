@@ -57,15 +57,16 @@ export default function createRemoteSettingView(specs, my) {
         },
         
         onLearnLayerClick = function(e) {
-            learnCallback(my.data);
+            // learnCallback(my.data);
+            my.store.dispatch(my.store.getActions().toggleMIDILearnTarget(my.processorID, my.key));
         };
     
     my = my || {};
+    my.changeRemoteState = changeRemoteState;
     
     that = that || {};
     
     init();
     
-    that.changeRemoteState = changeRemoteState;
     return that;
 }

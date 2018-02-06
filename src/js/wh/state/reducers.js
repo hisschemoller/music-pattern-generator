@@ -14,7 +14,9 @@ export default function createReducers() {
             // inputs: [],
             // outputs: [],
             ports: [],
-            learnModeActive: false
+            learnModeActive: false,
+            learnTargetProcessorID: null,
+            learnTargetParameterKey: null
         },
         
         reduce = function(state = initialState, action = {}, actions) {
@@ -42,7 +44,7 @@ export default function createReducers() {
 
                 case actions.ADD_PROCESSOR:
                     newState = Object.assign({}, state);
-                    const numInputProcessors = newState.processors.filter(item => item.type === 'input').length;
+                    let numInputProcessors = newState.processors.filter(item => item.type === 'input').length;
                     // array index depends on processor type
                     switch (action.data.type) {
                         case 'input':
@@ -192,11 +194,20 @@ export default function createReducers() {
                 case actions.TOGGLE_PORT_SYNC:
                     return toggleMIDIPreference(state, action.id, action.isInput, 'syncEnabled');
                 
+                case actions.TOGGLE_PORT_REMOTE:
+                    return toggleMIDIPreference(state, action.id, action.isInput, 'remoteEnabled');
+                
                 case actions.TOGGLE_MIDI_PREFERENCE:
                     return toggleMIDIPreference(state, action.id, action.isInput, action.preferenceName);
                 
-                case actions.TOGGLE_MIDI_LEARN:
+                case actions.TOGGLE_MIDI_LEARN_MODE:
                     return Object.assign({}, state, { learnModeActive: !state.learnModeActive });
+                
+                case actions.TOGGLE_MIDI_LEARN_TARGET:
+                    return Object.assign({}, state, { 
+                        learnTargetProcessorID: action.processorID, 
+                        learnTargetParameterKey: action.parameterKey 
+                    });
                 
                 case actions.SET_TRANSPORT:
                     let value = action.command;
@@ -206,6 +217,35 @@ export default function createReducers() {
                     return Object.assign({}, state, { 
                         transport: value
                     });
+
+                case actions.RECEIVE_MIDI_CC:
+                    if (learnModeActive && learnTargetProcessorID && learnTargetParameterKey) {
+                        return {
+                            ...state,
+                            processors: state.processors.map(processor => {
+                                if (processor.id !== learnTargetProcessorID) {
+                                    return processor;
+                                }
+                                return {
+                                    ...processor,
+                                    parameters: processor.parameters.map(parameter => {
+                                        if (parameter.id !== learnTargetProcessorID) {
+                                            return parameter;
+                                        } else {
+                                            return {
+                                                ...parameter,
+                                                remoteChannel: (action.data[0] & 0xf) + 1,
+                                                remoteCC: action.data[1]
+                                            }
+                                        }
+                                    })
+                                }
+                            })
+                        }
+                    } else {
+                        // TODO: set value of the assigned parameter, if any
+                    }
+                    return state;
 
                 default:
                     return state;

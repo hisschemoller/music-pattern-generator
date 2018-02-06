@@ -34,6 +34,38 @@ export default function createBaseSettingView(specs, my) {
                             my.initData();
                         }
                         break;
+                    
+                    case e.detail.actions.TOGGLE_MIDI_LEARN_MODE:
+                        if (my.data.isMidiControllable &&
+                            e.detail.state.selectedID == my.processorID) {
+                            my.changeRemoteState(e.detail.state.learnModeActive ? 'enter' : 'exit');
+                        }
+                        break;
+                    
+                    case e.detail.actions.SELECT_PROCESSOR:
+                        if (my.data.isMidiControllable) {
+                            if (e.detail.state.learnModeActive) {
+                                my.changeRemoteState(e.detail.state.selectedID == my.processorID ? 'enter' : 'exit');
+                            }
+                        }
+                        break;
+                    
+                    case e.detail.actions.TOGGLE_MIDI_LEARN_TARGET:
+                        if (my.data.isMidiControllable) {
+                            if (e.detail.state.learnModeActive) {
+                                const isTarget = e.detail.state.learnTargetProcessorID === my.processorID && e.detail.state.learnTargetParameterKey === my.key; 
+                                my.changeRemoteState(isTarget ? 'selected' : 'deselected');
+                            }
+                        }
+                        break;
+                    
+                    case e.detail.actions.RECEIVE_MIDI_CC:
+                        if (my.data.isMidiControllable) {
+                            if (e.detail.state.learnModeActive) {
+                                my.changeRemoteState('assigned');
+                            }
+                        }
+                        break;
                 }
             });
         };

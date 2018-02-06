@@ -58,7 +58,7 @@ export default function createAppView(specs, my) {
             controls.remote.input.addEventListener('change', function(e) {
                 // app.updateApp('remote', e.target.checked);
                 // app.togglePanel('remote', e.target.checked);
-                store.dispatch(store.getActions().toggleMIDILearn());
+                store.dispatch(store.getActions().toggleMIDILearnMode());
             });
             controls.prefs.input.addEventListener('change', function(e) {
                 app.togglePanel('preferences', e.target.checked);
@@ -93,10 +93,12 @@ export default function createAppView(specs, my) {
                     
                     case e.detail.actions.ADD_PROCESSOR:
                         createSettingsViews(e.detail.state.processors);
+                        renderLayout();
                         break;
                     
                     case e.detail.actions.DELETE_PROCESSOR:
                         deleteSettingsView(e.detail.action.id);
+                        renderLayout();
                         break;
 
                     case e.detail.actions.SELECT_PROCESSOR:
@@ -111,7 +113,7 @@ export default function createAppView(specs, my) {
                         controls.bpm.input.value = e.detail.state.bpm;
                         break;
                     
-                    case e.detail.actions.TOGGLE_MIDI_LEARN:
+                    case e.detail.actions.TOGGLE_MIDI_LEARN_MODE:
                         showPanel('remote', e.detail.state.learnModeActive);
                         break;
                 }

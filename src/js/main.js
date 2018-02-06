@@ -79,6 +79,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     createRemoteView({
         that: remoteView,
+        store: store,
         appView: appView,
         midiRemote: midiRemote
     });

@@ -407,7 +407,7 @@ export default function createMIDIRemote(specs) {
 
     that.addMidiInput = addMidiInput;
     that.removeMidiInput = removeMidiInput;
-    that.toggleMidiLearn = toggleMidiLearn;
+    // that.toggleMidiLearn = toggleMidiLearn;
     that.unassingParameter = unassingParameter;
     that.registerProcessor = registerProcessor;
     that.unregisterProcessor = unregisterProcessor;
