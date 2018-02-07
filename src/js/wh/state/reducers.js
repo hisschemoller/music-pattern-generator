@@ -271,23 +271,13 @@ export default function createReducers() {
 }
 
 function toggleMIDIPreference(state, id, isInput, preferenceName) {
-    const newState = Object.assign({}, state);
-    if (isInput) {
-        newState.inputs = newState.inputs.map((item, index) => {
-            item = Object.assign({}, item);
-            if (item.id === id) {
-                item[preferenceName] = !item[preferenceName];
+    return {
+        ...state,
+        ports: state.ports.map(port => {
+            if (port.id === id) {
+                port[preferenceName] = !port[preferenceName];
             }
-            return item;
-        });
-    } else {
-        newState.outputs = newState.outputs.map((item, index) => {
-            item = Object.assign({}, item);
-            if (item.id === id) {
-                item[preferenceName] = !item[preferenceName];
-            }
-            return item;
-        });
-    }
-    return newState;
+            return port;
+        })
+    };
 }

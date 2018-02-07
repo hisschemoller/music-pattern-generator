@@ -27,11 +27,11 @@ export default function createMIDI(specs) {
             document.addEventListener(store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
                     case e.detail.actions.TOGGLE_PORT_SYNC:
-                        updateMIDISyncListeners(e.detail.state.inputs);
+                        updateMIDISyncListeners(e.detail.state.ports);
                         break;
                     
                     case e.detail.actions.TOGGLE_PORT_REMOTE:
-                        updateMIDIRemoteListeners(e.detail.state.inputs);
+                        updateMIDIRemoteListeners(e.detail.state.ports);
                         break;
                 }
             });
@@ -179,9 +179,9 @@ export default function createMIDI(specs) {
         /**
          * Listen to enabled MIDI input ports.
          */
-        updateMIDISyncListeners = function(inputPorts) {
+        updateMIDISyncListeners = function(ports) {
             syncListeners = [];
-            inputPorts.forEach(port => {
+            ports.forEach(port => {
                 if (port.syncEnabled) {
                     syncListeners.push(port.id);
                 }
@@ -191,9 +191,9 @@ export default function createMIDI(specs) {
         /**
          * Listen to enabled MIDI input ports.
          */
-        updateMIDIRemoteListeners = function(inputPorts) {
+        updateMIDIRemoteListeners = function(ports) {
             syncListeners = [];
-            inputPorts.forEach(port => {
+            ports.forEach(port => {
                 if (port.remoteEnabled) {
                     remoteListeners.push(port.id);
                 }
