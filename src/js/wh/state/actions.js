@@ -26,6 +26,8 @@ export default function createActions(specs = {}, my = {}) {
         TOGGLE_MIDI_LEARN_TARGET = 'TOGGLE_MIDI_LEARN_TARGET',
         SET_TRANSPORT = 'SET_TRANSPORT',
         RECEIVE_MIDI_CC = 'RECEIVE_MIDI_CC',
+        ASSIGN_EXTERNAL_CONTROL = 'ASSIGN_EXTERNAL_CONTROL',
+        UNASSIGN_EXTERNAL_CONTROL = 'UNASSIGN_EXTERNAL_CONTROL',
         TOGGLE_PANEL = 'TOGGLE_PANEL';
 
     return {
@@ -210,19 +212,36 @@ export default function createActions(specs = {}, my = {}) {
         setTransport: command => ({ type: SET_TRANSPORT, command }),
 
         RECEIVE_MIDI_CC: RECEIVE_MIDI_CC,
-        receiveMIDIControlChange: data => ({type: RECEIVE_MIDI_CC, data}),
-        // receiveMIDIControlChange: (data) => {
-        //     return (dispatch, getState, getActions) => {
-        //         if (getState().learnModeActive) {
-        //             dispatch(getActions().assignExternalControl(data));
-        //         } else {
-        //             dispatch(getActions().changeParameter(processorID, paramKey, paramValue));
-        //         }
-        //     }
-        // },
+        receiveMIDIControlChange: (data) => {
+            return (dispatch, getState, getActions) => {
+                if (getState().learnModeActive) {
+                    dispatch(getActions().assignExternalControl(data));
+                } else {
+                    // find all parameters with the channel and conctrol
+                    const remoteChannel = (data[0] & 0xf) + 1,
+                        remoteCC = data[1];
+                    getState().processors.forEach(processor => {
+                        for (key in processor.parameters) {
+                            if (processor.parameters.hasOwnProperty(key)) {
+                                const param = processor.parameters[key];
+                                if (param.isMidiControllable && 
+                                    param.remoteChannel === remoteChannel &&
+                                    param.remoteCC == remoteCC) {
+                                    let paramValue;
+                                    dispatch(getActions().changeParameter(processor.id, key, paramValue));
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        },
+
+        ASSIGN_EXTERNAL_CONTROL: ASSIGN_EXTERNAL_CONTROL,
+        assignExternalControl: data => ({type: ASSIGN_EXTERNAL_CONTROL, data}),
 
         TOGGLE_PANEL: TOGGLE_PANEL,
-        togglePanel: panelName =>  ({type: TOGGLE_PANEL, panelName}),
+        togglePanel: panelName => ({type: TOGGLE_PANEL, panelName}),
     };
 }
 

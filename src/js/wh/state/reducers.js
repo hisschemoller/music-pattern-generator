@@ -222,18 +222,19 @@ export default function createReducers() {
                         transport: value
                     });
 
-                case actions.RECEIVE_MIDI_CC:
-                    if (learnModeActive && learnTargetProcessorID && learnTargetParameterKey) {
+                case actions.ASSIGN_EXTERNAL_CONTROL:
+                    if (state.learnModeActive && state.learnTargetProcessorID && state.learnTargetParameterKey) {
                         return {
                             ...state,
                             processors: state.processors.map(processor => {
-                                if (processor.id !== learnTargetProcessorID) {
+                                if (processor.id !== state.learnTargetProcessorID) {
                                     return processor;
                                 }
                                 return {
                                     ...processor,
+                                    // TODO: parameters.map error
                                     parameters: processor.parameters.map(parameter => {
-                                        if (parameter.id !== learnTargetProcessorID) {
+                                        if (parameter.id !== state.learnTargetParameterKey) {
                                             return parameter;
                                         } else {
                                             return {
@@ -246,8 +247,6 @@ export default function createReducers() {
                                 }
                             })
                         }
-                    } else {
-                        // TODO: set value of the assigned parameter, if any
                     }
                     return state;
                 
