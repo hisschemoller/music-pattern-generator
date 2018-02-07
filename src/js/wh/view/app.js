@@ -119,6 +119,7 @@ export default function createAppView(specs, my) {
                     case e.detail.actions.SET_PROJECT:
                     case e.detail.actions.NEW_PROJECT:
                         setProject(e.detail.state.processors);
+                        controls.bpm.input.value = e.detail.state.bpm;
                         break;
                     
                     case e.detail.actions.ADD_PROCESSOR:
