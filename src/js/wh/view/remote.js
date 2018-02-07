@@ -20,6 +20,10 @@ export default function createRemoteView(specs, my) {
                         break;
                         
                     case e.detail.actions.DELETE_PROCESSOR:
+                        // TODO: remote view delete processor
+                        break;
+                        
+                    case e.detail.actions.DELETE_PROCESSOR:
                         break;
                 }
             });

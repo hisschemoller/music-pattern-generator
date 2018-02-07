@@ -1,3 +1,5 @@
+import { getProcessorByID } from '../state/selectors';
+
 /**
  * Group within overview list of all assigned MIDI controller assignments.
  * The items are grouped by processor.
@@ -36,7 +38,7 @@ export default function createRemoteGroupView(specs, my) {
                     case e.detail.actions.CHANGE_PARAMETER:
                         if (e.detail.action.processorID === processorID && 
                             e.detail.action.paramKey === 'name') {
-                            setName(getProcessorByID(my.processorID).params['name'].value);
+                            setName(getProcessorByID(processorID).params['name'].value);
                         }
                         break;
                 }

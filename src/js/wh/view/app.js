@@ -131,10 +131,6 @@ export default function createAppView(specs, my) {
                         renderLayout();
                         break;
 
-                    case e.detail.actions.SELECT_PROCESSOR:
-                        showPanel('settings', true);
-                        break;
-
                     case e.detail.actions.SET_TRANSPORT:
                         controls.play.input.checked = e.detail.state.transport === 'play';
                         break;
@@ -143,6 +139,7 @@ export default function createAppView(specs, my) {
                         controls.bpm.input.value = e.detail.state.bpm;
                         break;
                     
+                    case e.detail.actions.SELECT_PROCESSOR:
                     case e.detail.actions.TOGGLE_MIDI_LEARN_MODE:
                     case e.detail.actions.TOGGLE_PANEL:
                         showPanels(e.detail.state);

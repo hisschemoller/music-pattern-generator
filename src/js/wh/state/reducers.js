@@ -58,6 +58,8 @@ export default function createReducers() {
                             break;
                         default:
                             newState.processors.splice(numInputProcessors, 0, action.data);
+                            newState.showSettingsPanel = true;
+
                     }
                     return newState;
                 

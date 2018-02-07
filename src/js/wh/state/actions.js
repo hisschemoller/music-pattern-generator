@@ -211,6 +211,15 @@ export default function createActions(specs = {}, my = {}) {
 
         RECEIVE_MIDI_CC: RECEIVE_MIDI_CC,
         receiveMIDIControlChange: data => ({type: RECEIVE_MIDI_CC, data: data}),
+        // receiveMIDIControlChange: (data) => {
+        //     return (dispatch, getState, getActions) => {
+        //         if (getState().learnModeActive) {
+        //             dispatch(getActions().assignExternalControl(data));
+        //         } else {
+        //             dispatch(getActions().changeParameter(processorID, paramKey, paramValue));
+        //         }
+        //     }
+        // },
 
         TOGGLE_PANEL: TOGGLE_PANEL,
         togglePanel: panelName =>  ({type: TOGGLE_PANEL, panelName: panelName}),

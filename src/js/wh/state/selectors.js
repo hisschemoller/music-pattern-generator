@@ -30,6 +30,7 @@ export function memoize(state, action = {}, actions) {
     switch(action.type) {
         case actions.CREATE_PROCESSOR:
         case actions.DELETE_PROCESSOR:
+        case actions.ADD_PROCESSOR:
             updateProcessors(state);
             break;
         // case actions.ADD_MIDI_PORT:
