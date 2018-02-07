@@ -1,4 +1,5 @@
 import { getProcessorByID } from '../state/selectors';
+import createRemoteItemView from './remote_item';
 
 /**
  * Group within overview list of all assigned MIDI controller assignments.
@@ -13,7 +14,7 @@ export default function createRemoteGroupView(specs, my) {
         el,
         listEl,
         nameParam,
-        itemViews = [],
+        views = [],
         
         initialize = function() {
             // create the DOM element.
@@ -41,6 +42,12 @@ export default function createRemoteGroupView(specs, my) {
                             setName(getProcessorByID(processorID).params['name'].value);
                         }
                         break;
+                    
+                    case e.detail.actions.ASSIGN_EXTERNAL_CONTROL:
+                        if (e.detail.action.processorID === processorID) {
+                            updateViews(e.detail.state.processors.find(processor => processor.id === processorID));
+                        }
+                        break;
                 }
             });
         },
@@ -49,14 +56,42 @@ export default function createRemoteGroupView(specs, my) {
          * Called before this view is deleted.
          */
         terminate = function() {
-            var n = itemViews.length;
+            var n = views.length;
             while (--n >= 0) {
-                itemViews[n].terminate();
+                views[n].terminate();
             }
             parentEl.removeChild(el);
             // nameParam.removeChangedCallback(setName);
-            itemViews = null;
+            views = null;
             parentEl = null;
+        },
+
+        updateViews = function(processor) {
+            for (key in processor.parameters) {
+                if (processor.parameters.hasOwnProperty(key)) {
+                    let param = processor.parameters[key],
+                        isAssigned = param.isMidiControllable && param.remoteChannel && param.remoteCC,
+                        viewExists = views.find(view => view.getKey() === key);
+                    if (isAssigned && !viewExists) {
+                        addView(key);
+                    } else if (!isAssigned && viewExists) {
+                        removeView(key);
+                    }
+                }
+            }
+            el.dataset.hasAssignments = (views.length > 0);
+        },
+
+        addView = function(key) {
+            views.push(createRemoteItemView({
+                paramKey: key,
+                parentEl: listEl,
+                unregisterCallback: unregisterCallback
+            }));
+        },
+
+        removeView = function(key) {
+  
         },
         
         /**
