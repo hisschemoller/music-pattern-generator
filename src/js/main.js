@@ -59,37 +59,37 @@ document.addEventListener('DOMContentLoaded', function(e) {
     // Add functionality to the modules and inject dependencies.
     createApp({
         that: app,
-        appView: appView,
-        midiNetwork: midiNetwork,
-        midiRemote: midiRemote,
-        transport: transport
+        appView,
+        midiNetwork,
+        midiRemote,
+        transport
     });
-    createAppView({ that: appView, store: store });
-    createCanvasView({ that: canvasView, store: store });
-    createPreferencesView({ that: preferencesView, store: store });
+    createAppView({ that: appView, store });
+    createCanvasView({ that: canvasView, store });
+    createPreferencesView({ that: preferencesView, store });
     createRemoteView({
         that: remoteView,
-        store: store,
-        appView: appView,
-        midiRemote: midiRemote
+        store,
+        appView,
+        midiRemote
     });
     createFile({
         that: file,
-        store: store,
-        midi: midi,
-        midiNetwork: midiNetwork,
-        midiRemote: midiRemote,
-        transport: transport
+        store,
+        midi,
+        midiNetwork,
+        midiRemote,
+        transport
     });
     // createFileView({
     //     that: fileView,
     //     file: file
     // });
-    createMIDI({ that: midi, store: store, });
+    createMIDI({ that: midi, store });
     createMIDIRemote({
         that: midiRemote,
-        app: app,
-        remoteView: remoteView
+        app,
+        remoteView
     });
     // createMIDISync({
     //     that: midiSync,
@@ -97,18 +97,18 @@ document.addEventListener('DOMContentLoaded', function(e) {
     // });
     createMIDINetwork({
         that: midiNetwork,
-        store: store,
-        app: app,
-        appView: appView,
-        canvasView: canvasView,
-        midiRemote: midiRemote,
-        preferencesView: preferencesView
+        store,
+        app,
+        appView,
+        canvasView,
+        midiRemote,
+        preferencesView
     });
     createTransport({
         that: transport,
-        store: store,
-        canvasView: canvasView,
-        midiNetwork: midiNetwork
+        store,
+        canvasView,
+        midiNetwork
     });
 
     // initialise

@@ -31,7 +31,7 @@ export default function createActions(specs = {}, my = {}) {
     return {
         SET_PREFERENCES: SET_PREFERENCES,
         setPreferences: (data) => {
-            return { type: SET_PREFERENCES, data: data };
+            return { type: SET_PREFERENCES, data };
         },
 
         importProject: (file) => {
@@ -81,12 +81,12 @@ export default function createActions(specs = {}, my = {}) {
 
         SET_PROJECT: SET_PROJECT,
         setProject: (data) => {
-            return { type: SET_PROJECT, data: data };
+            return { type: SET_PROJECT, data };
         },
 
         SET_THEME: SET_THEME,
-        setTheme: (value) => {
-            return { type: SET_THEME, data: value };
+        setTheme: (data) => {
+            return { type: SET_THEME, data };
         },
 
         CREATE_PROCESSOR: CREATE_PROCESSOR,
@@ -106,41 +106,41 @@ export default function createActions(specs = {}, my = {}) {
 
         ADD_PROCESSOR: ADD_PROCESSOR,
         addProcessor: (data) => {
-            return { type: ADD_PROCESSOR, data: data };
+            return { type: ADD_PROCESSOR, data };
         },
 
         DELETE_PROCESSOR: DELETE_PROCESSOR,
         deleteProcessor: id => {
-            return { type: DELETE_PROCESSOR, id: id };
+            return { type: DELETE_PROCESSOR, id };
         },
 
         SELECT_PROCESSOR: SELECT_PROCESSOR,
         selectProcessor: id => {
-            return { type: SELECT_PROCESSOR, id: id };
+            return { type: SELECT_PROCESSOR, id };
         },
 
         DRAG_SELECTED_PROCESSOR: DRAG_SELECTED_PROCESSOR,
         dragSelectedProcessor: (x, y) => {
-            return { type: DRAG_SELECTED_PROCESSOR, x: x, y: y };
+            return { type: DRAG_SELECTED_PROCESSOR, x, y };
         },
 
         DRAG_ALL_PROCESSORS: DRAG_ALL_PROCESSORS,
         dragAllProcessors: (x, y) => {
-            return { type: DRAG_ALL_PROCESSORS, x: x, y: y };
+            return { type: DRAG_ALL_PROCESSORS, x, y };
         },
 
         CHANGE_PARAMETER: CHANGE_PARAMETER,
         changeParameter: (processorID, paramKey, paramValue) => {
-            return { type: CHANGE_PARAMETER, processorID: processorID, paramKey: paramKey, paramValue: paramValue };
+            return { type: CHANGE_PARAMETER, processorID, paramKey, paramValue };
         },
 
         RECREATE_PARAMETER: RECREATE_PARAMETER,
         recreateParameter: (processorID, paramKey, paramObj) => {
-            return { type: RECREATE_PARAMETER, processorID: processorID, paramKey : paramKey, paramObj: paramObj };
+            return { type: RECREATE_PARAMETER, processorID, paramKey, paramObj };
         },
 
         SET_TEMPO: SET_TEMPO,
-        setTempo: value => { return { type: SET_TEMPO, value: value } },
+        setTempo: value => { return { type: SET_TEMPO, value } },
 
         // ADD_MIDI_PORT: ADD_MIDI_PORT,
         // addMIDIPort: (id, name, isInput) => { return { type: ADD_MIDI_PORT, id: id, name: name, isInput: isInput } },
@@ -149,7 +149,7 @@ export default function createActions(specs = {}, my = {}) {
         // removeMIDIPort: id => { return { type: REMOVE_MIDI_PORT, id: id } },
 
         MIDI_PORT_CHANGE: MIDI_PORT_CHANGE,
-        midiPortChange: data => ({ type: MIDI_PORT_CHANGE, data: data }),
+        midiPortChange: data => ({ type: MIDI_PORT_CHANGE, data }),
         // midiPortChange: (data) => {
         //     return (dispatch, getState, getActions) => {
         //         let port = getMIDIPortByID(data.id);
@@ -186,10 +186,10 @@ export default function createActions(specs = {}, my = {}) {
         },
 
         TOGGLE_PORT_SYNC: TOGGLE_PORT_SYNC,
-        togglePortSync: (id, isInput) => ({ type: TOGGLE_PORT_SYNC, id: id, isInput: isInput }),
+        togglePortSync: (id, isInput) => ({ type: TOGGLE_PORT_SYNC, id, isInput }),
 
         TOGGLE_PORT_REMOTE: TOGGLE_PORT_REMOTE,
-        togglePortRemote: (id, isInput) => ({ type: TOGGLE_PORT_REMOTE, id: id, isInput: isInput }),
+        togglePortRemote: (id, isInput) => ({ type: TOGGLE_PORT_REMOTE, id, isInput }),
         // togglePortRemote: (id, isInput) => {
         //     return (dispatch, getState, getActions) => {
         //         dispatch(getActions().toggleMIDIPreference(id, isInput, 'remoteEnabled'));
@@ -198,19 +198,19 @@ export default function createActions(specs = {}, my = {}) {
         // },
 
         TOGGLE_MIDI_PREFERENCE: TOGGLE_MIDI_PREFERENCE,
-        toggleMIDIPreference: (id, isInput, preferenceName) => ({ type: TOGGLE_MIDI_PREFERENCE, id: id, isInput: isInput, preferenceName: preferenceName }),
+        toggleMIDIPreference: (id, isInput, preferenceName) => ({ type: TOGGLE_MIDI_PREFERENCE, id, isInput, preferenceName }),
 
         TOGGLE_MIDI_LEARN_MODE: TOGGLE_MIDI_LEARN_MODE,
         toggleMIDILearnMode: () => ({ type: TOGGLE_MIDI_LEARN_MODE }),
 
         TOGGLE_MIDI_LEARN_TARGET: TOGGLE_MIDI_LEARN_TARGET,
-        toggleMIDILearnTarget: (processorID, parameterKey) => ({ type: TOGGLE_MIDI_LEARN_TARGET, processorID: processorID, parameterKey: parameterKey }),
+        toggleMIDILearnTarget: (processorID, parameterKey) => ({ type: TOGGLE_MIDI_LEARN_TARGET, processorID, parameterKey }),
 
         SET_TRANSPORT: SET_TRANSPORT,
-        setTransport: value => ({ type: SET_TRANSPORT, command: value }),
+        setTransport: command => ({ type: SET_TRANSPORT, command }),
 
         RECEIVE_MIDI_CC: RECEIVE_MIDI_CC,
-        receiveMIDIControlChange: data => ({type: RECEIVE_MIDI_CC, data: data}),
+        receiveMIDIControlChange: data => ({type: RECEIVE_MIDI_CC, data}),
         // receiveMIDIControlChange: (data) => {
         //     return (dispatch, getState, getActions) => {
         //         if (getState().learnModeActive) {
@@ -222,7 +222,7 @@ export default function createActions(specs = {}, my = {}) {
         // },
 
         TOGGLE_PANEL: TOGGLE_PANEL,
-        togglePanel: panelName =>  ({type: TOGGLE_PANEL, panelName: panelName}),
+        togglePanel: panelName =>  ({type: TOGGLE_PANEL, panelName}),
     };
 }
 
