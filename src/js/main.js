@@ -16,13 +16,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import createApp from './wh/core/app';
-import createFile from './wh/core/file';
 import createTransport from './wh/core/transport';
 import createMIDI from './wh/midi/midi';
 import createMIDINetwork from './wh/midi/network';
-import createMIDIRemote from './wh/midi/remote';
-// import createMIDISync from './wh/midi/sync';
 import createActions from './wh/state/actions';
 import createReducers from './wh/state/reducers';
 import createStore from './wh/state/store';
@@ -30,7 +26,6 @@ import createAppView from './wh/view/app';
 import createCanvasView from './wh/view/canvas';
 import createPreferencesView from './wh/view/preferences';
 import createRemoteView from './wh/view/remote';
-// import createFileView from './wh/view/file';
 
 /**
  * Application startup.
@@ -38,15 +33,11 @@ import createRemoteView from './wh/view/remote';
 document.addEventListener('DOMContentLoaded', function(e) {
 
     // Create all objects that will be the modules of the app.
-    var app = {},
-        appView = {},
+    var appView = {},
         canvasView = {},
-        file = {},
-        // fileView = {},
         midi = {},
         midiNetwork = {},
         midiRemote = {},
-        // midiSync = {},
         preferencesView = {},
         remoteView = {},
         transport = {};
@@ -57,58 +48,39 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
 
     // Add functionality to the modules and inject dependencies.
-    createApp({
-        that: app,
-        appView,
-        midiNetwork,
-        midiRemote,
-        transport
+    createAppView({ 
+        that: appView, 
+        store 
     });
-    createAppView({ that: appView, store });
-    createCanvasView({ that: canvasView, store });
-    createPreferencesView({ that: preferencesView, store });
+    createCanvasView({ 
+        that: canvasView, 
+        store 
+    });
+    createPreferencesView({ 
+        that: preferencesView, 
+        store 
+    });
     createRemoteView({
         that: remoteView,
         store,
         appView,
-        midiRemote
     });
-    createFile({
-        that: file,
-        store,
-        midi,
-        midiNetwork,
-        midiRemote,
-        transport
+    createMIDI({ 
+        that: midi, 
+        store 
     });
-    // createFileView({
-    //     that: fileView,
-    //     file: file
-    // });
-    createMIDI({ that: midi, store });
-    createMIDIRemote({
-        that: midiRemote,
-        app,
-        remoteView
-    });
-    // createMIDISync({
-    //     that: midiSync,
-    //     transport: transport
-    // });
     createMIDINetwork({
         that: midiNetwork,
         store,
-        app,
         appView,
         canvasView,
-        midiRemote,
         preferencesView
     });
-    createTransport({
-        that: transport,
-        store,
-        canvasView,
-        midiNetwork
+    createTransport({ 
+        that: transport, 
+        store, 
+        canvasView, 
+        midiNetwork 
     });
 
     // initialise

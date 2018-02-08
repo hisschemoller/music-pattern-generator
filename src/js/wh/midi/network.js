@@ -6,10 +6,10 @@ import createMIDINetworkConnections from './networkconnections';
 export default function createMIDINetwork(specs, my) {
     var that,
         store = specs.store,
-        app = specs.app,
+        // app = specs.app,
         appView = specs.appView,
         canvasView = specs.canvasView,
-        midiRemote = specs.midiRemote,
+        // midiRemote = specs.midiRemote,
         preferencesView = specs.preferencesView,
         processors = [],
         numProcessors = 0,
@@ -164,40 +164,40 @@ export default function createMIDINetwork(specs, my) {
          * Select a processor.
          * @param  {Object} processor Processor to select.
          */
-        selectProcessor = function(processor) {
-            app.togglePanel('settings', processor != null);
-            app.appUpdated('settings', processor != null);
-            for (var i = 0; i < numProcessors; i++) {
-                var proc = processors[i];
-                if (typeof proc.setSelected == 'function') {
-                    proc.setSelected(proc === processor);
-                }
-            }
-        },
+        // selectProcessor = function(processor) {
+        //     app.togglePanel('settings', processor != null);
+        //     app.appUpdated('settings', processor != null);
+        //     for (var i = 0; i < numProcessors; i++) {
+        //         var proc = processors[i];
+        //         if (typeof proc.setSelected == 'function') {
+        //             proc.setSelected(proc === processor);
+        //         }
+        //     }
+        // },
 
         /**
          * Select the next processor from the given.
          * @param  {Object} processor Processor to select.
          */
-        selectNextProcessor = function(processor) {
-            let processorIndex = processors.indexOf(processor),
-                nextIndex,
-                nextProcessor,
-                isNextProcessor;
-            for (let i = 1, n = processors.length; i <= n; i++) {
-                nextIndex = (processorIndex + i) % n;
-                nextProcessor = processors[nextIndex];
-                if (nextProcessor.getType() !== 'input' && nextProcessor.getType() !== 'output' && nextProcessor !== processor) {
-                    isNextProcessor = true;
-                    selectProcessor(nextProcessor);
-                    break;
-                }
-            }
+        // selectNextProcessor = function(processor) {
+        //     let processorIndex = processors.indexOf(processor),
+        //         nextIndex,
+        //         nextProcessor,
+        //         isNextProcessor;
+        //     for (let i = 1, n = processors.length; i <= n; i++) {
+        //         nextIndex = (processorIndex + i) % n;
+        //         nextProcessor = processors[nextIndex];
+        //         if (nextProcessor.getType() !== 'input' && nextProcessor.getType() !== 'output' && nextProcessor !== processor) {
+        //             isNextProcessor = true;
+        //             selectProcessor(nextProcessor);
+        //             break;
+        //         }
+        //     }
             
-            if (!isNextProcessor) {
-                selectProcessor(null);
-            }
-        },
+        //     if (!isNextProcessor) {
+        //         selectProcessor(null);
+        //     }
+        // },
         
         connectProcessors = function(sourceProcessor, destinationProcessor) {
             if (!sourceProcessor.getDestinations().includes(destinationProcessor)) {
