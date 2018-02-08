@@ -113,7 +113,7 @@ export default function createMIDI(specs) {
          * @param {Object} e MIDIConnectionEvent object.
          */
         onAccessStateChange = function(e) {
-            console.log(e.port.id, e.port.type, e.port.state, e.port.connection);
+            console.log(e.port.type, e.port.state, e.port.connection, e.port.id);
             store.dispatch(store.getActions().midiPortChange(e.port));
             
             // let ports = (e.port.type == 'input') ? inputs : outputs,

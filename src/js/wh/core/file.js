@@ -22,50 +22,50 @@ export default function createFile(specs, my) {
         autoSaveEnabled = true,
 
         init = function() {
-            window.addEventListener('beforeunload', onBeforeUnload);
+            // window.addEventListener('beforeunload', onBeforeUnload);
             
-            // key combo r + s + t resets the stored project and preferences.
-            document.addEventListener('keydown', function(e) {
-                resetKeyCombo[e.keyCode] = true;
-                if (Object.keys(resetKeyCombo).length == 3 && resetKeyCombo[82] && resetKeyCombo[83] && resetKeyCombo[84]) {
-                    localStorage.clear();
-                    setup();
-                }
-            });
-            document.addEventListener('keyup', function(e) {
-                resetKeyCombo = {};
-            });
+            // // key combo r + s + t resets the stored project and preferences.
+            // document.addEventListener('keydown', function(e) {
+            //     resetKeyCombo[e.keyCode] = true;
+            //     if (Object.keys(resetKeyCombo).length == 3 && resetKeyCombo[82] && resetKeyCombo[83] && resetKeyCombo[84]) {
+            //         localStorage.clear();
+            //         setup();
+            //     }
+            // });
+            // document.addEventListener('keyup', function(e) {
+            //     resetKeyCombo = {};
+            // });
         },
 
         /**
          * Setup on application start.
          */
-        loadLocalStorage = function() {
-            return new Promise((resolve, reject) => {
-                loadPreferences();
-                if (!loadProjectFromStorage()) {
-                    createNew();
-                }
-                resolve();
-            });
-        },
+        // loadLocalStorage = function() {
+        //     return new Promise((resolve, reject) => {
+        //         loadPreferences();
+        //         if (!loadProjectFromStorage()) {
+        //             createNew();
+        //         }
+        //         resolve();
+        //     });
+        // },
 
         /**
          * Get the stored preferences, if any.
          */
-        loadPreferences = function() {
-            var data = localStorage.getItem(preferencesName);
-            store.dispatch(store.getActions().setPreferences(data));
-            // if (data) {
-            //     data = JSON.parse(data);
-            //     midi.setData(data.midi);
-            //     preferences.setData(data.preferences);
-            // } else {
-            //     midi.setData();
-            //     preferences.setData();
-            //     console.log('No data in LocalStorage with name "' + preferencesName + '".');
-            // }
-        },
+        // loadPreferences = function() {
+        //     var data = localStorage.getItem(preferencesName);
+        //     store.dispatch(store.getActions().setPreferences(data));
+        //     // if (data) {
+        //     //     data = JSON.parse(data);
+        //     //     midi.setData(data.midi);
+        //     //     preferences.setData(data.preferences);
+        //     // } else {
+        //     //     midi.setData();
+        //     //     preferences.setData();
+        //     //     console.log('No data in LocalStorage with name "' + preferencesName + '".');
+        //     // }
+        // },
 
         /**
          * Save application preferences to localStorage.
@@ -131,13 +131,13 @@ export default function createFile(specs, my) {
          * Collect project data to save.
          * @return {Object} Project data.
          */
-        getData = function() {
-            return {
-                bpm: transport.getBPM(),
-                network: midiNetwork.getData(),
-                remote: midiRemote.getData()
-            };
-        },
+        // getData = function() {
+        //     return {
+        //         bpm: transport.getBPM(),
+        //         network: midiNetwork.getData(),
+        //         remote: midiRemote.getData()
+        //     };
+        // },
 
         /**
          * Restore project from data object.
@@ -156,56 +156,56 @@ export default function createFile(specs, my) {
          *
          * @param {Object} data Project data.
          */
-        setData = function(data) {
-            console.log(data);
-            data = data || {};
-            transport.setBPM(data.bpm);
-            midiNetwork.setData(data.network);
-            midiRemote.setData(data.remote);
-        },
+        // setData = function(data) {
+        //     console.log(data);
+        //     data = data || {};
+        //     transport.setBPM(data.bpm);
+        //     midiNetwork.setData(data.network);
+        //     midiRemote.setData(data.remote);
+        // },
 
         /**
          * Import project data from filesystem JSON file.
          * @param {Object} file File object.
          */
-        importFile = function(file) {
-            let fileReader = new FileReader();
-            // closure to capture the file information
-            fileReader.onload = (function(f) {
-                return function(e) {
-                    let isJSON = true
-                    try {
-                        const data = JSON.parse(e.target.result);
-                        if (data) {
-                            setData(data);
-                        }
-                    } catch(errorMessage) {
-                        console.log(errorMessage);
-                        isJSON = false;
-                    }
-                    if (!isJSON) {
-                        // try if it's a legacy xml file
-                        const legacyData = my.convertLegacyFile(e.target.result);
-                        if (legacyData) {
-                            setData(legacyData);
-                        }
-                    }
-                };
-            })(file);
-            fileReader.readAsText(file);
-        },
+        // importFile = function(file) {
+        //     let fileReader = new FileReader();
+        //     // closure to capture the file information
+        //     fileReader.onload = (function(f) {
+        //         return function(e) {
+        //             let isJSON = true
+        //             try {
+        //                 const data = JSON.parse(e.target.result);
+        //                 if (data) {
+        //                     setData(data);
+        //                 }
+        //             } catch(errorMessage) {
+        //                 console.log(errorMessage);
+        //                 isJSON = false;
+        //             }
+        //             if (!isJSON) {
+        //                 // try if it's a legacy xml file
+        //                 const legacyData = my.convertLegacyFile(e.target.result);
+        //                 if (legacyData) {
+        //                     setData(legacyData);
+        //                 }
+        //             }
+        //         };
+        //     })(file);
+        //     fileReader.readAsText(file);
+        // },
 
         /**
          * Export project data to filesystem JSON file.
          */
-        exportFile = function() {
-            let jsonString = JSON.stringify(getData()),
-                blob = new Blob([jsonString], {type: 'application/json'}),
-                a = document.createElement('a');
-            a.download = 'epg.json';
-            a.href = URL.createObjectURL(blob);
-            a.click();
-        };
+        // exportFile = function() {
+        //     let jsonString = JSON.stringify(getData()),
+        //         blob = new Blob([jsonString], {type: 'application/json'}),
+        //         a = document.createElement('a');
+        //     a.download = 'epg.json';
+        //     a.href = URL.createObjectURL(blob);
+        //     a.click();
+        // };
     
     my = my || {};
 
@@ -213,11 +213,11 @@ export default function createFile(specs, my) {
     
     init();
 
-    that.loadLocalStorage = loadLocalStorage;
-    that.createNew = createNew;
-    that.autoSave = autoSave;
-    that.save = save;
-    that.importFile = importFile;
-    that.exportFile = exportFile;
+    // that.loadLocalStorage = loadLocalStorage;
+    // that.createNew = createNew;
+    // that.autoSave = autoSave;
+    // that.save = save;
+    // that.importFile = importFile;
+    // that.exportFile = exportFile;
     return that;
 }

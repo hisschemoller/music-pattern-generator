@@ -29,6 +29,17 @@ export default function createStore(specs = {}, my = {}) {
         
         getState = () => {
             return currentState;
+        },
+        
+        persist = () => {
+            const name = 'persist';
+            window.addEventListener('beforeunload', e => {
+                localStorage.setItem(name, JSON.stringify(currentState));
+            });
+            let data = localStorage.getItem(name);
+            if (data) {
+                dispatch(getActions().setProject(JSON.parse(data)));
+            }
         };
 
     that = specs.that || {};
@@ -37,5 +48,6 @@ export default function createStore(specs = {}, my = {}) {
     that.dispatch = dispatch;
     that.getActions = getActions;
     that.getState = getState;
+    that.persist = persist;
     return that;
 }

@@ -112,7 +112,8 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
 
     // initialise
-    midi.connect()
-        .then(file.loadLocalStorage)
-        .then(transport.run);
+    midi.connect().then(() => {
+        store.persist();
+        transport.run();
+    });
 });
