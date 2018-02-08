@@ -59,11 +59,12 @@ export default function createBaseSettingView(specs, my) {
                         }
                         break;
                     
-                    case e.detail.actions.RECEIVE_MIDI_CC:
-                        if (my.data.isMidiControllable) {
-                            if (e.detail.state.learnModeActive) {
-                                my.changeRemoteState('assigned');
-                            }
+                    case e.detail.actions.ASSIGN_EXTERNAL_CONTROL:
+                        if (my.data.isMidiControllable && 
+                            e.detail.state.learnModeActive && 
+                            e.detail.state.learnTargetProcessorID === my.processorID && 
+                            e.detail.state.learnTargetParameterKey === my.key) {
+                            my.changeRemoteState('assigned');
                         }
                         break;
                 }
