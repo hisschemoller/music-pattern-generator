@@ -44,7 +44,7 @@ export default function createRemoteGroupView(specs, my) {
                         break;
                     
                     case e.detail.actions.ASSIGN_EXTERNAL_CONTROL:
-                        if (e.detail.action.processorID === processorID) {
+                        if (e.detail.state.learnTargetProcessorID === processorID) {
                             updateViews(e.detail.state.processors.find(processor => processor.id === processorID));
                         }
                         break;
@@ -67,13 +67,13 @@ export default function createRemoteGroupView(specs, my) {
         },
 
         updateViews = function(processor) {
-            for (key in processor.parameters) {
+            for (let key in processor.parameters) {
                 if (processor.parameters.hasOwnProperty(key)) {
                     let param = processor.parameters[key],
                         isAssigned = param.isMidiControllable && param.remoteChannel && param.remoteCC,
                         viewExists = views.find(view => view.getKey() === key);
                     if (isAssigned && !viewExists) {
-                        addView(key);
+                        addView(key, param);
                     } else if (!isAssigned && viewExists) {
                         removeView(key);
                     }
@@ -82,16 +82,17 @@ export default function createRemoteGroupView(specs, my) {
             el.dataset.hasAssignments = (views.length > 0);
         },
 
-        addView = function(key) {
+        addView = function(key, param) {
             views.push(createRemoteItemView({
+                store: store,
                 paramKey: key,
-                parentEl: listEl,
-                unregisterCallback: unregisterCallback
+                param: param,
+                parentEl: listEl
             }));
         },
 
         removeView = function(key) {
-  
+            console.log('removeView', views);  
         },
         
         /**

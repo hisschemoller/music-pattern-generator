@@ -205,7 +205,8 @@ export default function createReducers() {
                     return toggleMIDIPreference(state, action.id, action.isInput, action.preferenceName);
                 
                 case actions.TOGGLE_MIDI_LEARN_MODE:
-                    return Object.assign({}, state, { learnModeActive: !state.learnModeActive });
+                    return Object.assign({}, state, { 
+                        learnModeActive: !state.learnModeActive });
                 
                 case actions.TOGGLE_MIDI_LEARN_TARGET:
                     return Object.assign({}, state, { 
@@ -232,18 +233,19 @@ export default function createReducers() {
                                 }
                                 return {
                                     ...processor,
-                                    // TODO: parameters.map error
-                                    parameters: processor.parameters.map(parameter => {
-                                        if (parameter.id !== state.learnTargetParameterKey) {
-                                            return parameter;
-                                        } else {
-                                            return {
-                                                ...parameter,
-                                                remoteChannel: (action.data[0] & 0xf) + 1,
-                                                remoteCC: action.data[1]
-                                            }
-                                        }
-                                    })
+                                    parameters: assignParameter(processor.params, action, state)
+
+                                    // parameters: processor.parameters.map(parameter => {
+                                    //     if (parameter.id !== state.learnTargetParameterKey) {
+                                    //         return parameter;
+                                    //     } else {
+                                    //         return {
+                                    //             ...parameter,
+                                    //             remoteChannel: (action.data[0] & 0xf) + 1,
+                                    //             remoteCC: action.data[1]
+                                    //         }
+                                    //     }
+                                    // })
                                 }
                             })
                         }
@@ -267,6 +269,13 @@ export default function createReducers() {
     return {
         reduce: reduce
     }
+}
+
+function assignParameter(parameters, action, state) {
+    const params = { ...parameters };
+    params[state.learnTargetParameterKey].remoteChannel = (action.data[0] & 0xf) + 1;
+    params[state.learnTargetParameterKey].remoteCC = action.data[1];
+    return params;
 }
 
 function toggleMIDIPreference(state, id, isInput, preferenceName) {

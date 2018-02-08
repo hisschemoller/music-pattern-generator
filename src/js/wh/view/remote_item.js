@@ -4,9 +4,11 @@
  */
 export default function createRemoteItemView(specs, my) {
     var that,
+        store = specs.store,
         paramKey = specs.paramKey,
+        param = specs.param,
         parentEl = specs.parentEl,
-        unregisterCallback = specs.unregisterCallback,
+        // unregisterCallback = specs.unregisterCallback,
         el,
         
         initialize = function() {
@@ -14,16 +16,16 @@ export default function createRemoteItemView(specs, my) {
             let template = document.querySelector('#template-remote-item');
             let clone = template.content.cloneNode(true);
             el = clone.firstElementChild;
-            el.querySelector('.remote__item-label').innerHTML = param.getProperty('label');
-            el.querySelector('.remote__item-channel').innerHTML = param.getRemoteProperty('channel');
-            el.querySelector('.remote__item-control').innerHTML = param.getRemoteProperty('controller');
+            el.querySelector('.remote__item-label').innerHTML = param.label;
+            el.querySelector('.remote__item-channel').innerHTML = param.remoteChannel;
+            el.querySelector('.remote__item-control').innerHTML = param.remoteCC;
             parentEl.appendChild(el);
             
             // add DOM event listeners
             el.querySelector('.remote__item-delete').addEventListener('click', onUnregisterClick);
             
             // set callback on parameter
-            param.addRemoteStateCallback(changeRemoteState);
+            // param.addRemoteStateCallback(changeRemoteState);
         },
         
         /**
@@ -34,6 +36,14 @@ export default function createRemoteItemView(specs, my) {
             parentEl.removeChild(el);
             param = null;
             parentEl = null;
+        },
+        
+        /**
+         * Unassign button click handler.
+         * @param  {Object} e Click event object.
+         */
+        onUnregisterClick = function(e) {
+            // TODO: unregister
         },
         
         /**
@@ -58,14 +68,6 @@ export default function createRemoteItemView(specs, my) {
          */
         getKey = function() {
             return paramKey;
-        },
-        
-        /**
-         * Unassign button click handler.
-         * @param  {Object} e Click event object.
-         */
-        onUnregisterClick = function(e) {
-            unregisterCallback(param);
         };
         
     that = specs.that || {};

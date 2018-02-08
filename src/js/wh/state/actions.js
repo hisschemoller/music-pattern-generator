@@ -160,7 +160,6 @@ export default function createActions(specs = {}, my = {}) {
         //         } else {
 
         //         }
-        //         console.log(data);
         //     }
         // },
 
