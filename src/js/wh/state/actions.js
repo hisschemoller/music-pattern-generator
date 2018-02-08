@@ -239,6 +239,9 @@ export default function createActions(specs = {}, my = {}) {
         ASSIGN_EXTERNAL_CONTROL: ASSIGN_EXTERNAL_CONTROL,
         assignExternalControl: data => ({type: ASSIGN_EXTERNAL_CONTROL, data}),
 
+        UNASSIGN_EXTERNAL_CONTROL: UNASSIGN_EXTERNAL_CONTROL,
+        unassignExternalControl: (processorID, paramKey) => ({type: UNASSIGN_EXTERNAL_CONTROL, processorID, paramKey}),
+        
         TOGGLE_PANEL: TOGGLE_PANEL,
         togglePanel: panelName => ({type: TOGGLE_PANEL, panelName}),
     };

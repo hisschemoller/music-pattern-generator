@@ -234,23 +234,25 @@ export default function createReducers() {
                                 return {
                                     ...processor,
                                     parameters: assignParameter(processor.params, action, state)
-
-                                    // parameters: processor.parameters.map(parameter => {
-                                    //     if (parameter.id !== state.learnTargetParameterKey) {
-                                    //         return parameter;
-                                    //     } else {
-                                    //         return {
-                                    //             ...parameter,
-                                    //             remoteChannel: (action.data[0] & 0xf) + 1,
-                                    //             remoteCC: action.data[1]
-                                    //         }
-                                    //     }
-                                    // })
                                 }
                             })
                         }
                     }
                     return state;
+
+                case actions.UNASSIGN_EXTERNAL_CONTROL:
+                    return {
+                        ...state,
+                        processors: state.processors.map(processor => {
+                            if (processor.id !== action.processorID) {
+                                return processor;
+                            }
+                            return {
+                                ...processor,
+                                parameters: unassignParameter(processor.params, action, state)
+                            }
+                        })
+                    };
                 
                 case actions.TOGGLE_PANEL:
                     return {
@@ -275,6 +277,13 @@ function assignParameter(parameters, action, state) {
     const params = { ...parameters };
     params[state.learnTargetParameterKey].remoteChannel = (action.data[0] & 0xf) + 1;
     params[state.learnTargetParameterKey].remoteCC = action.data[1];
+    return params;
+}
+
+function unassignParameter(parameters, action, state) {
+    const params = { ...parameters };
+    params[action.paramKey].remoteChannel = null;
+    params[action.paramKey].remoteCC = null;
     return params;
 }
 

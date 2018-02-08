@@ -67,6 +67,15 @@ export default function createBaseSettingView(specs, my) {
                             my.changeRemoteState('assigned');
                         }
                         break;
+                    
+                    case e.detail.actions.UNASSIGN_EXTERNAL_CONTROL:
+                        if (my.data.isMidiControllable && 
+                            e.detail.state.learnModeActive && 
+                            e.detail.action.processorID === my.processorID && 
+                            e.detail.action.paramKey === my.key) {
+                            my.changeRemoteState('unassigned');
+                        }
+                        break;
                 }
             });
         };

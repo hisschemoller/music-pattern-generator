@@ -7,6 +7,7 @@ export default function createRemoteItemView(specs, my) {
         store = specs.store,
         paramKey = specs.paramKey,
         param = specs.param,
+        processorID = specs.processorID,
         parentEl = specs.parentEl,
         // unregisterCallback = specs.unregisterCallback,
         el,
@@ -23,7 +24,6 @@ export default function createRemoteItemView(specs, my) {
             
             // add DOM event listeners
             el.querySelector('.remote__item-delete').addEventListener('click', onUnregisterClick);
-            
             // set callback on parameter
             // param.addRemoteStateCallback(changeRemoteState);
         },
@@ -43,7 +43,7 @@ export default function createRemoteItemView(specs, my) {
          * @param  {Object} e Click event object.
          */
         onUnregisterClick = function(e) {
-            // TODO: unregister
+            store.dispatch(store.getActions().unassignExternalControl(processorID, paramKey));
         },
         
         /**

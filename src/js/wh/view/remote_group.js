@@ -14,7 +14,7 @@ export default function createRemoteGroupView(specs, my) {
         el,
         listEl,
         nameParam,
-        views = [],
+        views = {},
         
         initialize = function() {
             // create the DOM element.
@@ -48,6 +48,12 @@ export default function createRemoteGroupView(specs, my) {
                             updateViews(e.detail.state.processors.find(processor => processor.id === processorID));
                         }
                         break;
+                    
+                    case e.detail.actions.UNASSIGN_EXTERNAL_CONTROL:
+                        if (e.detail.action.processorID === processorID) {
+                            updateViews(e.detail.state.processors.find(processor => processor.id === processorID));
+                        }
+                        break;
                 }
             });
         },
@@ -56,10 +62,11 @@ export default function createRemoteGroupView(specs, my) {
          * Called before this view is deleted.
          */
         terminate = function() {
-            var n = views.length;
-            while (--n >= 0) {
-                views[n].terminate();
-            }
+            Object.values(views).forEach(view => { view.terminate() });
+            // var n = views.length;
+            // while (--n >= 0) {
+            //     views[n].terminate();
+            // }
             parentEl.removeChild(el);
             // nameParam.removeChangedCallback(setName);
             views = null;
@@ -71,7 +78,7 @@ export default function createRemoteGroupView(specs, my) {
                 if (processor.parameters.hasOwnProperty(key)) {
                     let param = processor.parameters[key],
                         isAssigned = param.isMidiControllable && param.remoteChannel && param.remoteCC,
-                        viewExists = views.find(view => view.getKey() === key);
+                        viewExists = views[key];
                     if (isAssigned && !viewExists) {
                         addView(key, param);
                     } else if (!isAssigned && viewExists) {
@@ -83,16 +90,18 @@ export default function createRemoteGroupView(specs, my) {
         },
 
         addView = function(key, param) {
-            views.push(createRemoteItemView({
+            views[key] = createRemoteItemView({
                 store: store,
                 paramKey: key,
                 param: param,
+                processorID: processorID,
                 parentEl: listEl
-            }));
+            });
         },
 
         removeView = function(key) {
-            console.log('removeView', views);  
+            views[key].terminate();
+            delete views[key];
         },
         
         /**
@@ -118,31 +127,31 @@ export default function createRemoteGroupView(specs, my) {
          * @param  {Object} param Processor parameter.
          * @param  {Function} unregisterCallback Callback for the unassign button click.
          */
-        addParameter = function(param, unregisterCallback) {
-            var itemView = ns.createRemoteItemView({
-                param: param,
-                parentEl: listEl,
-                unregisterCallback: unregisterCallback
-            });
-            itemViews.push(itemView);
-            updateGroupVisibility();
-        },
+        // addParameter = function(param, unregisterCallback) {
+        //     var itemView = ns.createRemoteItemView({
+        //         param: param,
+        //         parentEl: listEl,
+        //         unregisterCallback: unregisterCallback
+        //     });
+        //     itemViews.push(itemView);
+        //     updateGroupVisibility();
+        // },
         
         /**
          * Remove a parameter that isn't assigned anymore.
          * @param  {Object} param Processor parameter.
          */
-        removeParameter = function(param) {
-            var n = itemViews.length;
-            while (--n >= 0) {
-                if (itemViews[n].hasParameter(param)) {
-                    itemViews[n].terminate();
-                    itemViews.splice(n, 1);
-                    break;
-                }
-            }
-            updateGroupVisibility();
-        },
+        // removeParameter = function(param) {
+        //     var n = itemViews.length;
+        //     while (--n >= 0) {
+        //         if (itemViews[n].hasParameter(param)) {
+        //             itemViews[n].terminate();
+        //             itemViews.splice(n, 1);
+        //             break;
+        //         }
+        //     }
+        //     updateGroupVisibility();
+        // },
         
         /**
          * If a group has no assignments its header is hidden.
@@ -166,7 +175,7 @@ export default function createRemoteGroupView(specs, my) {
     that.terminate = terminate;
     // that.hasProcessor = hasProcessor;
     // that.hasParameter = hasParameter;
-    that.addParameter = addParameter;
-    that.removeParameter = removeParameter;
+    // that.addParameter = addParameter;
+    // that.removeParameter = removeParameter;
     return that;
 }
