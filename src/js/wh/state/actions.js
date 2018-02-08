@@ -220,13 +220,13 @@ export default function createActions(specs = {}, my = {}) {
                     const remoteChannel = (data[0] & 0xf) + 1,
                         remoteCC = data[1];
                     getState().processors.forEach(processor => {
-                        for (key in processor.parameters) {
+                        for (let key in processor.parameters) {
                             if (processor.parameters.hasOwnProperty(key)) {
                                 const param = processor.parameters[key];
                                 if (param.isMidiControllable && 
                                     param.remoteChannel === remoteChannel &&
                                     param.remoteCC == remoteCC) {
-                                    let paramValue;
+                                    let paramValue = midiControlToParameterValue(param, data[2]);
                                     dispatch(getActions().changeParameter(processor.id, key, paramValue));
                                 }
                             }
@@ -242,6 +242,25 @@ export default function createActions(specs = {}, my = {}) {
         TOGGLE_PANEL: TOGGLE_PANEL,
         togglePanel: panelName => ({type: TOGGLE_PANEL, panelName}),
     };
+}
+
+function midiControlToParameterValue(param, controllerValue) {
+    const normalizedValue = controllerValue / 127;
+    switch (param.type) {
+        case 'integer':
+            return Math.round(param.min + (param.max - param.min) * normalizedValue);
+        case 'boolean':
+            return normalizedValue > .5;
+        case 'itemized':
+            if (normalizedValue === 1) {
+                return param.model[param.model.length - 1].value;
+            }
+            return param.model[Math.floor(normalizedValue * param.model.length)].value;
+        case 'string':
+        case 'position':
+        default:
+            return param.value;
+    }
 }
 
 /**
