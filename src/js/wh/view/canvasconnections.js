@@ -26,9 +26,12 @@ export default function createCanvasConnectionsView(specs, my) {
         connectCtx,
         offlineCanvas,
         offlineCtx,
+        connectorCanvas,
+        connectorCtx,
         inConnectors,
         outConnectors,
         connections,
+        connectorRadius = 12,
         dragData = {
             isDragging: false,
             startPoint: {x: 0, y: 0},
@@ -48,10 +51,19 @@ export default function createCanvasConnectionsView(specs, my) {
             document.addEventListener(store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
                     case e.detail.actions.TOGGLE_CONNECT_MODE:
-                        toggleConnectMode(e.detail.state.learnModeActive);
+                        toggleConnectMode(e.detail.state.connectModeActive);
+                        drawConnectCanvas(e.detail.state);
                         break;
+                    
+                    case e.detail.actions.ADD_PROCESSOR:
+                    case e.detail.actions.DELETE_PROCESSOR:
+                    case e.detail.actions.DRAG_SELECTED_PROCESSOR:
+                    case e.detail.actions.DRAG_ALL_PROCESSORS:
+                        drawConnectCanvas(e.detail.state);
                 }
             });
+
+            createConnectorGraphic();
             
             my.addWindowResizeCallback(onResize);
             onResize();
@@ -62,6 +74,26 @@ export default function createCanvasConnectionsView(specs, my) {
             connectCanvas.height = rootEl.clientHeight;
             offlineCanvas.width = rootEl.clientWidth;
             offlineCanvas.height = rootEl.clientHeight;
+        },
+        
+        createConnectorGraphic = function(theme) {
+            const lineWidth = 2,
+                size = (connectorRadius + lineWidth) * 2;
+
+            connectorCanvas = document.createElement('canvas');
+            connectorCanvas.width = size;
+            connectorCanvas.height = size;
+
+            connectorCtx = connectorCanvas.getContext('2d');
+            connectorCtx.lineWidth = lineWidth;
+            connectorCtx.strokeStyle = theme ? theme.colorHigh : '#333333';
+            connectorCtx.setLineDash([4, 4]);
+
+            connectorCtx.save();
+            connectorCtx.translate(size / 2, size / 2);
+            connectorCtx.arc(0, 0, size / 2, 0, Math.PI * 2, true);
+            connectorCtx.stroke();
+            connectorCtx.restore();
         },
         
         /**
@@ -75,7 +107,7 @@ export default function createCanvasConnectionsView(specs, my) {
             connectCanvas.dataset.show = isEnabled;
             
             drawOfflineCanvas();
-            drawConnectCanvas();
+            // drawConnectCanvas();
             my.markDirty();
         },
         
@@ -100,6 +132,28 @@ export default function createCanvasConnectionsView(specs, my) {
             dragData.lineColor = my.theme.colorHigh || '#333';
             drawOfflineCanvas();
             drawConnectCanvas();
+        },
+        
+        intersectsConnector = function(x, y, isInput) {
+            store.getState().processors.forEach(processor => {
+                const connectorData = processor[isInput ? 'inputs' : 'outputs'];
+                connectorData.allIds.forEach(id => {
+                    const connectorX = processor.positionX + connectorData.byId[id].x,
+                        connectorY = processor.positionY + connectorData.byId[id].y,
+                        distance = Math.sqrt(Math.pow(x - connectorX, 2) + Math.pow(y - connectorY, 2));
+                    return distance <= connectorRadius;
+                });
+                return false;
+            });
+
+            // for (let i = 0; i < numViews; i++) {
+            //     if (views[i].intersectsWithPoint(x, y, 'inconnector')) {
+            //         const destinationProcessor = views[i].getProcessor();
+            //         midiNetwork.connectProcessors(connectionSourceProcessor, destinationProcessor);
+            //         break;
+            //     }
+            // }
+            // my.dragEndConnection();
         },
         
         updateConnectorsInfo = function() {
@@ -270,24 +324,36 @@ export default function createCanvasConnectionsView(specs, my) {
         /**
          * Draw connector circles and currently dragged line on connectCanvas.
          */
-        drawConnectCanvas = function() {
+        drawConnectCanvas = function(state) {
             connectCtx.clearRect(0, 0, connectCanvas.width, connectCanvas.height);
-            
-            if (my.isConnectMode) {
-                // show inputs and outputs
-                let graphic;
-                for (id in inConnectors) {
-                    if (inConnectors.hasOwnProperty(id)) {
-                        graphic = inConnectors[id].graphic;
-                        connectCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
-                    }
-                }
-                for (id in outConnectors) {
-                    if (outConnectors.hasOwnProperty(id)) {
-                        graphic = outConnectors[id].graphic;
-                        connectCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
-                    }
-                }
+
+            if (state.connectModeActive) {
+                state.processors.forEach(processor => {
+                    processor.inputs.allIds.forEach(id => {
+                        connectCtx.drawImage(connectorCanvas, 
+                            processor.positionX + processor.inputs.byId[id].x - (connectorCanvas.width / 2), 
+                            processor.positionY + processor.inputs.byId[id].y) - (connectorCanvas.height / 2);
+                    });
+                    processor.outputs.allIds.forEach(id => {
+                        connectCtx.drawImage(connectorCanvas, 
+                            processor.positionX + processor.outputs.byId[id].x - (connectorCanvas.width / 2), 
+                            processor.positionY + processor.outputs.byId[id].y) - (connectorCanvas.height / 2);
+                    });
+                });
+                my.markDirty();
+
+                // for (id in inConnectors) {
+                //     if (inConnectors.hasOwnProperty(id)) {
+                //         graphic = inConnectors[id].graphic;
+                //         connectCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
+                //     }
+                // }
+                // for (id in outConnectors) {
+                //     if (outConnectors.hasOwnProperty(id)) {
+                //         graphic = outConnectors[id].graphic;
+                //         connectCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
+                //     }
+                // }
             }
         };
         
@@ -340,6 +406,7 @@ export default function createCanvasConnectionsView(specs, my) {
     my.dragStartConnection = dragStartConnection;
     my.dragMoveConnection = dragMoveConnection;
     my.dragEndConnection = dragEndConnection;
+    my.intersectsConnector = intersectsConnector;
     my.setThemeOnConnections = setThemeOnConnections;
     my.updateConnectorsInfo = updateConnectorsInfo;
     my.drawOfflineCanvas = drawOfflineCanvas;

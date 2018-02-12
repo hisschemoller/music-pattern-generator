@@ -1,9 +1,20 @@
 {
     "name": "Output",
-    "inputs": 1,
-    "outputs": 0,
     "positionX": 0,
     "positionY": 0,
+    "inputs": {
+        "byId": {
+            "in": {
+                "x": 0,
+                "y": -50
+            }
+        },
+        "allIds": ["in"]
+    },
+    "outputs": {
+        "byId": {},
+        "allIds": []
+    },
     "params": {
         "name": {
             "label": "Name",

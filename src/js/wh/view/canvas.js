@@ -138,7 +138,7 @@ export default function createCanvasView(specs, my) {
             let canvasX = e.clientX - my.canvasRect.left + window.scrollX,
                 canvasY = e.clientY - my.canvasRect.top + window.scrollY;
             
-            if (my.isConnectMode && my.intersectsOutConnector(canvasX, canvasY)) {
+            if (my.isConnectMode && my.intersectsConnector(canvasX, canvasY, false)) {
                 dragObjectType = 'connection';
             } else if (my.intersectsProcessor(canvasX, canvasY)) {
                 dragObjectType = 'processor';

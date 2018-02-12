@@ -267,7 +267,7 @@ export default function createReducers() {
                 case actions.TOGGLE_CONNECT_MODE:
                     return {
                         ...state,
-                        learnModeActive: !state.learnModeActive
+                        connectModeActive: !state.connectModeActive
                     };
 
                 default:

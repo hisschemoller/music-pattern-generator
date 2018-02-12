@@ -130,28 +130,6 @@ export default function createCanvasProcessorViews(specs, my) {
             return isIntersect;
         },
         
-        intersectsInConnector = function(x, y) {
-            for (let i = 0; i < numViews; i++) {
-                if (views[i].intersectsWithPoint(x, y, 'inconnector')) {
-                    const destinationProcessor = views[i].getProcessor();
-                    midiNetwork.connectProcessors(connectionSourceProcessor, destinationProcessor);
-                    break;
-                }
-            }
-            my.dragEndConnection();
-        },
-        
-        intersectsOutConnector = function(x, y) {
-            for (let i = 0; i < numViews; i++) {
-                if (views[i].intersectsWithPoint(x, y, 'outconnector')) {
-                    connectionSourceProcessor = views[i].getProcessor();
-                    my.dragStartConnection(views[i], x, y);
-                    return true;
-                }
-            }
-            return false;
-        },
-        
         dragSelectedProcessor = function(x, y) {
             store.dispatch(store.getActions().dragSelectedProcessor(x - dragOffsetX, y - dragOffsetY));
 
@@ -229,8 +207,6 @@ export default function createCanvasProcessorViews(specs, my) {
     my.selectProcessorView = selectProcessorView;
     my.deleteProcessorView = deleteProcessorView;
     my.intersectsProcessor = intersectsProcessor;
-    my.intersectsInConnector = intersectsInConnector;
-    my.intersectsOutConnector = intersectsOutConnector;
     my.dragSelectedProcessor = dragSelectedProcessor;
     my.dragAllProcessors = dragAllProcessors;
     // my.setProcessorPosition = setProcessorPosition

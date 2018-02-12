@@ -1,9 +1,20 @@
 {
     "name": "Euclidean",
-    "inputs": 0,
-    "outputs": 1,
     "positionX": 0,
     "positionY": 0,
+    "inputs": {
+        "byId": {},
+        "allIds": []
+    },
+    "outputs": {
+        "byId": {
+            "out": {
+                "x": 0,
+                "y": 50
+            }
+        },
+        "allIds": ["out"]
+    },
     "params": {
         "steps": {
             "label": "Steps",
