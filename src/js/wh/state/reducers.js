@@ -14,6 +14,7 @@ export default function createReducers() {
             // inputs: [],
             // outputs: [],
             ports: [],
+            connectModeActive: false,
             learnModeActive: false,
             learnTargetProcessorID: null,
             learnTargetParameterKey: null,
@@ -262,6 +263,12 @@ export default function createReducers() {
                         showSettingsPanel: action.panelName === 'settings' ? !state.showSettingsPanel : state.showSettingsPanel
                     };
                     return state;
+                
+                case actions.TOGGLE_CONNECT_MODE:
+                    return {
+                        ...state,
+                        learnModeActive: !state.learnModeActive
+                    };
 
                 default:
                     return state;

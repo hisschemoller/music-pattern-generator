@@ -28,7 +28,8 @@ export default function createActions(specs = {}, my = {}) {
         RECEIVE_MIDI_CC = 'RECEIVE_MIDI_CC',
         ASSIGN_EXTERNAL_CONTROL = 'ASSIGN_EXTERNAL_CONTROL',
         UNASSIGN_EXTERNAL_CONTROL = 'UNASSIGN_EXTERNAL_CONTROL',
-        TOGGLE_PANEL = 'TOGGLE_PANEL';
+        TOGGLE_PANEL = 'TOGGLE_PANEL',
+        TOGGLE_CONNECT_MODE = 'TOGGLE_CONNECT_MODE';
 
     return {
         SET_PREFERENCES: SET_PREFERENCES,
@@ -244,6 +245,9 @@ export default function createActions(specs = {}, my = {}) {
         
         TOGGLE_PANEL: TOGGLE_PANEL,
         togglePanel: panelName => ({type: TOGGLE_PANEL, panelName}),
+
+        TOGGLE_CONNECT_MODE: TOGGLE_CONNECT_MODE,
+        toggleConnectMode: () => ({ type: TOGGLE_CONNECT_MODE })
     };
 }
 

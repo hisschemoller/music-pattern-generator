@@ -2,9 +2,25 @@
  * Canvas processor connector input and output points,
  * cables between the processor connectors,
  * Delete circles halfway the cables.
+ * 
+ * OFFLINE CANVAS
+ * All connection lines are drawn on the offline canvas,
+ * This happens when processors are created, deleted or moved,
+ * or when Connect Mode is entered or exited.
+ * 
+ * The offline context is drawn on the static canvas.
+ * It's the first thing that's drawn on the static canvas,
+ * so that the connection lines appear behind the processors.
+ * 
+ * CONNECT CANVAS
+ * All input and output connector circles are drawn on the connect canvas.
+ * The currently dragged cable is also drawn on the canvas.
+ * 
+ * The connect canvas appears in front of the processors.
  */
 export default function createCanvasConnectionsView(specs, my) {
     var that,
+        store = specs.store,
         rootEl,
         connectCanvas,
         connectCtx,
@@ -28,6 +44,14 @@ export default function createCanvasConnectionsView(specs, my) {
             connectCtx = connectCanvas.getContext('2d');
             offlineCanvas = document.createElement('canvas');
             offlineCtx = offlineCanvas.getContext('2d');
+
+            document.addEventListener(store.STATE_CHANGE, (e) => {
+                switch (e.detail.action.type) {
+                    case e.detail.actions.TOGGLE_CONNECT_MODE:
+                        toggleConnectMode(e.detail.state.learnModeActive);
+                        break;
+                }
+            });
             
             my.addWindowResizeCallback(onResize);
             onResize();

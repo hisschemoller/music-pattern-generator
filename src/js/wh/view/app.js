@@ -90,7 +90,7 @@ export default function createAppView(specs, my) {
                 // app.togglePanel('settings', e.target.checked);
             });
             controls.connections.input.addEventListener('change', function(e) {
-                // store.dispatch(store.getActions().togglePanel('connections'));
+                store.dispatch(store.getActions().toggleConnectMode());
                 // app.updateApp('connections', e.target.checked);
             });
             controls.help.input.addEventListener('change', function(e) {
