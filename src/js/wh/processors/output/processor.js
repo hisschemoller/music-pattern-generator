@@ -58,18 +58,8 @@ export function createProcessor(specs, my) {
     // };
     my.isEnabled = true;
     // my.getProcessorSpecificData = getProcessorSpecificData;
-    // my.$position2d = function(value, timestamp) {}
 
     that = createMIDIProcessorBase(specs, my);
-    
-    // my.defineParams({
-    //     position2d: {
-    //         label: '2D position',
-    //         type: 'vector2d',
-    //         default: {x: 0, y: 0},
-    //         isMidiControllable: false
-    //     }
-    // });
 
     that.process = process;
     that.setEnabled = setEnabled;

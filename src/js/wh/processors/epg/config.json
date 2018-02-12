@@ -2,6 +2,8 @@
     "name": "Euclidean",
     "inputs": 0,
     "outputs": 1,
+    "positionX": 0,
+    "positionY": 0,
     "params": {
         "steps": {
             "label": "Steps",
@@ -115,13 +117,6 @@
             "type": "string",
             "default": "Unnamed",
             "value": "Unnamed",
-            "isMidiControllable": false
-        },
-        "position2d": {
-            "label": "2D position",
-            "type": "vector2d",
-            "default": {"x": 0, "y": 0},
-            "value": {"x": 0, "y": 0},
             "isMidiControllable": false
         }
     }

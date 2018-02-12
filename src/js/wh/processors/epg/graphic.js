@@ -43,7 +43,6 @@ export function createGraphic(specs, my) {
         dotActiveRadius,
         zeroMarkerRadius = 3,
         lineWidth = 2,
-        position2d,
         isSelected = false,
         doublePI = Math.PI * 2,
         dotAnimations = {},
@@ -134,8 +133,9 @@ export function createGraphic(specs, my) {
             // params.name.addChangedCallback(updateName);
             
             // set drawing values
-            position2d = my.data.params.position2d.value;
-            updatePosition(position2d, position2d)
+            my.positionX = my.data.positionX;
+            my.positionY = my.data.positionY;
+            updatePosition(my.positionX, my.positionY)
             updateName();
             updateNecklace();
             redrawStaticCanvas();
@@ -193,7 +193,8 @@ export function createGraphic(specs, my) {
             
             // retain necklace dot state in object
             dotAnimations[stepIndex] = {
-                position2d: necklace[stepIndex].center,
+                positionX: necklace[stepIndex].center.x,
+                positionY: necklace[stepIndex].center.y,
                 boundingBox: necklace[stepIndex].rect,
                 dotRadius: 0
             }
@@ -278,8 +279,8 @@ export function createGraphic(specs, my) {
             let rect;
             for (let i = 0, n = necklace.length; i < n; i++) {
                 rect = necklace[i].rect;
-                rect.xAbs = position2d.x + rect.x;
-                rect.yAbs = position2d.y - rect.y;
+                rect.xAbs = my.positionX + rect.x;
+                rect.yAbs = my.positionY - rect.y;
             }
         },
         
@@ -299,10 +300,11 @@ export function createGraphic(specs, my) {
          * Update pattern's position on the 2D canvas.
          * @param  {Object} value New 2D position as object.
          */
-        updatePosition = function(value) {
-            position2d = value;
-            centerDotX = position2d.x - centerDotFullRadius - 1;
-            centerDotY = position2d.y - centerDotFullRadius - 1;
+        updatePosition = function(x, y) {
+            my.positionX = x;
+            my.positionY = y;
+            centerDotX = my.positionX - centerDotFullRadius - 1;
+            centerDotY = my.positionY - centerDotFullRadius - 1;
             updateNecklaceAbsolute();
             redrawStaticCanvas();
             canvasDirtyCallback();
@@ -461,12 +463,12 @@ export function createGraphic(specs, my) {
         addToStaticView = function(mainStaticCtx) {
             mainStaticCtx.drawImage(
                 staticCanvas,
-                position2d.x - radius,
-                position2d.y - radius);
+                my.positionX - radius,
+                my.positionY - radius);
             mainStaticCtx.drawImage(
                 nameCanvas,
-                position2d.x - radius,
-                position2d.y + necklaceRadius + 4);
+                my.positionX - radius,
+                my.positionY + necklaceRadius + 4);
         },
         
         /**
@@ -476,7 +478,7 @@ export function createGraphic(specs, my) {
         addToDynamicView = function(mainDynamicCtx) {
             // draw rotating pointer
             mainDynamicCtx.save();
-            mainDynamicCtx.translate(position2d.x, position2d.y);
+            mainDynamicCtx.translate(my.positionX, my.positionY);
             mainDynamicCtx.rotate(pointerRotation);
             mainDynamicCtx.drawImage(pointerCanvas, -pointerCanvasCenter, -pointerCanvas.height);
             mainDynamicCtx.restore();
@@ -494,8 +496,8 @@ export function createGraphic(specs, my) {
             for (let key in dotAnimations) {
                 if (dotAnimations.hasOwnProperty(key)) {
                     dotState = dotAnimations[key];
-                    x = position2d.x + dotState.position2d.x;
-                    y = position2d.y - dotState.position2d.y;
+                    x = my.positionX + dotState.positionX;
+                    y = my.positionY - dotState.positionY;
                     mainDynamicCtx.moveTo(x + dotState.dotRadius, y);
                     mainDynamicCtx.arc(x, y, dotState.dotRadius, 0, doublePI, true);
                     largestDot = Math.max(largestDot, dotState.dotRadius);
@@ -507,8 +509,8 @@ export function createGraphic(specs, my) {
             if (isNoteActive) {
                 let largestDotNormalised = (largestDot - dotRadius) / (dotActiveRadius - dotRadius);
                 centerDotRadius = largestDotNormalised * centerDotFullRadius;
-                mainDynamicCtx.moveTo(position2d.x + centerDotRadius, position2d.y);
-                mainDynamicCtx.arc(position2d.x, position2d.y, centerDotRadius, 0, doublePI, true);
+                mainDynamicCtx.moveTo(my.positionX + centerDotRadius, my.positionY);
+                mainDynamicCtx.arc(my.positionX, my.positionY, centerDotRadius, 0, doublePI, true);
             }
             
             mainDynamicCtx.fill();
@@ -537,7 +539,7 @@ export function createGraphic(specs, my) {
             
             // pointer
             mainDynamicCtx.save();
-            mainDynamicCtx.translate(position2d.x, position2d.y);
+            mainDynamicCtx.translate(my.positionX, my.positionY);
             mainDynamicCtx.rotate(pointerRotationPrevious);
             mainDynamicCtx.clearRect(-pointerCanvasCenter, -pointerCanvas.height, pointerCanvas.width, pointerCanvas.height);
             mainDynamicCtx.restore();
@@ -554,12 +556,12 @@ export function createGraphic(specs, my) {
             let distance;
             switch (type) {
                 case 'processor':
-                    distance = Math.sqrt(Math.pow(x - position2d.x, 2) + Math.pow(y - position2d.y, 2));
+                    distance = Math.sqrt(Math.pow(x - my.positionX, 2) + Math.pow(y - my.positionY, 2));
                     return distance <= necklaceRadius + dotRadius;
                 case 'inconnector':
                     return false;
                 case 'outconnector':
-                    distance = Math.sqrt(Math.pow(x - position2d.x, 2) + Math.pow(y - position2d.y - outConnectorY, 2));
+                    distance = Math.sqrt(Math.pow(x - my.positionX, 2) + Math.pow(y - my.positionY - outConnectorY, 2));
                     return distance <= my.getConnectorGraphic().canvas.width / 2;
             }
         },
@@ -584,8 +586,8 @@ export function createGraphic(specs, my) {
         
         getOutConnectorPoint = function() {
             return {
-                x: position2d.x,
-                y: position2d.y + outConnectorY
+                x: my.positionX,
+                y: my.positionY + outConnectorY
             }
         },
         

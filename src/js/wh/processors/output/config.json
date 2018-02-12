@@ -2,19 +2,14 @@
     "name": "Output",
     "inputs": 1,
     "outputs": 0,
+    "positionX": 0,
+    "positionY": 0,
     "params": {
         "name": {
             "label": "Name",
             "type": "string",
             "default": "Unnamed",
             "value": "Unnamed",
-            "isMidiControllable": false
-        },
-        "position2d": {
-            "label": "2D position",
-            "type": "vector2d",
-            "default": {"x": 0, "y": 0},
-            "value": {"x": 0, "y": 0},
             "isMidiControllable": false
         }
     }

@@ -125,18 +125,9 @@ export default function createCanvasView(specs, my) {
             // create a new processor
             store.dispatch(store.getActions().createProcessor({
                 type: 'epg',
-                position2d: {
-                    x: e.clientX - my.canvasRect.left + window.scrollX,
-                    y: e.clientY - my.canvasRect.top + window.scrollY
-                }
+                positionX: e.clientX - my.canvasRect.left + window.scrollX,
+                positionY: e.clientY - my.canvasRect.top + window.scrollY
             }));
-            // midiNetwork.createProcessor({
-            //     type: 'epg',
-            //     position2d: {
-            //         x: e.clientX - my.canvasRect.left + window.scrollX,
-            //         y: e.clientY - my.canvasRect.top + window.scrollY
-            //     }
-            // });
         },
         
         /**
@@ -162,7 +153,6 @@ export default function createCanvasView(specs, my) {
          */
         dragMove = function(e) {
             e.preventDefault();
-            
             if (dragObjectType) {
                 let canvasX = e.clientX - my.canvasRect.left + window.scrollX,
                     canvasY = e.clientY - my.canvasRect.top + window.scrollY;

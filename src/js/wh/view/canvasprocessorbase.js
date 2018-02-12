@@ -1,7 +1,21 @@
+import { getProcessorByID } from '../state/selectors';
 
 export default function createCanvasProcessorBaseView(specs, my) {
     var that,
         connectorGraphic,
+
+        init = function() {
+            document.addEventListener(my.store.STATE_CHANGE, (e) => {
+                switch (e.detail.action.type) {
+                    case e.detail.actions.DRAG_SELECTED_PROCESSOR:
+                    case e.detail.actions.DRAG_ALL_PROCESSORS:
+                        const processor = getProcessorByID(my.data.id);
+                        my.positionX = processor.positionX;
+                        my.positionY = processor.positionY;
+                        break;
+                }
+            });
+        },
 
         /**
          * Base functionality for processor canvas views.
@@ -41,12 +55,11 @@ export default function createCanvasProcessorBaseView(specs, my) {
         //     return my.processor;
         // },
         
-        // setPosition2d = function(position2d) {
-        //     my.processor.setParamValue('position2d', position2d);
-        // },
-        
         getPosition2d = function() {
-            return my.data.params.position2d.value; //  my.processor.getParamValue('position2d');
+            return { 
+                x: my.data.positionX,
+                y: my.data.positionY
+            };
         },
         
         getType = function() {
@@ -61,12 +74,16 @@ export default function createCanvasProcessorBaseView(specs, my) {
     my.data = specs.data;
     my.store = specs.store;
     // my.processor = specs.processor;
+    my.positionX = 0;
+    my.positionY = 0;
     my.getConnectorGraphic = getConnectorGraphic;
     my.colorHigh = '#cccccc';
     my.colorMid = '#dddddd';
     my.colorLow = '#eeeeee';
     
     that = specs.that || {};
+
+    init();
     
     // that.getProcessor = getProcessor;
     // that.setPosition2d = setPosition2d;

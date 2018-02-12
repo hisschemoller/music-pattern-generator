@@ -121,9 +121,9 @@ export default function createCanvasProcessorViews(specs, my) {
                     // midiNetwork.selectProcessor(selectedView.getProcessor());
                     store.dispatch(store.getActions().selectProcessor(views[i].getID()));
                     // start dragging the view's graphic
-                    let position2d = views[i].getPosition2d();
-                    dragOffsetX = x - position2d.x;
-                    dragOffsetY = y - position2d.y;
+                    let pos2d = views[i].getPosition2d();
+                    dragOffsetX = x - pos2d.x;
+                    dragOffsetY = y - pos2d.y;
                     break;
                 }
             }

@@ -100,7 +100,8 @@ export default function createActions(specs = {}, my = {}) {
                 const id = `${data.type}_${createUUID()}`;
                 fullData = Object.assign(fullData, data);
                 fullData.id = id;
-                fullData.params.position2d.value = data.position2d;
+                fullData.positionX = data.positionX;
+                fullData.positionY = data.positionY;
                 fullData.params.name.value = getProcessorDefaultName(getState().processors);
                 dispatch(getActions().addProcessor(fullData));
                 dispatch(getActions().selectProcessor(id));
@@ -172,10 +173,8 @@ export default function createActions(specs = {}, my = {}) {
                     dispatch(getActions().createProcessor({ 
                         type: 'output', 
                         portID: portID, 
-                        position2d: {
-                            x: window.innerWidth / 2,
-                            y: window.innerHeight - 100
-                        }
+                        positionX: window.innerWidth / 2,
+                        positionY: window.innerHeight - 100
                     }));
                 } else {
                     getState().processors.forEach(processor => {

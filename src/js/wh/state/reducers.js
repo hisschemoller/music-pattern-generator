@@ -78,8 +78,8 @@ export default function createReducers() {
                     newState = Object.assign({}, state);
                     newState.processors.forEach(processor => {
                         if (processor.id === newState.selectedID) {
-                            processor.params.position2d.value.x = action.x;
-                            processor.params.position2d.value.y = action.y;
+                            processor.positionX = action.x;
+                            processor.positionY = action.y;
                         }
                     });
                     return newState;
@@ -87,8 +87,8 @@ export default function createReducers() {
                 case actions.DRAG_ALL_PROCESSORS:
                     newState = Object.assign({}, state);
                     newState.processors.forEach(processor => {
-                        processor.params.position2d.value.x += action.x;
-                        processor.params.position2d.value.y += action.y;
+                        processor.positionX += action.x;
+                        processor.positionY += action.y;
                     });
                     return newState;
                 

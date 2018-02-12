@@ -12,7 +12,6 @@ export function createGraphic(specs, my) {
         staticCtx,
         nameCanvas,
         nameCtx,
-        position2d,
         lineWidth = 2,
         
         initialise = function() {
@@ -64,7 +63,7 @@ export function createGraphic(specs, my) {
             //     position2d = specs.data.initialPosition;
             // }
             // updatePosition(params.position2d, position2d, position2d);
-            updatePosition(specs.data.position2d);
+            updatePosition(specs.data.positionX, specs.data.positionY);
         },
         
         /**
@@ -86,21 +85,22 @@ export function createGraphic(specs, my) {
          * Update pattern's position on the 2D canvas.
          * @param  {Object} value New 2D position as object.
          */
-        updatePosition = function(value) {
-            position2d = value;
+        updatePosition = function(x, y) {
+            my.positionX = x;
+            my.positionY = y;
             canvasDirtyCallback();
         },
         
         addToStaticView = function(mainStaticCtx) {
             mainStaticCtx.drawImage(
                 staticCanvas,
-                position2d.x - 50,
-                position2d.y - 15);
+                my.positionX - 50,
+                my.positionY - 15);
                 
             mainStaticCtx.drawImage(
                 nameCanvas,
-                position2d.x - (nameCanvas.width / 2),
-                position2d.y + 30);
+                my.positionX - (nameCanvas.width / 2),
+                my.positionY + 30);
         },
         
         addToDynamicView = function(mainDynamicCtx) {
@@ -125,10 +125,10 @@ export function createGraphic(specs, my) {
             let distance;
             switch (type) {
                 case 'processor':
-                    distance = Math.sqrt(Math.pow(x - position2d.x, 2) + Math.pow(y - position2d.y, 2));
+                    distance = Math.sqrt(Math.pow(x - my.positionX, 2) + Math.pow(y - my.positionY, 2));
                     return distance <= 10;
                 case 'inconnector':
-                    distance = Math.sqrt(Math.pow(x - position2d.x, 2) + Math.pow(y - position2d.y, 2));
+                    distance = Math.sqrt(Math.pow(x - my.positionX, 2) + Math.pow(y - my.positionY, 2));
                     return distance <= my.getConnectorGraphic().canvas.width / 2;
                 case 'outconnector':
                     return false;
@@ -148,8 +148,8 @@ export function createGraphic(specs, my) {
         
         getInConnectorPoint = function() {
             return {
-                x: position2d.x,
-                y: position2d.y
+                x: my.positionX,
+                y: my.positionY
             }
         },
         
