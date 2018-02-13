@@ -184,7 +184,7 @@ export default function createCanvasProcessorViews(specs, my) {
             //         }
             //     }
             // });
-        // },
+        // }, 
         
         getProcessorViews = function() {
             return views;

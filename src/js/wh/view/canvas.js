@@ -164,12 +164,12 @@ export default function createCanvasView(specs, my) {
                     case 'processor':
                         my.dragSelectedProcessor(canvasX, canvasY);
                         // my.updateConnectorsInfo();
-                        my.drawOfflineCanvas();
+                        my.drawCablesCanvas();
                         break;
                     case 'background':
                         my.dragAllProcessors(canvasX, canvasY);
                         // my.updateConnectorsInfo();
-                        my.drawOfflineCanvas();
+                        my.drawCablesCanvas();
                         break;
                 }
                 
@@ -190,7 +190,8 @@ export default function createCanvasView(specs, my) {
                     canvasY = e.clientY - my.canvasRect.top + window.scrollY;
                 switch (dragObjectType) {
                     case 'connection':
-                        my.intersectsInConnector(canvasX, canvasY);
+                        my.intersectsConnector(canvasX, canvasY, true);
+                        my.dragEndConnection();
                         break;
                     case 'processor':
                         break;

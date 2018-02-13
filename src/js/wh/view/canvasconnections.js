@@ -22,16 +22,19 @@ export default function createCanvasConnectionsView(specs, my) {
     var that,
         store = specs.store,
         rootEl,
-        connectCanvas,
-        connectCtx,
-        offlineCanvas,
-        offlineCtx,
+        connectorsCanvas,
+        connectorsCtx,
+        cablesCanvas,
+        cablesCtx,
+        activeCableCanvas,
+        activeCableCtx,
         connectorCanvas,
         connectorCtx,
         inConnectors,
         outConnectors,
         connections,
         connectorRadius = 12,
+        sourceProcessorID,
         dragData = {
             isDragging: false,
             startPoint: {x: 0, y: 0},
@@ -43,10 +46,12 @@ export default function createCanvasConnectionsView(specs, my) {
     
         init = function() {
             rootEl = document.querySelector('.canvas-container');
-            connectCanvas = document.querySelector('.canvas-connect');
-            connectCtx = connectCanvas.getContext('2d');
-            offlineCanvas = document.createElement('canvas');
-            offlineCtx = offlineCanvas.getContext('2d');
+            connectorsCanvas = document.querySelector('.canvas-connect');
+            connectorsCtx = connectorsCanvas.getContext('2d');
+            cablesCanvas = document.createElement('canvas');
+            cablesCtx = cablesCanvas.getContext('2d');
+            activeCableCanvas = document.createElement('canvas');
+            activeCableCtx = activeCableCanvas.getContext('2d');
 
             document.addEventListener(store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
@@ -60,6 +65,7 @@ export default function createCanvasConnectionsView(specs, my) {
                     case e.detail.actions.DRAG_SELECTED_PROCESSOR:
                     case e.detail.actions.DRAG_ALL_PROCESSORS:
                         drawConnectCanvas(e.detail.state);
+                        break;
                 }
             });
 
@@ -70,10 +76,12 @@ export default function createCanvasConnectionsView(specs, my) {
         },
         
         onResize = function() {
-            connectCanvas.width = rootEl.clientWidth;
-            connectCanvas.height = rootEl.clientHeight;
-            offlineCanvas.width = rootEl.clientWidth;
-            offlineCanvas.height = rootEl.clientHeight;
+            connectorsCanvas.width = rootEl.clientWidth;
+            connectorsCanvas.height = rootEl.clientHeight;
+            cablesCanvas.width = rootEl.clientWidth;
+            cablesCanvas.height = rootEl.clientHeight;
+            activeCableCanvas.width = rootEl.clientWidth;
+            activeCableCanvas.height = rootEl.clientHeight;
         },
         
         createConnectorGraphic = function(theme) {
@@ -104,47 +112,59 @@ export default function createCanvasConnectionsView(specs, my) {
             my.isConnectMode = isEnabled
             
             // show the canvas
-            connectCanvas.dataset.show = isEnabled;
+            connectorsCanvas.dataset.show = isEnabled;
             
-            drawOfflineCanvas();
+            drawCablesCanvas();
             // drawConnectCanvas();
             my.markDirty();
         },
         
-        dragStartConnection = function(processorView, x, y) {
+        dragStartConnection = function(startX, startY, x, y) {
             dragData.isDragging = true;
-            dragData.startPoint = processorView.getOutConnectorPoint();
+            dragData.startPoint = {x: startX, y: startY};
             dragData.endPoint = {x: x, y: y};
-            drawOfflineCanvas();
+            drawActiveCableCanvas();
         },
         
         dragMoveConnection = function(x, y) {
             dragData.endPoint = {x: x, y: y};
-            drawOfflineCanvas();
+            drawActiveCableCanvas();
         },
         
         dragEndConnection = function() {
+            console.log('dragEndConnection');
             dragData.isDragging = false;
-            drawOfflineCanvas();
+            drawActiveCableCanvas();
         },
         
         setThemeOnConnections = function() {
             dragData.lineColor = my.theme.colorHigh || '#333';
-            drawOfflineCanvas();
+            drawCablesCanvas();
             drawConnectCanvas();
         },
         
         intersectsConnector = function(x, y, isInput) {
+            let isIntersect = false;
             store.getState().processors.forEach(processor => {
                 const connectorData = processor[isInput ? 'inputs' : 'outputs'];
                 connectorData.allIds.forEach(id => {
                     const connectorX = processor.positionX + connectorData.byId[id].x,
                         connectorY = processor.positionY + connectorData.byId[id].y,
                         distance = Math.sqrt(Math.pow(x - connectorX, 2) + Math.pow(y - connectorY, 2));
-                    return distance <= connectorRadius;
+                    isIntersect = distance <= connectorRadius;
+                    if (isIntersect) {
+                        if (isInput) {
+                            store.dispatch(store.getActions().connectProcessors(sourceProcessorID, processor.id));
+                            sourceProcessorID = null;
+                        } else {
+                            sourceProcessorID = processor.id;
+                            dragStartConnection(connectorX, connectorY, x, y);
+                        }
+                    }
                 });
-                return false;
             });
+
+            return isIntersect;
 
             // for (let i = 0; i < numViews; i++) {
             //     if (views[i].intersectsWithPoint(x, y, 'inconnector')) {
@@ -156,65 +176,51 @@ export default function createCanvasConnectionsView(specs, my) {
             // my.dragEndConnection();
         },
         
-        updateConnectorsInfo = function() {
-            return;
-
-
-
-
-
-
-
-
-
-            // clear the old info
-            inConnectors = {};
-            outConnectors = {};
+        // updateConnectorsInfo = function() {
+        //     // clear the old info
+        //     inConnectors = {};
+        //     outConnectors = {};
             
-            // loop over all processor views to collect current info
-            const views = my.getProcessorViews(),
-                n = views.length; 
-            for (let i = 0, view, processor, viewInfo, viewPos, graphic; i < n; i++) {
-                view = views[i];
-                processor = view.getProcessor();
-                viewInfo = processor.getInfo();
-                viewPos = view.getPosition2d();
-                if (viewInfo.inputs == 1) {
-                    inConnectors[processor.getID()] = {
-                        point: view.getInConnectorPoint(),
-                        graphic: view.getInConnectorGraphic()
-                    }
-                }
-                if (viewInfo.outputs == 1) {
-                    outConnectors[processor.getID()] = {
-                        point: view.getOutConnectorPoint(),
-                        graphic: view.getOutConnectorGraphic()
-                    }
-                }
-            }
+        //     // loop over all processor views to collect current info
+        //     const views = my.getProcessorViews(),
+        //         n = views.length; 
+        //     for (let i = 0, view, processor, viewInfo, viewPos, graphic; i < n; i++) {
+        //         view = views[i];
+        //         processor = view.getProcessor();
+        //         viewInfo = processor.getInfo();
+        //         viewPos = view.getPosition2d();
+        //         if (viewInfo.inputs == 1) {
+        //             inConnectors[processor.getID()] = {
+        //                 point: view.getInConnectorPoint(),
+        //                 graphic: view.getInConnectorGraphic()
+        //             }
+        //         }
+        //         if (viewInfo.outputs == 1) {
+        //             outConnectors[processor.getID()] = {
+        //                 point: view.getOutConnectorPoint(),
+        //                 graphic: view.getOutConnectorGraphic()
+        //             }
+        //         }
+        //     }
             
-            if (my.isConnectMode) {
-                drawConnectCanvas();
-            }
-        },
+        //     if (my.isConnectMode) {
+        //         drawConnectCanvas();
+        //     }
+        // },
         
         /**
          * All connection lines are drawn on the offline canvas,
          * This happens when processors are created, deleted or moved,
          * or when Connect Mode is entered or exited.
          */
-        drawOfflineCanvas = function() {
+        drawCablesCanvas = function() {
             return;
-
-
-
-
 
 
 
             
             // clear the canvas
-            offlineCtx.clearRect(0, 0, offlineCanvas.width, offlineCanvas.height);
+            cablesCtx.clearRect(0, 0, cablesCanvas.width, cablesCanvas.height);
             
             // clear the old info
             connections = [];
@@ -225,9 +231,9 @@ export default function createCanvasConnectionsView(specs, my) {
             const views = my.getProcessorViews(),
                 n = views.length; 
             let processor, sourceID, destinationID, destinations, numDestinations;
-            offlineCtx.lineWidth = lineWidth;
-            offlineCtx.strokeStyle = dragData.lineColor;
-            offlineCtx.beginPath();
+            cablesCtx.lineWidth = lineWidth;
+            cablesCtx.strokeStyle = dragData.lineColor;
+            cablesCtx.beginPath();
             for (let i = 0; i < n; i++) {
                 processor = views[i].getProcessor();
                 sourceID = processor.getID();
@@ -235,7 +241,7 @@ export default function createCanvasConnectionsView(specs, my) {
                 numDestinations = destinations.length;
                 for (let j = 0; j < numDestinations; j++) {
                     destinationID = destinations[j].getID();
-                    let selectPoint = drawCable(outConnectors[sourceID].point, inConnectors[destinationID].point);
+                    let selectPoint = drawCable(cablesCtx, outConnectors[sourceID].point, inConnectors[destinationID].point);
                     connections.push({
                         sourceProcessor: processor,
                         destinationProcessor: destinations[j],
@@ -246,10 +252,58 @@ export default function createCanvasConnectionsView(specs, my) {
             
             // cable currently being dragged
             if (dragData.isDragging) {
-                drawCable(dragData.startPoint, dragData.endPoint);
+                drawCable(cablesCtx, dragData.startPoint, dragData.endPoint);
             }
             
-            offlineCtx.stroke();
+            cablesCtx.stroke();
+        },
+        
+        /**
+         * Draw connector circles and currently dragged line on connectorsCanvas.
+         */
+        drawConnectCanvas = function(state) {
+            connectorsCtx.clearRect(0, 0, connectorsCanvas.width, connectorsCanvas.height);
+
+            if (state.connectModeActive) {
+                state.processors.forEach(processor => {
+                    processor.inputs.allIds.forEach(id => {
+                        connectorsCtx.drawImage(connectorCanvas, 
+                            processor.positionX + processor.inputs.byId[id].x - (connectorCanvas.width / 2), 
+                            processor.positionY + processor.inputs.byId[id].y - (connectorCanvas.height / 2));
+                    });
+                    processor.outputs.allIds.forEach(id => {
+                        connectorsCtx.drawImage(connectorCanvas, 
+                            processor.positionX + processor.outputs.byId[id].x - (connectorCanvas.width / 2), 
+                            processor.positionY + processor.outputs.byId[id].y - (connectorCanvas.height / 2));
+                    });
+                });
+                my.markDirty();
+
+                // for (id in inConnectors) {
+                //     if (inConnectors.hasOwnProperty(id)) {
+                //         graphic = inConnectors[id].graphic;
+                //         connectorsCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
+                //     }
+                // }
+                // for (id in outConnectors) {
+                //     if (outConnectors.hasOwnProperty(id)) {
+                //         graphic = outConnectors[id].graphic;
+                //         connectorsCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
+                //     }
+                // }
+            }
+        },
+
+        drawActiveCableCanvas = function() {
+            activeCableCtx.clearRect(0, 0, activeCableCanvas.width, activeCableCanvas.height);
+            if (dragData.isDragging) {
+                activeCableCtx.lineWidth = 2;
+                activeCableCtx.strokeStyle = dragData.lineColor;
+                activeCableCtx.beginPath();
+                drawCable(activeCableCtx, dragData.startPoint, dragData.endPoint);
+                activeCableCtx.stroke();
+            }
+            my.markDirty();
         },
         
         /**
@@ -257,7 +311,7 @@ export default function createCanvasConnectionsView(specs, my) {
          * @param  {Object} startPoint {x, y} start coordinate.
          * @param  {Object} endPoint   {x, y} end coordinate.
          */
-        drawCable = function(startPoint, endPoint) {
+        drawCable = function(context, startPoint, endPoint) {
             // line
             const distance = Math.sqrt(Math.pow(startPoint.x - endPoint.x, 2) + Math.pow(startPoint.y - endPoint.y, 2)),
                 tension = distance / 2,
@@ -265,18 +319,18 @@ export default function createCanvasConnectionsView(specs, my) {
                 cp1y = startPoint.y + tension,
                 cp2x = endPoint.x,
                 cp2y = endPoint.y + tension;
-            offlineCtx.moveTo(startPoint.x, startPoint.y);
-            offlineCtx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, endPoint.x, endPoint.y);
+            context.moveTo(startPoint.x, startPoint.y);
+            context.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, endPoint.x, endPoint.y);
             
             // endpoint
             const radius = 5;
-            offlineCtx.moveTo(endPoint.x + radius, endPoint.y);
-            offlineCtx.arc(endPoint.x, endPoint.y, radius, 0, Math.PI * 2, true);
+            context.moveTo(endPoint.x + radius, endPoint.y);
+            context.arc(endPoint.x, endPoint.y, radius, 0, Math.PI * 2, true);
             
             // select circle
             let selectPoint = null;
             if (my.isConnectMode) {
-                return drawCableSelectPoint(startPoint.x, startPoint.y, cp1x, cp1y, cp2x, cp2y, endPoint.x, endPoint.y);
+                return drawCableSelectPoint(context, startPoint.x, startPoint.y, cp1x, cp1y, cp2x, cp2y, endPoint.x, endPoint.y);
             }
             
             return selectPoint;
@@ -285,6 +339,7 @@ export default function createCanvasConnectionsView(specs, my) {
         /**
          * Draw select button halfway the bezier curved cable.
          * @see https://stackoverflow.com/questions/15397596/find-all-the-points-of-a-cubic-bezier-curve-in-javascript
+         * @param  {Object} context The canvas context to draw on.
          * @param  {[type]} ax [description]
          * @param  {[type]} ay [description]
          * @param  {[type]} bx [description]
@@ -295,7 +350,7 @@ export default function createCanvasConnectionsView(specs, my) {
          * @param  {[type]} dy [description]
          * @return {[type]}    [description]
          */
-        drawCableSelectPoint = function(ax, ay, bx, by, cx, cy, dx, dy) {
+        drawCableSelectPoint = function(context, ax, ay, bx, by, cx, cy, dx, dy) {
             const t = 0.5, // halfway the cable
                 b0t = Math.pow(1 - t, 3),
                 b1t = 3 * t * Math.pow(1 - t, 2),
@@ -305,8 +360,8 @@ export default function createCanvasConnectionsView(specs, my) {
                 pyt = (b0t * ay) + (b1t * by) + (b2t * cy) + (b3t * dy),
                 radius = 10;
             
-            offlineCtx.moveTo(pxt + radius, pyt);
-            offlineCtx.arc(pxt, pyt, radius, 0, Math.PI * 2, true);
+            context.moveTo(pxt + radius, pyt);
+            context.arc(pxt, pyt, radius, 0, Math.PI * 2, true);
             
             return {
                 x: pxt,
@@ -315,50 +370,15 @@ export default function createCanvasConnectionsView(specs, my) {
         },
         
         addConnectionsToCanvas = function(ctx) {
-            ctx.drawImage(offlineCanvas, 0, 0);
+            ctx.drawImage(cablesCanvas, 0, 0);
             if (my.isConnectMode) {
-                ctx.drawImage(connectCanvas, 0, 0);
-            }
-        },
-        
-        /**
-         * Draw connector circles and currently dragged line on connectCanvas.
-         */
-        drawConnectCanvas = function(state) {
-            connectCtx.clearRect(0, 0, connectCanvas.width, connectCanvas.height);
-
-            if (state.connectModeActive) {
-                state.processors.forEach(processor => {
-                    processor.inputs.allIds.forEach(id => {
-                        connectCtx.drawImage(connectorCanvas, 
-                            processor.positionX + processor.inputs.byId[id].x - (connectorCanvas.width / 2), 
-                            processor.positionY + processor.inputs.byId[id].y) - (connectorCanvas.height / 2);
-                    });
-                    processor.outputs.allIds.forEach(id => {
-                        connectCtx.drawImage(connectorCanvas, 
-                            processor.positionX + processor.outputs.byId[id].x - (connectorCanvas.width / 2), 
-                            processor.positionY + processor.outputs.byId[id].y) - (connectorCanvas.height / 2);
-                    });
-                });
-                my.markDirty();
-
-                // for (id in inConnectors) {
-                //     if (inConnectors.hasOwnProperty(id)) {
-                //         graphic = inConnectors[id].graphic;
-                //         connectCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
-                //     }
-                // }
-                // for (id in outConnectors) {
-                //     if (outConnectors.hasOwnProperty(id)) {
-                //         graphic = outConnectors[id].graphic;
-                //         connectCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
-                //     }
-                // }
+                ctx.drawImage(connectorsCanvas, 0, 0);
+                ctx.drawImage(activeCableCanvas, 0, 0);
             }
         };
         
         // drawConnections = function() {
-        //     connectCtx.clearRect(0, 0, connectCanvas.width, connectCanvas.height);
+        //     connectorsCtx.clearRect(0, 0, connectorsCanvas.width, connectorsCanvas.height);
         //     
         //     // show inputs and outputs
         //     inConnectors = {};
@@ -372,12 +392,12 @@ export default function createCanvasConnectionsView(specs, my) {
         //         viewPos = view.getPosition2d();
         //         if (viewInfo.inputs == 1) {
         //             graphic = view.getInConnectorGraphic();
-        //             connectCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
+        //             connectorsCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
         //             inConnectors[processor.getID()] = view.getInConnectorPoint();
         //         }
         //         if (viewInfo.outputs == 1) {
         //             graphic = view.getOutConnectorGraphic();
-        //             connectCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
+        //             connectorsCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
         //             outConnectors[processor.getID()] = view.getOutConnectorPoint();
         //         }
         //     }
@@ -403,19 +423,19 @@ export default function createCanvasConnectionsView(specs, my) {
 
     my = my || {};
     my.isConnectMode = false,
-    my.dragStartConnection = dragStartConnection;
+    // my.dragStartConnection = dragStartConnection;
     my.dragMoveConnection = dragMoveConnection;
     my.dragEndConnection = dragEndConnection;
     my.intersectsConnector = intersectsConnector;
     my.setThemeOnConnections = setThemeOnConnections;
-    my.updateConnectorsInfo = updateConnectorsInfo;
-    my.drawOfflineCanvas = drawOfflineCanvas;
+    // my.updateConnectorsInfo = updateConnectorsInfo;
+    my.drawCablesCanvas = drawCablesCanvas;
     my.addConnectionsToCanvas = addConnectionsToCanvas;
     
     that = specs.that || {};
     
     init();
     
-    that.toggleConnectMode = toggleConnectMode;
+    // that.toggleConnectMode = toggleConnectMode;
     return that;
 }
