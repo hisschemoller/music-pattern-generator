@@ -4,14 +4,17 @@ export default function createReducers() {
 
     const initialState = {
             bpm: 120,
-            processors: [],
-            selectedID: null,
-            preferences: {
-                isDarkTheme: false
+            processors: {
+                byId: {},
+                allIds: []
             },
             connections: {
                 byId: {},
                 allIds: []
+            },
+            selectedID: null,
+            preferences: {
+                isDarkTheme: false
             },
             transport: 'stop', // 'play|pause|stop'
             // inputs: [],
@@ -49,28 +52,46 @@ export default function createReducers() {
                     });
 
                 case actions.ADD_PROCESSOR:
-                    newState = Object.assign({}, state);
-                    let numInputProcessors = newState.processors.filter(item => item.type === 'input').length;
+                    newState = { 
+                        ...state,
+                        processors: {
+                            byId: { 
+                                ...state.processors.byId,
+                                [action.data.id]: action.data
+                            },
+                            allIds: [ ...state.processors.allIds ]
+                        } };
+
                     // array index depends on processor type
+                    // let numInputProcessors = newState.processors.allIds.filter(item => item.type === 'input').length;
+                    let numInputProcessors = newState.processors.allIds.filter(id => { newState.processors.byId[id].type === 'input' }).length;
                     switch (action.data.type) {
                         case 'input':
-                            newState.processors.unshift(action.data);
+                            newState.processors.allIds.unshift(action.data.id);
                             numInputProcessors++;
                             break;
                         case 'output':
-                            newState.processors.push(action.data);
+                            newState.processors.allIds.push(action.data.id);
                             break;
                         default:
-                            newState.processors.splice(numInputProcessors, 0, action.data);
+                            newState.processors.allIds.splice(numInputProcessors, 0, action.data.id);
                             newState.showSettingsPanel = true;
 
                     }
                     return newState;
                 
                 case actions.DELETE_PROCESSOR:
-                    return Object.assign({}, state, {
-                        processors: state.processors.filter(processor => processor.id !== action.id)
-                    });
+                    newState = { 
+                        ...state,
+                        processors: {
+                            byId: { ...state.processors.byId },
+                            allIds: state.processors.allIds.map(id => id !== action.id)
+                        } };
+                    delete newState.processors.byId[action.id];
+                    return newState;
+                    // return Object.assign({}, state, {
+                    //     processors: state.processors.filter(processor => processor.id !== action.id)
+                    // });
                 
                 case actions.SELECT_PROCESSOR:
                     return Object.assign({}, state, {
@@ -78,56 +99,109 @@ export default function createReducers() {
                     });
                 
                 case actions.DRAG_SELECTED_PROCESSOR:
-                    newState = Object.assign({}, state);
-                    newState.processors.forEach(processor => {
-                        if (processor.id === newState.selectedID) {
-                            processor.positionX = action.x;
-                            processor.positionY = action.y;
-                        }
-                    });
+                    newState = { 
+                        ...state,
+                        processors: {
+                            byId: { ...state.processors.byId },
+                            allIds: [ ...state.processors.allIds ]
+                        } };
+                    newState.processors.byId[newState.selectedID].positionX = action.x;
+                    newState.processors.byId[newState.selectedID].positionY = action.y;
                     return newState;
+                    // newState = Object.assign({}, state);
+                    // newState.processors.forEach(processor => {
+                    //     if (processor.id === newState.selectedID) {
+                    //         processor.positionX = action.x;
+                    //         processor.positionY = action.y;
+                    //     }
+                    // });
+                    // return newState;
 
                 case actions.DRAG_ALL_PROCESSORS:
-                    newState = Object.assign({}, state);
-                    newState.processors.forEach(processor => {
-                        processor.positionX += action.x;
-                        processor.positionY += action.y;
+                    newState = { 
+                        ...state,
+                        processors: {
+                            byId: { ...state.processors.byId },
+                            allIds: [ ...state.processors.allIds ]
+                        } };
+                    newState.processors.allIds.forEach(id => {
+                        newState.processors.byId[id].positionX += action.x;
+                        newState.processors.byId[id].positionY += action.y;
                     });
                     return newState;
+                    // newState = Object.assign({}, state);
+                    // newState.processors.forEach(processor => {
+                    //     processor.positionX += action.x;
+                    //     processor.positionY += action.y;
+                    // });
+                    // return newState;
                 
                 case actions.CHANGE_PARAMETER:
-                    newState = Object.assign({}, state);
-                    newState.processors.forEach(processor => {
-                        if (processor.id === action.processorID) {
-                            const param = processor.params[action.paramKey];
-                            switch (param.type) {
-                                case 'integer':
-                                    param.value = Math.max(param.min, Math.min(action.paramValue, param.max));
-                                    break;
-                                case 'boolean':
-                                    param.value = !!action.paramValue;
-                                    break;
-                                case 'itemized':
-                                    param.value = action.paramValue;
-                                    break;
-                                case 'string':
-                                    param.value = action.paramValue;
-                                    break;
-                            }
-                        }
-                    });
+                    newState = { 
+                        ...state,
+                        processors: {
+                            byId: { ...state.processors.byId },
+                            allIds: [ ...state.processors.allIds ]
+                        } };
+                    const param = newState.processors.byId[action.processorID].params[action.paramKey];
+                    switch (param.type) {
+                        case 'integer':
+                            param.value = Math.max(param.min, Math.min(action.paramValue, param.max));
+                            break;
+                        case 'boolean':
+                            param.value = !!action.paramValue;
+                            break;
+                        case 'itemized':
+                            param.value = action.paramValue;
+                            break;
+                        case 'string':
+                            param.value = action.paramValue;
+                            break;
+                    }
                     return newState;
+                    // newState = Object.assign({}, state);
+                    // newState.processors.forEach(processor => {
+                    //     if (processor.id === action.processorID) {
+                    //         const param = processor.params[action.paramKey];
+                    //         switch (param.type) {
+                    //             case 'integer':
+                    //                 param.value = Math.max(param.min, Math.min(action.paramValue, param.max));
+                    //                 break;
+                    //             case 'boolean':
+                    //                 param.value = !!action.paramValue;
+                    //                 break;
+                    //             case 'itemized':
+                    //                 param.value = action.paramValue;
+                    //                 break;
+                    //             case 'string':
+                    //                 param.value = action.paramValue;
+                    //                 break;
+                    //         }
+                    //     }
+                    // });
+                    // return newState;
                 
                 case actions.RECREATE_PARAMETER:
-                    newState = Object.assign({}, state);
-                    newState.processors.forEach(processor => {
-                        if (processor.id === action.processorID) {
-                            processor.params[action.paramKey] = Object.assign(
-                                processor.params[action.paramKey],
-                                action.paramObj);
-                        }
-                    });
+                    newState = { 
+                        ...state,
+                        processors: {
+                            byId: { ...state.processors.byId },
+                            allIds: [ ...state.processors.allIds ]
+                        } };
+                    newState.processors.byId[action.processorID].params[action.paramKey] = {
+                        ...newState.processors.byId[action.processorID].params[action.paramKey],
+                        ...action.paramObj
+                    };
                     return newState;
+                    // newState = Object.assign({}, state);
+                    // newState.processors.forEach(processor => {
+                    //     if (processor.id === action.processorID) {
+                    //         processor.params[action.paramKey] = Object.assign(
+                    //             processor.params[action.paramKey],
+                    //             action.paramObj);
+                    //     }
+                    // });
+                    // return newState;
                 
                 case actions.SET_TEMPO:
                     return Object.assign({}, state, { bpm: action.value });
