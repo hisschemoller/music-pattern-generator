@@ -29,7 +29,8 @@ export default function createActions(specs = {}, my = {}) {
         ASSIGN_EXTERNAL_CONTROL = 'ASSIGN_EXTERNAL_CONTROL',
         UNASSIGN_EXTERNAL_CONTROL = 'UNASSIGN_EXTERNAL_CONTROL',
         TOGGLE_PANEL = 'TOGGLE_PANEL',
-        TOGGLE_CONNECT_MODE = 'TOGGLE_CONNECT_MODE';
+        TOGGLE_CONNECT_MODE = 'TOGGLE_CONNECT_MODE',
+        CONNECT_PROCESSORS = 'CONNECT_PROCESSORS';
 
     return {
         SET_PREFERENCES: SET_PREFERENCES,
@@ -246,7 +247,10 @@ export default function createActions(specs = {}, my = {}) {
         togglePanel: panelName => ({type: TOGGLE_PANEL, panelName}),
 
         TOGGLE_CONNECT_MODE: TOGGLE_CONNECT_MODE,
-        toggleConnectMode: () => ({ type: TOGGLE_CONNECT_MODE })
+        toggleConnectMode: () => ({ type: TOGGLE_CONNECT_MODE }),
+
+        CONNECT_PROCESSORS: CONNECT_PROCESSORS,
+        connectProcessors: (sourceID, destinationID) => ({ type: CONNECT_PROCESSORS, sourceID, destinationID, id: createUUID() })
     };
 }
 

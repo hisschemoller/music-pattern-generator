@@ -9,7 +9,10 @@ export default function createReducers() {
             preferences: {
                 isDarkTheme: false
             },
-            remote: {},
+            connections: {
+                byId: {},
+                allIds: []
+            },
             transport: 'stop', // 'play|pause|stop'
             // inputs: [],
             // outputs: [],
@@ -269,6 +272,16 @@ export default function createReducers() {
                         ...state,
                         connectModeActive: !state.connectModeActive
                     };
+                
+                case actions.CONNECT_PROCESSORS:
+                    console.log(action);
+                    return {
+                        ...state,
+                        connections: addToNormalizedData(state.connections, action.id, {
+                            sourceID: action.sourceID,
+                            destinationID: action.destinationID
+                        })
+                    };
 
                 default:
                     return state;
@@ -278,6 +291,14 @@ export default function createReducers() {
     return {
         reduce: reduce
     }
+}
+
+function addToNormalizedData(stateObj, newItemID, newItem) {
+    const clone = {
+        byId: { ...stateObj.byId, newItemID: newItem },
+        allIds: [ ...stateObj.allIds, newItemID ]
+    };
+    return clone;
 }
 
 function assignParameter(parameters, action, state) {

@@ -64,7 +64,9 @@ export default function createCanvasConnectionsView(specs, my) {
                     case e.detail.actions.DELETE_PROCESSOR:
                     case e.detail.actions.DRAG_SELECTED_PROCESSOR:
                     case e.detail.actions.DRAG_ALL_PROCESSORS:
+                    case e.detail.actions.CONNECT_PROCESSORS:
                         drawConnectCanvas(e.detail.state);
+                        drawCablesCanvas(e.detail.state);
                         break;
                 }
             });
@@ -114,7 +116,7 @@ export default function createCanvasConnectionsView(specs, my) {
             // show the canvas
             connectorsCanvas.dataset.show = isEnabled;
             
-            drawCablesCanvas();
+            // drawCablesCanvas();
             // drawConnectCanvas();
             my.markDirty();
         },
@@ -152,6 +154,7 @@ export default function createCanvasConnectionsView(specs, my) {
                         connectorY = processor.positionY + connectorData.byId[id].y,
                         distance = Math.sqrt(Math.pow(x - connectorX, 2) + Math.pow(y - connectorY, 2));
                     isIntersect = distance <= connectorRadius;
+                    console.log(isIntersect, isInput);
                     if (isIntersect) {
                         if (isInput) {
                             store.dispatch(store.getActions().connectProcessors(sourceProcessorID, processor.id));
@@ -213,14 +216,13 @@ export default function createCanvasConnectionsView(specs, my) {
          * This happens when processors are created, deleted or moved,
          * or when Connect Mode is entered or exited.
          */
-        drawCablesCanvas = function() {
-            return;
-
-
-
-            
+        drawCablesCanvas = function(state) {
             // clear the canvas
             cablesCtx.clearRect(0, 0, cablesCanvas.width, cablesCanvas.height);
+
+            state.connections.forEach(connection => {
+                
+            });
             
             // clear the old info
             connections = [];
@@ -429,7 +431,7 @@ export default function createCanvasConnectionsView(specs, my) {
     my.intersectsConnector = intersectsConnector;
     my.setThemeOnConnections = setThemeOnConnections;
     // my.updateConnectorsInfo = updateConnectorsInfo;
-    my.drawCablesCanvas = drawCablesCanvas;
+    // my.drawCablesCanvas = drawCablesCanvas;
     my.addConnectionsToCanvas = addConnectionsToCanvas;
     
     that = specs.that || {};

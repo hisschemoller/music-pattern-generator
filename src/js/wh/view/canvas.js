@@ -164,12 +164,12 @@ export default function createCanvasView(specs, my) {
                     case 'processor':
                         my.dragSelectedProcessor(canvasX, canvasY);
                         // my.updateConnectorsInfo();
-                        my.drawCablesCanvas();
+                        // my.drawCablesCanvas();
                         break;
                     case 'background':
                         my.dragAllProcessors(canvasX, canvasY);
                         // my.updateConnectorsInfo();
-                        my.drawCablesCanvas();
+                        // my.drawCablesCanvas();
                         break;
                 }
                 
