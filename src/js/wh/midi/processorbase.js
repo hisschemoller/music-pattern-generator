@@ -155,10 +155,10 @@ export default function createMIDIProcessorBase(specs, my) {
     // my.defineParams = defineParams;
     
     that = specs.that || {};
-    if (specs.data.inputs == 1) {
+    if (specs.data.inputs.allIds.length >= 1) {
         that = createMIDIConnectorIn(specs, my);
     }
-    if (specs.data.outputs == 1) {
+    if (specs.data.outputs.allIds.length >= 1) {
         that = createMIDIConnectorOut(specs, my);
     }
 
