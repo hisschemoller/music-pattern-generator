@@ -16,7 +16,7 @@ export default function createRemoteView(specs, my) {
             document.addEventListener(store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
                     case e.detail.actions.ADD_PROCESSOR:
-                        createRemoteGroup(e.detail.state.processors.find(proc => proc.id === e.detail.action.data.id));
+                        createRemoteGroup(e.detail.state.processors.byId[e.detail.action.data.id]);
                         break;
                         
                     case e.detail.actions.DELETE_PROCESSOR:

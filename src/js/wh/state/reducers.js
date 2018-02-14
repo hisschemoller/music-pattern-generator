@@ -351,10 +351,7 @@ export default function createReducers() {
                     console.log(action);
                     return {
                         ...state,
-                        connections: addToNormalizedData(state.connections, action.id, {
-                            sourceID: action.sourceID,
-                            destinationID: action.destinationID
-                        })
+                        connections: addToNormalizedData(state.connections, action.id, action.payload)
                     };
 
                 default:

@@ -160,13 +160,14 @@ export default function createAppView(specs, my) {
          * Create settings controls view for a processor.
          * @param  {Object} processor MIDI processor to control with the settings.
          */
-        createSettingsViews = function(state) {
-            state.forEach((data, i) => {
-                if (!settingsViews[i] || (data.id !== settingsViews[i].getID())) {
+        createSettingsViews = function(processors) {
+            processors.allIds.forEach((id, i) => {
+                const processorData = processors.byId[id];
+                if (!settingsViews[i] || (id !== settingsViews[i].getID())) {
                     try {
-                        const template = require(`html-loader!../processors/${data.type}/settings.html`);
+                        const template = require(`html-loader!../processors/${processorData.type}/settings.html`);
                         settingsViews.splice(i, 0, createSettingsPanel({
-                            data: data,
+                            data: processorData,
                             store: store,
                             parentEl: editContentEl,
                             template: template

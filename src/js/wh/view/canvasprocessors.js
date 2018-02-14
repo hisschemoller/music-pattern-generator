@@ -38,12 +38,13 @@ export default function createCanvasProcessorViews(specs, my) {
          * Create canvas 2D object if it exists for the type.
          * @param  {Array} data Array of current processors' state.
          */
-        createProcessorViews = function(state) {
-            state.forEach((data, i) => {
-                if (!views[i] || (data.id !== views[i].getID())) {
-                    const module = require(`../processors/${data.type}/graphic`);
+        createProcessorViews = function(processors) {
+            processors.allIds.forEach((id, i) => {
+                const processorData = processors.byId[id];
+                if (!views[i] || (id !== views[i].getID())) {
+                    const module = require(`../processors/${processorData.type}/graphic`);
                     const view = module.createGraphic({ 
-                        data: data,
+                        data: processorData,
                         store: store,
                         canvasDirtyCallback: my.markDirty
                     });

@@ -4,8 +4,8 @@ let remoteControlledParameters = {};
 
 function updateProcessors(state) {
     processors = {};
-    state.processors.forEach(processor => {
-        processors[processor.id] = processor;
+    state.processors.allIds.forEach(id => {
+        processors[id] = state.processors.byId[id];
     });
 }
 
@@ -17,8 +17,8 @@ function updateMIDIPorts(state) {
 }
 
 function updateRemoteControlledParameters(state) {
-    state.processors.forEach(processor => {
-        processor.parameters.forEach(parameter => {
+    state.processors.allIds.forEach(id => {
+        state.processors.byId[id].parameters.forEach(parameter => {
             if (parameter.remoteChannel && parameter.remoteCC) {
                 remoteControlledParameters[`${parameter.remoteChannel}-${parameter.remoteCC}`]
             }

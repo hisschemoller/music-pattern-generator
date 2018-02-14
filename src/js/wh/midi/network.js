@@ -39,12 +39,13 @@ export default function createMIDINetwork(specs, my) {
          * Create a new processor in the network.
          * @param {Array} state Array of all processor data.
          */
-        createProcessor = function(state) {
-            state.forEach((data, i) => {
-                if (!processors[i] || (data.id !== processors[i].getID())) {
-                    const module = require(`../processors/${data.type}/processor`);
+        createProcessor = function(procsState) {
+            procsState.allIds.forEach((id, i) => {
+                const processorData = procsState.byId[id];
+                if (!processors[i] || (id !== processors[i].getID())) {
+                    const module = require(`../processors/${processorData.type}/processor`);
                     const processor = module.createProcessor({
-                        data: data,
+                        data: processorData,
                         store: store
                     });
                     processors.splice(i, 0, processor);

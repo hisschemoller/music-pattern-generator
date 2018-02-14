@@ -147,7 +147,8 @@ export default function createCanvasConnectionsView(specs, my) {
         
         intersectsConnector = function(x, y, isInput) {
             let isIntersect = false;
-            store.getState().processors.forEach(processor => {
+            store.getState().processors.allIds.forEach(id => {
+                const processor = store.getState().processors.byId[id];
                 const connectorData = processor[isInput ? 'inputs' : 'outputs'];
                 connectorData.allIds.forEach(id => {
                     const connectorX = processor.positionX + connectorData.byId[id].x,
@@ -220,9 +221,12 @@ export default function createCanvasConnectionsView(specs, my) {
             // clear the canvas
             cablesCtx.clearRect(0, 0, cablesCanvas.width, cablesCanvas.height);
 
-            state.connections.forEach(connection => {
-                
+            state.connections.allIds.forEach(connection => {
+                const sourceProcessor = state.processors.byId[connection.sourceID],
+                    destinationProcessor = state.processors.byId[connection.destinationID];
+                drawCable(cablesCtx, outConnectors[sourceID].point, inConnectors[destinationID].point);
             });
+            return;
             
             // clear the old info
             connections = [];
@@ -267,7 +271,8 @@ export default function createCanvasConnectionsView(specs, my) {
             connectorsCtx.clearRect(0, 0, connectorsCanvas.width, connectorsCanvas.height);
 
             if (state.connectModeActive) {
-                state.processors.forEach(processor => {
+                state.processors.allIds.forEach(id => {
+                    const processor = state.processors.byId[id];
                     processor.inputs.allIds.forEach(id => {
                         connectorsCtx.drawImage(connectorCanvas, 
                             processor.positionX + processor.inputs.byId[id].x - (connectorCanvas.width / 2), 
