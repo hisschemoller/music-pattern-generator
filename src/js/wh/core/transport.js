@@ -263,6 +263,8 @@ export default function createTransport(specs, my) {
                         break;
                 }
             });
+
+            my.setBPM();
         },
         
         /**

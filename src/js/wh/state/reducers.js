@@ -348,7 +348,6 @@ export default function createReducers() {
                     };
                 
                 case actions.CONNECT_PROCESSORS:
-                    console.log(action);
                     return {
                         ...state,
                         connections: addToNormalizedData(state.connections, action.id, action.payload)

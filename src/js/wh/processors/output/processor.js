@@ -1,11 +1,13 @@
 import createMIDIProcessorBase from '../../midi/processorbase';
+import { getMIDIPortByID } from '../../midi/midi';
 
 /**
  * MIDI output port processor.
  */
 export function createProcessor(specs, my) {
     var that,
-        portID = specs.portID,
+        portID = specs.data.portID,
+        midiOutput = getMIDIPortByID(portID),
 
         /**
          * Process events to happen in a time slice.
@@ -19,7 +21,7 @@ export function createProcessor(specs, my) {
             var inputData = my.getInputData(),
                 origin = performance.now() - (offset * ticksToMsMultiplier),
                 n = inputData.length;
-
+            
             if (midiOutput.state === 'connected') {
                 for (var i = 0; i < n; i++) {
                     var item = inputData[i],

@@ -1,13 +1,5 @@
-import { getMIDIPortByID } from '../state/selectors';
+let midiAccess;
 
-/**
- * Handles connection with soft- and hardware MIDI devices.
- * 
- * MIDI ports settings reference actual MIDI ports on the computer, hardware or virtual.
- * MIDI ports settings remain after the actual ports are removed from the computer.
- * MIDI ports settings can also be loaded with a project while the port is not present on the current computer.
- * MIDI ports settings persist after a page refresh to restore the app state.
- */
 export default function createMIDI(specs) {
     var that,
         store = specs.store,
@@ -16,7 +8,7 @@ export default function createMIDI(specs) {
         // midiRemote = specs.midiRemote,
         // midiSync = specs.midiSync,
         // transport = specs.transport,
-        midiAccess,
+        // midiAccess,
         syncListeners = [],
         remoteListeners = [],
         // inputs = [],
@@ -202,7 +194,7 @@ export default function createMIDI(specs) {
         },
 
         onMIDIMessage = function(e) {
-            console.log(e.data[0] & 0xf0, e.data[0] & 0x0f, e.target.id, e.data[0], e.data[1], e.data[2]);
+            // console.log(e.data[0] & 0xf0, e.data[0] & 0x0f, e.target.id, e.data[0], e.data[1], e.data[2]);
             
             switch (e.data[0] & 0xf0) {
                 case 240:
@@ -354,4 +346,21 @@ export default function createMIDI(specs) {
     // that.setData = setData;
     // that.getData = getData;
     return that;
+}
+
+export function getMIDIPortByID(id) {
+    const inputs = midiAccess.inputs.values();
+    const outputs = midiAccess.outputs.values();
+
+    for (let port = inputs.next(); port && !port.done; port = inputs.next()) {
+        if (port.value.id === id) {
+            return port.value;
+        }
+    }
+    
+    for (let port = outputs.next(); port && !port.done; port = outputs.next()) {
+        if (port.value.id === id) {
+            return port.value;
+        }
+    }
 }

@@ -31,6 +31,10 @@ export default function createMIDINetwork(specs, my) {
                     case e.detail.actions.DELETE_PROCESSOR:
                         deleteProcessor(e.detail.action.id);
                         break;
+                    
+                    case e.detail.actions.CONNECT_PROCESSORS:
+                        connectProcessors(e.detail.action.payload);
+                        break;
                 }
             });
         },
@@ -200,10 +204,17 @@ export default function createMIDINetwork(specs, my) {
         //     }
         // },
         
-        connectProcessors = function(sourceProcessor, destinationProcessor) {
-            if (!sourceProcessor.getDestinations().includes(destinationProcessor)) {
+        connectProcessors = function(payload) {
+            const sourceProcessor = processors.find(processor => processor.getID() === payload.sourceProcessorID);
+            const destinationProcessor = processors.find(processor => processor.getID() === payload.destinationProcessorID);
+            
+            if (sourceProcessor && destinationProcessor) {
                 sourceProcessor.connect(destinationProcessor);
             }
+
+            // if (!sourceProcessor.getDestinations().includes(destinationProcessor)) {
+            //     sourceProcessor.connect(destinationProcessor);
+            // }
         },
         
         disconnectProcessors = function(sourceProcessor, destinationProcessor) {
