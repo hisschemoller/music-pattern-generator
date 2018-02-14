@@ -366,7 +366,7 @@ export default function createReducers() {
 
 function addToNormalizedData(stateObj, newItemID, newItem) {
     const clone = {
-        byId: { ...stateObj.byId, newItemID: newItem },
+        byId: { ...stateObj.byId, [newItemID]: newItem },
         allIds: [ ...stateObj.allIds, newItemID ]
     };
     return clone;

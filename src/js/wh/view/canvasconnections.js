@@ -35,6 +35,7 @@ export default function createCanvasConnectionsView(specs, my) {
         connections,
         connectorRadius = 12,
         sourceProcessorID,
+        sourceConnectorID,
         dragData = {
             isDragging: false,
             startPoint: {x: 0, y: 0},
@@ -134,7 +135,6 @@ export default function createCanvasConnectionsView(specs, my) {
         },
         
         dragEndConnection = function() {
-            console.log('dragEndConnection');
             dragData.isDragging = false;
             drawActiveCableCanvas();
         },
@@ -146,28 +146,36 @@ export default function createCanvasConnectionsView(specs, my) {
         },
         
         intersectsConnector = function(x, y, isInput) {
-            let isIntersect = false;
+            let isIntersect = false,
+                isFound = false;
             store.getState().processors.allIds.forEach(id => {
                 const processor = store.getState().processors.byId[id];
                 const connectorData = processor[isInput ? 'inputs' : 'outputs'];
                 connectorData.allIds.forEach(id => {
-                    const connectorX = processor.positionX + connectorData.byId[id].x,
-                        connectorY = processor.positionY + connectorData.byId[id].y,
-                        distance = Math.sqrt(Math.pow(x - connectorX, 2) + Math.pow(y - connectorY, 2));
-                    isIntersect = distance <= connectorRadius;
-                    console.log(isIntersect, isInput);
-                    if (isIntersect) {
-                        if (isInput) {
-                            store.dispatch(store.getActions().connectProcessors(sourceProcessorID, processor.id));
-                            sourceProcessorID = null;
-                        } else {
-                            sourceProcessorID = processor.id;
-                            dragStartConnection(connectorX, connectorY, x, y);
+                    if (!isFound) {
+                        const connectorX = processor.positionX + connectorData.byId[id].x,
+                            connectorY = processor.positionY + connectorData.byId[id].y,
+                            distance = Math.sqrt(Math.pow(x - connectorX, 2) + Math.pow(y - connectorY, 2));
+                        isIntersect = distance <= connectorRadius;
+                        if (isIntersect) {
+                            isFound = true;
+                            if (isInput) {
+                                store.dispatch(store.getActions().connectProcessors({
+                                    sourceProcessorID: sourceProcessorID, 
+                                    sourceConnectorID: sourceConnectorID,
+                                    destinationProcessorID: processor.id,
+                                    destinationConnectorID: id
+                                }));
+                                sourceProcessorID = null;
+                            } else {
+                                sourceProcessorID = processor.id;
+                                sourceConnectorID = id;
+                                dragStartConnection(connectorX, connectorY, x, y);
+                            }
                         }
                     }
                 });
             });
-
             return isIntersect;
 
             // for (let i = 0; i < numViews; i++) {
@@ -218,50 +226,61 @@ export default function createCanvasConnectionsView(specs, my) {
          * or when Connect Mode is entered or exited.
          */
         drawCablesCanvas = function(state) {
-            // clear the canvas
             cablesCtx.clearRect(0, 0, cablesCanvas.width, cablesCanvas.height);
-
-            state.connections.allIds.forEach(connection => {
-                const sourceProcessor = state.processors.byId[connection.sourceID],
-                    destinationProcessor = state.processors.byId[connection.destinationID];
-                drawCable(cablesCtx, outConnectors[sourceID].point, inConnectors[destinationID].point);
-            });
-            return;
-            
-            // clear the old info
-            connections = [];
-            
-            const lineWidth = my.isConnectMode ? dragData.lineWidthActive : dragData.lineWidth;
-            
-            // show cables
-            const views = my.getProcessorViews(),
-                n = views.length; 
-            let processor, sourceID, destinationID, destinations, numDestinations;
-            cablesCtx.lineWidth = lineWidth;
-            cablesCtx.strokeStyle = dragData.lineColor;
+            cablesCtx.strokeStyle = '#cccccc';
             cablesCtx.beginPath();
-            for (let i = 0; i < n; i++) {
-                processor = views[i].getProcessor();
-                sourceID = processor.getID();
-                destinations = processor.getDestinations instanceof Function ? processor.getDestinations() : [],
-                numDestinations = destinations.length;
-                for (let j = 0; j < numDestinations; j++) {
-                    destinationID = destinations[j].getID();
-                    let selectPoint = drawCable(cablesCtx, outConnectors[sourceID].point, inConnectors[destinationID].point);
-                    connections.push({
-                        sourceProcessor: processor,
-                        destinationProcessor: destinations[j],
-                        selectPoint: selectPoint
-                    });
-                }
-            }
             
-            // cable currently being dragged
-            if (dragData.isDragging) {
-                drawCable(cablesCtx, dragData.startPoint, dragData.endPoint);
-            }
-            
+            state.connections.allIds.forEach(connectionID => {
+                const connection = state.connections.byId[connectionID];
+                const sourceProcessor = state.processors.byId[connection.sourceProcessorID],
+                    destinationProcessor = state.processors.byId[connection.destinationProcessorID],
+                    sourceConnector = sourceProcessor.outputs.byId[connection.sourceConnectorID],
+                    destinationConnector = destinationProcessor.inputs.byId[connection.destinationConnectorID];
+                drawCable(cablesCtx, {
+                    x: sourceProcessor.positionX + sourceConnector.x,
+                    y: sourceProcessor.positionY + sourceConnector.y
+                }, {
+                    x: destinationProcessor.positionX + destinationConnector.x,
+                    y: destinationProcessor.positionY + destinationConnector.y
+                });
+            });
+
             cablesCtx.stroke();
+            
+            // // clear the old info
+            // connections = [];
+            
+            // const lineWidth = my.isConnectMode ? dragData.lineWidthActive : dragData.lineWidth;
+            
+            // // show cables
+            // const views = my.getProcessorViews(),
+            //     n = views.length; 
+            // let processor, sourceID, destinationID, destinations, numDestinations;
+            // cablesCtx.lineWidth = lineWidth;
+            // cablesCtx.strokeStyle = dragData.lineColor;
+            // cablesCtx.beginPath();
+            // for (let i = 0; i < n; i++) {
+            //     processor = views[i].getProcessor();
+            //     sourceID = processor.getID();
+            //     destinations = processor.getDestinations instanceof Function ? processor.getDestinations() : [],
+            //     numDestinations = destinations.length;
+            //     for (let j = 0; j < numDestinations; j++) {
+            //         destinationID = destinations[j].getID();
+            //         let selectPoint = drawCable(cablesCtx, outConnectors[sourceID].point, inConnectors[destinationID].point);
+            //         connections.push({
+            //             sourceProcessor: processor,
+            //             destinationProcessor: destinations[j],
+            //             selectPoint: selectPoint
+            //         });
+            //     }
+            // }
+            
+            // // cable currently being dragged
+            // if (dragData.isDragging) {
+            //     drawCable(cablesCtx, dragData.startPoint, dragData.endPoint);
+            // }
+            
+            // cablesCtx.stroke();
         },
         
         /**
