@@ -261,8 +261,8 @@ function getProcessorDefaultName(processors) {
     let name, number, spaceIndex, 
         highestNumber = 0,
         staticName = 'Processor';
-    for (let i = 0, n = processors.length; i < n; i++) {
-        name = processors[i].params.name.value;
+    processors.allIds.forEach(id => {
+        name = processors.byId[id].params.name.value;
         if (name && name.indexOf(staticName) == 0) {
             spaceIndex = name.lastIndexOf(' ');
             if (spaceIndex != -1) {
@@ -272,6 +272,6 @@ function getProcessorDefaultName(processors) {
                 }
             }
         }
-    }
+    });
     return `${staticName} ${highestNumber + 1}`;
 }
