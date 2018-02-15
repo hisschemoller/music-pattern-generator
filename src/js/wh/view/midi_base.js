@@ -9,9 +9,6 @@ export default function createMIDIBaseView(specs, my) {
         port = specs.port,
         
         initialize = function() {
-            // set callback for the port to update the view
-            // port.setViewCallback(updateView);
-            
             // find template, add clone to midi ports list
             let template = document.querySelector('#template-midi-port');
             let clone = template.content.cloneNode(true);
@@ -71,26 +68,6 @@ export default function createMIDIBaseView(specs, my) {
                 parentEl.removeChild(my.el);
             }
         },
-        
-        /**
-         * Callback for port to update view.
-         */
-        // updateView = function(key, value) {
-        //     switch (key) {
-        //         case 'network':
-        //             my.networkEl.querySelector('[type=checkbox]').checked = value;
-        //             break;
-        //         case 'sync':
-        //             my.syncEl.querySelector('[type=checkbox]').checked = value;
-        //             break;
-        //         case 'remote':
-        //             my.remoteEl.querySelector('[type=checkbox]').checked = value;
-        //             break;
-        //         case 'connected':
-        //             my.el.dataset.connected = value;
-        //             break;
-        //     }
-        // },
         
         getID = function() {
             return my.id;

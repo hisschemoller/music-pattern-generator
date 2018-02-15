@@ -165,17 +165,11 @@ export default function createCanvasView(specs, my) {
                         break;
                     case 'processor':
                         my.dragSelectedProcessor(canvasX, canvasY);
-                        // my.updateConnectorsInfo();
-                        // my.drawCablesCanvas();
                         break;
                     case 'background':
                         my.dragAllProcessors(canvasX, canvasY);
-                        // my.updateConnectorsInfo();
-                        // my.drawCablesCanvas();
                         break;
                 }
-                
-                // my.markDirty();
             }
         },
         
@@ -207,7 +201,6 @@ export default function createCanvasView(specs, my) {
                         break;
                 }
                 dragObjectType = null;
-                // my.markDirty();
             }
         },
         

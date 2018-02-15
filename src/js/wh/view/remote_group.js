@@ -8,7 +8,6 @@ import createRemoteItemView from './remote_item';
 export default function createRemoteGroupView(specs, my) {
     var that,
         store = specs.store,
-        // processor = specs.processor,
         processorID = specs.id,
         parentEl = specs.parentEl,
         el,
@@ -24,13 +23,6 @@ export default function createRemoteGroupView(specs, my) {
             parentEl.appendChild(el);
             
             listEl = el.querySelector('.remote__group-list');
-            
-            // listen for name parameter changes
-            // nameParam = processor.getParameters()['name'];
-            // if (nameParam) {
-            //     nameParam.addChangedCallback(setName);
-            //     setName(nameParam);
-            // }
 
             setName(specs.name);
 
@@ -63,12 +55,7 @@ export default function createRemoteGroupView(specs, my) {
          */
         terminate = function() {
             Object.values(views).forEach(view => { view.terminate() });
-            // var n = views.length;
-            // while (--n >= 0) {
-            //     views[n].terminate();
-            // }
             parentEl.removeChild(el);
-            // nameParam.removeChangedCallback(setName);
             views = null;
             parentEl = null;
         },
@@ -105,55 +92,6 @@ export default function createRemoteGroupView(specs, my) {
         },
         
         /**
-         * Check if this view is for a certain processor.
-         * @param  {Object} proc MIDI processor object.
-         * @return {Boolean} True if the processors match.
-         */
-        // hasProcessor = function(proc) {
-        //     return proc === processor;
-        // },
-        
-        /**
-         * Check if this view's processor has a certain parameter.
-         * @param  {Object} proc Parameter object.
-         * @return {Boolean} True if the parameter exists for the processor.
-         */
-        // hasParameter = function(param) {
-        //     return processor.hasParameter(param);
-        // },
-        
-        /**
-         * Add a parameter that is assigned.
-         * @param  {Object} param Processor parameter.
-         * @param  {Function} unregisterCallback Callback for the unassign button click.
-         */
-        // addParameter = function(param, unregisterCallback) {
-        //     var itemView = ns.createRemoteItemView({
-        //         param: param,
-        //         parentEl: listEl,
-        //         unregisterCallback: unregisterCallback
-        //     });
-        //     itemViews.push(itemView);
-        //     updateGroupVisibility();
-        // },
-        
-        /**
-         * Remove a parameter that isn't assigned anymore.
-         * @param  {Object} param Processor parameter.
-         */
-        // removeParameter = function(param) {
-        //     var n = itemViews.length;
-        //     while (--n >= 0) {
-        //         if (itemViews[n].hasParameter(param)) {
-        //             itemViews[n].terminate();
-        //             itemViews.splice(n, 1);
-        //             break;
-        //         }
-        //     }
-        //     updateGroupVisibility();
-        // },
-        
-        /**
          * If a group has no assignments its header is hidden.
          */
         updateGroupVisibility = function() {
@@ -173,9 +111,5 @@ export default function createRemoteGroupView(specs, my) {
     initialize();
     
     that.terminate = terminate;
-    // that.hasProcessor = hasProcessor;
-    // that.hasParameter = hasParameter;
-    // that.addParameter = addParameter;
-    // that.removeParameter = removeParameter;
     return that;
 }

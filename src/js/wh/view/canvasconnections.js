@@ -30,8 +30,6 @@ export default function createCanvasConnectionsView(specs, my) {
         activeCableCtx,
         connectorCanvas,
         connectorCtx,
-        // inConnectors,
-        // outConnectors,
         cableData = {
             byId: {},
             allIds: []
@@ -126,9 +124,6 @@ export default function createCanvasConnectionsView(specs, my) {
             
             // show the canvas
             connectorsCanvas.dataset.show = isEnabled;
-            
-            // drawCablesCanvas();
-            // drawConnectCanvas();
             my.markDirty();
         },
         
@@ -187,15 +182,6 @@ export default function createCanvasConnectionsView(specs, my) {
                 });
             });
             return isIntersect;
-
-            // for (let i = 0; i < numViews; i++) {
-            //     if (views[i].intersectsWithPoint(x, y, 'inconnector')) {
-            //         const destinationProcessor = views[i].getProcessor();
-            //         midiNetwork.connectProcessors(connectionSourceProcessor, destinationProcessor);
-            //         break;
-            //     }
-            // }
-            // my.dragEndConnection();
         },
 
         intersectsCableHandle = function(x, y) {
@@ -208,38 +194,6 @@ export default function createCanvasConnectionsView(specs, my) {
             };
             return null;
         },
-        
-        // updateConnectorsInfo = function() {
-        //     // clear the old info
-        //     inConnectors = {};
-        //     outConnectors = {};
-            
-        //     // loop over all processor views to collect current info
-        //     const views = my.getProcessorViews(),
-        //         n = views.length; 
-        //     for (let i = 0, view, processor, viewInfo, viewPos, graphic; i < n; i++) {
-        //         view = views[i];
-        //         processor = view.getProcessor();
-        //         viewInfo = processor.getInfo();
-        //         viewPos = view.getPosition2d();
-        //         if (viewInfo.inputs == 1) {
-        //             inConnectors[processor.getID()] = {
-        //                 point: view.getInConnectorPoint(),
-        //                 graphic: view.getInConnectorGraphic()
-        //             }
-        //         }
-        //         if (viewInfo.outputs == 1) {
-        //             outConnectors[processor.getID()] = {
-        //                 point: view.getOutConnectorPoint(),
-        //                 graphic: view.getOutConnectorGraphic()
-        //             }
-        //         }
-        //     }
-            
-        //     if (my.isConnectMode) {
-        //         drawConnectCanvas();
-        //     }
-        // },
         
         /**
          * All connection lines are drawn on the offline canvas,
@@ -275,41 +229,6 @@ export default function createCanvasConnectionsView(specs, my) {
             });
 
             cablesCtx.stroke();
-            
-            // // clear the old info
-            // connections = [];
-            
-            // const lineWidth = my.isConnectMode ? dragData.lineWidthActive : dragData.lineWidth;
-            
-            // // show cables
-            // const views = my.getProcessorViews(),
-            //     n = views.length; 
-            // let processor, sourceID, destinationID, destinations, numDestinations;
-            // cablesCtx.lineWidth = lineWidth;
-            // cablesCtx.strokeStyle = dragData.lineColor;
-            // cablesCtx.beginPath();
-            // for (let i = 0; i < n; i++) {
-            //     processor = views[i].getProcessor();
-            //     sourceID = processor.getID();
-            //     destinations = processor.getDestinations instanceof Function ? processor.getDestinations() : [],
-            //     numDestinations = destinations.length;
-            //     for (let j = 0; j < numDestinations; j++) {
-            //         destinationID = destinations[j].getID();
-            //         let selectPoint = drawCable(cablesCtx, outConnectors[sourceID].point, inConnectors[destinationID].point);
-            //         connections.push({
-            //             sourceProcessor: processor,
-            //             destinationProcessor: destinations[j],
-            //             selectPoint: selectPoint
-            //         });
-            //     }
-            // }
-            
-            // // cable currently being dragged
-            // if (dragData.isDragging) {
-            //     drawCable(cablesCtx, dragData.startPoint, dragData.endPoint);
-            // }
-            
-            // cablesCtx.stroke();
         },
         
         /**
@@ -333,19 +252,6 @@ export default function createCanvasConnectionsView(specs, my) {
                     });
                 });
                 my.markDirty();
-
-                // for (id in inConnectors) {
-                //     if (inConnectors.hasOwnProperty(id)) {
-                //         graphic = inConnectors[id].graphic;
-                //         connectorsCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
-                //     }
-                // }
-                // for (id in outConnectors) {
-                //     if (outConnectors.hasOwnProperty(id)) {
-                //         graphic = outConnectors[id].graphic;
-                //         connectorsCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
-                //     }
-                // }
             }
         },
 
@@ -423,67 +329,19 @@ export default function createCanvasConnectionsView(specs, my) {
                 ctx.drawImage(activeCableCanvas, 0, 0);
             }
         };
-        
-        // drawConnections = function() {
-        //     connectorsCtx.clearRect(0, 0, connectorsCanvas.width, connectorsCanvas.height);
-        //     
-        //     // show inputs and outputs
-        //     inConnectors = {};
-        //     outConnectors = {};
-        //     const views = my.getProcessorViews(),
-        //         n = views.length; 
-        //     for (let i = 0, view, processor, viewInfo, viewPos, graphic; i < n; i++) {
-        //         view = views[i];
-        //         processor = view.getProcessor();
-        //         viewInfo = processor.getInfo();
-        //         viewPos = view.getPosition2d();
-        //         if (viewInfo.inputs == 1) {
-        //             graphic = view.getInConnectorGraphic();
-        //             connectorsCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
-        //             inConnectors[processor.getID()] = view.getInConnectorPoint();
-        //         }
-        //         if (viewInfo.outputs == 1) {
-        //             graphic = view.getOutConnectorGraphic();
-        //             connectorsCtx.drawImage(graphic.canvas, graphic.x, graphic.y);
-        //             outConnectors[processor.getID()] = view.getOutConnectorPoint();
-        //         }
-        //     }
-        //     
-        //     // show cables
-        //     let processor, sourceID, destinationID, destinations, numDestinations;
-        //     for (let i = 0; i < n; i++) {
-        //         processor = views[i].getProcessor();
-        //         sourceID = processor.getID();
-        //         destinations = processor.getDestinations instanceof Function ? processor.getDestinations() : [],
-        //         numDestinations = destinations.length;
-        //         for (let j = 0; j < numDestinations; j++) {
-        //             destinationID = destinations[j].getID();
-        //             drawCable(outConnectors[sourceID], inConnectors[destinationID]);
-        //         }
-        //     }
-        //     
-        //     // cable currently being dragged
-        //     if (dragData.isDragging) {
-        //         drawCable(dragData.startPoint, dragData.endPoint);
-        //     }
-        // };
 
     my = my || {};
     my.isConnectMode = false,
-    // my.dragStartConnection = dragStartConnection;
     my.dragMoveConnection = dragMoveConnection;
     my.dragEndConnection = dragEndConnection;
     my.intersectsConnector = intersectsConnector;
     my.intersectsCableHandle = intersectsCableHandle;
     my.setThemeOnConnections = setThemeOnConnections;
-    // my.updateConnectorsInfo = updateConnectorsInfo;
-    // my.drawCablesCanvas = drawCablesCanvas;
     my.addConnectionsToCanvas = addConnectionsToCanvas;
     
     that = specs.that || {};
     
     init();
     
-    // that.toggleConnectMode = toggleConnectMode;
     return that;
 }

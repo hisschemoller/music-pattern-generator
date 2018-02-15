@@ -9,7 +9,6 @@ export default function createRemoteItemView(specs, my) {
         param = specs.param,
         processorID = specs.processorID,
         parentEl = specs.parentEl,
-        // unregisterCallback = specs.unregisterCallback,
         el,
         
         initialize = function() {
@@ -24,8 +23,6 @@ export default function createRemoteItemView(specs, my) {
             
             // add DOM event listeners
             el.querySelector('.remote__item-delete').addEventListener('click', onUnregisterClick);
-            // set callback on parameter
-            // param.addRemoteStateCallback(changeRemoteState);
         },
         
         /**
@@ -61,20 +58,9 @@ export default function createRemoteItemView(specs, my) {
                     // TODO: tekst grijs of zoiets
                     break;
             }
-        },
-        
-        /**
-         * @return {String} Parameter key.
-         */
-        getKey = function() {
-            return paramKey;
         };
         
     that = specs.that || {};
     
     initialize();
-    
-    that.terminate = terminate;
-    that.getKey = getKey;
-    return that;
 }

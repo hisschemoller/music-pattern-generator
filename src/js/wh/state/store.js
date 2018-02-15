@@ -32,6 +32,7 @@ export default function createStore(specs = {}, my = {}) {
         },
         
         persist = () => {
+            return;
             const name = 'persist';
             window.addEventListener('beforeunload', e => {
                 localStorage.setItem(name, JSON.stringify(currentState));
