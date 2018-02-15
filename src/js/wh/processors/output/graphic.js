@@ -7,7 +7,6 @@ import { getMIDIPortByID } from '../../state/selectors';
 export function createGraphic(specs, my) {
     let that,
         canvasDirtyCallback = specs.canvasDirtyCallback,
-        connectorCanvas = specs.connectorCanvas,
         staticCanvas,
         staticCtx,
         nameCanvas,

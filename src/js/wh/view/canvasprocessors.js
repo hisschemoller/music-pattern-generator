@@ -66,8 +66,8 @@ export default function createCanvasProcessorViews(specs, my) {
             while (--i >= 0) {
                 if (views[i].getID() === id) {
                     views[i].terminate();
+                    views[i].terminateBase();
                     views.splice(i, 1);
-                    // my.updateConnectorsInfo();
                     my.markDirty();
                     return;
                 }

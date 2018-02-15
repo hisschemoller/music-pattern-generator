@@ -51,34 +51,7 @@ export function createGraphic(specs, my) {
         duration = 0,
         
         initialise = function() {
-            document.addEventListener(my.store.STATE_CHANGE, (e) => {
-                switch (e.detail.action.type) {
-                    case e.detail.actions.CHANGE_PARAMETER:
-                        if (e.detail.action.processorID === my.data.id) {
-                            my.data.params = getProcessorByID(my.data.id).params;
-                            switch (e.detail.action.paramKey) {
-                                case 'steps':
-                                case 'pulses':
-                                    updateDuration();
-                                case 'rotation':
-                                    updateNecklace();
-                                    break;
-                                case 'is_mute':
-                                    updatePointer();
-                                    break;
-                                case 'name':
-                                    updateName();
-                                    break;
-                                case 'is_triplets':
-                                case 'rate':
-                                case 'note_length':
-                                    updateDuration();
-                                    break;
-                            }
-                        }
-                        break;
-                }
-            });
+            document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
 
             // offscreen canvas for static shapes
             staticCanvas = document.createElement('canvas');
@@ -132,7 +105,37 @@ export function createGraphic(specs, my) {
          * Called before this view is deleted.
          */
         terminate = function() {
+            document.removeEventListener(my.store.STATE_CHANGE, handleStateChanges);
             canvasDirtyCallback = null;
+        },
+
+        handleStateChanges = function(e) {
+            switch (e.detail.action.type) {
+                case e.detail.actions.CHANGE_PARAMETER:
+                    if (e.detail.action.processorID === my.data.id) {
+                        my.data.params = getProcessorByID(my.data.id).params;
+                        switch (e.detail.action.paramKey) {
+                            case 'steps':
+                            case 'pulses':
+                                updateDuration();
+                            case 'rotation':
+                                updateNecklace();
+                                break;
+                            case 'is_mute':
+                                updatePointer();
+                                break;
+                            case 'name':
+                                updateName();
+                                break;
+                            case 'is_triplets':
+                            case 'rate':
+                            case 'note_length':
+                                updateDuration();
+                                break;
+                        }
+                    }
+                    break;
+            }
         },
 
         setSelected = function(isSelected) {
