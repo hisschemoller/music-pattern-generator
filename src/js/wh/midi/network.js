@@ -106,7 +106,8 @@ export default function createMIDINetwork(specs, my) {
 
         setProcessors = function(newProcessors) {
             clearProcessors();
-            newProcessors.forEach(processor => {
+            newProcessors.allIds.forEach(id => {
+                let processor = newProcessors.byId[id];
                 if (processor.type !== 'input' && processor.type !== 'output') {
                     createProcessor(newProcessors);
                 }
