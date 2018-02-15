@@ -210,22 +210,26 @@ export default function createCanvasConnectionsView(specs, my) {
             state.connections.allIds.forEach(connectionID => {
                 const connection = state.connections.byId[connectionID];
                 const sourceProcessor = state.processors.byId[connection.sourceProcessorID],
-                    destinationProcessor = state.processors.byId[connection.destinationProcessorID],
-                    sourceConnector = sourceProcessor.outputs.byId[connection.sourceConnectorID],
-                    destinationConnector = destinationProcessor.inputs.byId[connection.destinationConnectorID];
-                let handlePosition = drawCable(cablesCtx, {
-                    x: sourceProcessor.positionX + sourceConnector.x,
-                    y: sourceProcessor.positionY + sourceConnector.y
-                }, {
-                    x: destinationProcessor.positionX + destinationConnector.x,
-                    y: destinationProcessor.positionY + destinationConnector.y
-                });
+                    destinationProcessor = state.processors.byId[connection.destinationProcessorID];
+                
+                if (sourceProcessor && destinationProcessor) {
+                    const sourceConnector = sourceProcessor.outputs.byId[connection.sourceConnectorID],
+                        destinationConnector = destinationProcessor.inputs.byId[connection.destinationConnectorID];
+                    let handlePosition = drawCable(cablesCtx, {
+                        x: sourceProcessor.positionX + sourceConnector.x,
+                        y: sourceProcessor.positionY + sourceConnector.y
+                    }, {
+                        x: destinationProcessor.positionX + destinationConnector.x,
+                        y: destinationProcessor.positionY + destinationConnector.y
+                    });
 
-                cableData.byId[connectionID] = {
-                    handleX: handlePosition.x,
-                    handleY: handlePosition.y
-                };
-                cableData.allIds.push(connectionID);
+                    cableData.byId[connectionID] = {
+                        handleX: handlePosition.x,
+                        handleY: handlePosition.y
+                    };
+                    cableData.allIds.push(connectionID);
+                }
+                
             });
 
             cablesCtx.stroke();
