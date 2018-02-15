@@ -16,16 +16,17 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import createTransport from './wh/core/transport';
-import createMIDI from './wh/midi/midi';
-import createMIDINetwork from './wh/midi/network';
 import createActions from './wh/state/actions';
 import createReducers from './wh/state/reducers';
 import createStore from './wh/state/store';
+
 import createAppView from './wh/view/app';
 import createCanvasView from './wh/view/canvas';
+import createMIDI from './wh/midi/midi';
+import createMIDINetwork from './wh/midi/network';
 import createPreferencesView from './wh/view/preferences';
 import createRemoteView from './wh/view/remote';
+import createTransport from './wh/core/transport';
 
 /**
  * Application startup.
@@ -55,6 +56,14 @@ document.addEventListener('DOMContentLoaded', function(e) {
         that: canvasView, 
         store 
     });
+    createMIDI({ 
+        that: midi, 
+        store 
+    });
+    createMIDINetwork({
+        that: midiNetwork,
+        store
+    });
     createPreferencesView({ 
         that: preferencesView, 
         store 
@@ -62,17 +71,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
     createRemoteView({
         that: remoteView,
         store
-    });
-    createMIDI({ 
-        that: midi, 
-        store 
-    });
-    createMIDINetwork({
-        that: midiNetwork,
-        store,
-        appView,
-        canvasView,
-        preferencesView
     });
     createTransport({ 
         that: transport, 
