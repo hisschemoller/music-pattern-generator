@@ -115,12 +115,6 @@ export function createProcessor(specs, my) {
                         velocity: 0
                     });
                     
-                    // update pattern graphic view
-                    // var stepIndex = pulsesOnly[i].stepIndex,
-                    //     delayFromNowToNoteStart = (nowToScanStart + scanStartToNoteStart) * ticksToMsMultiplier,
-                    //     delayFromNowToNoteEnd = (delayFromNowToNoteStart + noteDuration) * ticksToMsMultiplier;
-                    // processCallback(stepIndex, delayFromNowToNoteStart, delayFromNowToNoteEnd);
-                    
                     if (!processorEvents[my.id]) {
                         processorEvents[my.id] = [];
                     }

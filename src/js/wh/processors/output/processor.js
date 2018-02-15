@@ -48,18 +48,9 @@ export function createProcessor(specs, my) {
             return portID;
         };
 
-        // getProcessorSpecificData = function(data) {
-        //     data.midiPortID = midiOutput.id;
-        // };
-
 
     my = my || {};
-    // my.info = {
-    //     inputs: 1,
-    //     outputs: 0
-    // };
     my.isEnabled = true;
-    // my.getProcessorSpecificData = getProcessorSpecificData;
 
     that = createMIDIProcessorBase(specs, my);
 

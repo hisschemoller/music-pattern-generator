@@ -52,17 +52,6 @@ export function createGraphic(specs, my) {
             nameCtx.textAlign = 'center';
             nameCtx.fillText(getMIDIPortByID(specs.data.portID).name, nameCanvas.width / 2, nameCanvas.height / 2);
             
-            // add listeners to parameters
-            // let params = my.processor.getParameters();
-            // params.position2d.addChangedCallback(updatePosition);
-            
-            // set position on the canvas
-            // position2d = my.data.params.position2d.value;
-            // if (!position2d || (position2d.x == 0 && position2d.y == 0)) {
-            //     // use initial position centered on the canvas
-            //     position2d = specs.data.initialPosition;
-            // }
-            // updatePosition(params.position2d, position2d, position2d);
             updatePosition(specs.data.positionX, specs.data.positionY);
         },
         
@@ -70,8 +59,6 @@ export function createGraphic(specs, my) {
          * Called before this view is deleted.
          */
         terminate = function() {
-            // let params = my.processor.getParameters();
-            // params.position2d.removeChangedCallback(updatePosition);
             canvasDirtyCallback = null;
         },
 
