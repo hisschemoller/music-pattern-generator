@@ -63,6 +63,7 @@ export default function createCanvasConnectionsView(specs, my) {
                     case e.detail.actions.TOGGLE_CONNECT_MODE:
                         toggleConnectMode(e.detail.state.connectModeActive);
                         drawConnectCanvas(e.detail.state);
+                        drawCablesCanvas(e.detail.state);
                         break;
                     
                     case e.detail.actions.ADD_PROCESSOR:
