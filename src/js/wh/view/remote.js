@@ -6,9 +6,6 @@ import createRemoteGroupView from './remote_group';
 export default function createRemoteView(specs, my) {
     var that,
         store = specs.store,
-        appView = specs.appView,
-        // midiRemote = specs.midiRemote,
-        rootEl = document.querySelector('.remote'),
         listEl = document.querySelector('.remote__list'),
         groupViews = [],
 
@@ -37,29 +34,6 @@ export default function createRemoteView(specs, my) {
                 name: processor.name,
                 parentEl: listEl
             }));
-
-            // processors.forEach(processor => {
-            //     let exists = false;
-            //     for (let i = 0, n = groupViews.length; i < n; i++) {
-            //         if (groupViews.getID() === processor.id) {
-            //             exists = true;
-            //             break;
-            //         }
-            //     }
-            //     if (!exists) {
-            //         groupViews.push(createRemoteGroupView({
-            //             id: processor.id,
-            //             parentEl: listEl
-            //         }));
-            //     }
-            // });
-
-            // var remoteGroupView = ns.createRemoteGroupView({
-            //     processor: processor,
-            //     parentEl: listEl
-            // });
-            // groupViews.push(remoteGroupView);
-            // appView.renderLayout();
         },
         
         /**
@@ -72,49 +46,14 @@ export default function createRemoteView(specs, my) {
                 if (groupViews[n].hasProcessor(processor)) {
                     groupViews[n].terminate();
                     groupViews.splice(n, 1);
-                    appView.renderLayout();
                     return false;
                 }
             }
         },
-        
-        /**
-         * Add a parameter that is assigned.
-         * @param  {Object} param Processor parameter.
-         */
-        // addParameter = function(param) {
-        //     var n = groupViews.length;
-        //     while (--n >= 0) {
-        //         if (groupViews[n].hasParameter(param)) {
-        //             groupViews[n].addParameter(param, midiRemote.unassingParameter);
-        //             appView.renderLayout();
-        //             return;
-        //         }
-        //     }
-        // },
-        
-        /**
-         * Remove a parameter that isn't assigned anymore.
-         * @param  {Object} param Processor parameter.
-         */
-        // removeParameter = function(param) {
-        //     var n = groupViews.length;
-        //     while (--n >= 0) {
-        //         if (groupViews[n].hasParameter(param)) {
-        //             groupViews[n].removeParameter(param);
-        //             appView.renderLayout();
-        //             return;
-        //         }
-        //     }
-        // };
     
     that = specs.that || {};
 
     init();
     
-    that.createRemoteGroup = createRemoteGroup;
-    that.deleteRemoteGroup = deleteRemoteGroup;
-    // that.addParameter = addParameter;
-    // that.removeParameter = removeParameter;
     return that;
 }

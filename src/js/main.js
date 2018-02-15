@@ -37,7 +37,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
         canvasView = {},
         midi = {},
         midiNetwork = {},
-        midiRemote = {},
         preferencesView = {},
         remoteView = {},
         transport = {};
@@ -62,8 +61,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     });
     createRemoteView({
         that: remoteView,
-        store,
-        appView,
+        store
     });
     createMIDI({ 
         that: midi, 
