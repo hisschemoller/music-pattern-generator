@@ -118,20 +118,6 @@ export function createGraphic(specs, my) {
             // width and height to clear center dot 
             centerDotSize = (centerDotFullRadius + 1) * 2;
             
-            // add callback to update before render.
-            // my.processor.addRenderCallback(showPlaybackPosition);
-            // my.processor.addProcessCallback(showNote);
-            // my.processor.addSelectCallback(updateSelectCircle);
-            
-            // add listeners to parameters
-            // let params = my.processor.getParameters();
-            // params.steps.addChangedCallback(updateNecklace);
-            // params.pulses.addChangedCallback(updateNecklace);
-            // params.rotation.addChangedCallback(updateNecklace);
-            // params.is_mute.addChangedCallback(updatePointer);
-            // params.position2d.addChangedCallback(updatePosition);
-            // params.name.addChangedCallback(updateName);
-            
             // set drawing values
             my.positionX = my.data.positionX;
             my.positionY = my.data.positionY;
@@ -146,13 +132,6 @@ export function createGraphic(specs, my) {
          * Called before this view is deleted.
          */
         terminate = function() {
-            // let params = my.processor.getParameters();
-            // params.steps.removeChangedCallback(updateNecklace);
-            // params.pulses.removeChangedCallback(updateNecklace);
-            // params.rotation.removeChangedCallback(updateNecklace);
-            // params.is_mute.removeChangedCallback(updatePointer);
-            // params.position2d.removeChangedCallback(updatePosition);
-            // params.name.removeChangedCallback(updateName);
             canvasDirtyCallback = null;
         },
 
