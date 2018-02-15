@@ -113,11 +113,6 @@ export function createGraphic(specs, my) {
                 case 'processor':
                     distance = Math.sqrt(Math.pow(x - my.positionX, 2) + Math.pow(y - my.positionY, 2));
                     return distance <= 10;
-                case 'inconnector':
-                    distance = Math.sqrt(Math.pow(x - my.positionX, 2) + Math.pow(y - my.positionY, 2));
-                    return distance <= my.getConnectorGraphic().canvas.width / 2;
-                case 'outconnector':
-                    return false;
                 }
         },
         
@@ -129,28 +124,6 @@ export function createGraphic(specs, my) {
             my.colorHigh = theme.colorHigh;
             my.colorMid = theme.colorMid;
             my.colorLow = theme.colorLow;
-            my.getConnectorGraphic().setTheme(theme);
-        },
-        
-        getInConnectorPoint = function() {
-            return {
-                x: my.positionX,
-                y: my.positionY
-            }
-        },
-        
-        /**
-         * Provide output connector image for editing connections.
-         * @return {Object} Contains canvas and coordinates.
-         */
-        getInConnectorGraphic = function() {
-            const canvas = my.getConnectorGraphic().canvas,
-                point = getInConnectorPoint();
-            return {
-                canvas: canvas,
-                x: point.x - (canvas.width / 2),
-                y: point.y - (canvas.height / 2)
-            };
         };
         
     my = my || {};
@@ -167,7 +140,5 @@ export function createGraphic(specs, my) {
     that.clearFromDynamicView = clearFromDynamicView;
     that.intersectsWithPoint = intersectsWithPoint;
     that.setTheme = setTheme;
-    that.getInConnectorPoint = getInConnectorPoint;
-    that.getInConnectorGraphic = getInConnectorGraphic;
     return that;
 }
