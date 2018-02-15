@@ -7,7 +7,6 @@ import addWindowResize from './windowresize';
 export default function createAppView(specs, my) {
     var that,
         store = specs.store,
-        // app = specs.app,
         rootEl = document.querySelector('#app'),
         panelsEl = document.querySelector('.panels'),
         helpEl = document.querySelector('.help'),
@@ -77,25 +76,19 @@ export default function createAppView(specs, my) {
                 store.dispatch(store.getActions().setTempo(controls.bpm.input.value));
             });
             controls.remote.input.addEventListener('change', function(e) {
-                // app.updateApp('remote', e.target.checked);
-                // app.togglePanel('remote', e.target.checked);
                 store.dispatch(store.getActions().toggleMIDILearnMode());
             });
             controls.prefs.input.addEventListener('change', function(e) {
                 store.dispatch(store.getActions().togglePanel('preferences'));
-                // app.togglePanel('preferences', e.target.checked);
             });
             controls.edit.input.addEventListener('change', function(e) {
                 store.dispatch(store.getActions().togglePanel('settings'));
-                // app.togglePanel('settings', e.target.checked);
             });
             controls.connections.input.addEventListener('change', function(e) {
                 store.dispatch(store.getActions().toggleConnectMode());
-                // app.updateApp('connections', e.target.checked);
             });
             controls.help.input.addEventListener('change', function(e) {
                 store.dispatch(store.getActions().togglePanel('help'));
-                // app.togglePanel('help', e.target.checked);
             });
             
             document.addEventListener('keyup', function(e) {
@@ -176,15 +169,6 @@ export default function createAppView(specs, my) {
                 }
             });
         },
-
-        // createSettingsView = function(processor) {
-        //     var settingsView = createSettingsView({
-        //         midiNetwork: midiNetwork,
-        //         processor: processor,
-        //         parentEl: editContentEl
-        //     });
-        //     settingsViews.push(settingsView);
-        // },
         
         /**
          * Delete settings controls view for a processor.
@@ -284,28 +268,6 @@ export default function createAppView(specs, my) {
             }
         },
         
-        // updateControl = function(property, value) {
-        //     switch(property) {
-        //         case 'bpm':
-        //             controls.bpm.input.value = value;
-        //             break;
-        //         case 'play':
-        //             controls.play.input.checked = value;
-        //             break;
-        //         case 'remote':
-        //             controls.remote.input.checked = value;
-        //             break;
-        //         case 'settings':
-        //             controls.edit.input.checked = value;
-        //             break;
-        //         case 'connections':
-        //             controls.connections.input.checked = value;
-        //             break;
-        //         default:
-        //             console.error('Unknown updateControl property:', property);
-        //     }
-        // },
-        
         showPanels = function(state) {
             helpEl.dataset.show = state.showHelpPanel;
             prefsEl.dataset.show = state.showPreferencesPanel;
@@ -320,9 +282,5 @@ export default function createAppView(specs, my) {
     
     init();
     
-    that.renderLayout = renderLayout;
-    // that.createSettingsView = createSettingsView;
-    that.deleteSettingsView = deleteSettingsView;
-    // that.updateControl = updateControl;
     return that;
 }
