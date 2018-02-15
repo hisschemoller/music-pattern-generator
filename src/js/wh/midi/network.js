@@ -1,5 +1,3 @@
-import createMIDINetworkConnections from './networkconnections';
-
 /**
  * Manages the graph of midi processors.
  */
@@ -132,7 +130,7 @@ export default function createMIDINetwork(specs, my) {
 
     my = my || {};
 
-    that = createMIDINetworkConnections(specs, my);
+    that = specs.that;
 
     init();
 

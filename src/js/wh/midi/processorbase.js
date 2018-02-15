@@ -1,8 +1,3 @@
-import createBooleanParameter from '../parameter/boolean';
-import createIntegerParameter from '../parameter/integer';
-import createItemizedParameter from '../parameter/itemized';
-import createStringParameter from '../parameter/string';
-import createVector2DParameter from '../parameter/vector2d';
 import createMIDIConnectorIn from './connectorin';
 import createMIDIConnectorOut from './connectorout';
 
