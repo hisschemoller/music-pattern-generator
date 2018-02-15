@@ -12,10 +12,6 @@
  *                                     |-------------------------------> AudioContext.currentTime
  */
 
-// window.WH = window.WH || {};
-
-// (function (ns) {
-    
 /**
  * @description Creates sequencer functionality.
  * Takes time from transport to get music events from arrangement and
@@ -392,17 +388,7 @@ export default function createTransport(specs, my) {
 
     init();
     
-    // that.start = start;
-    // that.pause = pause;
-    // that.rewind = rewind;
-    // that.toggleStartStop = toggleStartStop
     that.run = run;
-    // that.setLoopStart = setLoopStart;
-    // that.setLoopEnd = setLoopEnd;
-    // that.setLoop = setLoop;
+
     return that;
 };
-    
-//     ns.createTransport = createTransport;
-
-// })(WH);

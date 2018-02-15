@@ -15,9 +15,7 @@ export const util = ( function() {
         click: isTouchDevice ? 'touchend' : 'click',
         move: isTouchDevice ? 'touchmove' : 'mousemove',
     };
-
     
-
     return {
         isTouchDevice: isTouchDevice,
         eventType: eventType
