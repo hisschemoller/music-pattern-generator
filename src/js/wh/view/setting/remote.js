@@ -8,10 +8,6 @@ export default function createRemoteSettingView(specs, my) {
         
         init = function() {
             if (my.data.isMidiControllable) {
-                
-                // set callback on parameter
-                // my.param.addRemoteStateCallback(changeRemoteState);
-                
                 let template = document.querySelector('#template-setting-learnmode');
                 let clone = template.content.cloneNode(true);
                 learnClickLayer = clone.firstElementChild;
@@ -57,7 +53,6 @@ export default function createRemoteSettingView(specs, my) {
         },
         
         onLearnLayerClick = function(e) {
-            // learnCallback(my.data);
             my.store.dispatch(my.store.getActions().toggleMIDILearnTarget(my.processorID, my.key));
         };
     

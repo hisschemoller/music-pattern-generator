@@ -18,8 +18,6 @@ export default function createBooleanSettingView(specs, my) {
             
             let labelEl = my.el.querySelector('.toggle__label');
             labelEl.setAttribute('for', id);
-            
-            // my.param.addChangedCallback(changedCallback);
         },
         
         /**
@@ -31,16 +29,11 @@ export default function createBooleanSettingView(specs, my) {
         },
         
         onChange = function(e) {
-            // my.data.setValue(e.target.checked);
             my.store.dispatch(my.store.getActions().changeParameter(
                 my.processorID, 
                 my.key, 
                 e.target.checked));
         },
-        
-        // changedCallback = function(parameter, oldValue, newValue) {
-        //     checkEl.checked = newValue;
-        // },
         
         setValue = function(value) {
             checkEl.checked = value;
