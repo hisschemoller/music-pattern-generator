@@ -15,8 +15,6 @@ export default function createActions(specs = {}, my = {}) {
         CHANGE_PARAMETER = 'CHANGE_PARAMETER',
         RECREATE_PARAMETER = 'RECREATE_PARAMETER',
         SET_TEMPO = 'SET_TEMPO',
-        // ADD_MIDI_PORT = 'ADD_MIDI_PORT',
-        // REMOVE_MIDI_PORT = 'REMOVE_MIDI_PORT',
         MIDI_PORT_CHANGE = 'MIDI_PORT_CHANGE',
         TOGGLE_PORT_NETWORK = 'TOGGLE_PORT_NETWORK',
         TOGGLE_PORT_SYNC = 'TOGGLE_PORT_SYNC',
@@ -148,24 +146,8 @@ export default function createActions(specs = {}, my = {}) {
         SET_TEMPO: SET_TEMPO,
         setTempo: value => { return { type: SET_TEMPO, value } },
 
-        // ADD_MIDI_PORT: ADD_MIDI_PORT,
-        // addMIDIPort: (id, name, isInput) => { return { type: ADD_MIDI_PORT, id: id, name: name, isInput: isInput } },
-
-        // REMOVE_MIDI_PORT: REMOVE_MIDI_PORT,
-        // removeMIDIPort: id => { return { type: REMOVE_MIDI_PORT, id: id } },
-
         MIDI_PORT_CHANGE: MIDI_PORT_CHANGE,
         midiPortChange: data => ({ type: MIDI_PORT_CHANGE, data }),
-        // midiPortChange: (data) => {
-        //     return (dispatch, getState, getActions) => {
-        //         let port = getMIDIPortByID(data.id);
-        //         if (port) {
-
-        //         } else {
-
-        //         }
-        //     }
-        // },
 
         TOGGLE_PORT_NETWORK: TOGGLE_PORT_NETWORK,
         togglePortNetwork: (portID, isInput) => {
@@ -193,12 +175,6 @@ export default function createActions(specs = {}, my = {}) {
 
         TOGGLE_PORT_REMOTE: TOGGLE_PORT_REMOTE,
         togglePortRemote: (id, isInput) => ({ type: TOGGLE_PORT_REMOTE, id, isInput }),
-        // togglePortRemote: (id, isInput) => {
-        //     return (dispatch, getState, getActions) => {
-        //         dispatch(getActions().toggleMIDIPreference(id, isInput, 'remoteEnabled'));
-                
-        //     }
-        // },
 
         TOGGLE_MIDI_PREFERENCE: TOGGLE_MIDI_PREFERENCE,
         toggleMIDIPreference: (id, isInput, preferenceName) => ({ type: TOGGLE_MIDI_PREFERENCE, id, isInput, preferenceName }),

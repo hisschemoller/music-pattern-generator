@@ -17,8 +17,6 @@ export default function createReducers() {
                 isDarkTheme: false
             },
             transport: 'stop', // 'play|pause|stop'
-            // inputs: [],
-            // outputs: [],
             ports: [],
             connectModeActive: false,
             learnModeActive: false,
@@ -63,7 +61,6 @@ export default function createReducers() {
                         } };
 
                     // array index depends on processor type
-                    // let numInputProcessors = newState.processors.allIds.filter(item => item.type === 'input').length;
                     let numInputProcessors = newState.processors.allIds.filter(id => { newState.processors.byId[id].type === 'input' }).length;
                     switch (action.data.type) {
                         case 'input':
@@ -89,9 +86,6 @@ export default function createReducers() {
                         } };
                     delete newState.processors.byId[action.id];
                     return newState;
-                    // return Object.assign({}, state, {
-                    //     processors: state.processors.filter(processor => processor.id !== action.id)
-                    // });
                 
                 case actions.SELECT_PROCESSOR:
                     return Object.assign({}, state, {
@@ -108,14 +102,6 @@ export default function createReducers() {
                     newState.processors.byId[newState.selectedID].positionX = action.x;
                     newState.processors.byId[newState.selectedID].positionY = action.y;
                     return newState;
-                    // newState = Object.assign({}, state);
-                    // newState.processors.forEach(processor => {
-                    //     if (processor.id === newState.selectedID) {
-                    //         processor.positionX = action.x;
-                    //         processor.positionY = action.y;
-                    //     }
-                    // });
-                    // return newState;
 
                 case actions.DRAG_ALL_PROCESSORS:
                     newState = { 
@@ -129,12 +115,6 @@ export default function createReducers() {
                         newState.processors.byId[id].positionY += action.y;
                     });
                     return newState;
-                    // newState = Object.assign({}, state);
-                    // newState.processors.forEach(processor => {
-                    //     processor.positionX += action.x;
-                    //     processor.positionY += action.y;
-                    // });
-                    // return newState;
                 
                 case actions.CHANGE_PARAMETER:
                     newState = { 
@@ -159,27 +139,6 @@ export default function createReducers() {
                             break;
                     }
                     return newState;
-                    // newState = Object.assign({}, state);
-                    // newState.processors.forEach(processor => {
-                    //     if (processor.id === action.processorID) {
-                    //         const param = processor.params[action.paramKey];
-                    //         switch (param.type) {
-                    //             case 'integer':
-                    //                 param.value = Math.max(param.min, Math.min(action.paramValue, param.max));
-                    //                 break;
-                    //             case 'boolean':
-                    //                 param.value = !!action.paramValue;
-                    //                 break;
-                    //             case 'itemized':
-                    //                 param.value = action.paramValue;
-                    //                 break;
-                    //             case 'string':
-                    //                 param.value = action.paramValue;
-                    //                 break;
-                    //         }
-                    //     }
-                    // });
-                    // return newState;
                 
                 case actions.RECREATE_PARAMETER:
                     newState = { 
@@ -193,53 +152,9 @@ export default function createReducers() {
                         ...action.paramObj
                     };
                     return newState;
-                    // newState = Object.assign({}, state);
-                    // newState.processors.forEach(processor => {
-                    //     if (processor.id === action.processorID) {
-                    //         processor.params[action.paramKey] = Object.assign(
-                    //             processor.params[action.paramKey],
-                    //             action.paramObj);
-                    //     }
-                    // });
-                    // return newState;
                 
                 case actions.SET_TEMPO:
                     return Object.assign({}, state, { bpm: action.value });
-                
-                // case actions.ADD_MIDI_PORT:
-                //     newState = Object.assign({}, state);
-                //     let portObj = { 
-                //         id: action.id, 
-                //         name: action.name,
-                //         networkEnabled: false,
-                //         syncEnabled: false,
-                //         remoteEnabled: false
-                //     };
-                //     if (action.isInput) {
-                //         newState.inputs = [ ...state.inputs, portObj ]
-                //         newState.inputs.sort((a, b) => {
-                //             if (a.name < b.name) { return -1 }
-                //             if (a.name > b.name) { return 1 }
-                //             return 0;
-                //         });
-                //     } else {
-                //         newState.outputs = [ ...state.outputs, portObj ]
-                //         newState.outputs.sort((a, b) => {
-                //             if (a.name < b.name) { return -1 }
-                //             if (a.name > b.name) { return 1 }
-                //             return 0;
-                //         });
-                //     }
-                //     return newState;
-                
-                // case actions.REMOVE_MIDI_PORT:
-                //     newState = Object.assign({}, state);
-                //     if (action.isInput) {
-                //         newState.inputs = newState.inputs.filter(input => input.id !== action.id);
-                //     } else {
-                //         newState.outputs = newState.outputs.filter(output => output.id !== action.id);
-                //     }
-                //     return newState;
                 
                 case actions.MIDI_PORT_CHANGE:
                     if (getMIDIPortByID(action.data.id)) {

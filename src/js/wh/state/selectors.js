@@ -33,17 +33,12 @@ export function memoize(state, action = {}, actions) {
         case actions.ADD_PROCESSOR:
             updateProcessors(state);
             break;
-        // case actions.ADD_MIDI_PORT:
-        // case actions.REMOVE_MIDI_PORT:
         case actions.MIDI_PORT_CHANGE:
         case actions.TOGGLE_PORT_SYNC:
         case actions.TOGGLE_PORT_REMOTE:
         case actions.TOGGLE_MIDI_PREFERENCE:
             updateMIDIPorts(state);
             break;
-        // case :
-        //     updateRemoteControlledParameters(state);
-        //     break;
     }
 }
 
