@@ -3,17 +3,8 @@ let midiAccess;
 export default function createMIDI(specs) {
     var that,
         store = specs.store,
-        // preferencesView = specs.preferencesView,
-        // midiNetwork = specs.midiNetwork,
-        // midiRemote = specs.midiRemote,
-        // midiSync = specs.midiSync,
-        // transport = specs.transport,
-        // midiAccess,
         syncListeners = [],
         remoteListeners = [],
-        // inputs = [],
-        // outputs = [],
-        // dataFromStorage,
 
         init = function() {
             document.addEventListener(store.STATE_CHANGE, (e) => {
@@ -105,69 +96,8 @@ export default function createMIDI(specs) {
          * @param {Object} e MIDIConnectionEvent object.
          */
         onAccessStateChange = function(e) {
-            console.log(e.port.type, e.port.state, e.port.connection, e.port.id);
             store.dispatch(store.getActions().midiPortChange(e.port));
-            
-            // let ports = (e.port.type == 'input') ? inputs : outputs,
-            //     exists = false,
-            //     n = ports.length;
-
-            // while (--n >= 0 && exists == false) {
-            //     exists = (e.port.id == ports[n].getID());
-            // }
-
-            // if (!exists) {
-            //     if (e.port.type == 'input') {
-            //         createInput(e.port);
-            //     } else {
-            //         createOutput(e.port);
-            //     }
-            // }
         },
-        
-        /**
-         * Create a MIDI input model and view.
-         * @param  {Object} midiPort MIDIInput module.
-         */
-        // createInput = function(midiPort) {
-        //     console.log(`MIDI input port: ${midiPort.name} (${midiPort.manufacturer})' ${midiPort.id}`);
-        //     midiPort.onmidimessage = onMIDIMessage;
-        //     store.dispatch(store.getActions().addMIDIPort(midiPort.id, midiPort.name, true));
-
-            // var input = ns.createMIDIPortInput({
-            //     midiPort: midiPort,
-            //     network: midiNetwork,
-            //     sync: midiSync,
-            //     remote: midiRemote
-            // });
-            // // create a view for this port in the preferences panel
-            // preferencesView.createMIDIPortView(true, input);
-            // // store port
-            // inputs.push(input);
-            // // port initialisation last
-            // input.setup();
-        // },
-        
-        /**
-         * Create a MIDI output model and view.
-         * @param  {Object} midiPort MIDIOutput module.
-         */
-        // createOutput = function(midiPort) {
-        //     console.log(`MIDI output port: ${midiPort.name} (${midiPort.manufacturer})' ${midiPort.id}`);
-        //     store.dispatch(store.getActions().addMIDIPort(midiPort.id, midiPort.name, false));
-            // var output = ns.createMIDIPortOutput({
-            //     midiPort: midiPort,
-            //     network: midiNetwork,
-            //     sync: midiSync,
-            //     remote: midiRemote
-            // });
-            // // create a view for this port in the preferences panel
-            // preferencesView.createMIDIPortView(false, output);
-            // // store port
-            // outputs.push(output);
-            // // port initialisation last
-            // output.setup();
-        // },
 
         /**
          * Listen to enabled MIDI input ports.
@@ -195,7 +125,6 @@ export default function createMIDI(specs) {
 
         onMIDIMessage = function(e) {
             // console.log(e.data[0] & 0xf0, e.data[0] & 0x0f, e.target.id, e.data[0], e.data[1], e.data[2]);
-            
             switch (e.data[0] & 0xf0) {
                 case 240:
                     onSystemRealtimeMessage(e);
@@ -241,110 +170,16 @@ export default function createMIDI(specs) {
         },
 
         onControlChangeMessage = function(e) {
-            // if any ports listen to remote data
             if (remoteListeners.indexOf(e.target.id) > -1) {
                 store.dispatch(store.getActions().receiveMIDIControlChange(e.data));
             }
-        },
-
-        // addMIDIMessageListener = function(callback) {
-        //     const exists = midiMessageListeners.find(listener => listener === callback);
-        //     if (!exists) {
-        //         midiMessageListeners.push(callback);
-        //     }
-        // },
-
-        // removeMIDIMessageListener = function(callback) {
-        //     const index = midiMessageListeners.findIndex(listener => listener === callback);
-        //     midiMessageListeners.splice(index, 1);
-        // },
-        
-        /**
-         * Restore settings at initialisation.
-         * If port settings data from localStorage and 
-         * access to MIDI ports exists, restore port settings.
-         */
-        // restorePortSettings = function() {
-        //     if (midiAccess && dataFromStorage) {
-        //         const data = dataFromStorage;
-                
-        //         if (data.inputs) {
-        //             let inputData;
-        //             for (let i = 0, n = data.inputs.length; i < n; i++) {
-        //                 inputData = data.inputs[i];
-        //                 // find the input port by MIDIInput ID
-        //                 for (let j = 0, nn = inputs.length; j < nn; j++) {
-        //                     if (inputData.midiPortID == inputs[j].getID()) {
-        //                         inputs[j].setData(inputData);
-        //                     }
-        //                 }
-        //             }
-        //         }
-                
-        //         if (data.outputs) {
-        //             let outputData;
-        //             for (let i = 0, n = data.outputs.length; i < n; i++) {
-        //                 outputData = data.outputs[i];
-        //                 // find the output port by MIDIOutput ID
-        //                 for (let j = 0, nn = outputs.length; j < nn; j++) {
-        //                     if (outputData.midiPortID == outputs[j].getID()) {
-        //                         outputs[j].setData(outputData);
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // },
-        
-        // clearPortSettings = function() {
-        //     inputs.forEach(function(input) {
-        //         input.setData();
-        //     });
-        //     outputs.forEach(function(output) {
-        //         output.setData();
-        //     });
-        // },
-
-        /**
-         * Restore MIDI port object settings from data object.
-         * @param {Object} data Preferences data object.
-         */
-        // setData = function(data = {}) {
-        //     dataFromStorage = data;
-        //     clearPortSettings();
-        //     restorePortSettings();
-        // },
-
-        /**
-         * Write MIDI port object settings to data object.
-         * @return {Object} MIDI port object data.
-         */
-        // getData = function() {
-        //     const data = {
-        //         inputs: [],
-        //         outputs: []
-        //     };
-            
-        //     for (let i = 0, n = inputs.length; i < n; i++) {
-        //         data.inputs.push(inputs[i].getData());
-        //     }
-            
-        //     for (let i = 0, n = outputs.length; i < n; i++) {
-        //         data.outputs.push(outputs[i].getData());
-        //     }
-            
-        //     return data;
-        // };
+        };
 
     that = specs.that;
 
     init();
 
     that.connect = connect;
-    // that.addMIDIMessageListener = addMIDIMessageListener;
-    // that.removeMIDIMessageListener = removeMIDIMessageListener;
-    // that.setData = setData;
-    // that.getData = getData;
     return that;
 }
 
