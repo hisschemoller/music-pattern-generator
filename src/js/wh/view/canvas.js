@@ -138,7 +138,9 @@ export default function createCanvasView(specs, my) {
             let canvasX = e.clientX - my.canvasRect.left + window.scrollX,
                 canvasY = e.clientY - my.canvasRect.top + window.scrollY;
             
-            if (my.isConnectMode && my.intersectsConnector(canvasX, canvasY, false)) {
+            if (my.isConnectMode && my.intersectsCableHandle(canvasX, canvasY)) {
+                dragObjectType = 'cablehandle';
+            } else if (my.isConnectMode && my.intersectsConnector(canvasX, canvasY, false)) {
                 dragObjectType = 'connection';
             } else if (my.intersectsProcessor(canvasX, canvasY)) {
                 dragObjectType = 'processor';
@@ -196,6 +198,12 @@ export default function createCanvasView(specs, my) {
                     case 'processor':
                         break;
                     case 'background':
+                        break;
+                    case 'cablehandle':
+                        const connectionID = my.intersectsCableHandle(canvasX, canvasY);
+                        if (connectionID) {
+                            store.dispatch(store.getActions().disconnectProcessors(connectionID));
+                        }
                         break;
                 }
                 dragObjectType = null;

@@ -85,7 +85,7 @@ export default function createReducers() {
                         ...state,
                         processors: {
                             byId: { ...state.processors.byId },
-                            allIds: state.processors.allIds.map(id => id !== action.id)
+                            allIds: state.processors.allIds.filter(id => id !== action.id)
                         } };
                     delete newState.processors.byId[action.id];
                     return newState;
@@ -352,6 +352,12 @@ export default function createReducers() {
                         ...state,
                         connections: addToNormalizedData(state.connections, action.id, action.payload)
                     };
+                
+                case actions.DISCONNECT_PROCESSORS:
+                    return {
+                        ...state,
+                        connections: deleteFromNormalizedTable(state.connections, action.id)
+                    };
 
                 default:
                     return state;
@@ -371,6 +377,15 @@ function addToNormalizedData(stateObj, newItemID, newItem) {
     return clone;
 }
 
+function deleteFromNormalizedTable(table, id) {
+    const clone = {
+        byId: { ...table.byId },
+        allIds: table.allIds.filter(iid => iid !== id)
+    };
+    delete clone.byId[id];
+    return clone;
+}
+ 
 function assignParameter(parameters, action, state) {
     const params = { ...parameters };
     params[state.learnTargetParameterKey].remoteChannel = (action.data[0] & 0xf) + 1;

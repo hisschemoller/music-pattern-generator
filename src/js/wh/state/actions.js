@@ -30,7 +30,8 @@ export default function createActions(specs = {}, my = {}) {
         UNASSIGN_EXTERNAL_CONTROL = 'UNASSIGN_EXTERNAL_CONTROL',
         TOGGLE_PANEL = 'TOGGLE_PANEL',
         TOGGLE_CONNECT_MODE = 'TOGGLE_CONNECT_MODE',
-        CONNECT_PROCESSORS = 'CONNECT_PROCESSORS';
+        CONNECT_PROCESSORS = 'CONNECT_PROCESSORS',
+        DISCONNECT_PROCESSORS = 'DISCONNECT_PROCESSORS';
 
     return {
         SET_PREFERENCES: SET_PREFERENCES,
@@ -250,7 +251,10 @@ export default function createActions(specs = {}, my = {}) {
         toggleConnectMode: () => ({ type: TOGGLE_CONNECT_MODE }),
 
         CONNECT_PROCESSORS: CONNECT_PROCESSORS,
-        connectProcessors: payload => ({ type: CONNECT_PROCESSORS, payload, id: createUUID() })
+        connectProcessors: payload => ({ type: CONNECT_PROCESSORS, payload, id: createUUID() }),
+
+        DISCONNECT_PROCESSORS: DISCONNECT_PROCESSORS,
+        disconnectProcessors: id => ({ type: DISCONNECT_PROCESSORS, id }),
     };
 }
 
