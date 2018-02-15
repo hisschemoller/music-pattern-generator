@@ -218,7 +218,6 @@ export default function createCanvasView(specs, my) {
                 colorLow: themeStyles.getPropertyValue('--panel-bg-color')
             };
             my.setThemeOnViews();
-            my.setThemeOnConnections();
             my.markDirty();
         },
         
@@ -272,7 +271,6 @@ export default function createCanvasView(specs, my) {
     
     init();
     
-    that.setTheme = setTheme;
     that.draw = draw;
     return that;
 }

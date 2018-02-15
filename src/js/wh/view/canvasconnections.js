@@ -144,12 +144,6 @@ export default function createCanvasConnectionsView(specs, my) {
             drawActiveCableCanvas();
         },
         
-        setThemeOnConnections = function() {
-            dragData.lineColor = my.theme.colorHigh || '#333';
-            drawCablesCanvas();
-            drawConnectCanvas();
-        },
-        
         intersectsConnector = function(x, y, isInput) {
             let isIntersect = false,
                 isFound = false;
@@ -229,7 +223,6 @@ export default function createCanvasConnectionsView(specs, my) {
                     };
                     cableData.allIds.push(connectionID);
                 }
-                
             });
 
             cablesCtx.stroke();
@@ -340,7 +333,6 @@ export default function createCanvasConnectionsView(specs, my) {
     my.dragEndConnection = dragEndConnection;
     my.intersectsConnector = intersectsConnector;
     my.intersectsCableHandle = intersectsCableHandle;
-    my.setThemeOnConnections = setThemeOnConnections;
     my.addConnectionsToCanvas = addConnectionsToCanvas;
     
     that = specs.that || {};
