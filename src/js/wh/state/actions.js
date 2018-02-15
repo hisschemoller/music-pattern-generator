@@ -161,7 +161,9 @@ export default function createActions(specs = {}, my = {}) {
                         positionY: window.innerHeight - 100
                     }));
                 } else {
-                    getState().processors.forEach(processor => {
+                    const state = getState();
+                    state.processors.allIds.forEach(id => {
+                        let processor = state.processors.byId[id];
                         if (processor.portID && processor.portID === portID) {
                             dispatch(getActions().deleteProcessor(processor.id));
                         }
