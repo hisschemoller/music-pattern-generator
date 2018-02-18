@@ -218,18 +218,14 @@ export default function createReducers() {
 
                 case actions.ASSIGN_EXTERNAL_CONTROL:
                     if (state.learnModeActive && state.learnTargetProcessorID && state.learnTargetParameterKey) {
-                        return {
+                        newState = { 
                             ...state,
-                            processors: state.processors.map(processor => {
-                                if (processor.id !== state.learnTargetProcessorID) {
-                                    return processor;
-                                }
-                                return {
-                                    ...processor,
-                                    parameters: assignParameter(processor.params, action, state)
-                                }
-                            })
-                        }
+                            processors: {
+                                allIds: [ ...state.processors.allIds ],
+                                byId: { ...state.processors.byId }
+                            } };
+                        newState.processors.byId[state.learnTargetProcessorID].params = assignParameter(newState.processors.byId[state.learnTargetProcessorID].params, action, state);
+                        return newState;
                     }
                     return state;
 
@@ -302,6 +298,7 @@ function deleteFromNormalizedTable(table, id) {
 }
  
 function assignParameter(parameters, action, state) {
+    console.log(parameters, state.learnTargetParameterKey);
     const params = { ...parameters };
     params[state.learnTargetParameterKey].remoteChannel = (action.data[0] & 0xf) + 1;
     params[state.learnTargetParameterKey].remoteCC = action.data[1];

@@ -1,4 +1,3 @@
-import { getProcessorByID } from '../state/selectors';
 import createRemoteItemView from './remote_item';
 
 /**
@@ -31,19 +30,19 @@ export default function createRemoteGroupView(specs, my) {
                     case e.detail.actions.CHANGE_PARAMETER:
                         if (e.detail.action.processorID === processorID && 
                             e.detail.action.paramKey === 'name') {
-                            setName(getProcessorByID(processorID).params['name'].value);
+                            setName(e.detail.state.processors.byId[processorID].params['name'].value);
                         }
                         break;
                     
                     case e.detail.actions.ASSIGN_EXTERNAL_CONTROL:
                         if (e.detail.state.learnTargetProcessorID === processorID) {
-                            updateViews(e.detail.state.processors.find(processor => processor.id === processorID));
+                            updateViews(e.detail.state.processors.byId[processorID]);
                         }
                         break;
                     
                     case e.detail.actions.UNASSIGN_EXTERNAL_CONTROL:
                         if (e.detail.action.processorID === processorID) {
-                            updateViews(e.detail.state.processors.find(processor => processor.id === processorID));
+                            updateViews(e.detail.state.processors.byId[processorID]);
                         }
                         break;
                 }
