@@ -63,4 +63,6 @@ export default function createRemoteItemView(specs, my) {
     that = specs.that || {};
     
     initialize();
+
+    return that;
 }
