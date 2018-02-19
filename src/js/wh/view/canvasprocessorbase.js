@@ -1,5 +1,3 @@
-import { getProcessorByID } from '../state/selectors';
-
 export default function createCanvasProcessorBaseView(specs, my) {
     var that,
         connectorGraphic,
@@ -16,7 +14,7 @@ export default function createCanvasProcessorBaseView(specs, my) {
             switch (e.detail.action.type) {
                 case e.detail.actions.DRAG_SELECTED_PROCESSOR:
                 case e.detail.actions.DRAG_ALL_PROCESSORS:
-                    const processor = getProcessorByID(my.data.id);
+                    const processor = e.detail.state.processors.byId[my.data.id];
                     my.positionX = processor.positionX;
                     my.positionY = processor.positionY;
                     break;
