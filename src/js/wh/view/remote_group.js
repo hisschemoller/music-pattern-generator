@@ -60,9 +60,9 @@ export default function createRemoteGroupView(specs, my) {
         },
 
         updateViews = function(processor) {
-            for (let key in processor.parameters) {
-                if (processor.parameters.hasOwnProperty(key)) {
-                    let param = processor.parameters[key],
+            for (let key in processor.params) {
+                if (processor.params.hasOwnProperty(key)) {
+                    let param = processor.params[key],
                         isAssigned = param.isMidiControllable && param.remoteChannel && param.remoteCC,
                         viewExists = views[key];
                     if (isAssigned && !viewExists) {
