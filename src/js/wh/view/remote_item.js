@@ -64,5 +64,6 @@ export default function createRemoteItemView(specs, my) {
     
     initialize();
 
+    that.terminate = terminate;
     return that;
 }

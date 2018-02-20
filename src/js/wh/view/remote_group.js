@@ -7,12 +7,15 @@ import createRemoteItemView from './remote_item';
 export default function createRemoteGroupView(specs, my) {
     var that,
         store = specs.store,
-        processorID = specs.id,
+        processorID = specs.processor.id,
         parentEl = specs.parentEl,
         el,
         listEl,
         nameParam,
-        views = {},
+        views = {
+            byId: {},
+            allIds: []
+        },
         
         initialize = function() {
             // create the DOM element.
@@ -23,71 +26,67 @@ export default function createRemoteGroupView(specs, my) {
             
             listEl = el.querySelector('.remote__group-list');
 
-            setName(specs.name);
+            setName(specs.processor.params.byId.name.value);
+            updateViews(specs.processor);
 
-            document.addEventListener(store.STATE_CHANGE, (e) => {
-                switch (e.detail.action.type) {
-                    case e.detail.actions.CHANGE_PARAMETER:
-                        if (e.detail.action.processorID === processorID && 
-                            e.detail.action.paramKey === 'name') {
-                            setName(e.detail.state.processors.byId[processorID].params['name'].value);
-                        }
-                        break;
-                    
-                    case e.detail.actions.ASSIGN_EXTERNAL_CONTROL:
-                        if (e.detail.state.learnTargetProcessorID === processorID) {
-                            updateViews(e.detail.state.processors.byId[processorID]);
-                        }
-                        break;
-                    
-                    case e.detail.actions.UNASSIGN_EXTERNAL_CONTROL:
-                        if (e.detail.action.processorID === processorID) {
-                            updateViews(e.detail.state.processors.byId[processorID]);
-                        }
-                        break;
-                }
-            });
+            document.addEventListener(store.STATE_CHANGE, handleStateChange);
         },
         
         /**
          * Called before this view is deleted.
          */
         terminate = function() {
-            Object.values(views).forEach(view => { view.terminate() });
+            document.removeEventListener(store.STATE_CHANGE, handleStateChange);
+
+            views.allIds.forEach(id => {
+                views.byId[id].terminate();
+            });
+
             parentEl.removeChild(el);
             views = null;
             parentEl = null;
         },
 
-        updateViews = function(processor) {
-            for (let key in processor.params) {
-                if (processor.params.hasOwnProperty(key)) {
-                    let param = processor.params[key],
-                        isAssigned = param.isMidiControllable && param.remoteChannel && param.remoteCC,
-                        viewExists = views[key];
-                    if (isAssigned && !viewExists) {
-                        addView(key, param);
-                    } else if (!isAssigned && viewExists) {
-                        removeView(key);
+        handleStateChange = function(e) {
+            switch (e.detail.action.type) {
+                case e.detail.actions.CHANGE_PARAMETER:
+                    if (e.detail.action.processorID === processorID && 
+                        e.detail.action.paramKey === 'name') {
+                        setName(e.detail.state.processors.byId[processorID].params.byId.name.value);
                     }
-                }
+                    break;
             }
-            el.dataset.hasAssignments = (views.length > 0);
+        },
+
+        updateViews = function(processor) {
+            processor.params.allIds.forEach(id => {
+                const param = processor.params.byId[id],
+                    isAssigned = param.isMidiControllable && param.remoteChannel && param.remoteCC,
+                    viewExists = views.byId[id];
+                if (isAssigned && !viewExists) {
+                    addView(id, param);
+                } else if (!isAssigned && viewExists) {
+                    removeView(id);
+                }
+            });
+            el.dataset.hasAssignments = (views.allIds.length > 0);
         },
 
         addView = function(key, param) {
-            views[key] = createRemoteItemView({
+            views.byId[key] = createRemoteItemView({
                 store: store,
                 paramKey: key,
                 param: param,
                 processorID: processorID,
                 parentEl: listEl
             });
+            views.allIds.push(key);
         },
 
         removeView = function(key) {
-            views[key].terminate();
-            delete views[key];
+            views.byId[key].terminate();
+            delete views.byId[key];
+            views.allIds.splice(views.allIds.indexOf(key), 1);
         },
         
         /**
@@ -110,5 +109,6 @@ export default function createRemoteGroupView(specs, my) {
     initialize();
     
     that.terminate = terminate;
+    that.updateViews = updateViews;
     return that;
 }
