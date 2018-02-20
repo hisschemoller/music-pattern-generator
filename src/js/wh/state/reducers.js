@@ -259,9 +259,23 @@ export default function createReducers() {
                     };
                 
                 case actions.CONNECT_PROCESSORS:
+                    // abort if the connection already exists
+                    for (let i = 0, n = state.connections.allIds.length; i < n; i++) {
+                        const connection = state.connections.byId[state.connections.allIds[i]];
+                        if (connection.sourceProcessorID === action.payload.sourceProcessorID &&
+                            connection.sourceConnectorID === action.payload.sourceConnectorID &&
+                            connection.destinationProcessorID === action.payload.destinationProcessorID &&
+                            connection.destinationConnectorID === action.payload.destinationConnectorID) {
+                            return state;
+                        } 
+                    }
+                    // add new connection
                     return {
                         ...state,
-                        connections: addToNormalizedData(state.connections, action.id, action.payload)
+                        connections: {
+                            byId: { ...state.connections.byId, [action.id]: action.payload },
+                            allIds: [ ...state.connections.allIds, action.id ]
+                        }
                     };
                 
                 case actions.DISCONNECT_PROCESSORS:
@@ -280,13 +294,13 @@ export default function createReducers() {
     }
 }
 
-function addToNormalizedData(stateObj, newItemID, newItem) {
-    const clone = {
-        byId: { ...stateObj.byId, [newItemID]: newItem },
-        allIds: [ ...stateObj.allIds, newItemID ]
-    };
-    return clone;
-}
+// function addToNormalizedTable(stateObj, newItemID, newItem) {
+//     const clone = {
+//         byId: { ...stateObj.byId, [newItemID]: newItem },
+//         allIds: [ ...stateObj.allIds, newItemID ]
+//     };
+//     return clone;
+// }
 
 function deleteFromNormalizedTable(table, id) {
     const clone = {
