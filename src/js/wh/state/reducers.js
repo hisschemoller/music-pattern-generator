@@ -123,7 +123,7 @@ export default function createReducers() {
                             byId: { ...state.processors.byId },
                             allIds: [ ...state.processors.allIds ]
                         } };
-                    const param = newState.processors.byId[action.processorID].params[action.paramKey];
+                    const param = newState.processors.byId[action.processorID].params.byId[action.paramKey];
                     switch (param.type) {
                         case 'integer':
                             param.value = Math.max(param.min, Math.min(action.paramValue, param.max));
@@ -147,8 +147,8 @@ export default function createReducers() {
                             byId: { ...state.processors.byId },
                             allIds: [ ...state.processors.allIds ]
                         } };
-                    newState.processors.byId[action.processorID].params[action.paramKey] = {
-                        ...newState.processors.byId[action.processorID].params[action.paramKey],
+                    newState.processors.byId[action.processorID].params.byId[action.paramKey] = {
+                        ...newState.processors.byId[action.processorID].params.byId[action.paramKey],
                         ...action.paramObj
                     };
                     return newState;
@@ -224,24 +224,23 @@ export default function createReducers() {
                                 allIds: [ ...state.processors.allIds ],
                                 byId: { ...state.processors.byId }
                             } };
-                        newState.processors.byId[state.learnTargetProcessorID].params = assignParameter(newState.processors.byId[state.learnTargetProcessorID].params, action, state);
+                        newState.processors.byId[state.learnTargetProcessorID].params.byId = assignParameter(newState.processors.byId[state.learnTargetProcessorID].params.byId, action, state);
                         return newState;
                     }
                     return state;
 
                 case actions.UNASSIGN_EXTERNAL_CONTROL:
-                    return {
-                        ...state,
-                        processors: state.processors.map(processor => {
-                            if (processor.id !== action.processorID) {
-                                return processor;
-                            }
-                            return {
-                                ...processor,
-                                parameters: unassignParameter(processor.params, action, state)
-                            }
-                        })
-                    };
+                    if (state.learnModeActive && state.learnTargetProcessorID && state.learnTargetParameterKey) {
+                        newState = { 
+                            ...state,
+                            processors: {
+                                allIds: [ ...state.processors.allIds ],
+                                byId: { ...state.processors.byId }
+                            } };
+                        newState.processors.byId[state.learnTargetProcessorID].params.byId = unassignParameter(newState.processors.byId[state.learnTargetProcessorID].params.byId, action, state);
+                        return newState;
+                    }
+                    return state;
                 
                 case actions.TOGGLE_PANEL:
                     return {
@@ -312,7 +311,6 @@ function deleteFromNormalizedTable(table, id) {
 }
  
 function assignParameter(parameters, action, state) {
-    console.log(parameters, state.learnTargetParameterKey);
     const params = { ...parameters };
     params[state.learnTargetParameterKey].remoteChannel = (action.data[0] & 0xf) + 1;
     params[state.learnTargetParameterKey].remoteCC = action.data[1];

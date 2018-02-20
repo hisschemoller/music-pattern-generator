@@ -64,6 +64,7 @@ export default function createCanvasConnectionsView(specs, my) {
                         drawCablesCanvas(e.detail.state);
                         break;
                     
+                    case e.detail.actions.SET_PROJECT:
                     case e.detail.actions.ADD_PROCESSOR:
                     case e.detail.actions.DELETE_PROCESSOR:
                     case e.detail.actions.DRAG_SELECTED_PROCESSOR:

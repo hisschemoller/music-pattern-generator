@@ -1,5 +1,3 @@
-import { getProcessorByID } from '../state/selectors';
-
 /**
  * Manages the canvas views of the processors in the network.
  * - Processor view lifecycle.

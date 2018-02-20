@@ -1,5 +1,4 @@
 import createRemoteSettingView from './remote';
-import { getProcessorByID } from '../../state/selectors';
 
 /**
  * Processor setting view for a linear integer type parameter,
@@ -23,14 +22,14 @@ export default function createBaseSettingView(specs, my) {
                     case e.detail.actions.CHANGE_PARAMETER:
                         if (e.detail.action.processorID === my.processorID && 
                             e.detail.action.paramKey === my.key) {
-                            my.setValue(getProcessorByID(my.processorID).params[my.key].value);
+                            my.setValue(e.detail.state.processors.byId[my.processorID].params.byId[my.key].value);
                         }
                         break;
                     
                     case e.detail.actions.RECREATE_PARAMETER:
                         if (e.detail.action.processorID === my.processorID && 
                             e.detail.action.paramKey === my.key) {
-                            my.data = getProcessorByID(my.processorID).params[my.key];
+                            my.data = e.detail.state.processors.byId[my.processorID].params.byId[my.key];
                             my.initData();
                         }
                         break;

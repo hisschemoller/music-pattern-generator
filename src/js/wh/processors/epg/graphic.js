@@ -1,5 +1,4 @@
 import createCanvasProcessorBaseView from '../../view/canvasprocessorbase';
-import { getProcessorByID } from '../../state/selectors';
 import { getEuclidPattern, rotateEuclidPattern } from './euclid';
 import TWEEN from '@tweenjs/tween.js';
 import { PPQN } from '../../core/config';
@@ -92,8 +91,6 @@ export function createGraphic(specs, my) {
             centerDotSize = (centerDotFullRadius + 1) * 2;
             
             // set drawing values
-            my.positionX = my.data.positionX;
-            my.positionY = my.data.positionY;
             updatePosition(my.positionX, my.positionY)
             updateName();
             updateNecklace();
@@ -112,8 +109,8 @@ export function createGraphic(specs, my) {
         handleStateChanges = function(e) {
             switch (e.detail.action.type) {
                 case e.detail.actions.CHANGE_PARAMETER:
-                    if (e.detail.action.processorID === my.data.id) {
-                        my.data.params = getProcessorByID(my.data.id).params;
+                    if (e.detail.action.processorID === my.id) {
+                        my.params = e.detail.state.processors.byId[my.id].params.byId;
                         switch (e.detail.action.paramKey) {
                             case 'steps':
                             case 'pulses':
@@ -145,9 +142,9 @@ export function createGraphic(specs, my) {
         draw = function(position, processorEvents) {
             showPlaybackPosition(position);
             let event;
-            if (processorEvents[my.data.id] && processorEvents[my.data.id].length) {
-                for (let i = 0, n = processorEvents[my.data.id].length; i < n; i++) {
-                    event = processorEvents[my.data.id][i];
+            if (processorEvents[my.id] && processorEvents[my.id].length) {
+                for (let i = 0, n = processorEvents[my.id].length; i < n; i++) {
+                    event = processorEvents[my.id][i];
                     showNote(event.stepIndex, event.delayFromNowToNoteStart, event.delayFromNowToNoteEnd);
                 }
             }
@@ -171,7 +168,7 @@ export function createGraphic(specs, my) {
          */
         showNote = function(stepIndex, noteStartDelay, noteStopDelay) {
             // get the coordinates of the dot for this step
-            let steps = my.data.params.steps.value;
+            let steps = my.params.steps.value;
             
             // retain necklace dot state in object
             dotAnimations[stepIndex] = {
@@ -199,9 +196,9 @@ export function createGraphic(specs, my) {
         },
 
         updateDuration = function() {
-            const rate = my.data.params.is_triplets.value ? my.data.params.rate.value * (2 / 3) : my.data.params.rate.value,
+            const rate = my.params.is_triplets.value ? my.params.rate.value * (2 / 3) : my.params.rate.value,
                 stepDuration = rate * PPQN;
-            duration = my.data.params.steps.value * stepDuration;
+            duration = my.params.steps.value * stepDuration;
         },
         
         /**
@@ -210,9 +207,9 @@ export function createGraphic(specs, my) {
          * If steps change it might invalidate the pointer.
          */
         updateNecklace = function() {
-            let steps = my.data.params.steps.value,
-                pulses = my.data.params.pulses.value,
-                rotation = my.data.params.rotation.value,
+            let steps = my.params.steps.value,
+                pulses = my.params.pulses.value,
+                rotation = my.params.rotation.value,
                 euclid, rad, x, y;
             
             euclid = getEuclidPattern(steps, pulses);
@@ -356,7 +353,7 @@ export function createGraphic(specs, my) {
          * Update the pointer that connects the dots.
          */
         updatePointer = function() {
-            let isMute = my.data.params.is_mute.value,
+            let isMute = my.params.is_mute.value,
                 pointerRadius = isMute ? pointerMutedRadius : necklaceRadius,
                 pointerX = isMute ? 15 : 19,
                 pointerY = isMute ? 15 : 6;
@@ -409,10 +406,8 @@ export function createGraphic(specs, my) {
          * Update the pattern's name.
          */
         updateName = function() {
-            // let name = my.processor.getParamValue('name');
-            let name = my.data.params.name.value;
             nameCtx.clearRect(0, 0, nameCanvas.width, nameCanvas.height);
-            nameCtx.fillText(my.data.params.name.value, nameCanvas.width / 2, nameCanvas.height / 2);
+            nameCtx.fillText(my.params.name.value, nameCanvas.width / 2, nameCanvas.height / 2);
             canvasDirtyCallback();
         },
         

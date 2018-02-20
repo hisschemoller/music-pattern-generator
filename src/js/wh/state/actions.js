@@ -102,7 +102,7 @@ export default function createActions(specs = {}, my = {}) {
                 fullData.id = id;
                 fullData.positionX = data.positionX;
                 fullData.positionY = data.positionY;
-                fullData.params.name.value = getProcessorDefaultName(getState().processors);
+                fullData.params.byId.name.value = getProcessorDefaultName(getState().processors);
                 dispatch(getActions().addProcessor(fullData));
                 dispatch(getActions().selectProcessor(id));
             }
@@ -193,13 +193,15 @@ export default function createActions(specs = {}, my = {}) {
         RECEIVE_MIDI_CC: RECEIVE_MIDI_CC,
         receiveMIDIControlChange: (data) => {
             return (dispatch, getState, getActions) => {
-                if (getState().learnModeActive) {
+                const state = getState();
+                if (state.learnModeActive) {
                     dispatch(getActions().assignExternalControl(data));
                 } else {
                     // find all parameters with the channel and conctrol
                     const remoteChannel = (data[0] & 0xf) + 1,
                         remoteCC = data[1];
-                    getState().processors.forEach(processor => {
+                    state.processors.allIds.forEach(id => {
+                        const processor = state.processors.byId[id];
                         for (let key in processor.parameters) {
                             if (processor.parameters.hasOwnProperty(key)) {
                                 const param = processor.parameters[key];
@@ -264,7 +266,7 @@ function getProcessorDefaultName(processors) {
         highestNumber = 0,
         staticName = 'Processor';
     processors.allIds.forEach(id => {
-        name = processors.byId[id].params.name.value;
+        name = processors.byId[id].params.byId.name.value;
         if (name && name.indexOf(staticName) == 0) {
             spaceIndex = name.lastIndexOf(' ');
             if (spaceIndex != -1) {

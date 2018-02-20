@@ -20,40 +20,37 @@ export default function createSettingsPanel(specs, my) {
             el.innerHTML = specs.template;
             
             // loop through all processor parameters and add setting view if required
-            for (var key in data.params) {
-                if (data.params.hasOwnProperty(key)) {
+            data.params.allIds.forEach(id => {
+                // only create setting if there's a container el for it in the settings panel
+                var settingContainerEl = el.querySelector('.' + id);
+                if (settingContainerEl) {
+                    let paramData = data.params.byId[id],
+                        settingView,
+                        settingViewSpecs = {
+                            store: store,
+                            key: id,
+                            data: paramData,
+                            parentEl: settingContainerEl,
+                            processorID: data.id
+                        };
                     
-                    // only create setting if there's a container el for it in the settings panel
-                    var settingContainerEl = el.querySelector('.' + key);
-                    if (settingContainerEl) {
-                        let paramData = data.params[key],
-                            settingView,
-                            settingViewSpecs = {
-                                store: store,
-                                key: key,
-                                data: paramData,
-                                parentEl: settingContainerEl,
-                                processorID: data.id
-                            };
-                        
-                        // create the setting view based on the parameter type
-                        switch (paramData.type) {
-                            case 'integer':
-                                settingView = createIntegerSettingView(settingViewSpecs);
-                                break;
-                            case 'boolean':
-                                settingView = createBooleanSettingView(settingViewSpecs);
-                                break;
-                            case 'itemized':
-                                settingView = createItemizedSettingView(settingViewSpecs);
-                                break;
-                            case 'string':
-                                settingView = createStringSettingView(settingViewSpecs);
-                                break;
-                        }
+                    // create the setting view based on the parameter type
+                    switch (paramData.type) {
+                        case 'integer':
+                            settingView = createIntegerSettingView(settingViewSpecs);
+                            break;
+                        case 'boolean':
+                            settingView = createBooleanSettingView(settingViewSpecs);
+                            break;
+                        case 'itemized':
+                            settingView = createItemizedSettingView(settingViewSpecs);
+                            break;
+                        case 'string':
+                            settingView = createStringSettingView(settingViewSpecs);
+                            break;
                     }
                 }
-            }
+            });
             
             // default delete button of the settings panel
             if (el) {

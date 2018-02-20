@@ -1,6 +1,5 @@
 import createMIDIProcessorBase from '../../midi/processorbase';
 import { PPQN } from '../../core/config';
-import { getProcessorByID } from '../../state/selectors';
 import { getEuclidPattern, rotateEuclidPattern } from './euclid';
 
 export function createProcessor(specs, my) {
@@ -18,7 +17,7 @@ export function createProcessor(specs, my) {
                 switch (e.detail.action.type) {
                     case e.detail.actions.CHANGE_PARAMETER:
                         if (e.detail.action.processorID === my.id) {
-                            my.params = getProcessorByID(my.id).params;
+                            my.params = e.detail.state.processors.byId[my.id].params.byId;
                             switch (e.detail.action.paramKey) {
                                 case 'steps':
                                     updatePulsesAndRotation();

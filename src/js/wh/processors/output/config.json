@@ -16,12 +16,15 @@
         "allIds": []
     },
     "params": {
-        "name": {
-            "label": "Name",
-            "type": "string",
-            "default": "Unnamed",
-            "value": "Unnamed",
-            "isMidiControllable": false
-        }
+        "byId": {
+            "name": {
+                "label": "Name",
+                "type": "string",
+                "default": "Unnamed",
+                "value": "Unnamed",
+                "isMidiControllable": false
+            }
+        },
+        "allIds": ["name"]
     }
 }
