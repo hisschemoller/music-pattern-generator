@@ -202,17 +202,15 @@ export default function createActions(specs = {}, my = {}) {
                         remoteCC = data[1];
                     state.processors.allIds.forEach(id => {
                         const processor = state.processors.byId[id];
-                        for (let key in processor.parameters) {
-                            if (processor.parameters.hasOwnProperty(key)) {
-                                const param = processor.parameters[key];
-                                if (param.isMidiControllable && 
-                                    param.remoteChannel === remoteChannel &&
-                                    param.remoteCC == remoteCC) {
-                                    let paramValue = midiControlToParameterValue(param, data[2]);
-                                    dispatch(getActions().changeParameter(processor.id, key, paramValue));
-                                }
+                        processor.params.allIds.forEach(id => {
+                            const param = processor.params.byId[id];
+                            if (param.isMidiControllable && 
+                                param.remoteChannel === remoteChannel &&
+                                param.remoteCC == remoteCC) {
+                                let paramValue = midiControlToParameterValue(param, data[2]);
+                                dispatch(getActions().changeParameter(processor.id, id, paramValue));
                             }
-                        }
+                        });
                     });
                 }
             }
