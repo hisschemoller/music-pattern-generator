@@ -1,5 +1,3 @@
-import { getMIDIPortByID } from '../state/selectors';
-
 /**
  * MIDI input or output port processor view.
  */
@@ -50,7 +48,7 @@ export default function createMIDIBaseView(specs, my) {
                     case e.detail.actions.TOGGLE_PORT_SYNC:
                     case e.detail.actions.TOGGLE_PORT_REMOTE:
                         if (e.detail.action.id === my.id) {
-                            const port = getMIDIPortByID(my.id);
+                            const port = e.detail.state.ports.byId[my.id];
                             my.networkEl.querySelector('[type=checkbox]').checked = port.networkEnabled;
                             my.syncEl.querySelector('[type=checkbox]').checked = port.syncEnabled;
                             my.remoteEl.querySelector('[type=checkbox]').checked = port.remoteEnabled;

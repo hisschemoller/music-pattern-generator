@@ -32,7 +32,7 @@ export default function createCanvasProcessorBaseView(specs, my) {
         getID = function() {
             return my.id;
         };
-    console.log(specs);
+    
     my = my || {};
     my.params = specs.data.params.byId;
     my.store = specs.store;

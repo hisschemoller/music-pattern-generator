@@ -71,13 +71,11 @@ export default function createMIDI(specs) {
             const outputs = midiAccess.outputs.values();
             
             for (let port = inputs.next(); port && !port.done; port = inputs.next()) {
-                // createInput(port.value);
                 store.dispatch(store.getActions().midiPortChange(port.value));
                 port.value.onmidimessage = onMIDIMessage;
             }
             
             for (let port = outputs.next(); port && !port.done; port = outputs.next()) {
-                // createOutput(port.value);
                 store.dispatch(store.getActions().midiPortChange(port.value));
             }
             
@@ -104,7 +102,8 @@ export default function createMIDI(specs) {
          */
         updateMIDISyncListeners = function(ports) {
             syncListeners = [];
-            ports.forEach(port => {
+            ports.allIds.forEach(id => {
+                const port = ports.byId[id];
                 if (port.syncEnabled) {
                     syncListeners.push(port.id);
                 }
@@ -116,7 +115,8 @@ export default function createMIDI(specs) {
          */
         updateMIDIRemoteListeners = function(ports) {
             syncListeners = [];
-            ports.forEach(port => {
+            ports.allIds.forEach(id => {
+                const port = ports.byId[id];
                 if (port.remoteEnabled) {
                     remoteListeners.push(port.id);
                 }

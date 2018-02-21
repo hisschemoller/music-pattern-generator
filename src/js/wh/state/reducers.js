@@ -1,9 +1,6 @@
-import { getMIDIPortByID } from '../state/selectors';
-
 export default function createReducers() {
 
     const initialState = {
-            bpm: 120,
             processors: {
                 byId: {},
                 allIds: []
@@ -12,12 +9,16 @@ export default function createReducers() {
                 byId: {},
                 allIds: []
             },
+            ports: {
+                byId: {},
+                allIds: []
+            },
+            bpm: 120,
             selectedID: null,
             preferences: {
                 isDarkTheme: false
             },
             transport: 'stop', // 'play|pause|stop'
-            ports: [],
             connectModeActive: false,
             learnModeActive: false,
             learnTargetProcessorID: null,
@@ -40,6 +41,7 @@ export default function createReducers() {
                     return { ...initialState };
 
                 case actions.SET_PROJECT:
+                    console.log({ ...state, ...action.data });
                     return { ...state, ...action.data };
 
                 case actions.SET_THEME:
@@ -157,30 +159,34 @@ export default function createReducers() {
                     return Object.assign({}, state, { bpm: action.value });
                 
                 case actions.MIDI_PORT_CHANGE:
-                    if (getMIDIPortByID(action.data.id)) {
-                        newState = Object.assign({}, state, {
-                            ports: state.ports.map(port => {
-                                if (port.id == action.data.id) {
-                                    port.connection = action.data.connection;
-                                    port.state = action.data.state;
-                                }
-                                return port;
-                            })
-                        });
+                    newState = { 
+                        ...state,
+                        ports: {
+                            byId: { ...state.ports.byId },
+                            allIds: [ ...state.ports.allIds ]
+                    }};
+                    
+                    if (state.ports.byId[action.midiPort.id]) {
+                        // update existing port
+                        newState.ports.byId[action.midiPort.id] = {
+                            ...state.ports.byId[action.midiPort.id],
+                            connection: action.midiPort.connection,
+                            state: action.midiPort.state
+                        }
                     } else {
-                        newState = Object.assign({}, state, {
-                            ports: [...state.ports, {
-                                id: action.data.id, 
-                                type: action.data.type,
-                                name: action.data.name,
-                                connection: action.data.connection,
-                                state: action.data.state,
-                                networkEnabled: false,
-                                syncEnabled: false,
-                                remoteEnabled: false
-                            }]
-                        });
-                        newState.ports.sort((a, b) => {
+                        // add new port
+                        newState.ports.byId[action.midiPort.id] = {
+                            id: action.midiPort.id, 
+                            type: action.midiPort.type,
+                            name: action.midiPort.name,
+                            connection: action.midiPort.connection,
+                            state: action.midiPort.state,
+                            networkEnabled: false,
+                            syncEnabled: false,
+                            remoteEnabled: false
+                        }
+                        newState.ports.allIds.push(action.midiPort.id);
+                        newState.ports.allIds.sort((a, b) => {
                             if (a.name < b.name) { return -1 }
                             if (a.name > b.name) { return 1 }
                             return 0;
@@ -189,13 +195,13 @@ export default function createReducers() {
                     return newState;
                 
                 case actions.TOGGLE_PORT_SYNC:
-                    return toggleMIDIPreference(state, action.id, action.isInput, 'syncEnabled');
+                    return toggleMIDIPreference(state, action.id, 'syncEnabled');
                 
                 case actions.TOGGLE_PORT_REMOTE:
-                    return toggleMIDIPreference(state, action.id, action.isInput, 'remoteEnabled');
+                    return toggleMIDIPreference(state, action.id, 'remoteEnabled');
                 
                 case actions.TOGGLE_MIDI_PREFERENCE:
-                    return toggleMIDIPreference(state, action.id, action.isInput, action.preferenceName);
+                    return toggleMIDIPreference(state, action.id, action.preferenceName);
                 
                 case actions.TOGGLE_MIDI_LEARN_MODE:
                     return Object.assign({}, state, { 
@@ -324,14 +330,17 @@ function unassignParameter(parameters, action, state) {
     return params;
 }
 
-function toggleMIDIPreference(state, id, isInput, preferenceName) {
-    return {
+function toggleMIDIPreference(state, id, preferenceName) {
+    const newState = {
         ...state,
-        ports: state.ports.map(port => {
-            if (port.id === id) {
-                port[preferenceName] = !port[preferenceName];
-            }
-            return port;
-        })
+        ports: {
+            allIds: [ ...state.ports.allIds ],
+            byId: { ...state.ports.byId }
+        }
     };
+    newState.ports.byId[id] = {
+        ...newState.ports.byId[id],
+        [preferenceName]: !state.ports.byId[id][preferenceName]
+    };
+    return newState;
 }

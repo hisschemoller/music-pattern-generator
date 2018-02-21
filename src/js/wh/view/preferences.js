@@ -56,7 +56,8 @@ export default function createPreferencesView(specs) {
          * @param {Array} ports MIDI port objects.
          */
         updateMIDIPortViews = function(ports) {
-            ports.forEach(port => {
+            ports.allIds.forEach(id => {
+                const port = ports.byId[id];
                 let view = midiPortViews.find(view => port.id === view.getID());
                 if (view && port.state === 'disconnected') {
                     view.terminate();

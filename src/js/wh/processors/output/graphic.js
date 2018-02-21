@@ -1,5 +1,4 @@
 import createCanvasProcessorBaseView from '../../view/canvasprocessorbase';
-import { getMIDIPortByID } from '../../state/selectors';
 
 /**
  * MIDI output object drawn on canvas.
@@ -49,7 +48,8 @@ export function createGraphic(specs, my) {
             nameCtx.fillStyle = my.colorMid;
             nameCtx.font = '14px sans-serif';
             nameCtx.textAlign = 'center';
-            nameCtx.fillText(getMIDIPortByID(specs.data.portID).name, nameCanvas.width / 2, nameCanvas.height / 2);
+            console.log(my.params);
+            nameCtx.fillText(my.params.name.value, nameCanvas.width / 2, nameCanvas.height / 2);
             
             updatePosition(specs.data.positionX, specs.data.positionY);
         },

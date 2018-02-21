@@ -1,5 +1,4 @@
 import { createUUID } from '../core/util';
-import { getMIDIPortByID } from '../state/selectors';
 
 export default function createActions(specs = {}, my = {}) {
     const SET_PREFERENCES = 'SET_PREFERENCES',
@@ -102,7 +101,7 @@ export default function createActions(specs = {}, my = {}) {
                 fullData.id = id;
                 fullData.positionX = data.positionX;
                 fullData.positionY = data.positionY;
-                fullData.params.byId.name.value = getProcessorDefaultName(getState().processors);
+                fullData.params.byId.name.value = data.name || getProcessorDefaultName(getState().processors);
                 dispatch(getActions().addProcessor(fullData));
                 dispatch(getActions().selectProcessor(id));
             }
@@ -147,21 +146,22 @@ export default function createActions(specs = {}, my = {}) {
         setTempo: value => { return { type: SET_TEMPO, value } },
 
         MIDI_PORT_CHANGE: MIDI_PORT_CHANGE,
-        midiPortChange: data => ({ type: MIDI_PORT_CHANGE, data }),
+        midiPortChange: midiPort => ({ type: MIDI_PORT_CHANGE, midiPort }),
 
         TOGGLE_PORT_NETWORK: TOGGLE_PORT_NETWORK,
         togglePortNetwork: (portID, isInput) => {
             return (dispatch, getState, getActions) => {
                 dispatch(getActions().toggleMIDIPreference(portID, isInput, 'networkEnabled'));
-                if (getMIDIPortByID(portID).networkEnabled) {
+                const state = getState();
+                if (state.ports.byId[portID].networkEnabled) {
                     dispatch(getActions().createProcessor({ 
                         type: 'output', 
-                        portID: portID, 
+                        portID: portID,
+                        name: state.ports.byId[portID].name,
                         positionX: window.innerWidth / 2,
                         positionY: window.innerHeight - 100
                     }));
                 } else {
-                    const state = getState();
                     state.processors.allIds.forEach(id => {
                         let processor = state.processors.byId[id];
                         if (processor.portID && processor.portID === portID) {
