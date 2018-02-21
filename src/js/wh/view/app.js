@@ -111,13 +111,13 @@ export default function createAppView(specs, my) {
 
                     case e.detail.actions.SET_PROJECT:
                     case e.detail.actions.NEW_PROJECT:
-                        setProject(e.detail.state.processors);
+                        setProject(e.detail.state);
                         showPanels(e.detail.state);
                         controls.bpm.input.value = e.detail.state.bpm;
                         break;
                     
                     case e.detail.actions.ADD_PROCESSOR:
-                        createSettingsViews(e.detail.state.processors);
+                        createSettingsViews(e.detail.state);
                         renderLayout();
                         break;
                     
@@ -154,9 +154,9 @@ export default function createAppView(specs, my) {
          * Create settings controls view for a processor.
          * @param  {Object} processor MIDI processor to control with the settings.
          */
-        createSettingsViews = function(processors) {
-            processors.allIds.forEach((id, i) => {
-                const processorData = processors.byId[id];
+        createSettingsViews = function(state) {
+            state.processors.allIds.forEach((id, i) => {
+                const processorData = state.processors.byId[id];
                 if (!settingsViews[i] || (id !== settingsViews[i].getID())) {
                     try {
                         const template = require(`html-loader!../processors/${processorData.type}/settings.html`);
@@ -164,7 +164,8 @@ export default function createAppView(specs, my) {
                             data: processorData,
                             store: store,
                             parentEl: editContentEl,
-                            template: template
+                            template: template,
+                            isSelected: state.selectedID === processorData.id
                         }));
                     } catch(err) {}
                 }
@@ -186,12 +187,12 @@ export default function createAppView(specs, my) {
             }
         },
 
-        setProject = function(processors) {
+        setProject = function(state) {
             var n = settingsViews.length;
             while (--n >= 0) {
                 deleteSettingsView(settingsViews[n].getID());
             }
-            createSettingsViews(processors);
+            createSettingsViews(state);
         },
         
         renderLayout = function(leftColumn = true, rightColumn = true) {

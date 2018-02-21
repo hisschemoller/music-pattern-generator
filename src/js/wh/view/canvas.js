@@ -60,6 +60,7 @@ export default function createCanvasView(specs, my) {
                     case e.detail.actions.NEW_PROJECT:
                     case e.detail.actions.SET_PROJECT:
                         my.setProcessorViews(e.detail.state.processors);
+                        my.selectProcessorView(e.detail.state.selectedID);
                         break;
                     
                     case e.detail.actions.ADD_PROCESSOR:
