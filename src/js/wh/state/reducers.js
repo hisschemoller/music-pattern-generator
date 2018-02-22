@@ -28,7 +28,7 @@ export default function createReducers() {
             showSettingsPanel: false,
         },
         
-        reduce = function(state = initialState, action = {}, actions) {
+        reduce = function(state = initialState, action = {}, actions = {}) {
             let newState;
             switch(action.type) {
 

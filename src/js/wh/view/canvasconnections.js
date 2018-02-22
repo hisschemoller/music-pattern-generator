@@ -78,18 +78,19 @@ export default function createCanvasConnectionsView(specs, my) {
             });
 
             createConnectorGraphic();
-            
-            my.addWindowResizeCallback(onResize);
-            onResize();
         },
         
-        onResize = function() {
+        resizeConnections = function() {
             connectorsCanvas.width = rootEl.clientWidth;
             connectorsCanvas.height = rootEl.clientHeight;
             cablesCanvas.width = rootEl.clientWidth;
             cablesCanvas.height = rootEl.clientHeight;
             activeCableCanvas.width = rootEl.clientWidth;
             activeCableCanvas.height = rootEl.clientHeight;
+
+            const state = store.getState();
+            drawConnectCanvas(state);
+            drawCablesCanvas(state);
         },
         
         /**
@@ -330,6 +331,7 @@ export default function createCanvasConnectionsView(specs, my) {
 
     my = my || {};
     my.isConnectMode = false,
+    my.resizeConnections = resizeConnections;
     my.dragMoveConnection = dragMoveConnection;
     my.dragEndConnection = dragEndConnection;
     my.intersectsConnector = intersectsConnector;

@@ -95,6 +95,7 @@ export default function createCanvasView(specs, my) {
             dynamicCanvas.width = rootEl.clientWidth;
             dynamicCanvas.height = rootEl.clientHeight;
             my.canvasRect = dynamicCanvas.getBoundingClientRect();
+            my.resizeConnections();
             markDirty();
         },
         

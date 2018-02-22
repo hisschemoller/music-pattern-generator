@@ -7,6 +7,10 @@ export default function createStore(specs = {}, my = {}) {
         actions = specs.actions,
         reducers = specs.reducers,
         currentState,
+
+        init = () => {
+            currentState = reducers.reduce();
+        },
         
         dispatch = (action) => {
             // thunk or not
@@ -44,6 +48,8 @@ export default function createStore(specs = {}, my = {}) {
         };
 
     that = specs.that || {};
+
+    init();
     
     that.STATE_CHANGE = STATE_CHANGE;
     that.dispatch = dispatch;
