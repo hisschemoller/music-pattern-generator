@@ -25,9 +25,8 @@ export default function createPreferencesView(specs) {
 
             document.addEventListener(store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
-                    case e.detail.actions.SET_PREFERENCES:
                     case e.detail.actions.SET_THEME:
-                        updateControl('dark-theme', e.detail.state.preferences.isDarkTheme);
+                        updateControl('dark-theme', e.detail.state.theme === 'dark');
                         break;
                     
                     case e.detail.actions.MIDI_PORT_CHANGE:

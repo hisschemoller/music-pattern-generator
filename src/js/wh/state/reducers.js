@@ -15,9 +15,7 @@ export default function createReducers() {
             },
             bpm: 120,
             selectedID: null,
-            preferences: {
-                isDarkTheme: false
-            },
+            theme: 'light', // 'light|dark' 
             transport: 'stop', // 'play|pause|stop'
             connectModeActive: false,
             learnModeActive: false,
@@ -32,11 +30,6 @@ export default function createReducers() {
             let newState;
             switch(action.type) {
 
-                case actions.SET_PREFERENCES:
-                    newState = Object.assign({}, state);
-                    newState.preferences.isDarkTheme = action.data ? action.data.isDarkTheme : false;
-                    return newState;
-
                 case actions.NEW_PROJECT:
                     return { ...initialState };
 
@@ -45,11 +38,7 @@ export default function createReducers() {
                     return { ...state, ...action.data };
 
                 case actions.SET_THEME:
-                    return Object.assign({}, state, {
-                        preferences: {
-                            isDarkTheme: action.data || false
-                        }
-                    });
+                    return { ...state, theme: state.theme === 'light' ? 'dark' : 'light' };
 
                 case actions.ADD_PROCESSOR:
                     newState = { 

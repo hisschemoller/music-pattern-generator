@@ -1,8 +1,7 @@
 import { createUUID } from '../core/util';
 
 export default function createActions(specs = {}, my = {}) {
-    const SET_PREFERENCES = 'SET_PREFERENCES',
-        NEW_PROJECT = 'NEW_PROJECT',
+    const NEW_PROJECT = 'NEW_PROJECT',
         SET_PROJECT = 'SET_PROJECT',
         SET_THEME = 'SET_THEME',
         CREATE_PROCESSOR = 'CREATE_PROCESSOR',
@@ -31,11 +30,6 @@ export default function createActions(specs = {}, my = {}) {
         DISCONNECT_PROCESSORS = 'DISCONNECT_PROCESSORS';
 
     return {
-        SET_PREFERENCES: SET_PREFERENCES,
-        setPreferences: (data) => {
-            return { type: SET_PREFERENCES, data };
-        },
-
         importProject: (file) => {
             return (dispatch, getState, getActions) => {
                 let fileReader = new FileReader();
@@ -87,8 +81,8 @@ export default function createActions(specs = {}, my = {}) {
         },
 
         SET_THEME: SET_THEME,
-        setTheme: (data) => {
-            return { type: SET_THEME, data };
+        setTheme: (themeName) => {
+            return { type: SET_THEME, themeName };
         },
 
         CREATE_PROCESSOR: CREATE_PROCESSOR,

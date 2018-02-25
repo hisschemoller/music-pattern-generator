@@ -104,9 +104,8 @@ export default function createAppView(specs, my) {
 
             document.addEventListener(store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
-                    case e.detail.actions.SET_PREFERENCES:
                     case e.detail.actions.SET_THEME:
-                        rootEl.dataset.theme = 'dev'; // e.detail.state.preferences.isDarkTheme ? 'dark' : '';
+                        rootEl.dataset.theme = e.detail.state.theme; // 'dev';
                         break;
 
                     case e.detail.actions.SET_PROJECT:

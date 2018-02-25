@@ -51,10 +51,8 @@ export default function createCanvasView(specs, my) {
 
             document.addEventListener(store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
-                    case e.detail.actions.SET_PREFERENCES:
                     case e.detail.actions.SET_THEME:
-                        const themeName = e.detail.state.preferences.isDarkTheme ? 'dark' : '';
-                        setTheme(themeName);
+                        setTheme(e.detail.state.theme);
                         break;
 
                     case e.detail.actions.NEW_PROJECT:
@@ -208,9 +206,9 @@ export default function createCanvasView(specs, my) {
         
         /**
          * Set the theme colours of the processor canvas views.
-         * @param {String} theme Theme name, 'dark' or ''.
+         * @param {String} themeName Theme name, 'dark' or 'light'.
          */
-        setTheme = function(theme) {
+        setTheme = function(themeName) {
             // possibly have to set theme data attribute first
             var themeStyles = window.getComputedStyle(document.querySelector('[data-theme]'));
 
@@ -219,7 +217,8 @@ export default function createCanvasView(specs, my) {
                 colorMid: themeStyles.getPropertyValue('--border-color'),
                 colorLow: themeStyles.getPropertyValue('--panel-bg-color')
             };
-            my.setThemeOnViews();
+            
+            my.setThemeOnProcessors(my.theme);
             my.markDirty();
         },
         
