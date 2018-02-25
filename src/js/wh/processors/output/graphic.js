@@ -13,6 +13,8 @@ export function createGraphic(specs, my) {
         lineWidth = 2,
         
         initialise = function() {
+            document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
+
             // offscreen canvas for static shapes
             const width = 100,
                 height = 50,
@@ -57,7 +59,18 @@ export function createGraphic(specs, my) {
          * Called before this view is deleted.
          */
         terminate = function() {
+            document.removeEventListener(my.store.STATE_CHANGE, handleStateChanges);
             canvasDirtyCallback = null;
+        },
+
+        handleStateChanges = function(e) {
+            switch (e.detail.action.type) {
+                case e.detail.actions.DRAG_SELECTED_PROCESSOR:
+                case e.detail.actions.DRAG_ALL_PROCESSORS:
+                    const processor = e.detail.state.processors.byId[my.id];
+                    updatePosition(processor.positionX, processor.positionY);
+                    break;
+            }
         },
 
         setSelected = function(isSelected) {

@@ -1,24 +1,10 @@
 export default function createCanvasProcessorBaseView(specs, my) {
     var that,
-        connectorGraphic,
 
         initialiseBase = function() {
-            document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
         },
 
         terminateBase = function() {
-            document.removeEventListener(my.store.STATE_CHANGE, handleStateChanges);
-        },
-
-        handleStateChanges = function(e) {
-            switch (e.detail.action.type) {
-                case e.detail.actions.DRAG_SELECTED_PROCESSOR:
-                case e.detail.actions.DRAG_ALL_PROCESSORS:
-                    const processor = e.detail.state.processors.byId[my.id];
-                    my.positionX = processor.positionX;
-                    my.positionY = processor.positionY;
-                    break;
-            }
         },
         
         getPosition2d = function() {

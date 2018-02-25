@@ -91,7 +91,7 @@ export function createGraphic(specs, my) {
             centerDotSize = (centerDotFullRadius + 1) * 2;
             
             // set drawing values
-            updatePosition(my.positionX, my.positionY)
+            updatePosition(specs.data.positionX, specs.data.positionY);
             updateName();
             updateNecklace();
             redrawStaticCanvas();
@@ -131,6 +131,12 @@ export function createGraphic(specs, my) {
                                 break;
                         }
                     }
+                    break;
+
+                case e.detail.actions.DRAG_SELECTED_PROCESSOR:
+                case e.detail.actions.DRAG_ALL_PROCESSORS:
+                    const processor = e.detail.state.processors.byId[my.id];
+                    updatePosition(processor.positionX, processor.positionY);
                     break;
             }
         },
@@ -564,7 +570,6 @@ export function createGraphic(specs, my) {
     that.terminate = terminate;
     that.setSelected = setSelected;
     that.draw = draw;
-    that.updatePosition = updatePosition;
     that.addToStaticView = addToStaticView;
     that.addToDynamicView = addToDynamicView;
     that.clearFromDynamicView = clearFromDynamicView;
