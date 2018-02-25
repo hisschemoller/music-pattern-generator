@@ -83,7 +83,6 @@ export function createGraphic(specs, my) {
             nameCanvas.height = 40;
             nameCanvas.width = radius * 2;
             nameCtx = nameCanvas.getContext('2d');
-            nameCtx.fillStyle = my.colorMid;
             nameCtx.font = '14px sans-serif';
             nameCtx.textAlign = 'center';
             
@@ -412,6 +411,7 @@ export function createGraphic(specs, my) {
          * Update the pattern's name.
          */
         updateName = function() {
+            nameCtx.fillStyle = my.colorMid;
             nameCtx.clearRect(0, 0, nameCanvas.width, nameCanvas.height);
             nameCtx.fillText(my.params.name.value, nameCanvas.width / 2, nameCanvas.height / 2);
             canvasDirtyCallback();
@@ -556,7 +556,6 @@ export function createGraphic(specs, my) {
             necklaceCtx.fillStyle = my.colorHigh;
             necklaceCtx.strokeStyle = my.colorHigh;
             pointerCtx.strokeStyle = my.colorHigh;
-            nameCtx.fillStyle = my.colorMid;
             updateName();
             updateNecklace();
         };

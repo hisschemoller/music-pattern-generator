@@ -115,12 +115,12 @@ export default function createCanvasProcessorViews(specs, my) {
         /**
          * Update all processor views with changed theme.
          */
-        setThemeOnViews = function() {
-            for (let i = 0, n = views.length; i < n; i++) {
-                if (views[i].setTheme instanceof Function) {
-                    views[i].setTheme(my.theme);
+        setThemeOnProcessors = function(theme) {
+            views.forEach(view => {
+                if (view.setTheme instanceof Function) {
+                    view.setTheme(theme);
                 }
-            }
+            });
         };
 
     my = my || {};
@@ -132,7 +132,7 @@ export default function createCanvasProcessorViews(specs, my) {
     my.dragSelectedProcessor = dragSelectedProcessor;
     my.dragAllProcessors = dragAllProcessors;
     my.getProcessorViews = getProcessorViews;
-    my.setThemeOnViews = setThemeOnViews;
+    my.setThemeOnProcessors = setThemeOnProcessors;
     
     that = specs.that || {};
     

@@ -11,47 +11,31 @@ export function createGraphic(specs, my) {
         nameCanvas,
         nameCtx,
         lineWidth = 2,
+        width = 100,
+        height = 50,
+        radius = 10,
+        boxWidth = 80,
         
         initialise = function() {
             document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
 
             // offscreen canvas for static shapes
-            const width = 100,
-                height = 50,
-                radius = 10,
-                boxWidth = 80;
             staticCanvas = document.createElement('canvas');
             staticCanvas.height = height;
             staticCanvas.width = width;
             staticCtx = staticCanvas.getContext('2d');
             staticCtx.lineWidth = lineWidth;
-            staticCtx.strokeStyle = my.colorHigh;
-            staticCtx.clearRect(0, 0, width, height);
-            staticCtx.save();
-            staticCtx.translate(width / 2, height / 2 - 10);
-            staticCtx.beginPath();
-            // box
-            staticCtx.rect(-boxWidth / 2, -radius, boxWidth, radius * 2);
-            // arrow
-            staticCtx.moveTo(-boxWidth / 2, radius);
-            staticCtx.lineTo(0, radius + 20)
-            staticCtx.lineTo(boxWidth / 2, radius);
-            // circle
-            staticCtx.moveTo(radius, 0);
-            staticCtx.arc(0, 0, radius, 0, Math.PI * 2, true);
-            staticCtx.stroke();
-            staticCtx.restore90;
             
             // offscreen canvas for the name
             nameCanvas = document.createElement('canvas');
             nameCanvas.height = 40;
             nameCanvas.width = 200;
             nameCtx = nameCanvas.getContext('2d');
-            nameCtx.fillStyle = my.colorMid;
             nameCtx.font = '14px sans-serif';
             nameCtx.textAlign = 'center';
-            nameCtx.fillText(my.params.name.value, nameCanvas.width / 2, nameCanvas.height / 2);
             
+            updateGraphic();
+            updateName();
             updatePosition(specs.data.positionX, specs.data.positionY);
         },
         
@@ -78,6 +62,40 @@ export function createGraphic(specs, my) {
         },
 
         draw = function() {},
+
+        /**
+         * Redraw the graphic after a change.
+         */
+        updateGraphic = function() {
+            console.log(my.colorHigh);
+            staticCtx.strokeStyle = my.colorHigh;
+
+            staticCtx.clearRect(0, 0, width, height);
+            staticCtx.save();
+            staticCtx.translate(width / 2, height / 2 - 10);
+            staticCtx.beginPath();
+            // box
+            staticCtx.rect(-boxWidth / 2, -radius, boxWidth, radius * 2);
+            // arrow
+            staticCtx.moveTo(-boxWidth / 2, radius);
+            staticCtx.lineTo(0, radius + 20)
+            staticCtx.lineTo(boxWidth / 2, radius);
+            // circle
+            staticCtx.moveTo(radius, 0);
+            staticCtx.arc(0, 0, radius, 0, Math.PI * 2, true);
+            staticCtx.stroke();
+            staticCtx.restore();
+        },
+        
+        /**
+         * Update the pattern's name.
+         */
+        updateName = function() {
+            nameCtx.fillStyle = my.colorMid;
+            nameCtx.clearRect(0, 0, nameCanvas.width, nameCanvas.height);
+            nameCtx.fillText(my.params.name.value, nameCanvas.width / 2, nameCanvas.height / 2);
+            canvasDirtyCallback();
+        },
         
         /**
          * Update pattern's position on the 2D canvas.
@@ -136,6 +154,8 @@ export function createGraphic(specs, my) {
             my.colorHigh = theme.colorHigh;
             my.colorMid = theme.colorMid;
             my.colorLow = theme.colorLow;
+            updateGraphic();
+            updateName();
         };
         
     my = my || {};
