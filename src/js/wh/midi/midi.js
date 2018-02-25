@@ -154,15 +154,15 @@ export default function createMIDI(specs) {
         onSystemRealtimeMessage = function(e) {
             if (syncListeners.indexOf(e.target.id) > -1) {
                 switch (e.data[0]) {
-                    case 248:
+                    case 248: // clock
                         break;
-                    case 250:
-                        store.dispatch(store.getActions().setTransport('stop'));
-                        break;
-                    case 251:
+                    case 250: // start
                         store.dispatch(store.getActions().setTransport('play'));
                         break;
-                    case 252:
+                    case 251: // continue
+                        store.dispatch(store.getActions().setTransport('play'));
+                        break;
+                    case 252: // stop
                         store.dispatch(store.getActions().setTransport('pause'));
                         break;
                 }
