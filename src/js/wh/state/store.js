@@ -36,6 +36,7 @@ export default function createStore(specs = {}, my = {}) {
         },
         
         persist = () => {
+            dispatch(getActions().newProject());
             return;
             const name = 'persist';
             window.addEventListener('beforeunload', e => {

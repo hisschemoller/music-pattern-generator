@@ -1,3 +1,5 @@
+import { getThemeColors } from '../state/selectors';
+
 /**
  * Manages the canvas views of the processors in the network.
  * - Processor view lifecycle.
@@ -11,6 +13,25 @@ export default function createCanvasProcessorViews(specs, my) {
         views = [],
         dragOffsetX,
         dragOffsetY,
+
+        init = function() {
+            document.addEventListener(store.STATE_CHANGE, (e) => {
+                switch (e.detail.action.type) {
+                    case e.detail.actions.SET_THEME:
+                        setTheme();
+                        break;
+                }
+            });
+        },
+
+        setTheme = function() {
+            const themeColors = getThemeColors();
+            views.forEach(view => {
+                if (view.setTheme instanceof Function) {
+                    view.setTheme(themeColors);
+                }
+            });
+        },
 
         setProcessorViews = function(newProcessors) {
             clearProcessorViews();
@@ -40,7 +61,8 @@ export default function createCanvasProcessorViews(specs, my) {
                     const view = module.createGraphic({ 
                         data: processorData,
                         store: store,
-                        canvasDirtyCallback: my.markDirty
+                        canvasDirtyCallback: my.markDirty,
+                        theme: getThemeColors()
                     });
                     views.splice(i, 0, view);
                 }
@@ -110,17 +132,6 @@ export default function createCanvasProcessorViews(specs, my) {
         
         getProcessorViews = function() {
             return views;
-        },
-        
-        /**
-         * Update all processor views with changed theme.
-         */
-        setThemeOnProcessors = function(theme) {
-            views.forEach(view => {
-                if (view.setTheme instanceof Function) {
-                    view.setTheme(theme);
-                }
-            });
         };
 
     my = my || {};
@@ -132,9 +143,10 @@ export default function createCanvasProcessorViews(specs, my) {
     my.dragSelectedProcessor = dragSelectedProcessor;
     my.dragAllProcessors = dragAllProcessors;
     my.getProcessorViews = getProcessorViews;
-    my.setThemeOnProcessors = setThemeOnProcessors;
     
     that = specs.that || {};
+
+    init();
     
     return that;
 }

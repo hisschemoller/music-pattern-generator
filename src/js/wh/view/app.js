@@ -104,10 +104,6 @@ export default function createAppView(specs, my) {
 
             document.addEventListener(store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
-                    case e.detail.actions.SET_THEME:
-                        rootEl.dataset.theme = e.detail.state.theme; // 'dev';
-                        break;
-
                     case e.detail.actions.SET_PROJECT:
                     case e.detail.actions.NEW_PROJECT:
                         setProject(e.detail.state);

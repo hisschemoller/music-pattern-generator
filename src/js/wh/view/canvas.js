@@ -25,7 +25,6 @@ import TWEEN from '@tweenjs/tween.js';
 export default function createCanvasView(specs, my) {
     var that,
         store = specs.store,
-        // midiNetwork = specs.midiNetwork,
         rootEl,
         staticCanvas,
         dynamicCanvas,
@@ -51,14 +50,11 @@ export default function createCanvasView(specs, my) {
 
             document.addEventListener(store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
-                    case e.detail.actions.SET_THEME:
-                        setTheme(e.detail.state.theme);
-                        break;
-
                     case e.detail.actions.NEW_PROJECT:
                     case e.detail.actions.SET_PROJECT:
                         my.setProcessorViews(e.detail.state.processors);
                         my.selectProcessorView(e.detail.state.selectedID);
+                        my.markDirty();
                         break;
                     
                     case e.detail.actions.ADD_PROCESSOR:
@@ -202,24 +198,6 @@ export default function createCanvasView(specs, my) {
                 }
                 dragObjectType = null;
             }
-        },
-        
-        /**
-         * Set the theme colours of the processor canvas views.
-         * @param {String} themeName Theme name, 'dark' or 'light'.
-         */
-        setTheme = function(themeName) {
-            // possibly have to set theme data attribute first
-            var themeStyles = window.getComputedStyle(document.querySelector('[data-theme]'));
-
-            my.theme = {
-                colorHigh: themeStyles.getPropertyValue('--text-color'),
-                colorMid: themeStyles.getPropertyValue('--border-color'),
-                colorLow: themeStyles.getPropertyValue('--panel-bg-color')
-            };
-            
-            my.setThemeOnProcessors(my.theme);
-            my.markDirty();
         },
         
         /**

@@ -58,16 +58,13 @@ export function createGraphic(specs, my) {
             staticCanvas.width = radius * 2;
             staticCtx = staticCanvas.getContext('2d');
             staticCtx.lineWidth = lineWidth;
-            staticCtx.strokeStyle = my.colorHigh;
             
             // offscreen canvas for dots ring and polygon
             necklaceCanvas = document.createElement('canvas');
             necklaceCanvas.height = radius * 2;
             necklaceCanvas.width = radius * 2;
             necklaceCtx = necklaceCanvas.getContext('2d');
-            necklaceCtx.fillStyle = my.colorHigh;
             necklaceCtx.lineWidth = lineWidth;
-            necklaceCtx.strokeStyle = my.colorHigh;
             
             // offscreen canvas for the pointer
             pointerCanvas = document.createElement('canvas');
@@ -75,7 +72,6 @@ export function createGraphic(specs, my) {
             pointerCanvas.width = centerRadius * 2;
             pointerCtx = pointerCanvas.getContext('2d');
             pointerCtx.lineWidth = lineWidth;
-            pointerCtx.strokeStyle = my.colorHigh;
             pointerCanvasCenter = pointerCanvas.width / 2;
             
             // offscreen canvas for the name
@@ -90,9 +86,8 @@ export function createGraphic(specs, my) {
             centerDotSize = (centerDotFullRadius + 1) * 2;
             
             // set drawing values
+            setTheme(specs.theme);
             updatePosition(specs.data.positionX, specs.data.positionY);
-            updateName();
-            updateNecklace();
             redrawStaticCanvas();
             updateDuration();
         },

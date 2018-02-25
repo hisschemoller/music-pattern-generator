@@ -34,8 +34,7 @@ export function createGraphic(specs, my) {
             nameCtx.font = '14px sans-serif';
             nameCtx.textAlign = 'center';
             
-            updateGraphic();
-            updateName();
+            setTheme(specs.theme);
             updatePosition(specs.data.positionX, specs.data.positionY);
         },
         
@@ -67,7 +66,6 @@ export function createGraphic(specs, my) {
          * Redraw the graphic after a change.
          */
         updateGraphic = function() {
-            console.log(my.colorHigh);
             staticCtx.strokeStyle = my.colorHigh;
 
             staticCtx.clearRect(0, 0, width, height);

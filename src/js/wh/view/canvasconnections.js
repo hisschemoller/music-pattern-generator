@@ -1,3 +1,5 @@
+import { getThemeColors } from '../state/selectors';
+
 /**
  * Canvas processor connector input and output points,
  * cables between the processor connectors,
@@ -42,7 +44,6 @@ export default function createCanvasConnectionsView(specs, my) {
             isDragging: false,
             startPoint: {x: 0, y: 0},
             endPoint: {x: 0, y: 0},
-            lineColor: '#ccc',
             lineWidth: 1,
             lineWidthActive: 2
         },
@@ -64,7 +65,6 @@ export default function createCanvasConnectionsView(specs, my) {
                         drawCablesCanvas(e.detail.state);
                         break;
                     
-                    case e.detail.actions.SET_PROJECT:
                     case e.detail.actions.ADD_PROCESSOR:
                     case e.detail.actions.DELETE_PROCESSOR:
                     case e.detail.actions.DRAG_SELECTED_PROCESSOR:
@@ -74,10 +74,16 @@ export default function createCanvasConnectionsView(specs, my) {
                         drawConnectCanvas(e.detail.state);
                         drawCablesCanvas(e.detail.state);
                         break;
+                    
+                    case e.detail.actions.SET_PROJECT:
+                    case e.detail.actions.NEW_PROJECT:
+                    case e.detail.actions.SET_THEME:
+                        createConnectorGraphic();
+                        drawConnectCanvas(e.detail.state);
+                        drawCablesCanvas(e.detail.state);
+                        break;
                 }
             });
-
-            createConnectorGraphic();
         },
         
         resizeConnections = function() {
@@ -97,9 +103,10 @@ export default function createCanvasConnectionsView(specs, my) {
          * Create the connector canvas once and use it for all 
          * processor input and output connectors.
          */
-        createConnectorGraphic = function(theme) {
+        createConnectorGraphic = function() {
             const lineWidth = 2,
-                size = (connectorRadius + lineWidth) * 2;
+                size = (connectorRadius + lineWidth) * 2,
+                themeColors = getThemeColors();
 
             connectorCanvas = document.createElement('canvas');
             connectorCanvas.width = size;
@@ -107,7 +114,7 @@ export default function createCanvasConnectionsView(specs, my) {
 
             connectorCtx = connectorCanvas.getContext('2d');
             connectorCtx.lineWidth = lineWidth;
-            connectorCtx.strokeStyle = theme ? theme.colorHigh : '#333333';
+            connectorCtx.strokeStyle = themeColors.colorHigh;
             connectorCtx.setLineDash([4, 4]);
 
             connectorCtx.save();
@@ -197,10 +204,12 @@ export default function createCanvasConnectionsView(specs, my) {
          * or when Connect Mode is entered or exited.
          */
         drawCablesCanvas = function(state) {
+            const themeColors = getThemeColors();
+
             cableData.byId = {};
             cableData.allIds = [];
             cablesCtx.clearRect(0, 0, cablesCanvas.width, cablesCanvas.height);
-            cablesCtx.strokeStyle = '#cccccc';
+            cablesCtx.strokeStyle = themeColors.colorMid;
             cablesCtx.beginPath();
 
             state.connections.allIds.forEach(connectionID => {
@@ -258,7 +267,7 @@ export default function createCanvasConnectionsView(specs, my) {
             activeCableCtx.clearRect(0, 0, activeCableCanvas.width, activeCableCanvas.height);
             if (dragData.isDragging) {
                 activeCableCtx.lineWidth = 2;
-                activeCableCtx.strokeStyle = dragData.lineColor;
+                activeCableCtx.strokeStyle = getThemeColors().colorHigh;
                 activeCableCtx.beginPath();
                 drawCable(activeCableCtx, dragData.startPoint, dragData.endPoint);
                 activeCableCtx.stroke();
