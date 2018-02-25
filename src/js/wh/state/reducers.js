@@ -31,7 +31,10 @@ export default function createReducers() {
             switch(action.type) {
 
                 case actions.NEW_PROJECT:
-                    return { ...initialState };
+                    return { 
+                        ...initialState,
+                        ports: state.ports
+                    };
 
                 case actions.SET_PROJECT:
                     console.log({ ...state, ...action.data });
