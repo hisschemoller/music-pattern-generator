@@ -50,7 +50,7 @@ export function createSequencer (specs, my) {
          */
         updateView = function(position) {
             if (renderThrottleCounter % 2 === 0) {
-                canvasView.draw(position, processorEvents);
+                canvasView.draw(msec2tick(position), processorEvents);
                 Object.keys(processorEvents).forEach(v => processorEvents[v] = []);
             }
             renderThrottleCounter++;
