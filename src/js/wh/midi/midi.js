@@ -16,6 +16,11 @@ export default function createMIDI(specs) {
                     case e.detail.actions.TOGGLE_PORT_REMOTE:
                         updateMIDIRemoteListeners(e.detail.state.ports);
                         break;
+                    
+                    case e.detail.actions.SET_PROJECT:
+                        updateMIDISyncListeners(e.detail.state.ports);
+                        updateMIDIRemoteListeners(e.detail.state.ports);
+                        break;
                 }
             });
         },
@@ -78,8 +83,6 @@ export default function createMIDI(specs) {
             for (let port = outputs.next(); port && !port.done; port = outputs.next()) {
                 store.dispatch(store.getActions().midiPortChange(port.value));
             }
-            
-            // restorePortSettings();
 
             midiAccess.onstatechange = onAccessStateChange;
         },
@@ -114,7 +117,7 @@ export default function createMIDI(specs) {
          * Listen to enabled MIDI input ports.
          */
         updateMIDIRemoteListeners = function(ports) {
-            syncListeners = [];
+            remoteListeners = [];
             ports.allIds.forEach(id => {
                 const port = ports.byId[id];
                 if (port.remoteEnabled) {
