@@ -268,9 +268,17 @@ export default function createAppView(specs, my) {
         
         showPanels = function(state) {
             helpEl.dataset.show = state.showHelpPanel;
+            controls.help.input.checked = state.showHelpPanel;
+
             prefsEl.dataset.show = state.showPreferencesPanel;
+            controls.prefs.input.checked  = state.showPreferencesPanel;
+
             remoteEl.dataset.show = state.learnModeActive;
+            controls.remote.input.checked = state.learnModeActive;
+
             editEl.dataset.show = state.showSettingsPanel;
+            controls.edit.input.checked = state.showSettingsPanel;
+            
             renderLayout();
         };
     
