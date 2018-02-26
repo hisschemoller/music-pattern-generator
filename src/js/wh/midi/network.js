@@ -12,7 +12,8 @@ export default function createMIDINetwork(specs, my) {
                 switch (e.detail.action.type) {
                     case e.detail.actions.NEW_PROJECT:
                     case e.detail.actions.SET_PROJECT:
-                        clearProcessors();
+                        disconnectProcessors(e.detail.state.connections);
+                        deleteProcessors(e.detail.state.processors);
                         createProcessors(e.detail.state.processors);
                         connectProcessors(e.detail.state.connections);
                         break;
@@ -22,8 +23,8 @@ export default function createMIDINetwork(specs, my) {
                         break;
                     
                     case e.detail.actions.DELETE_PROCESSOR:
-                        deleteProcessors(e.detail.state.processors);
                         disconnectProcessors(e.detail.state.connections);
+                        deleteProcessors(e.detail.state.processors);
                         break;
                     
                     case e.detail.actions.CONNECT_PROCESSORS:
@@ -150,21 +151,6 @@ export default function createMIDINetwork(specs, my) {
         process = function(start, end, nowToScanStart, ticksToMsMultiplier, offset, processorEvents) {
             for (var i = 0; i < numProcessors; i++) {
                 processors[i].process(start, end, nowToScanStart, ticksToMsMultiplier, offset, processorEvents);
-            }
-        },
-
-        /**
-         * Clear the whole network.
-         * Remove all processors except the inputs and outputs.
-         * Remove all the connections.
-         */
-        clearProcessors = function() {
-            let type, n = numProcessors;
-            while (--n >= 0) {
-                type = processors[n].getType();
-                if (type !== 'input' && type !== 'output') {
-                    deleteProcessor(processors[n]);
-                }
             }
         };
 
