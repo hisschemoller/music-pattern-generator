@@ -12,23 +12,26 @@ export default function createMIDINetwork(specs, my) {
                 switch (e.detail.action.type) {
                     case e.detail.actions.NEW_PROJECT:
                     case e.detail.actions.SET_PROJECT:
-                        setProcessors(e.detail.state.processors);
+                        clearProcessors();
+                        createProcessors(e.detail.state.processors);
+                        connectProcessors(e.detail.state.connections);
                         break;
 
                     case e.detail.actions.ADD_PROCESSOR:
-                        createProcessor(e.detail.state.processors);
+                        createProcessors(e.detail.state.processors);
                         break;
                     
                     case e.detail.actions.DELETE_PROCESSOR:
-                        deleteProcessor(e.detail.action.id);
+                        deleteProcessors(e.detail.state.processors);
+                        disconnectProcessors(e.detail.state.connections);
                         break;
                     
                     case e.detail.actions.CONNECT_PROCESSORS:
-                        connectProcessors(e.detail.action.payload);
+                        connectProcessors(e.detail.state.connections);
                         break;
                     
                     case e.detail.actions.DISCONNECT_PROCESSORS:
-                        // TODO: disconnect the actual processors
+                        disconnectProcessors(e.detail.state.connections);
                         break;
                 }
             });
@@ -36,12 +39,18 @@ export default function createMIDINetwork(specs, my) {
 
         /**
          * Create a new processor in the network.
-         * @param {Array} state Array of all processor data.
+         * @param {Object} state State processors table.
          */
-        createProcessor = function(procsState) {
+        createProcessors = function(procsState) {
             procsState.allIds.forEach((id, i) => {
                 const processorData = procsState.byId[id];
-                if (!processors[i] || (id !== processors[i].getID())) {
+                let exists = false;
+                processors.forEach(processor => {
+                    if (processor.getID() === id) {
+                        exists = true;
+                    }
+                });
+                if (!exists) {
                     const module = require(`../processors/${processorData.type}/processor`);
                     const processor = module.createProcessor({
                         data: processorData,
@@ -55,38 +64,78 @@ export default function createMIDINetwork(specs, my) {
 
         /**
          * Delete a processor.
-         * @param {String} id ID of processor to delete.
+         * @param {Object} state State processors table.
          */
-        deleteProcessor = function(id) {
-            var processor;
-            for (var i = 0, n = processors.length; i < n; i++) {
-                if (processors[i].getID() === id) {
-                    processor = processors[i];
-                    if (typeof processor.terminate === 'function') {
+        deleteProcessors = function(procsState) {
+            for (let i = processors.length - 1, n = 0; i >= n; i--) {
+                let exists = false;
+                procsState.allIds.forEach(processorID => {
+                    if (processorID === processors[i].getID()) {
+                        exists = true;
+                    }
+                });
+                if (!exists) {
+                    const processor = processors[i];
+                    if (processor.terminate instanceof Function) {
                         processor.terminate();
                     }
-                    processors.splice(processors.indexOf(processor), 1);
-                    break;
+                    processors.splice(i, 1);
                 }
             }
-            numProcessors = processors.length;
+        },
+        
+        /**
+         * Go through all connection data and create the connections 
+         * that don't yet exist.
+         */
+        connectProcessors = function(connections) {
+            connections.allIds.forEach(connectionID => {
+                const connection = connections.byId[connectionID];
+                processors.forEach(sourceProcessor => {
+                    if (sourceProcessor.getID() === connection.sourceProcessorID) {
+                        let exists = false;
+                        sourceProcessor.getDestinations().forEach(destinationProcessor => {
+                            if (destinationProcessor.getID() === connection.destinationProcessorID) {
+                                exists = true;
+                            }
+                        });
+                        if (!exists) {
+                            processors.forEach(destinationProcessor => {
+                                if (destinationProcessor.getID() === connection.destinationProcessorID) {
+                                    sourceProcessor.connect(destinationProcessor);
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        },
 
-            // TODO: if a processor is deleted select the next processor 
-        },
-        
-        connectProcessors = function(payload) {
-            const sourceProcessor = processors.find(processor => processor.getID() === payload.sourceProcessorID);
-            const destinationProcessor = processors.find(processor => processor.getID() === payload.destinationProcessorID);
-            
-            if (sourceProcessor && destinationProcessor) {
-                sourceProcessor.connect(destinationProcessor);
-            }
-        },
-        
-        disconnectProcessors = function(sourceProcessor, destinationProcessor) {
-            if (sourceProcessor.getDestinations().includes(destinationProcessor)) {
-                sourceProcessor.disconnect(destinationProcessor);
-            }
+        /**
+         * Go through all processor outputs and check if 
+         * they still exist in the state. If not, disconnect them.
+         * 
+         * TODO: allow for processors with multiple inputs or outputs.
+         */
+        disconnectProcessors = function(connections) {
+            processors.forEach(sourceProcessor => {
+                if (sourceProcessor.getDestinations instanceof Function) {
+                    const destinationProcessors = sourceProcessor.getDestinations();
+                    destinationProcessors.forEach(destinationProcessor => {
+                        let exists = false;
+                        connections.allIds.forEach(connectionID => {
+                            const connection = connections.byId[connectionID];
+                            if (connection.sourceProcessorID === sourceProcessor.getID() &&
+                                connection.destinationProcessorID === destinationProcessor.getID()) {
+                                exists = true;
+                            }
+                        });
+                        if (!exists) {
+                            sourceProcessor.disconnect(destinationProcessor);
+                        }
+                    });
+                }
+            });
         },
 
         /**
@@ -102,16 +151,6 @@ export default function createMIDINetwork(specs, my) {
             for (var i = 0; i < numProcessors; i++) {
                 processors[i].process(start, end, nowToScanStart, ticksToMsMultiplier, offset, processorEvents);
             }
-        },
-
-        setProcessors = function(newProcessors) {
-            clearProcessors();
-            newProcessors.allIds.forEach(id => {
-                let processor = newProcessors.byId[id];
-                if (processor.type !== 'input' && processor.type !== 'output') {
-                    createProcessor(newProcessors);
-                }
-            });
         },
 
         /**
