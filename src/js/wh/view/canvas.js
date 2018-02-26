@@ -63,6 +63,7 @@ export default function createCanvasView(specs, my) {
                     
                     case e.detail.actions.DELETE_PROCESSOR:
                         my.deleteProcessorView(e.detail.action.id);
+                        my.selectProcessorView(e.detail.state.selectedID);
                         break;
                     
                     case e.detail.actions.SELECT_PROCESSOR:

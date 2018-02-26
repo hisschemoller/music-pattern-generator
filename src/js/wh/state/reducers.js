@@ -72,6 +72,7 @@ export default function createReducers() {
                     return newState;
                 
                 case actions.DELETE_PROCESSOR:
+                    const index = state.processors.allIds.indexOf(action.id);
                     newState = { 
                         ...state,
                         processors: {
@@ -79,6 +80,18 @@ export default function createReducers() {
                             allIds: state.processors.allIds.filter(id => id !== action.id)
                         } };
                     delete newState.processors.byId[action.id];
+                    // select the next processor, if any, or a previous one
+                    let newIndex;
+                    if (newState.selectedID === action.id && newState.processors.allIds.length) {
+                        if (newState.processors.allIds[index]) {
+                            newIndex = index;
+                        } else if (index > 0) {
+                            newIndex = index - 1;
+                        } else {
+                            newIndex = 0;
+                        }
+                        newState.selectedID = newState.processors.allIds[newIndex];
+                    }
                     return newState;
                 
                 case actions.SELECT_PROCESSOR:

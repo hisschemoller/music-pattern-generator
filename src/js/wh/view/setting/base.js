@@ -42,6 +42,7 @@ export default function createBaseSettingView(specs, my) {
                         break;
                     
                     case e.detail.actions.SELECT_PROCESSOR:
+                    case e.detail.actions.DELETE_PROCESSOR:
                         if (my.data.isMidiControllable) {
                             if (e.detail.state.learnModeActive) {
                                 my.changeRemoteState(e.detail.state.selectedID == my.processorID ? 'enter' : 'exit');

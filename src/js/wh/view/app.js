@@ -118,6 +118,7 @@ export default function createAppView(specs, my) {
                     
                     case e.detail.actions.DELETE_PROCESSOR:
                         deleteSettingsView(e.detail.action.id);
+                        showPanels(e.detail.state);
                         renderLayout();
                         break;
 

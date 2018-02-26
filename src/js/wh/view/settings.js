@@ -63,6 +63,7 @@ export default function createSettingsPanel(specs, my) {
             document.addEventListener(store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
                     case e.detail.actions.SELECT_PROCESSOR:
+                    case e.detail.actions.DELETE_PROCESSOR:
                         show(e.detail.state.selectedID === data.id);
                         break;
                 }
