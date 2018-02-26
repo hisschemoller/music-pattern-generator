@@ -49,9 +49,13 @@ export default function createMIDIBaseView(specs, my) {
                     case e.detail.actions.TOGGLE_PORT_SYNC:
                     case e.detail.actions.TOGGLE_PORT_REMOTE:
                         const port = e.detail.state.ports.byId[my.id];
-                        my.networkEl.querySelector('[type=checkbox]').checked = port.networkEnabled;
-                        my.syncEl.querySelector('[type=checkbox]').checked = port.syncEnabled;
-                        my.remoteEl.querySelector('[type=checkbox]').checked = port.remoteEnabled;
+                        if (port) {
+                            my.networkEl.querySelector('[type=checkbox]').checked = port.networkEnabled;
+                            my.syncEl.querySelector('[type=checkbox]').checked = port.syncEnabled;
+                            my.remoteEl.querySelector('[type=checkbox]').checked = port.remoteEnabled;
+                        } else {
+                            console.log(`MIDI port with id ${my.id} not found.`);
+                        }
                         break;
                 }
             });
