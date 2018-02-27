@@ -17,15 +17,8 @@ export default function createBaseSettingView(specs, my) {
             // show label
             my.el.querySelector('.setting__label-text').innerHTML = my.data.label;
 
-            // restore learn mode
-            const state = specs.store.getState();
-            if (my.data.isMidiControllable && state.learnModeActive) {
-                my.changeRemoteState('enter');
-                if (my.data.remoteChannel != null && my.data.remoteCC != null) {
-                    my.changeRemoteState('assigned');
-                } else if (state.learnTargetProcessorID === my.processorID && state.learnTargetParameterKey === my.key) {
-                    my.changeRemoteState('selected');
-                }
+            if (my.data.isMidiControllable) {
+                my.changeRemoteState(specs.store.getState());
             }
 
             document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
@@ -53,48 +46,15 @@ export default function createBaseSettingView(specs, my) {
                     break;
                 
                 case e.detail.actions.TOGGLE_MIDI_LEARN_MODE:
-                    if (my.data.isMidiControllable &&
-                        e.detail.state.selectedID == my.processorID) {
-                        my.changeRemoteState(e.detail.state.learnModeActive ? 'enter' : 'exit');
-                    }
-                    break;
-                
+                case e.detail.actions.TOGGLE_MIDI_LEARN_TARGET:
                 case e.detail.actions.SELECT_PROCESSOR:
                 case e.detail.actions.DELETE_PROCESSOR:
-                    if (my.data.isMidiControllable) {
-                        if (e.detail.state.learnModeActive) {
-                            my.changeRemoteState(e.detail.state.selectedID == my.processorID ? 'enter' : 'exit');
-                        }
-                    }
-                    break;
-                
-                case e.detail.actions.TOGGLE_MIDI_LEARN_TARGET:
-                    if (my.data.isMidiControllable) {
-                        if (e.detail.state.learnModeActive) {
-                            const isTarget = e.detail.state.learnTargetProcessorID === my.processorID && e.detail.state.learnTargetParameterKey === my.key; 
-                            my.changeRemoteState(isTarget ? 'selected' : 'deselected');
-                        }
-                    }
-                    break;
-                
                 case e.detail.actions.ASSIGN_EXTERNAL_CONTROL:
-                    if (my.data.isMidiControllable && 
-                        e.detail.state.learnModeActive && 
-                        e.detail.state.learnTargetProcessorID === my.processorID && 
-                        e.detail.state.learnTargetParameterKey === my.key) {
-                        my.changeRemoteState('assigned');
-                    }
-                    break;
-                
                 case e.detail.actions.UNASSIGN_EXTERNAL_CONTROL:
-                    if (my.data.isMidiControllable && 
-                        e.detail.state.learnModeActive && 
-                        e.detail.action.processorID === my.processorID && 
-                        e.detail.action.paramKey === my.key) {
-                        my.changeRemoteState('unassigned');
+                    if (my.data.isMidiControllable) {
+                        my.changeRemoteState(e.detail.state);
                     }
                     break;
-
             }
         };
         

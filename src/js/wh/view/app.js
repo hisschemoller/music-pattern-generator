@@ -163,7 +163,9 @@ export default function createAppView(specs, my) {
                             template: template,
                             isSelected: state.selectedID === processorData.id
                         }));
-                    } catch(err) {}
+                    } catch(err) {
+                        console.log(`Error creating settings panel: ${err}`);
+                    }
                 }
             });
         },

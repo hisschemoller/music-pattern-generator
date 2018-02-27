@@ -4,7 +4,6 @@
 export default function createRemoteSettingView(specs, my) {
     var that,
         learnClickLayer,
-        learnCallback,
         
         init = function() {
             if (my.data.isMidiControllable) {
@@ -18,19 +17,41 @@ export default function createRemoteSettingView(specs, my) {
          * State of the parameter in the assignment process changed,
          * the element will show this visually.
          * @param {String} state New state of the parameter.
-         * @param {Function} callback In learn mode, the function to call on click.
          */
-        changeRemoteState = function(state, callback) {
-            switch (state) {
+        changeRemoteState = function(state) {
+            if (my.data.isMidiControllable) {
+                if (state.learnModeActive) {
+                    showRemoteState('enter');
+                    if (my.data.remoteChannel != null && my.data.remoteCC != null) {
+                        showRemoteState('assigned');
+                    } else {
+                        showRemoteState('unassigned');
+                    }
+                    if (state.learnTargetProcessorID === my.processorID && state.learnTargetParameterKey === my.key) {
+                        showRemoteState('selected');
+                    } else {
+                        showRemoteState('deselected');
+                    }
+                } else {
+                    showRemoteState('exit');
+                }
+            }
+        },
+        
+        /**
+         * State of the parameter in the assignment process changed,
+         * the element will show this visually.
+         * @param {String} status New state of the parameter.
+         */
+        showRemoteState = function(status) {
+            switch (status) {
                 case 'enter':
                     my.el.appendChild(learnClickLayer);
-                    learnCallback = callback;
                     learnClickLayer.addEventListener('click', onLearnLayerClick);
                     break;
                 case 'exit':
                     if (my.el.contains(learnClickLayer)) {
                         my.el.removeChild(learnClickLayer);
-                        learnCallback = null;
                         learnClickLayer.removeEventListener('click', onLearnLayerClick);
                     }
                     break;
