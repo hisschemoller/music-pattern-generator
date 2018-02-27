@@ -1,0 +1,30 @@
+{
+    "name": "Output",
+    "positionX": 0,
+    "positionY": 0,
+    "inputs": {
+        "byId": {
+            "in": {
+                "x": 0,
+                "y": -50
+            }
+        },
+        "allIds": ["in"]
+    },
+    "outputs": {
+        "byId": {},
+        "allIds": []
+    },
+    "params": {
+        "byId": {
+            "name": {
+                "label": "Name",
+                "type": "string",
+                "default": "Unnamed",
+                "value": "Unnamed",
+                "isMidiControllable": false
+            }
+        },
+        "allIds": ["name"]
+    }
+}
