@@ -278,6 +278,8 @@ export default function createAppView(specs, my) {
 
             editEl.dataset.show = state.showSettingsPanel;
             controls.edit.input.checked = state.showSettingsPanel;
+
+            controls.connections.input.checked = state.connectModeActive;
             
             renderLayout();
         };

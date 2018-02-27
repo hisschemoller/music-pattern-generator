@@ -79,6 +79,7 @@ export default function createCanvasConnectionsView(specs, my) {
                     case e.detail.actions.NEW_PROJECT:
                     case e.detail.actions.SET_THEME:
                         createConnectorGraphic();
+                        toggleConnectMode(e.detail.state.connectModeActive);
                         drawConnectCanvas(e.detail.state);
                         drawCablesCanvas(e.detail.state);
                         break;
