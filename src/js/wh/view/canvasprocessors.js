@@ -39,13 +39,9 @@ export default function createCanvasProcessorViews(specs, my) {
         },
 
         clearProcessorViews = function() {
-            let type,
-            n = views.length;
+            let n = views.length;
             while (--n >= 0) {
-                type = views[n].getType();
-                if (type !== 'input' && type !== 'output') {
-                    deleteProcessorView(views[n].getID());
-                }
+                deleteProcessorView(views[n].getID());
             }
         },
         
