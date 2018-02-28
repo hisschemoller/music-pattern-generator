@@ -1,4 +1,12 @@
-.panel.library {
+/************************
+ * library
+ ************************/
+
+ .library.panel {
     display: block;
     width: 70px;
+}
+.library .panel__viewport {
+    background-color: var(--panel-bg-color);
+    padding-bottom: 10px;
 }
