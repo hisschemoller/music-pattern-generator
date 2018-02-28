@@ -21,6 +21,12 @@ export default function createLibraryView(specs, my) {
             });
         },
         
+        /**
+         * Populate the library with all available processor types.
+         * Processor types are not shown in the libray 
+         * if they have the flag excludedFromLibrary = true
+         * in their config.json file.
+         */
         populateLibrary = function(typesTable) {
             const template = document.querySelector('#template-library-item');
 
@@ -36,20 +42,32 @@ export default function createLibraryView(specs, my) {
             });
         },
         
+        /**
+         * Store type of processor when drag starts.
+         */
         onDragStart = function(e) {
             draggedType = e.target.dataset.type;
         },
         
+        /**
+         * Create a new processor when the type is dropped on the canvas.
+         */
         onDrop = function(e) {
             e.preventDefault();
-            const canvasRect = document.querySelector('.canvas-dynamic').getBoundingClientRect();
             
-            // create a new processor
-            store.dispatch(store.getActions().createProcessor({
-                type: draggedType,
-                positionX: e.clientX - canvasRect.left + window.scrollX,
-                positionY: e.clientY - canvasRect.top + window.scrollY
-            }));
+            const canvas = document.querySelector('.canvas-dynamic')
+            
+            if (e.target === canvas) {
+                const canvasRect = canvas.getBoundingClientRect();
+                
+                // create a new processor
+                store.dispatch(store.getActions().createProcessor({
+                    type: draggedType,
+                    positionX: e.clientX - canvasRect.left + window.scrollX,
+                    positionY: e.clientY - canvasRect.top + window.scrollY
+                }));
+            }
+            
             draggedType = null;
         },
         
