@@ -110,21 +110,7 @@ export default function createCanvasView(specs, my) {
                 clearTimeout(doubleClickTimer);
                 doubleClickCounter = 0;
                 // implement double click behaviour here
-                onDoubleClick(e);
             }
-        },
-        
-        /**
-         * Handler for the custom doubleclick event detection.
-         * Create a new pattern at the location of the doubleclick.
-         */
-        onDoubleClick = function(e) {
-            // create a new processor
-            store.dispatch(store.getActions().createProcessor({
-                type: 'epg',
-                positionX: e.clientX - my.canvasRect.left + window.scrollX,
-                positionY: e.clientY - my.canvasRect.top + window.scrollY
-            }));
         },
         
         /**
