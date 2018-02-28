@@ -1,10 +1,9 @@
 import { createUUID } from '../core/util';
 
 export default function createActions(specs = {}, my = {}) {
-    const STARTUP = 'STARTUP',
+    const RESCAN_TYPES = 'RESCAN_TYPES',
         NEW_PROJECT = 'NEW_PROJECT',
         SET_PROJECT = 'SET_PROJECT',
-        SET_TYPES = 'SET_TYPES',
         SET_THEME = 'SET_THEME',
         CREATE_PROCESSOR = 'CREATE_PROCESSOR',
         ADD_PROCESSOR = 'ADD_PROCESSOR',
@@ -230,20 +229,21 @@ export default function createActions(specs = {}, my = {}) {
         DISCONNECT_PROCESSORS: DISCONNECT_PROCESSORS,
         disconnectProcessors: id => ({ type: DISCONNECT_PROCESSORS, id }),
 
-        STARTUP: STARTUP,
-        startup: () => {
-            return (dispatch, getState, getActions) => {
-                const req = require.context('../processors/', true, /\processor.js$/);
-                let types = [];
-                req.keys().forEach(key => {
-                    types.push(key.substring(2, key.indexOf('/', 2)));
-                });
-                dispatch(getActions().setTypes(types));
-            }
-        },
-
-        SET_TYPES: SET_TYPES,
-        setTypes: types => ({ type: SET_TYPES, types })
+        RESCAN_TYPES: RESCAN_TYPES,
+        rescanTypes: () => {
+            const req = require.context('../processors/', true, /\processor.js$/);
+            let types = {};
+            req.keys().forEach(key => {
+                const type = key.substring(2, key.indexOf('/', 2));
+                const typeData = require(`json-loader!../processors/${type}/config.json`);
+                if (!typeData.excludedFromLibrary) {
+                    types[type] = {
+                        name: typeData.name
+                    };
+                }
+            });
+            return { type: RESCAN_TYPES, types };
+        }
     };
 }
 

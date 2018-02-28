@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         midiNetwork 
     });
 
-    store.dispatch(store.getActions().startup());
+    store.dispatch(store.getActions().rescanTypes());
 
     // initialise
     midi.connect().then(() => {

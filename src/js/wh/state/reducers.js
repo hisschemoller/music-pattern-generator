@@ -13,6 +13,10 @@ export default function createReducers() {
                 byId: {},
                 allIds: []
             },
+            types: {
+                byId: {},
+                allIds: []
+            },
             bpm: 120,
             selectedID: null,
             theme: 'light', // 'light|dark' 
@@ -309,6 +313,15 @@ export default function createReducers() {
                     return {
                         ...state,
                         connections: deleteFromNormalizedTable(state.connections, action.id)
+                    };
+
+                case actions.RESCAN_TYPES:
+                    return {
+                        ...state,
+                        types: {
+                            allIds: Object.keys(action.types),
+                            byId: action.types
+                        }
                     };
 
                 default:
