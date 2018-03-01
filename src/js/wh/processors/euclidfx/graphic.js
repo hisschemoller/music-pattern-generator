@@ -1,6 +1,5 @@
 import createCanvasProcessorBaseView from '../../view/canvasprocessorbase';
 import { getEuclidPattern, rotateEuclidPattern } from './euclid';
-import TWEEN from '@tweenjs/tween.js';
 import { PPQN } from '../../core/config';
 
 /**
@@ -8,16 +7,24 @@ import { PPQN } from '../../core/config';
  */
 export function createGraphic(specs, my) {
     let that,
-        canvasDirtyCallback = specs.canvasDirtyCallback,
-        staticCanvas,
+        canvasDirtyCallback,
         staticCtx,
-        necklaceCanvas,
         necklaceCtx,
-        nameCanvas,
         nameCtx,
+
+        isSelected = false,
+
+        lineWidth = 2,
+        radius = 110,
+        centerRadius = 20,
+        selectRadius = 15,
+        doublePI = Math.PI * 2,
 
         initialise = function() {
             document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
+            canvasDirtyCallback = specs.canvasDirtyCallback;
+            initGraphics();
+            redrawStaticCanvas();
         },
         
         /**
@@ -30,6 +37,34 @@ export function createGraphic(specs, my) {
         
         handleStateChanges = function(e) {},
 
+        initGraphics = function() {
+            // offscreen canvas for static shapes
+            const staticCanvas = document.createElement('canvas');
+            staticCanvas.height = radius * 2;
+            staticCanvas.width = radius * 2;
+            staticCtx = staticCanvas.getContext('2d');
+            staticCtx.lineWidth = lineWidth;
+        },
+        
+        /**
+         * Redraw the pattern's static shapes canvas.
+         */
+        redrawStaticCanvas = function() {
+            staticCtx.clearRect(0, 0, staticCtx.canvas.width, staticCtx.canvas.height);
+            staticCtx.beginPath();
+
+            // center ring
+            staticCtx.moveTo(radius + centerRadius, radius);
+            staticCtx.arc(radius, radius, centerRadius, 0, doublePI, true);
+            
+            // select circle
+            if (isSelected) {
+                staticCtx.moveTo(radius + selectRadius, radius);
+                staticCtx.arc(radius, radius, selectRadius, 0, doublePI, true);
+            }
+            staticCtx.stroke();
+        },
+
         setSelected = function(isSelected) {},
 
         draw = function(position, processorEvents) {},
@@ -38,7 +73,12 @@ export function createGraphic(specs, my) {
          * Add the pattern's static canvas to the main static canvas.
          * @param  {Object} mainStaticCtx 2D canvas context.
          */
-        addToStaticView = function(mainStaticCtx) {},
+        addToStaticView = function(mainStaticCtx) {
+            mainStaticCtx.drawImage(
+                staticCtx.canvas,
+                my.positionX - radius,
+                my.positionY - radius);
+        },
         
         /**
          * Draw the pattern's dynamic shapes on the main dymamic canvas
@@ -67,7 +107,12 @@ export function createGraphic(specs, my) {
          * Set the theme colours of the processor view.
          * @param {Object} theme Theme settings object.
          */
-        setTheme = function(theme) {};
+        setTheme = function(theme) {
+            my.colorHigh = theme.colorHigh;
+            my.colorMid = theme.colorMid;
+            my.colorLow = theme.colorLow;
+            staticCtx.strokeStyle = my.colorHigh;
+        };
         
         my = my || {};
         
