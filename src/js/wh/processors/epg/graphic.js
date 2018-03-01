@@ -527,16 +527,11 @@ export function createGraphic(specs, my) {
          * Test if a coordinate intersects with the graphic's hit area.
          * @param  {Number} x Horizontal coordinate.
          * @param  {Number} y Vertical coordinate.
-         * @param  {String} type Hit area type, 'processor|inconnector|outconnector'
          * @return {Boolean} True if the point intersects. 
          */
-        intersectsWithPoint = function(x, y, type) {
-            let distance;
-            switch (type) {
-                case 'processor':
-                    distance = Math.sqrt(Math.pow(x - my.positionX, 2) + Math.pow(y - my.positionY, 2));
-                    return distance <= necklaceRadius + dotRadius;
-            }
+        intersectsWithPoint = function(x, y) {
+            let distance = Math.sqrt(Math.pow(x - my.positionX, 2) + Math.pow(y - my.positionY, 2));
+            return distance <= necklaceRadius + dotRadius;
         },
         
         /**

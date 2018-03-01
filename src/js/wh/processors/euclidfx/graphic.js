@@ -59,7 +59,7 @@ export function createGraphic(specs, my) {
          * @param  {Number} y Vertical coordinate.
          * @return {Boolean} True if the point intersects. 
          */
-        intersectsWithPoint = function(x, y, type) {
+        intersectsWithPoint = function(x, y) {
             return false;
         },
         
