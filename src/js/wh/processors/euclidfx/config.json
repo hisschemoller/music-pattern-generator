@@ -55,6 +55,28 @@
                 "remoteChannel": null,
                 "remoteCC": null
             },
+            "rate": {
+                "label": "Rate",
+                "type": "itemized",
+                "default": 0.25,
+                "value": 0.25,
+                "model": [
+                    {"label": "1", "value": 4},
+                    {"label": "1/2", "value": 2},
+                    {"label": "1/4", "value": 1},
+                    {"label": "1/8", "value": 0.5},
+                    {"label": "1/16", "value": 0.25},
+                    {"label": "1/32", "value": 0.125}
+                ],
+                "isMidiControllable": false
+            },
+            "is_triplets": {
+                "label": "Triplets",
+                "type": "boolean",
+                "default": false,
+                "value": false,
+                "isMidiControllable": false
+            },
             "name": {
                 "label": "Name",
                 "type": "string",
@@ -63,6 +85,6 @@
                 "isMidiControllable": false
             }
         },
-        "allIds": ["steps", "pulses", "rotation", "name"]
+        "allIds": ["steps", "pulses", "rotation", "rate", "is_triplets", "name"]
     }
 }

@@ -9,10 +9,13 @@ export function createGraphic(specs, my) {
     let that,
         canvasDirtyCallback,
         staticCtx,
-        necklaceCtx,
+        rotateCtx,
         nameCtx,
 
         isSelected = false,
+        duration = 0,
+        pointerRotation,
+        pointerRotationPrevious = 0,
 
         lineWidth = 2,
         radius = 110,
@@ -24,7 +27,10 @@ export function createGraphic(specs, my) {
             document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
             canvasDirtyCallback = specs.canvasDirtyCallback;
             initGraphics();
+            updatePosition(specs.data.positionX, specs.data.positionY);
             redrawStaticCanvas();
+            updateDuration();
+            redrawRotatingCanvas();
         },
         
         /**
@@ -47,11 +53,18 @@ export function createGraphic(specs, my) {
 
         initGraphics = function() {
             // offscreen canvas for static shapes
-            const staticCanvas = document.createElement('canvas');
-            staticCanvas.height = radius * 2;
-            staticCanvas.width = radius * 2;
-            staticCtx = staticCanvas.getContext('2d');
+            let canvas = document.createElement('canvas');
+            canvas.height = radius * 2;
+            canvas.width = radius * 2;
+            staticCtx = canvas.getContext('2d');
             staticCtx.lineWidth = lineWidth;
+
+            // offscreen canvas for dots ring and polygon
+            canvas = document.createElement('canvas');
+            canvas.height = radius * 2;
+            canvas.width = radius * 2;
+            rotateCtx = canvas.getContext('2d');
+            rotateCtx.lineWidth = lineWidth;
         },
         
         /**
@@ -62,6 +75,16 @@ export function createGraphic(specs, my) {
             my.positionX = x;
             my.positionY = y;
             canvasDirtyCallback();
+        },
+
+        /**
+         * Calculate the pattern's duration in milliseconds.
+         */
+        updateDuration = function() {
+            console.log(my.params);
+            const rate = my.params.is_triplets.value ? my.params.rate.value * (2 / 3) : my.params.rate.value,
+                stepDuration = rate * PPQN;
+            duration = my.params.steps.value * stepDuration;
         },
         
         /**
@@ -83,6 +106,23 @@ export function createGraphic(specs, my) {
 
             staticCtx.stroke();
         },
+
+        /**
+         * The rotating canvas shows the necklace shape.
+         */
+        redrawRotatingCanvas = function() {
+            rotateCtx.clearRect(0, 0, rotateCtx.canvas.width, rotateCtx.canvas.height);
+            rotateCtx.fillStyle = my.colorLow;
+            rotateCtx.strokeStyle = my.colorLow;
+            rotateCtx.beginPath();
+            rotateCtx.moveTo(radius, radius);
+            rotateCtx.lineTo(radius, 0);
+            
+            rotateCtx.stroke();
+            // rotateCtx.globalAlpha = 0.6;
+            // rotateCtx.fill();
+            // rotateCtx.globalAlpha = 1.0;
+        },
         
         /**
          * Show circle if the my.processor is selected, else hide.
@@ -100,7 +140,19 @@ export function createGraphic(specs, my) {
             updateSelectCircle(isSelected);
         },
 
-        draw = function(position, processorEvents) {},
+        draw = function(position, processorEvents) {
+            showPlaybackPosition(position);
+        },
+        
+        /**
+         * Show the playback position within the pattern.
+         * Indicated by the pointer's rotation.
+         * @param  {Number} position Position within pattern in ticks.
+         */
+        showPlaybackPosition = function(position) {
+            pointerRotationPrevious = pointerRotation;
+            pointerRotation = doublePI * (position % duration / duration);
+        },
         
         /**
          * Add the pattern's static canvas to the main static canvas.
@@ -117,14 +169,27 @@ export function createGraphic(specs, my) {
          * Draw the pattern's dynamic shapes on the main dymamic canvas
          * @param  {Object} mainStaticCtx 2D canvas context.
          */
-        addToDynamicView = function(mainDynamicCtx) {},
+        addToDynamicView = function(mainDynamicCtx) {
+            // draw rotating canvas
+            mainDynamicCtx.save();
+            mainDynamicCtx.translate(my.positionX, my.positionY);
+            mainDynamicCtx.rotate(pointerRotation);
+            mainDynamicCtx.drawImage(rotateCtx.canvas, -radius, -radius);
+            mainDynamicCtx.restore();
+        },
         
         /**
          * Clear all this pattern's elements from the dynamic context.
          * These are the center dot, necklace dots and pointer.
          * @param  {Object} mainDynamicCtx 2D canvas context.
          */
-        clearFromDynamicView = function(mainDynamicCtx) {},
+        clearFromDynamicView = function(mainDynamicCtx) {
+            mainDynamicCtx.save();
+            mainDynamicCtx.translate(my.positionX, my.positionY);
+            mainDynamicCtx.rotate(pointerRotationPrevious);
+            mainDynamicCtx.clearRect(-rotateCtx.canvas.width, -rotateCtx.canvas.height, rotateCtx.canvas.width, rotateCtx.canvas.height);
+            mainDynamicCtx.restore();
+        },
         
         /**
          * Test if a coordinate intersects with the graphic's hit area.

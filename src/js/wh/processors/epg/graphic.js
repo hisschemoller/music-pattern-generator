@@ -51,7 +51,60 @@ export function createGraphic(specs, my) {
         
         initialise = function() {
             document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
+            canvasDirtyCallback = specs.canvasDirtyCallback;
 
+            initGraphics();
+            setTheme(specs.theme);
+            updatePosition(specs.data.positionX, specs.data.positionY);
+            redrawStaticCanvas();
+            updateDuration();
+        },
+        
+        /**
+         * Called before this view is deleted.
+         */
+        terminate = function() {
+            document.removeEventListener(my.store.STATE_CHANGE, handleStateChanges);
+            canvasDirtyCallback = null;
+        },
+
+        handleStateChanges = function(e) {
+            switch (e.detail.action.type) {
+                case e.detail.actions.CHANGE_PARAMETER:
+                    if (e.detail.action.processorID === my.id) {
+                        my.params = e.detail.state.processors.byId[my.id].params.byId;
+                        switch (e.detail.action.paramKey) {
+                            case 'steps':
+                            case 'pulses':
+                                updateDuration();
+                                // fall through
+                            case 'rotation':
+                                updateNecklace();
+                                break;
+                            case 'is_mute':
+                                updatePointer();
+                                break;
+                            case 'name':
+                                updateName();
+                                break;
+                            case 'is_triplets':
+                            case 'rate':
+                            case 'note_length':
+                                updateDuration();
+                                break;
+                        }
+                    }
+                    break;
+
+                case e.detail.actions.DRAG_SELECTED_PROCESSOR:
+                case e.detail.actions.DRAG_ALL_PROCESSORS:
+                    const processor = e.detail.state.processors.byId[my.id];
+                    updatePosition(processor.positionX, processor.positionY);
+                    break;
+            }
+        },
+
+        initGraphics = function() {
             // offscreen canvas for static shapes
             staticCanvas = document.createElement('canvas');
             staticCanvas.height = radius * 2;
@@ -84,55 +137,6 @@ export function createGraphic(specs, my) {
             
             // width and height to clear center dot 
             centerDotSize = (centerDotFullRadius + 1) * 2;
-            
-            // set drawing values
-            setTheme(specs.theme);
-            updatePosition(specs.data.positionX, specs.data.positionY);
-            redrawStaticCanvas();
-            updateDuration();
-        },
-        
-        /**
-         * Called before this view is deleted.
-         */
-        terminate = function() {
-            document.removeEventListener(my.store.STATE_CHANGE, handleStateChanges);
-            canvasDirtyCallback = null;
-        },
-
-        handleStateChanges = function(e) {
-            switch (e.detail.action.type) {
-                case e.detail.actions.CHANGE_PARAMETER:
-                    if (e.detail.action.processorID === my.id) {
-                        my.params = e.detail.state.processors.byId[my.id].params.byId;
-                        switch (e.detail.action.paramKey) {
-                            case 'steps':
-                            case 'pulses':
-                                updateDuration();
-                            case 'rotation':
-                                updateNecklace();
-                                break;
-                            case 'is_mute':
-                                updatePointer();
-                                break;
-                            case 'name':
-                                updateName();
-                                break;
-                            case 'is_triplets':
-                            case 'rate':
-                            case 'note_length':
-                                updateDuration();
-                                break;
-                        }
-                    }
-                    break;
-
-                case e.detail.actions.DRAG_SELECTED_PROCESSOR:
-                case e.detail.actions.DRAG_ALL_PROCESSORS:
-                    const processor = e.detail.state.processors.byId[my.id];
-                    updatePosition(processor.positionX, processor.positionY);
-                    break;
-            }
         },
 
         setSelected = function(isSelected) {
@@ -195,6 +199,9 @@ export function createGraphic(specs, my) {
                 .start();
         },
 
+        /**
+         * Calculate the pattern's duration in milliseconds.
+         */
         updateDuration = function() {
             const rate = my.params.is_triplets.value ? my.params.rate.value * (2 / 3) : my.params.rate.value,
                 stepDuration = rate * PPQN;
