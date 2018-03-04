@@ -26,7 +26,12 @@ export function createProcessor(specs, my) {
          * @param {Number} offset Time from doc start to timeline start in ticks.
          * @param {Array} processorEvents Array to collect processor generated events to display in the view.
          */
-        process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset, processorEvents) {};
+        process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset, processorEvents) {
+            const inputData = my.getInputData();
+            for (let i = 0, n = inputData.length; i < n; i++) {
+                my.setOutputData(inputData[i]);
+            }
+        };
 
     my = my || {};
     
