@@ -101,7 +101,7 @@ export default function createCanvasProcessorViews(specs, my) {
             dragOffsetX = x;
             dragOffsetY = y;
             for (let i = views.length - 1; i >= 0; i--) {
-                if (views[i].intersectsWithPoint(x, y, 'processor')) {
+                if (views[i].intersectsWithPoint(x, y)) {
                     isIntersect = true;
                     store.dispatch(store.getActions().selectProcessor(views[i].getID()));
                     // start dragging the view's graphic

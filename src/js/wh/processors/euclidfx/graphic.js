@@ -35,7 +35,15 @@ export function createGraphic(specs, my) {
             canvasDirtyCallback = null;
         },
         
-        handleStateChanges = function(e) {},
+        handleStateChanges = function(e) {
+            switch (e.detail.action.type) {
+                case e.detail.actions.DRAG_SELECTED_PROCESSOR:
+                case e.detail.actions.DRAG_ALL_PROCESSORS:
+                    const processor = e.detail.state.processors.byId[my.id];
+                    updatePosition(processor.positionX, processor.positionY);
+                    break;
+            }
+        },
 
         initGraphics = function() {
             // offscreen canvas for static shapes
@@ -44,6 +52,16 @@ export function createGraphic(specs, my) {
             staticCanvas.width = radius * 2;
             staticCtx = staticCanvas.getContext('2d');
             staticCtx.lineWidth = lineWidth;
+        },
+        
+        /**
+         * Update pattern's position on the 2D canvas.
+         * @param  {Object} value New 2D position as object.
+         */
+        updatePosition = function(x, y) {
+            my.positionX = x;
+            my.positionY = y;
+            canvasDirtyCallback();
         },
         
         /**
@@ -62,10 +80,25 @@ export function createGraphic(specs, my) {
                 staticCtx.moveTo(radius + selectRadius, radius);
                 staticCtx.arc(radius, radius, selectRadius, 0, doublePI, true);
             }
+
             staticCtx.stroke();
         },
+        
+        /**
+         * Show circle if the my.processor is selected, else hide.
+         * @param {Boolean} isSelectedView True if selected.
+         */
+        updateSelectCircle = function(isSelectedView) {
+            isSelected = isSelectedView;
+            if (typeof redrawStaticCanvas == 'function' && typeof canvasDirtyCallback == 'function') {
+                redrawStaticCanvas();
+                canvasDirtyCallback();
+            }
+        },
 
-        setSelected = function(isSelected) {},
+        setSelected = function(isSelected) {
+            updateSelectCircle(isSelected);
+        },
 
         draw = function(position, processorEvents) {},
         
@@ -99,8 +132,9 @@ export function createGraphic(specs, my) {
          * @param  {Number} y Vertical coordinate.
          * @return {Boolean} True if the point intersects. 
          */
-        intersectsWithPoint = function(x, y) {
-            return false;
+        intersectsWithPoint = function(x, y, canvasRect) {
+            let distance = Math.sqrt(Math.pow(x - my.positionX, 2) + Math.pow(y - my.positionY, 2));
+            return distance <= centerRadius;
         },
         
         /**
