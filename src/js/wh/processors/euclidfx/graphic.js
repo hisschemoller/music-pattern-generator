@@ -188,14 +188,15 @@ export function createGraphic(specs, my) {
 
             for (let i = 0, n = euclid.length; i < n; i++) {
                 const stepRadius = euclid[i] ? outerRadius : innerRadius;
-                rotateCtx.arc(radius, radius, stepRadius, ((n - i) / n) * doublePI, ((n - i - 1) / n) * doublePI, true);
+                rotateCtx.arc(radius, radius, stepRadius, ((i / n) * doublePI) - (Math.PI / 2), (((i + 1) / n) * doublePI) - (Math.PI / 2), false);
             }
+            // for (let i = 0, n = euclid.length; i < n; i++) {
+            //     const stepRadius = euclid[i] ? outerRadius : innerRadius;
+            //     rotateCtx.arc(radius, radius, stepRadius, ((n - i) / n) * doublePI, ((n - i - 1) / n) * doublePI, true);
+            // }
 
             rotateCtx.closePath();
             rotateCtx.stroke();
-            // rotateCtx.globalAlpha = 0.6;
-            // rotateCtx.fill();
-            // rotateCtx.globalAlpha = 1.0;
         },
         
         /**
@@ -213,7 +214,7 @@ export function createGraphic(specs, my) {
         setSelected = function(isSelected) {
             updateSelectCircle(isSelected);
         },
-
+        
         draw = function(position, processorEvents) {
             showPlaybackPosition(position);
 
@@ -259,7 +260,7 @@ export function createGraphic(specs, my) {
             // draw rotating canvas
             mainDynamicCtx.save();
             mainDynamicCtx.translate(my.positionX, my.positionY);
-            mainDynamicCtx.rotate(pointerRotation);
+            mainDynamicCtx.rotate(-pointerRotation);
             mainDynamicCtx.drawImage(rotateCtx.canvas, -radius, -radius);
             mainDynamicCtx.restore();
         },
@@ -272,7 +273,7 @@ export function createGraphic(specs, my) {
         clearFromDynamicView = function(mainDynamicCtx) {
             mainDynamicCtx.save();
             mainDynamicCtx.translate(my.positionX, my.positionY);
-            mainDynamicCtx.rotate(pointerRotationPrevious);
+            mainDynamicCtx.rotate(-pointerRotationPrevious);
             mainDynamicCtx.clearRect(-radius, -radius, rotateCtx.canvas.width, rotateCtx.canvas.height);
             mainDynamicCtx.restore();
         },
