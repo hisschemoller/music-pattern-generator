@@ -21,6 +21,9 @@ export function createGraphic(specs, my) {
         radius = 110,
         centerRadius = 20,
         selectRadius = 15,
+        innerRadius = 35,
+        outerRadius = 60,
+        locatorLength = 70,
         doublePI = Math.PI * 2,
 
         initialise = function() {
@@ -104,6 +107,10 @@ export function createGraphic(specs, my) {
                 staticCtx.arc(radius, radius, selectRadius, 0, doublePI, true);
             }
 
+            // position locator
+            staticCtx.moveTo(radius, radius);
+            staticCtx.lineTo(radius, radius - locatorLength);
+
             staticCtx.stroke();
         },
 
@@ -111,13 +118,25 @@ export function createGraphic(specs, my) {
          * The rotating canvas shows the necklace shape.
          */
         redrawRotatingCanvas = function() {
-            rotateCtx.clearRect(0, 0, rotateCtx.canvas.width, rotateCtx.canvas.height);
-            rotateCtx.fillStyle = my.colorLow;
-            rotateCtx.strokeStyle = my.colorLow;
-            rotateCtx.beginPath();
-            rotateCtx.moveTo(radius, radius);
-            rotateCtx.lineTo(radius, 0);
+            let steps = my.params.steps.value,
+                pulses = my.params.pulses.value,
+                rotation = my.params.rotation.value,
+                euclid, arc, x, y;
             
+            euclid = getEuclidPattern(steps, pulses);
+            euclid = rotateEuclidPattern(euclid, rotation);
+
+            rotateCtx.clearRect(0, 0, rotateCtx.canvas.width, rotateCtx.canvas.height);
+            rotateCtx.fillStyle = my.colorMid;
+            rotateCtx.strokeStyle = my.colorMid;
+            rotateCtx.beginPath();
+
+            for (let i = 0, n = euclid.length; i < n; i++) {
+                const stepRadius = euclid[i] ? outerRadius : innerRadius;
+                rotateCtx.arc(radius, radius, stepRadius, ((n - i) / n) * doublePI, ((n - i - 1) / n) * doublePI, true);
+            }
+
+            rotateCtx.closePath();
             rotateCtx.stroke();
             // rotateCtx.globalAlpha = 0.6;
             // rotateCtx.fill();
@@ -142,6 +161,13 @@ export function createGraphic(specs, my) {
 
         draw = function(position, processorEvents) {
             showPlaybackPosition(position);
+            let event;
+            if (processorEvents[my.id] && processorEvents[my.id].length) {
+                for (let i = 0, n = processorEvents[my.id].length; i < n; i++) {
+                    event = processorEvents[my.id][i];
+                    showNote(event.stepIndex, event.delayFromNowToNoteStart, event.delayFromNowToNoteEnd);
+                }
+            }
         },
         
         /**
@@ -187,7 +213,7 @@ export function createGraphic(specs, my) {
             mainDynamicCtx.save();
             mainDynamicCtx.translate(my.positionX, my.positionY);
             mainDynamicCtx.rotate(pointerRotationPrevious);
-            mainDynamicCtx.clearRect(-rotateCtx.canvas.width, -rotateCtx.canvas.height, rotateCtx.canvas.width, rotateCtx.canvas.height);
+            mainDynamicCtx.clearRect(-radius, -radius, rotateCtx.canvas.width, rotateCtx.canvas.height);
             mainDynamicCtx.restore();
         },
         
