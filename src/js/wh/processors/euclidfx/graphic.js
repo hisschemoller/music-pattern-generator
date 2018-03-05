@@ -12,24 +12,30 @@ export function createGraphic(specs, my) {
         rotateCtx,
         nameCtx,
 
-        isSelected = false,
         duration = 0,
+        euclid,
+        status = true,
+
+        isSelected = false,
         pointerRotation,
         pointerRotationPrevious = 0,
 
         lineWidth = 2,
-        radius = 110,
+        radius = 70,
         centerRadius = 20,
         selectRadius = 15,
-        innerRadius = 35,
-        outerRadius = 60,
-        locatorLength = 70,
+        innerRadius = 30,
+        outerRadius = 50,
+        dotRadius = 10,
+        locatorLength = 50,
         doublePI = Math.PI * 2,
 
         initialise = function() {
             document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
             canvasDirtyCallback = specs.canvasDirtyCallback;
             initGraphics();
+            updateEuclid();
+            setTheme(specs.theme);
             updatePosition(specs.data.positionX, specs.data.positionY);
             redrawStaticCanvas();
             updateDuration();
@@ -46,6 +52,29 @@ export function createGraphic(specs, my) {
         
         handleStateChanges = function(e) {
             switch (e.detail.action.type) {
+                case e.detail.actions.CHANGE_PARAMETER:
+                    if (e.detail.action.processorID === my.id) {
+                        my.params = e.detail.state.processors.byId[my.id].params.byId;
+                        switch (e.detail.action.paramKey) {
+                            case 'steps':
+                                updateDuration();
+                                // fall through
+                            case 'pulses':
+                            case 'rotation':
+                                updateEuclid();
+                                redrawRotatingCanvas();
+                                break;
+                            case 'name':
+                                updateName();
+                                break;
+                            case 'is_triplets':
+                            case 'rate':
+                                updateDuration();
+                                break;
+                        }
+                    }
+                    break;
+
                 case e.detail.actions.DRAG_SELECTED_PROCESSOR:
                 case e.detail.actions.DRAG_ALL_PROCESSORS:
                     const processor = e.detail.state.processors.byId[my.id];
@@ -68,6 +97,14 @@ export function createGraphic(specs, my) {
             canvas.width = radius * 2;
             rotateCtx = canvas.getContext('2d');
             rotateCtx.lineWidth = lineWidth;
+            
+            // offscreen canvas for the name
+            canvas = document.createElement('canvas');
+            canvas.height = 40;
+            canvas.width = radius * 2;
+            nameCtx = canvas.getContext('2d');
+            nameCtx.font = '14px sans-serif';
+            nameCtx.textAlign = 'center';
         },
         
         /**
@@ -84,10 +121,24 @@ export function createGraphic(specs, my) {
          * Calculate the pattern's duration in milliseconds.
          */
         updateDuration = function() {
-            console.log(my.params);
             const rate = my.params.is_triplets.value ? my.params.rate.value * (2 / 3) : my.params.rate.value,
                 stepDuration = rate * PPQN;
             duration = my.params.steps.value * stepDuration;
+        },
+
+        updateEuclid = function() {
+            euclid = getEuclidPattern(my.params.steps.value, my.params.pulses.value);
+            euclid = rotateEuclidPattern(euclid, my.params.rotation.value);
+        },
+        
+        /**
+         * Update the pattern's name.
+         */
+        updateName = function() {
+            nameCtx.fillStyle = my.colorMid;
+            nameCtx.clearRect(0, 0, nameCtx.canvas.width, nameCtx.canvas.height);
+            nameCtx.fillText(my.params.name.value, nameCtx.canvas.width / 2, nameCtx.canvas.height / 2);
+            canvasDirtyCallback();
         },
         
         /**
@@ -99,12 +150,12 @@ export function createGraphic(specs, my) {
 
             // center ring
             staticCtx.moveTo(radius + centerRadius, radius);
-            staticCtx.arc(radius, radius, centerRadius, 0, doublePI, true);
+            staticCtx.arc(radius, radius, centerRadius, 0, doublePI);
             
             // select circle
             if (isSelected) {
                 staticCtx.moveTo(radius + selectRadius, radius);
-                staticCtx.arc(radius, radius, selectRadius, 0, doublePI, true);
+                staticCtx.arc(radius, radius, selectRadius, 0, doublePI);
             }
 
             // position locator
@@ -112,6 +163,13 @@ export function createGraphic(specs, my) {
             staticCtx.lineTo(radius, radius - locatorLength);
 
             staticCtx.stroke();
+
+            // status dot
+            const yPos = radius - (status ? outerRadius : innerRadius);
+            staticCtx.beginPath();
+            staticCtx.moveTo(radius, yPos);
+            staticCtx.arc(radius, yPos, dotRadius, 0, doublePI);
+            staticCtx.fill();
         },
 
         /**
@@ -121,14 +179,11 @@ export function createGraphic(specs, my) {
             let steps = my.params.steps.value,
                 pulses = my.params.pulses.value,
                 rotation = my.params.rotation.value,
-                euclid, arc, x, y;
-            
-            euclid = getEuclidPattern(steps, pulses);
-            euclid = rotateEuclidPattern(euclid, rotation);
+                arc, x, y;
 
             rotateCtx.clearRect(0, 0, rotateCtx.canvas.width, rotateCtx.canvas.height);
-            rotateCtx.fillStyle = my.colorMid;
-            rotateCtx.strokeStyle = my.colorMid;
+            rotateCtx.fillStyle = my.colorHigh;
+            rotateCtx.strokeStyle = my.colorHigh;
             rotateCtx.beginPath();
 
             for (let i = 0, n = euclid.length; i < n; i++) {
@@ -161,12 +216,13 @@ export function createGraphic(specs, my) {
 
         draw = function(position, processorEvents) {
             showPlaybackPosition(position);
-            let event;
-            if (processorEvents[my.id] && processorEvents[my.id].length) {
-                for (let i = 0, n = processorEvents[my.id].length; i < n; i++) {
-                    event = processorEvents[my.id][i];
-                    showNote(event.stepIndex, event.delayFromNowToNoteStart, event.delayFromNowToNoteEnd);
-                }
+
+            const currentStep = Math.floor(((position % duration) / duration) * my.params.steps.value);
+            const currentStatus = euclid[currentStep];
+            if (currentStatus !== status) {
+                status = currentStatus;
+                redrawStaticCanvas();
+                canvasDirtyCallback();
             }
         },
         
@@ -189,6 +245,10 @@ export function createGraphic(specs, my) {
                 staticCtx.canvas,
                 my.positionX - radius,
                 my.positionY - radius);
+            mainStaticCtx.drawImage(
+                nameCtx.canvas,
+                my.positionX - radius,
+                my.positionY + outerRadius + 4);
         },
         
         /**
@@ -237,6 +297,9 @@ export function createGraphic(specs, my) {
             my.colorMid = theme.colorMid;
             my.colorLow = theme.colorLow;
             staticCtx.strokeStyle = my.colorHigh;
+            staticCtx.fillStyle = my.colorHigh;
+            updateName();
+            redrawRotatingCanvas();
         };
         
         my = my || {};
