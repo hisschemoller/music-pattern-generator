@@ -9,9 +9,43 @@ export function createProcessor(specs, my) {
         duration = 0,
         euclidPattern = [];
 
-    const initialize = function() {},
+    const initialize = function() {
+            document.addEventListener(store.STATE_CHANGE, handleStateChanges);
+        },
 
-        terminate = function() {},
+        terminate = function() {
+            document.removeEventListener(store.STATE_CHANGE, handleStateChanges);
+        },
+
+        handleStateChanges = function(e) {
+            switch (e.detail.action.type) {
+                case e.detail.actions.CHANGE_PARAMETER:
+                    if (e.detail.action.processorID === my.id) {
+                        my.params = e.detail.state.processors.byId[my.id].params.byId;
+                        switch (e.detail.action.paramKey) {
+                            case 'steps':
+                                // updatePulsesAndRotation();
+                                // updatePattern(true);
+                                break;
+                            case 'pulses':
+                                // updatePattern(true);
+                                break;
+                            case 'rotation':
+                            case 'is_triplets':
+                            case 'rate':
+                            case 'note_length':
+                                // updatePattern();
+                                break;
+                            case 'target':
+                                break;
+                            case 'low':
+                            case 'high':
+                                break;
+                        }
+                    }
+                    break;
+            }
+        },
             
         /**
          * Process events to happen in a time slice. This will
