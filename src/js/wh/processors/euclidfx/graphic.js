@@ -10,6 +10,7 @@ export function createGraphic(specs, my) {
         canvasDirtyCallback,
         staticCtx,
         rotateCtx,
+        pointerCtx,
         nameCtx,
 
         duration = 0,
@@ -19,6 +20,7 @@ export function createGraphic(specs, my) {
         isSelected = false,
         pointerRotation,
         pointerRotationPrevious = 0,
+        pointerCanvasCenter,
 
         lineWidth = 2,
         radius = 70,
@@ -37,8 +39,9 @@ export function createGraphic(specs, my) {
             updateEuclid();
             setTheme(specs.theme);
             updatePosition(specs.data.positionX, specs.data.positionY);
-            redrawStaticCanvas();
             updateDuration();
+            redrawStaticCanvas();
+            redrawPointerCanvas();
             redrawRotatingCanvas();
         },
         
@@ -97,6 +100,14 @@ export function createGraphic(specs, my) {
             canvas.width = radius * 2;
             rotateCtx = canvas.getContext('2d');
             rotateCtx.lineWidth = lineWidth;
+
+            // offscreen canvas for the pointer
+            canvas = document.createElement('canvas');
+            canvas.height = radius;
+            canvas.width = centerRadius * 2;
+            pointerCtx = canvas.getContext('2d');
+            pointerCtx.lineWidth = lineWidth;
+            pointerCanvasCenter = canvas.width / 2;
             
             // offscreen canvas for the name
             canvas = document.createElement('canvas');
@@ -158,18 +169,27 @@ export function createGraphic(specs, my) {
                 staticCtx.arc(radius, radius, selectRadius, 0, doublePI);
             }
 
-            // position locator
-            staticCtx.moveTo(radius, radius);
-            staticCtx.lineTo(radius, radius - locatorLength);
-
             staticCtx.stroke();
+        },
+
+        /**
+         * Redraw the location pointer and the status dot.
+         */
+        redrawPointerCanvas = function() {
+            pointerCtx.clearRect(0, 0, pointerCtx.canvas.width, pointerCtx.canvas.height);
+            pointerCtx.beginPath();
+
+            // position locator
+            pointerCtx.moveTo(pointerCanvasCenter, radius - pointerCanvasCenter - locatorLength);
+            pointerCtx.lineTo(pointerCanvasCenter, radius - pointerCanvasCenter);
+            pointerCtx.stroke();
 
             // status dot
             const yPos = radius - (status ? outerRadius : innerRadius);
-            staticCtx.beginPath();
-            staticCtx.moveTo(radius, yPos);
-            staticCtx.arc(radius, yPos, dotRadius, 0, doublePI);
-            staticCtx.fill();
+            pointerCtx.beginPath();
+            pointerCtx.moveTo(pointerCanvasCenter, yPos);
+            pointerCtx.arc(pointerCanvasCenter, yPos, dotRadius, 0, doublePI);
+            pointerCtx.fill();
         },
 
         /**
@@ -222,7 +242,7 @@ export function createGraphic(specs, my) {
             const currentStatus = euclid[currentStep];
             if (currentStatus !== status) {
                 status = currentStatus;
-                redrawStaticCanvas();
+                redrawPointerCanvas();
                 canvasDirtyCallback();
             }
         },
@@ -250,6 +270,13 @@ export function createGraphic(specs, my) {
                 nameCtx.canvas,
                 my.positionX - radius,
                 my.positionY + outerRadius + 4);
+            
+            let patternRotation = (my.params.rotation.value / my.params.steps.value) * doublePI;
+            mainStaticCtx.save();
+            mainStaticCtx.translate(my.positionX, my.positionY);
+            mainStaticCtx.rotate(patternRotation);
+            mainStaticCtx.drawImage(pointerCtx.canvas, -pointerCanvasCenter, -pointerCtx.canvas.height);
+            mainStaticCtx.restore();
         },
         
         /**
@@ -299,8 +326,12 @@ export function createGraphic(specs, my) {
             my.colorLow = theme.colorLow;
             staticCtx.strokeStyle = my.colorHigh;
             staticCtx.fillStyle = my.colorHigh;
+            rotateCtx.strokeStyle = my.colorHigh;
+            pointerCtx.strokeStyle = my.colorHigh;
+            pointerCtx.fillStyle = my.colorHigh;
             updateName();
             redrawRotatingCanvas();
+            redrawPointerCanvas();
         };
         
         my = my || {};
