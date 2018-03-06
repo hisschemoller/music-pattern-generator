@@ -77,6 +77,41 @@
                 "value": false,
                 "isMidiControllable": false
             },
+            "target": {
+                "label": "Effect target",
+                "type": "itemized",
+                "default": "velocity",
+                "value": "velocity",
+                "model": [
+                    { "label": "Velocity", "value": "velocity" },
+                    { "label": "Pitch", "value": "pitch" },
+                    { "label": "Channel", "value": "channel" },
+                    { "label": "Note length", "value": "length" },
+                    { "label": "Output", "value": "output" }
+                ]
+            },
+            "low": {
+                "label": "Low value",
+                "type": "integer",
+                "default": 100,
+                "value": 100,
+                "min": 0,
+                "max": 255,
+                "isMidiControllable": true,
+                "remoteChannel": null,
+                "remoteCC": null
+            },
+            "high": {
+                "label": "High value",
+                "type": "integer",
+                "default": 200,
+                "value": 200,
+                "min": 0,
+                "max": 255,
+                "isMidiControllable": true,
+                "remoteChannel": null,
+                "remoteCC": null
+            },
             "name": {
                 "label": "Name",
                 "type": "string",
@@ -85,6 +120,6 @@
                 "isMidiControllable": false
             }
         },
-        "allIds": ["steps", "pulses", "rotation", "rate", "is_triplets", "name"]
+        "allIds": ["steps", "pulses", "rotation", "rate", "is_triplets", "target", "low", "high", "name"]
     }
 }
