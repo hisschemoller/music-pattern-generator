@@ -44,6 +44,8 @@ export function createProcessor(specs, my) {
                             case 'high':
                                 updateEffectParameters(e.detail.state.processors.byId[my.id].params.byId);
                                 break;
+                            case 'relative':
+                                setEffectParameters(e.detail.state.processors.byId[my.id].params.byId);
                         }
                     }
                     break;
@@ -169,6 +171,28 @@ export function createProcessor(specs, my) {
             params.high = _params.high.value;
             params.low = _params.low.value;
         },
+        
+        updateRelativeSetting = function(params) {
+            params.relative = params.relative.value;
+
+            let min, max;
+            
+            switch (params.target) {
+                case 'velocity':
+                case 'pitch':
+                    min = params.relative ? -127 : 0;
+                    max = 127;
+                    break;
+                case 'channel':
+                    min = params.relative ? -16 : 0;
+                    max = 16;
+                    break;
+            }
+
+            store.dispatch(store.getActions().recreateParameter(my.id, 'low', { min: min, max: max }));
+            store.dispatch(store.getActions().recreateParameter(my.id, 'high', { min: min, max: max }));
+            store.dispatch(store.getActions().changeParameter(my.id, 'low', params.low));
+            store.dispatch(store.getActions().changeParameter(my.id, 'high', params.high));
         };
 
     my = my || {};

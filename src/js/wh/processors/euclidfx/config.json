@@ -111,6 +111,12 @@
                 "remoteChannel": null,
                 "remoteCC": null
             },
+            "relative": {
+                "label": "Relative",
+                "type": "boolean",
+                "default": false,
+                "value": false
+            },
             "name": {
                 "label": "Name",
                 "type": "string",
@@ -119,6 +125,6 @@
                 "isMidiControllable": false
             }
         },
-        "allIds": ["steps", "pulses", "rotation", "rate", "is_triplets", "target", "low", "high", "name"]
+        "allIds": ["steps", "pulses", "rotation", "rate", "is_triplets", "target", "low", "high", "relative", "name"]
     }
 }
