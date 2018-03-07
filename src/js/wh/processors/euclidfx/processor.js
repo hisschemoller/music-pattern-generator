@@ -24,7 +24,7 @@ export function createProcessor(specs, my) {
                         my.params = e.detail.state.processors.byId[my.id].params.byId;
                         switch (e.detail.action.paramKey) {
                             case 'steps':
-                                // updatePulsesAndRotation();
+                                updatePulsesAndRotation();
                                 // updatePattern(true);
                                 break;
                             case 'pulses':
@@ -65,6 +65,16 @@ export function createProcessor(specs, my) {
             for (let i = 0, n = inputData.length; i < n; i++) {
                 my.setOutputData(inputData[i]);
             }
+        },
+
+        /**
+         * After a change of the steps parameter update the pulses and rotation parameters.
+         */
+        updatePulsesAndRotation = function() {
+            store.dispatch(store.getActions().recreateParameter(my.id, 'pulses', { max: my.params.steps.value }));
+            store.dispatch(store.getActions().recreateParameter(my.id, 'rotation', { max: my.params.steps.value - 1 }));
+            store.dispatch(store.getActions().changeParameter(my.id, 'pulses', my.params.pulses.value));
+            store.dispatch(store.getActions().changeParameter(my.id, 'rotation', my.params.rotation.value));
         };
 
     my = my || {};
