@@ -74,8 +74,7 @@
                 "label": "Triplets",
                 "type": "boolean",
                 "default": false,
-                "value": false,
-                "isMidiControllable": false
+                "value": false
             },
             "target": {
                 "label": "Effect target",
@@ -93,10 +92,10 @@
             "low": {
                 "label": "Low value",
                 "type": "integer",
-                "default": 100,
-                "value": 100,
+                "default": 50,
+                "value": 50,
                 "min": 0,
-                "max": 255,
+                "max": 127,
                 "isMidiControllable": true,
                 "remoteChannel": null,
                 "remoteCC": null
@@ -104,10 +103,10 @@
             "high": {
                 "label": "High value",
                 "type": "integer",
-                "default": 200,
-                "value": 200,
+                "default": 100,
+                "value": 100,
                 "min": 0,
-                "max": 255,
+                "max": 127,
                 "isMidiControllable": true,
                 "remoteChannel": null,
                 "remoteCC": null

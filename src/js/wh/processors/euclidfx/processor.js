@@ -42,7 +42,7 @@ export function createProcessor(specs, my) {
                             case 'target':
                             case 'low':
                             case 'high':
-                                setEffectParameters(e.detail.state.processors.byId[my.id].params.byId);
+                                updateEffectParameters(e.detail.state.processors.byId[my.id].params.byId);
                                 break;
                         }
                     }
@@ -164,10 +164,11 @@ export function createProcessor(specs, my) {
             // }
         },
         
-        setEffectParameters = function(params) {
-            params.target = params.target.value;
-            params.high = params.target.high;
-            params.low = params.target.low;
+        updateEffectParameters = function(_params) {
+            params.target = _params.target.value;
+            params.high = _params.high.value;
+            params.low = _params.low.value;
+        },
         };
 
     my = my || {};
