@@ -9,7 +9,6 @@ export function createProcessor(specs, my) {
         duration = 0,
         noteDuration,
         euclidPattern = [],
-        noteOffEvents = [],
         pulsesOnly = [];
 
     const initialize = function() {
@@ -63,9 +62,8 @@ export function createProcessor(specs, my) {
          */
         process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset, processorEvents) {
             
-            // if the processor is muted only process remaining note offs.
+            // abort if the processor is muted
             if (my.params.is_mute.value) {
-                processNoteOffs(scanStart, scanEnd);
                 return;
             }
             
@@ -103,19 +101,11 @@ export function createProcessor(specs, my) {
                     // send the Note On message
                     my.setOutputData({
                         timestampTicks: pulseStartTimestamp,
+                        durationTicks: noteDuration,
                         channel: channel,
-                        type: 'noteon',
+                        type: 'note',
                         pitch: pitch,
                         velocity: velocity
-                    });
-                    
-                    // store the Note Off message to send later
-                    noteOffEvents.push({
-                        timestampTicks: pulseStartTimestamp + noteDuration,
-                        channel: channel,
-                        type: 'noteoff',
-                        pitch: pitch,
-                        velocity: 0
                     });
                     
                     if (!processorEvents[my.id]) {
@@ -132,23 +122,6 @@ export function createProcessor(specs, my) {
             
             if (localStart2 !== false) {
                 localStart = localStart2;
-            }
-            
-            processNoteOffs(scanStart, scanEnd);
-        },
-            
-        /**
-         * Check for scheduled note off events.
-         * @param {Number} scanStart Timespan start in ticks from timeline start.
-         * @param {Number} scanEnd   Timespan end in ticks from timeline start.
-         */
-        processNoteOffs = function(scanStart, scanEnd) {
-            var i = noteOffEvents.length;
-            while (--i > -1) {
-                var noteOffTime = noteOffEvents[i].timestampTicks;
-                if (scanStart <= noteOffTime && scanEnd > noteOffTime) {
-                    my.setOutputData(noteOffEvents.splice(i, 1)[0]);
-                }
             }
         },
 

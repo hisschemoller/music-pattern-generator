@@ -13,6 +13,8 @@ export function createProcessor(specs, my) {
 
     const initialize = function() {
             document.addEventListener(store.STATE_CHANGE, handleStateChanges);
+            updateEffectParameters(specs.data.params.byId);
+            updateRelativeSetting(specs.data.params.byId);
             updatePattern(true);
         },
 
@@ -36,7 +38,6 @@ export function createProcessor(specs, my) {
                             case 'rotation':
                             case 'is_triplets':
                             case 'rate':
-                            case 'note_length':
                                 updatePattern();
                                 break;
                             case 'target':
@@ -60,8 +61,9 @@ export function createProcessor(specs, my) {
          * - Add the events to the processorEvents parameter for display in the view.
          * 
          * Events are plain objects with properties:
-         * @param {String} type 'noteon | noteoff'
+         * @param {String} type 'note'
          * @param {Number} timestampTicks Event start time, meaured from timeline start
+         * @param {Number} durationTicks
          * @param {Number} channel 1 - 16
          * @param {Number} velocity 0 - 127
          * @param {Number} pitch 0 - 127
@@ -98,13 +100,13 @@ export function createProcessor(specs, my) {
             for (let i = 0, n = inputData.length; i < n; i++) {
                 const event = inputData[i];
 
-                // handle only MIDI Note On events
-                if (event.type === 'noteon') {
+                // handle only MIDI Note events
+                if (event.type === 'note') {
 
                     // calculate the state of the effect at the event's time within the pattern
                     const stepIndex = Math.floor((event.timestampTicks % duration) / stepDuration);
                     const state = euclidPattern[stepIndex];
-
+                    
                     // apply the effect to the event's target parameter
                     switch (params.target) {
                         case 'velocity':
@@ -148,32 +150,17 @@ export function createProcessor(specs, my) {
             // playback properties, changes in isTriplets and rate
             var rate = my.params.is_triplets.value ? my.params.rate.value * (2 / 3) : my.params.rate.value;
             stepDuration = rate * PPQN;
-
-            // noteDuration = my.params.note_length.value * PPQN;
-            // duration = my.params.steps.value * stepDuration;
-            // position = position % duration;
-            
-            // create array of note start times in ticks
-            // pulsesOnly.length = 0;
-            // var n = euclidPattern.length;
-            // for (var i = 0; i < n; i++) {
-            //     if (euclidPattern[i]) {
-            //         pulsesOnly.push({
-            //             startTime: i * stepDuration,
-            //             stepIndex: i
-            //         });
-            //     }
-            // }
+            duration = my.params.steps.value * stepDuration;
         },
         
-        updateEffectParameters = function(_params) {
-            params.target = _params.target.value;
-            params.high = _params.high.value;
-            params.low = _params.low.value;
+        updateEffectParameters = function(parameters) {
+            params.target = parameters.target.value;
+            params.high = parameters.high.value;
+            params.low = parameters.low.value;
         },
         
-        updateRelativeSetting = function(params) {
-            params.relative = params.relative.value;
+        updateRelativeSetting = function(parameters) {
+            params.relative = parameters.relative.value;
 
             let min, max;
             

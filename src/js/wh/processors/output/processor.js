@@ -26,14 +26,13 @@ export function createProcessor(specs, my) {
                 for (var i = 0; i < n; i++) {
                     var item = inputData[i],
                         // item.timestampTicks is time since transport play started
-                        timestamp = origin + (item.timestampTicks * ticksToMsMultiplier);
+                        timestamp = origin + (item.timestampTicks * ticksToMsMultiplier),
+                        duration = item.durationTicks * ticksToMsMultiplier;
                         
                     switch (item.type) {
-                        case 'noteon':
+                        case 'note':
                             midiOutput.send([0x90 + (item.channel - 1), item.pitch, item.velocity], timestamp);
-                            break;
-                        case 'noteoff':
-                            midiOutput.send([0x80 + (item.channel - 1), item.pitch, 0], timestamp);
+                            midiOutput.send([0x80 + (item.channel - 1), item.pitch, 0], timestamp + duration);
                             break;
                     }
                 }
