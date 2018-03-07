@@ -67,12 +67,12 @@ export function createGraphic(specs, my) {
                                 updateEuclid();
                                 redrawRotatingCanvas();
                                 break;
-                            case 'name':
-                                updateName();
-                                break;
                             case 'is_triplets':
                             case 'rate':
                                 updateDuration();
+                                break;
+                            case 'name':
+                                updateName();
                                 break;
                         }
                     }

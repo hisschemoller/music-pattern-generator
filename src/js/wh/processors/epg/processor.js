@@ -173,7 +173,7 @@ export function createProcessor(specs, my) {
                 euclidPattern = rotateEuclidPattern(euclidPattern, my.params.rotation.value);
             }
             
-            // playback propertie)s, changes in isTriplets, rate, noteLength
+            // playback properties, changes in isTriplets, rate, noteLength
             var rate = my.params.is_triplets.value ? my.params.rate.value * (2 / 3) : my.params.rate.value,
                 stepDuration = rate * PPQN;
             noteDuration = my.params.note_length.value * PPQN;

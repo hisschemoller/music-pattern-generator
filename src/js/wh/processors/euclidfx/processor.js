@@ -7,10 +7,13 @@ export function createProcessor(specs, my) {
         store = specs.store,
         position = 0,
         duration = 0,
-        euclidPattern = [];
+        stepDuration = 0,
+        euclidPattern = [],
+        params = {};
 
     const initialize = function() {
             document.addEventListener(store.STATE_CHANGE, handleStateChanges);
+            updatePattern(true);
         },
 
         terminate = function() {
@@ -25,21 +28,21 @@ export function createProcessor(specs, my) {
                         switch (e.detail.action.paramKey) {
                             case 'steps':
                                 updatePulsesAndRotation();
-                                // updatePattern(true);
+                                updatePattern(true);
                                 break;
                             case 'pulses':
-                                // updatePattern(true);
+                                updatePattern(true);
                                 break;
                             case 'rotation':
                             case 'is_triplets':
                             case 'rate':
                             case 'note_length':
-                                // updatePattern();
+                                updatePattern();
                                 break;
                             case 'target':
-                                break;
                             case 'low':
                             case 'high':
+                                setEffectParameters(e.detail.state.processors.byId[my.id].params.byId);
                                 break;
                         }
                     }
@@ -53,6 +56,15 @@ export function createProcessor(specs, my) {
          * - Process them according to the current parameter settings.
          * - Send the processed events to the output.
          * - Add the events to the processorEvents parameter for display in the view.
+         * 
+         * Events are plain objects with properties:
+         * @param {String} type 'noteon | noteoff'
+         * @param {Number} timestampTicks Event start time, meaured from timeline start
+         * @param {Number} channel 1 - 16
+         * @param {Number} velocity 0 - 127
+         * @param {Number} pitch 0 - 127
+         * 
+         * This method's parameters:
          * @param {Number} scanStart Timespan start in ticks from timeline start.
          * @param {Number} scanEnd   Timespan end in ticks from timeline start.
          * @param {Number} nowToScanStart Timespan from current timeline position to scanStart.
@@ -61,9 +73,52 @@ export function createProcessor(specs, my) {
          * @param {Array} processorEvents Array to collect processor generated events to display in the view.
          */
         process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset, processorEvents) {
+            // retrieve events waiting at the processor's input
             const inputData = my.getInputData();
+
+            // abort if there's nothing to process
+            if (inputData.length === 0) {
+                return;
+            }
+
+            // calculate the processed timespan's position within the pattern, 
+            // taking into account the pattern looping during this timespan.
+            var localStart = scanStart % duration,
+                localEnd = scanEnd % duration,
+                localStart2 = false,
+                localEnd2;
+            if (localStart > localEnd) {
+                localStart2 = 0,
+                localEnd2 = localEnd;
+                localEnd = duration;
+            }
+
             for (let i = 0, n = inputData.length; i < n; i++) {
-                my.setOutputData(inputData[i]);
+                const event = inputData[i];
+
+                // handle only MIDI Note On events
+                if (event.type === 'noteon') {
+
+                    // calculate the state of the effect at the event's time within the pattern
+                    const stepIndex = Math.floor((event.timestampTicks % duration) / stepDuration);
+                    const state = euclidPattern[stepIndex];
+
+                    // apply the effect to the event's target parameter
+                    switch (params.target) {
+                        case 'velocity':
+                            event.velocity = state ? params.high : params.low;
+                            break;
+                        case 'pitch':
+                            event.pitch = state ? params.high : params.low;
+                            break;
+                        case 'channel':
+                            event.channel = state ? params.high : params.low;
+                            break;
+                    }
+                }
+
+                // push the event to the processor's output
+                my.setOutputData(event);
             }
         },
 
@@ -75,6 +130,44 @@ export function createProcessor(specs, my) {
             store.dispatch(store.getActions().recreateParameter(my.id, 'rotation', { max: my.params.steps.value - 1 }));
             store.dispatch(store.getActions().changeParameter(my.id, 'pulses', my.params.pulses.value));
             store.dispatch(store.getActions().changeParameter(my.id, 'rotation', my.params.rotation.value));
+        },
+            
+        /**
+         * Update all pattern properties.
+         * @param {Boolean} isEuclidChange Steps, pulses or rotation change.
+         */
+        updatePattern = function(isEuclidChange) {
+            // euclidean pattern properties, changes in steps, pulses, rotation
+            if (isEuclidChange) {
+                euclidPattern = getEuclidPattern(my.params.steps.value, my.params.pulses.value);
+                euclidPattern = rotateEuclidPattern(euclidPattern, my.params.rotation.value);
+            }
+            
+            // playback properties, changes in isTriplets and rate
+            var rate = my.params.is_triplets.value ? my.params.rate.value * (2 / 3) : my.params.rate.value;
+            stepDuration = rate * PPQN;
+
+            // noteDuration = my.params.note_length.value * PPQN;
+            // duration = my.params.steps.value * stepDuration;
+            // position = position % duration;
+            
+            // create array of note start times in ticks
+            // pulsesOnly.length = 0;
+            // var n = euclidPattern.length;
+            // for (var i = 0; i < n; i++) {
+            //     if (euclidPattern[i]) {
+            //         pulsesOnly.push({
+            //             startTime: i * stepDuration,
+            //             stepIndex: i
+            //         });
+            //     }
+            // }
+        },
+        
+        setEffectParameters = function(params) {
+            params.target = params.target.value;
+            params.high = params.target.high;
+            params.low = params.target.low;
         };
 
     my = my || {};
