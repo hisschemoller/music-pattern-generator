@@ -154,18 +154,14 @@ export default function createAppView(specs, my) {
             state.processors.allIds.forEach((id, i) => {
                 const processorData = state.processors.byId[id];
                 if (!settingsViews[i] || (id !== settingsViews[i].getID())) {
-                    try {
-                        const template = require(`html-loader!../processors/${processorData.type}/settings.html`);
-                        settingsViews.splice(i, 0, createSettingsPanel({
-                            data: processorData,
-                            store: store,
-                            parentEl: editContentEl,
-                            template: template,
-                            isSelected: state.selectedID === processorData.id
-                        }));
-                    } catch(err) {
-                        console.log(`Error creating settings panel: ${err}`);
-                    }
+                    const template = require(`html-loader!../processors/${processorData.type}/settings.html`);
+                    settingsViews.splice(i, 0, createSettingsPanel({
+                        data: processorData,
+                        store: store,
+                        parentEl: editContentEl,
+                        template: template,
+                        isSelected: state.selectedID === processorData.id
+                    }));
                 }
             });
         },
