@@ -4,15 +4,18 @@
 
  .library.panel {
     display: block;
-    width: 70px;
+    width: 80px;
 }
 .library .panel__viewport {
     background-color: var(--panel-bg-color);
     padding-bottom: 10px;
 }
+.library__list {
+    padding-top: 10px;
+}
 .library__item {
     cursor: pointer;
-    padding-left: 5px;
+    padding: 2px 5px;
 }
 .library__item:hover {
     background-color: var(--panel-bg-color);
