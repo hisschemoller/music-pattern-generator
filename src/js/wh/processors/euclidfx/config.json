@@ -77,7 +77,7 @@
                 "value": false
             },
             "target": {
-                "label": "Effect target",
+                "label": "Target",
                 "type": "itemized",
                 "default": "velocity",
                 "value": "velocity",

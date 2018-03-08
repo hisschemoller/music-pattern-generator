@@ -12,7 +12,7 @@
     height: var(--input-height);
     font-size: var(--font-size);
     line-height: var(--input-height);
-    width: 32px;
+    padding: 0 5px;
 }
 .settings button.btn {
     background-color: var(--btn-color);
@@ -33,18 +33,24 @@
     line-height: var(--input-height);
     padding-left: 8px;
 }
+
+.setting {
+    display: flex;
+}
+.setting__label {
+    flex: 0 0 30%;
+    line-height: var(--input-height);
+    padding-left: 8px;
+}
+.setting__value {
+    flex: 0 1 70%;
+}
 .setting__integer {
     display: flex;
 }
-.setting__label-text {
-    display: inline-block;
-    line-height: var(--input-height);
-    padding-left: 8px;
-    width: 30%;
-}
 input[type=range].setting__range {
     display: inline-block;
-    width: 55%;
+    flex: 0 1 100%;
 }
 input[type='number'].setting__number {
     background-color: var(--panel-bg-color);
@@ -54,7 +60,7 @@ input[type='number'].setting__number {
     line-height: var(--input-height);
     padding: 0 8px;
     text-align: right;
-    width: 15%;
+    flex: 0 0 50px;
 }
 .setting__radio {
     position: absolute;
@@ -62,7 +68,7 @@ input[type='number'].setting__number {
     visibility: hidden;
 }
 .setting__radio + .setting__label-radio-text {
-    /*font-size: 16px;*/
+    padding: 0 5px;
 }
 .setting__radio:checked + .setting__label-radio-text {
     background-color: var(--btn-bg-color);

@@ -10,11 +10,8 @@ export default function createItemizedSettingView(specs, my) {
         numInputs,
         
         init = function() {
-            let parentEl = my.el.parentNode;
-            
-            // add the main label
-            let label = my.el.querySelector('.setting__label-text');
-            parentEl.appendChild(label);
+            let parentEl = my.el.parentNode,
+                valueEl = my.el.querySelector('.setting__value');
             
             // add the radio buttons
             let radioTemplate = document.querySelector('#template-setting-itemized-item'),
@@ -25,7 +22,7 @@ export default function createItemizedSettingView(specs, my) {
                 
                 // add a new cloned radio element
                 let radioInputEl = radioTemplate.content.children[0].cloneNode(true);
-                parentEl.appendChild(radioInputEl);
+                valueEl.appendChild(radioInputEl);
                 radioInputEl.setAttribute('name', specs.key);
                 radioInputEl.setAttribute('id', id);
                 radioInputEl.value = model[i].value;
@@ -35,13 +32,10 @@ export default function createItemizedSettingView(specs, my) {
                 
                 // add a new cloned label element
                 let radioLabelEl = radioTemplate.content.children[1].cloneNode(true);
-                parentEl.appendChild(radioLabelEl);
+                valueEl.appendChild(radioLabelEl);
                 radioLabelEl.setAttribute('for', id);
                 radioLabelEl.innerHTML = model[i].label;
             }
-            
-            // remove the original element
-            parentEl.removeChild(my.el);
         },
         
         /**
