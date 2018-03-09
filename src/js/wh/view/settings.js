@@ -53,7 +53,7 @@ export default function createSettingsPanel(specs, my) {
             });
             
             // default delete button of the settings panel
-            if (el) {
+            if (el && el.querySelector('.settings__delete')) {
                 el.querySelector('.settings__delete').addEventListener('click', function(e) {
                     e.preventDefault();
                     store.dispatch(store.getActions().deleteProcessor(data.id));
