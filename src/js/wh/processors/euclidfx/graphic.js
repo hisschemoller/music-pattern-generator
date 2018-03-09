@@ -30,9 +30,11 @@ export function createGraphic(specs, my) {
         centerRadius = 20,
         selectRadius = 15,
         innerRadius = 30,
-        outerRadius = 50,
+        outerRadius = 46,
         dotRadius = 10,
-        locatorLength = 43,
+        locatorLength = 38,
+        zeroMarkerRadius = 3,
+        locatorToZeroMarker = 7,
         doublePI = Math.PI * 2,
 
         initialise = function() {
@@ -198,6 +200,10 @@ export function createGraphic(specs, my) {
             pointerCtx.lineTo(pointerCanvasCenter, necklacePos);
             pointerCtx.lineTo(pointerCanvasCenter + statusWidth, sides);
             pointerCtx.lineTo(pointerCanvasCenter, locatorTop);
+
+            // zero marker
+            pointerCtx.moveTo(pointerCanvasCenter, locatorTop - locatorToZeroMarker + zeroMarkerRadius);
+            pointerCtx.arc(pointerCanvasCenter, locatorTop - locatorToZeroMarker, zeroMarkerRadius, 0, doublePI, true);
 
             pointerCtx.stroke();
 
