@@ -71,7 +71,7 @@ export function createProcessor(specs, my) {
          * This method's parameters:
          * @param {Number} scanStart Timespan start in ticks from timeline start.
          * @param {Number} scanEnd   Timespan end in ticks from timeline start.
-         * @param {Number} nowToScanStart Timespan from current timeline position to scanStart.
+         * @param {Number} nowToScanStart Timespan from current timeline position to scanStart, in ticks
          * @param {Number} ticksToMsMultiplier Duration of one tick in milliseconds.
          * @param {Number} offset Time from doc start to timeline start in ticks.
          * @param {Array} processorEvents Array to collect processor generated events to display in the view.
@@ -87,14 +87,14 @@ export function createProcessor(specs, my) {
 
             // calculate the processed timespan's position within the pattern, 
             // taking into account the pattern looping during this timespan.
-            var localStart = scanStart % duration,
-                localEnd = scanEnd % duration,
-                localStart2 = false,
-                localEnd2;
-            if (localStart > localEnd) {
-                localStart2 = 0,
-                localEnd2 = localEnd;
-                localEnd = duration;
+            var localScanStart = scanStart % duration,
+                localScanEnd = scanEnd % duration,
+                localScanStart2 = false,
+                localScanEnd2;
+            if (localScanStart > localScanEnd) {
+                localScanStart2 = 0,
+                localScanEnd2 = localScanEnd;
+                localScanEnd = duration;
             }
 
             for (let i = 0, n = inputData.length; i < n; i++) {
@@ -119,6 +119,18 @@ export function createProcessor(specs, my) {
                             event.channel = state ? params.high : params.low;
                             break;
                     }
+
+                    // add events to processorEvents for the canvas to show them
+                    if (!processorEvents[my.id]) {
+                        processorEvents[my.id] = [];
+                    }
+                    
+                    const delayFromNowToNoteStart = (event.timestampTicks - scanStart) * ticksToMsMultiplier;
+                    processorEvents[my.id].push({
+                        stepIndex: stepIndex,
+                        delayFromNowToNoteStart: delayFromNowToNoteStart,
+                        delayFromNowToNoteEnd: delayFromNowToNoteStart + (event.durationTicks * ticksToMsMultiplier)
+                    });
                 }
 
                 // push the event to the processor's output

@@ -16,12 +16,15 @@ export function createGraphic(specs, my) {
         duration = 0,
         euclid,
         status = true,
-
         isSelected = false,
+        isNoteActive = false,
         pointerRotation,
         pointerRotationPrevious = 0,
         pointerCanvasCenter,
+        centerDotCounter = 0,
+        centerDotNextStartTime = 0,
 
+        centerDotFullRadius = 10,
         lineWidth = 2,
         radius = 70,
         centerRadius = 20,
@@ -238,12 +241,22 @@ export function createGraphic(specs, my) {
         draw = function(position, processorEvents) {
             showPlaybackPosition(position);
 
+            // calculate status and redraw locator if needed
             const currentStep = Math.floor(((position % duration) / duration) * my.params.steps.value);
             const currentStatus = euclid[currentStep];
             if (currentStatus !== status) {
                 status = currentStatus;
                 redrawPointerCanvas();
                 canvasDirtyCallback();
+            }
+
+            // Show notes to happen as center dot animation.
+            if (processorEvents[my.id] && processorEvents[my.id].length) {
+                for (let i = 0, n = processorEvents[my.id].length; i < n; i++) {
+                    const event = processorEvents[my.id][i];
+                    centerDotNextStartTime = performance.now() + event.delayFromNowToNoteStart;
+                    centerDotCounter = 1;
+                }
             }
         },
         
@@ -290,6 +303,15 @@ export function createGraphic(specs, my) {
             mainDynamicCtx.rotate(-pointerRotation);
             mainDynamicCtx.drawImage(rotateCtx.canvas, -radius, -radius);
             mainDynamicCtx.restore();
+            
+            // center dot
+            if (centerDotCounter >= 0 && centerDotNextStartTime < performance.now()) {
+                const centerDotRadius = centerDotFullRadius * centerDotCounter;
+                mainDynamicCtx.moveTo(my.positionX + centerDotRadius, my.positionY);
+                mainDynamicCtx.arc(my.positionX, my.positionY, centerDotRadius, 0, doublePI, true);
+                mainDynamicCtx.fill();
+                centerDotCounter -= .1;
+            }
         },
         
         /**

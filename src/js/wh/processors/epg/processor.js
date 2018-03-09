@@ -55,10 +55,10 @@ export function createProcessor(specs, my) {
          *                        nowToScanStart
          * @param {Number} scanStart Timespan start in ticks from timeline start.
          * @param {Number} scanEnd   Timespan end in ticks from timeline start.
-         * @param {Number} nowToScanStart Timespan from current timeline position to scanStart.
+         * @param {Number} nowToScanStart Timespan from current timeline position to scanStart, in ticks.
          * @param {Number} ticksToMsMultiplier Duration of one tick in milliseconds.
          * @param {Number} offset Time from doc start to timeline start in ticks.
-         * @param {Array} processorEvents Array to collect processor generated events to displayin the view.
+         * @param {Array} processorEvents Array to collect processor generated events to displaying the view.
          */
         process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset, processorEvents) {
             
@@ -68,27 +68,27 @@ export function createProcessor(specs, my) {
             }
             
             // if the pattern loops during this timespan.
-            var localStart = scanStart % duration,
-                localEnd = scanEnd % duration,
-                localStart2 = false,
-                localEnd2;
-            if (localStart > localEnd) {
-                localStart2 = 0,
-                localEnd2 = localEnd;
-                localEnd = duration;
+            var localScanStart = scanStart % duration,
+                localScanEnd = scanEnd % duration,
+                localScanStart2 = false,
+                localScanEnd2;
+            if (localScanStart > localScanEnd) {
+                localScanStart2 = 0,
+                localScanEnd2 = localScanEnd;
+                localScanEnd = duration;
             }
             
             // check if notes occur during the current timespan
             var n = pulsesOnly.length;
-            for (var i = 0; i < n; i++) {
+            for (let i = 0; i < n; i++) {
                 var pulseStartTime = pulsesOnly[i].startTime,
-                    scanStartToNoteStart = pulseStartTime - localStart,
-                    isOn = (localStart <= pulseStartTime) && (pulseStartTime < localEnd);
+                    scanStartToNoteStart = pulseStartTime - localScanStart,
+                    isOn = (localScanStart <= pulseStartTime) && (pulseStartTime < localScanEnd);
                     
                 // if pattern looped back to the start
-                if (localStart2 !== false) {
-                    scanStartToNoteStart = pulseStartTime - localStart + duration;
-                    isOn = isOn || (localStart2 <= pulseStartTime) && (pulseStartTime < localEnd2);
+                if (localScanStart2 !== false) {
+                    scanStartToNoteStart = pulseStartTime - localScanStart + duration;
+                    isOn = isOn || (localScanStart2 <= pulseStartTime) && (pulseStartTime < localScanEnd2);
                 } 
                 
                 // if a note should play
@@ -108,20 +108,22 @@ export function createProcessor(specs, my) {
                         velocity: velocity
                     });
                     
+                    // add events to processorEvents for the canvas to show them
                     if (!processorEvents[my.id]) {
                         processorEvents[my.id] = [];
                     }
+                    
                     const delayFromNowToNoteStart = (nowToScanStart + scanStartToNoteStart) * ticksToMsMultiplier;
                     processorEvents[my.id].push({
                         stepIndex: pulsesOnly[i].stepIndex,
                         delayFromNowToNoteStart: delayFromNowToNoteStart,
-                        delayFromNowToNoteEnd: (delayFromNowToNoteStart + noteDuration) * ticksToMsMultiplier
+                        delayFromNowToNoteEnd: delayFromNowToNoteStart + (noteDuration * ticksToMsMultiplier)
                     });
                 }
             }
             
-            if (localStart2 !== false) {
-                localStart = localStart2;
+            if (localScanStart2 !== false) {
+                localScanStart = localScanStart2;
             }
         },
 

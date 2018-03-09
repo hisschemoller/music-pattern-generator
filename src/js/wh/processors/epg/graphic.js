@@ -145,10 +145,10 @@ export function createGraphic(specs, my) {
 
         draw = function(position, processorEvents) {
             showPlaybackPosition(position);
-            let event;
+            
             if (processorEvents[my.id] && processorEvents[my.id].length) {
                 for (let i = 0, n = processorEvents[my.id].length; i < n; i++) {
-                    event = processorEvents[my.id][i];
+                    const event = processorEvents[my.id][i];
                     showNote(event.stepIndex, event.delayFromNowToNoteStart, event.delayFromNowToNoteEnd);
                 }
             }
