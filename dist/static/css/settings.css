@@ -33,6 +33,9 @@
     line-height: var(--input-height);
     padding-left: 8px;
 }
+.settings__paragraph {
+    padding: 0 8px;
+}
 
 .setting {
     display: flex;
