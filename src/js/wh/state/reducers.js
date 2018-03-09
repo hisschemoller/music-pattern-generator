@@ -301,19 +301,33 @@ export default function createReducers() {
                         } 
                     }
                     // add new connection
-                    return {
+                    newState = {
                         ...state,
                         connections: {
                             byId: { ...state.connections.byId, [action.id]: action.payload },
                             allIds: [ ...state.connections.allIds, action.id ]
+                        },
+                        processors: {
+                            byId: { ...state.processors.byId },
+                            allIds: [ ...state.processors.allIds ]
                         }
                     };
+                    // reorder the processors
+                    orderProcessors(newState);
+                    return newState;
                 
                 case actions.DISCONNECT_PROCESSORS:
-                    return {
+                    newState =  {
                         ...state,
-                        connections: deleteFromNormalizedTable(state.connections, action.id)
+                        connections: deleteFromNormalizedTable(state.connections, action.id),
+                        processors: {
+                            byId: { ...state.processors.byId },
+                            allIds: [ ...state.processors.allIds ]
+                        }
                     };
+                    // reorder the processors
+                    orderProcessors(newState);
+                    return newState;
 
                 case actions.RESCAN_TYPES:
                     return {
@@ -378,4 +392,30 @@ function toggleMIDIPreference(state, id, preferenceName) {
         [preferenceName]: !state.ports.byId[id][preferenceName]
     };
     return newState;
+}
+
+/**
+ * Order thee processors according to their connections
+ * to optimise the flow from inputs to outputs.
+ * 
+ * Rule: when connected, the source goes before the destination
+ * 
+ * @param {Object} state The whole state object.
+ */
+function orderProcessors(state) {
+    state.processors.allIds.sort((a, b) => {
+        let compareResult = 0;
+        // look for connections
+        state.connections.allIds.forEach(id => {
+            const connection = state.connections.byId[id];
+            if (connection.sourceProcessorID === a && connection.destinationProcessorID === b) {
+                // source A connects to destination B
+                compareResult = -1;
+            } else if (connection.sourceProcessorID === b && connection.destinationProcessorID === a) {
+                // source B connects to destination A
+                compareResult = 1;
+            }
+        });
+        return compareResult;
+    });
 }
