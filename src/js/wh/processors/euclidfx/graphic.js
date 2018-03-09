@@ -32,7 +32,7 @@ export function createGraphic(specs, my) {
         innerRadius = 30,
         outerRadius = 50,
         dotRadius = 10,
-        locatorLength = 50,
+        locatorLength = 43,
         doublePI = Math.PI * 2,
 
         initialise = function() {
@@ -110,6 +110,7 @@ export function createGraphic(specs, my) {
             canvas.width = centerRadius * 2;
             pointerCtx = canvas.getContext('2d');
             pointerCtx.lineWidth = lineWidth;
+            pointerCtx.lineJoin = 'bevel';
             pointerCanvasCenter = canvas.width / 2;
             
             // offscreen canvas for the name
@@ -179,20 +180,34 @@ export function createGraphic(specs, my) {
          * Redraw the location pointer and the status dot.
          */
         redrawPointerCanvas = function() {
+            const locatorTop = radius - pointerCanvasCenter - locatorLength,
+                necklacePos = radius - (status ? outerRadius : innerRadius),
+                halfWayPos = necklacePos + ((locatorTop - necklacePos) / 2),
+                statusWidth = status ? 15 : 6,
+                sides = status ? locatorTop : halfWayPos;
+
             pointerCtx.clearRect(0, 0, pointerCtx.canvas.width, pointerCtx.canvas.height);
             pointerCtx.beginPath();
 
             // position locator
-            pointerCtx.moveTo(pointerCanvasCenter, radius - pointerCanvasCenter - locatorLength);
-            pointerCtx.lineTo(pointerCanvasCenter, radius - pointerCanvasCenter);
+            pointerCtx.moveTo(pointerCanvasCenter, radius - pointerCanvasCenter);
+            pointerCtx.lineTo(pointerCanvasCenter, locatorTop);
+
+            // status indicator
+            pointerCtx.lineTo(pointerCanvasCenter - statusWidth, sides);
+            pointerCtx.lineTo(pointerCanvasCenter, necklacePos);
+            pointerCtx.lineTo(pointerCanvasCenter + statusWidth, sides);
+            pointerCtx.lineTo(pointerCanvasCenter, locatorTop);
+
             pointerCtx.stroke();
 
+
             // status dot
-            const yPos = radius - (status ? outerRadius : innerRadius);
-            pointerCtx.beginPath();
-            pointerCtx.moveTo(pointerCanvasCenter, yPos);
-            pointerCtx.arc(pointerCanvasCenter, yPos, dotRadius, 0, doublePI);
-            pointerCtx.fill();
+            // const yPos = radius - (status ? outerRadius : innerRadius);
+            // pointerCtx.beginPath();
+            // pointerCtx.moveTo(pointerCanvasCenter, yPos);
+            // pointerCtx.arc(pointerCanvasCenter, yPos, dotRadius, 0, doublePI);
+            // pointerCtx.fill();
         },
 
         /**
