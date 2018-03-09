@@ -247,16 +247,12 @@ export function createGraphic(specs, my) {
          * Show circle if the my.processor is selected, else hide.
          * @param {Boolean} isSelectedView True if selected.
          */
-        updateSelectCircle = function(isSelectedView) {
+        setSelected = function(isSelectedView) {
             isSelected = isSelectedView;
             if (typeof redrawStaticCanvas == 'function' && typeof canvasDirtyCallback == 'function') {
                 redrawStaticCanvas();
                 canvasDirtyCallback();
             }
-        },
-
-        setSelected = function(isSelected) {
-            updateSelectCircle(isSelected);
         },
         
         draw = function(position, processorEvents) {

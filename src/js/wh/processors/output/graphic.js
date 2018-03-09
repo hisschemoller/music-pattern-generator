@@ -10,32 +10,23 @@ export function createGraphic(specs, my) {
         staticCtx,
         nameCanvas,
         nameCtx,
+
+        isSelected = false,
+
         lineWidth = 2,
         width = 100,
         height = 50,
         radius = 10,
         boxWidth = 80,
+        selectRadius = 15,
+        doublePI = Math.PI * 2,
         
         initialise = function() {
             document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
-
-            // offscreen canvas for static shapes
-            staticCanvas = document.createElement('canvas');
-            staticCanvas.height = height;
-            staticCanvas.width = width;
-            staticCtx = staticCanvas.getContext('2d');
-            staticCtx.lineWidth = lineWidth;
-            
-            // offscreen canvas for the name
-            nameCanvas = document.createElement('canvas');
-            nameCanvas.height = 40;
-            nameCanvas.width = 200;
-            nameCtx = nameCanvas.getContext('2d');
-            nameCtx.font = '14px sans-serif';
-            nameCtx.textAlign = 'center';
-            
+            initGraphics();
             setTheme(specs.theme);
             updatePosition(specs.data.positionX, specs.data.positionY);
+            redrawStaticCanvas();
         },
         
         /**
@@ -56,8 +47,29 @@ export function createGraphic(specs, my) {
             }
         },
 
-        setSelected = function(isSelected) {
-            console.log('TODO: setSelected');
+        initGraphics = function() {
+            // offscreen canvas for static shapes
+            staticCanvas = document.createElement('canvas');
+            staticCanvas.height = height;
+            staticCanvas.width = width;
+            staticCtx = staticCanvas.getContext('2d');
+            staticCtx.lineWidth = lineWidth;
+
+            // offscreen canvas for the name
+            nameCanvas = document.createElement('canvas');
+            nameCanvas.height = 40;
+            nameCanvas.width = 200;
+            nameCtx = nameCanvas.getContext('2d');
+            nameCtx.font = '14px sans-serif';
+            nameCtx.textAlign = 'center';
+        },
+
+        setSelected = function(isSelectedView) {
+            isSelected = isSelectedView;
+            if (typeof redrawStaticCanvas == 'function' && typeof canvasDirtyCallback == 'function') {
+                redrawStaticCanvas();
+                canvasDirtyCallback();
+            }
         },
 
         draw = function() {},
@@ -65,22 +77,31 @@ export function createGraphic(specs, my) {
         /**
          * Redraw the graphic after a change.
          */
-        updateGraphic = function() {
+        redrawStaticCanvas = function() {
             staticCtx.strokeStyle = my.colorHigh;
 
             staticCtx.clearRect(0, 0, width, height);
             staticCtx.save();
-            staticCtx.translate(width / 2, height / 2 - 10);
+            staticCtx.translate(width / 2, height / 2 - 8);
             staticCtx.beginPath();
+
             // box
             staticCtx.rect(-boxWidth / 2, -radius, boxWidth, radius * 2);
             // arrow
             staticCtx.moveTo(-boxWidth / 2, radius);
             staticCtx.lineTo(0, radius + 20)
             staticCtx.lineTo(boxWidth / 2, radius);
+
             // circle
             staticCtx.moveTo(radius, 0);
             staticCtx.arc(0, 0, radius, 0, Math.PI * 2, true);
+
+            // select circle
+            if (isSelected) {
+                staticCtx.moveTo(selectRadius, 0);
+                staticCtx.arc(0, 0, selectRadius, 0, doublePI);
+            }
+
             staticCtx.stroke();
             staticCtx.restore();
         },
@@ -147,7 +168,7 @@ export function createGraphic(specs, my) {
             my.colorHigh = theme.colorHigh;
             my.colorMid = theme.colorMid;
             my.colorLow = theme.colorLow;
-            updateGraphic();
+            redrawStaticCanvas();
             updateName();
         };
         

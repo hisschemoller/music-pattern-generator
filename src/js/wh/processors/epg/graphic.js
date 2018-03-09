@@ -138,9 +138,17 @@ export function createGraphic(specs, my) {
             // width and height to clear center dot 
             centerDotSize = (centerDotFullRadius + 1) * 2;
         },
-
-        setSelected = function(isSelected) {
-            updateSelectCircle(isSelected);
+        
+        /**
+         * Show circle if the my.processor is selected, else hide.
+         * @param {Boolean} isSelectedView True if selected.
+         */
+        setSelected = function(isSelectedView) {
+            isSelected = isSelectedView;
+            if (typeof redrawStaticCanvas == 'function' && typeof canvasDirtyCallback == 'function') {
+                redrawStaticCanvas();
+                canvasDirtyCallback();
+            }
         },
 
         draw = function(position, processorEvents) {
@@ -267,18 +275,6 @@ export function createGraphic(specs, my) {
                 rect = necklace[i].rect;
                 rect.xAbs = my.positionX + rect.x;
                 rect.yAbs = my.positionY - rect.y;
-            }
-        },
-        
-        /**
-         * Show circle if the my.processor is selected, else hide.
-         * @param {Boolean} isSelectedView True if selected.
-         */
-        updateSelectCircle = function(isSelectedView) {
-            isSelected = isSelectedView;
-            if (typeof redrawStaticCanvas == 'function' && typeof canvasDirtyCallback == 'function') {
-                redrawStaticCanvas();
-                canvasDirtyCallback();
             }
         },
         
