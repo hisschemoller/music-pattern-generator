@@ -41,12 +41,15 @@ export function createProcessor(specs, my) {
                                 updatePattern();
                                 break;
                             case 'target':
+                                updateTarget(e.detail.state.processors.byId[my.id].params.byId);
+                                break;
                             case 'low':
                             case 'high':
                                 updateEffectParameters(e.detail.state.processors.byId[my.id].params.byId);
                                 break;
                             case 'relative':
-                                setEffectParameters(e.detail.state.processors.byId[my.id].params.byId);
+                                updateRelativeSetting(e.detail.state.processors.byId[my.id].params.byId);
+                                break;
                         }
                     }
                     break;
@@ -164,9 +167,47 @@ export function createProcessor(specs, my) {
             stepDuration = rate * PPQN;
             duration = my.params.steps.value * stepDuration;
         },
+
+        /**
+         * Effect target changed.
+         * @param {Object} parameters Parameters object from state.
+         */
+        updateTarget = function(parameters) {
+            params.target = parameters.target.value;
+
+            let min, max, lowValue, highValue;
+
+            // set minimum and maximum value according to target type
+            switch (parameters.target.value) {
+                case 'velocity':
+                case 'pitch':
+                    min = parameters.relative.value ? -127 : 0;
+                    max = 127;
+                    break;
+                case 'channel':
+                    min = parameters.relative.value ? -16 : 1;
+                    max = 16;
+                    break;
+                case 'length':
+                    min = 0;
+                    max = 1;
+                    break;
+                case 'output':
+                    min = 0;
+                    max = 1;
+                    break;
+            }
+
+            // clamp parameter's value between minimum and maximum value
+            lowValue = Math.max(min, Math.min(parameters.low.value, max));
+            highValue = Math.max(min, Math.min(parameters.high.value, max));
+
+            // apply all new settings to the effect parameters 
+            store.dispatch(store.getActions().recreateParameter(my.id, 'low', { min: min, max: max, value: lowValue }));
+            store.dispatch(store.getActions().recreateParameter(my.id, 'high', { min: min, max: max, value: highValue }));
+        },
         
         updateEffectParameters = function(parameters) {
-            params.target = parameters.target.value;
             params.high = parameters.high.value;
             params.low = parameters.low.value;
         },
@@ -174,24 +215,40 @@ export function createProcessor(specs, my) {
         updateRelativeSetting = function(parameters) {
             params.relative = parameters.relative.value;
 
-            let min, max;
+            let min, max, lowValue, highValue;
             
-            switch (params.target) {
+            // set minimum and maximum value according to target type
+            switch (parameters.target.value) {
                 case 'velocity':
                 case 'pitch':
-                    min = params.relative ? -127 : 0;
+                    min = parameters.relative.value ? -127 : 0;
                     max = 127;
+                    lowValue = parameters.relative.value ? 0 : 50;
+                    highValue = parameters.relative.value ? 0 : 100;
                     break;
                 case 'channel':
-                    min = params.relative ? -16 : 0;
+                    min = parameters.relative.value ? -16 : 1;
                     max = 16;
+                    lowValue = parameters.relative.value ? 0 : 1;
+                    highValue = parameters.relative.value ? 0 : 1;
+                    break;
+                case 'length':
+                    min = 0;
+                    max = 1;
+                    lowValue = parameters.relative.value ? 0 : 1;
+                    highValue = parameters.relative.value ? 0 : 1;
+                    break;
+                case 'output':
+                    min = 0;
+                    max = 1;
+                    lowValue = parameters.relative.value ? 0 : 0;
+                    highValue = parameters.relative.value ? 0 : 0;
                     break;
             }
 
-            store.dispatch(store.getActions().recreateParameter(my.id, 'low', { min: min, max: max }));
-            store.dispatch(store.getActions().recreateParameter(my.id, 'high', { min: min, max: max }));
-            store.dispatch(store.getActions().changeParameter(my.id, 'low', params.low));
-            store.dispatch(store.getActions().changeParameter(my.id, 'high', params.high));
+            // apply all new settings to the effect parameters 
+            store.dispatch(store.getActions().recreateParameter(my.id, 'low', { min: min, max: max, value: lowValue }));
+            store.dispatch(store.getActions().recreateParameter(my.id, 'high', { min: min, max: max, value: highValue }));
         };
 
     my = my || {};

@@ -169,16 +169,20 @@ export default function createReducers() {
                     return newState;
                 
                 case actions.RECREATE_PARAMETER:
+                    // clone state
                     newState = { 
                         ...state,
                         processors: {
                             byId: { ...state.processors.byId },
                             allIds: [ ...state.processors.allIds ]
                         } };
+                    
+                    // clone parameter, overwrite with new settings.
                     newState.processors.byId[action.processorID].params.byId[action.paramKey] = {
                         ...newState.processors.byId[action.processorID].params.byId[action.paramKey],
                         ...action.paramObj
                     };
+                    
                     return newState;
                 
                 case actions.SET_TEMPO:
