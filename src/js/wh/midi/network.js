@@ -70,12 +70,15 @@ export default function createMIDINetwork(specs, my) {
          */
         deleteProcessors = function(procsState) {
             for (let i = processors.length - 1, n = 0; i >= n; i--) {
+                // search for the processor in the state
                 let exists = false;
                 procsState.allIds.forEach(processorID => {
                     if (processorID === processors[i].getID()) {
                         exists = true;
                     }
                 });
+
+                // remove processor if it doesn't exist in the state
                 if (!exists) {
                     const processor = processors[i];
                     if (processor.terminate instanceof Function) {
@@ -84,6 +87,7 @@ export default function createMIDINetwork(specs, my) {
                     processors.splice(i, 1);
                 }
             }
+            numProcessors = processors.length;
         },
         
         /**
