@@ -107,19 +107,23 @@ export function createProcessor(specs, my) {
                 if (event.type === 'note') {
 
                     // calculate the state of the effect at the event's time within the pattern
-                    const stepIndex = Math.floor((event.timestampTicks % duration) / stepDuration);
-                    const state = euclidPattern[stepIndex];
+                    const stepIndex = Math.floor((event.timestampTicks % duration) / stepDuration),
+                        state = euclidPattern[stepIndex],
+                        effectValue = state ? params.high : params.low;
                     
                     // apply the effect to the event's target parameter
                     switch (params.target) {
                         case 'velocity':
-                            event.velocity = state ? params.high : params.low;
+                            event.velocity = params.relative ? event.velocity + effectValue : effectValue;
+                            event.velocity = Math.max(0, Math.min(event.velocity, 127));
                             break;
                         case 'pitch':
-                            event.pitch = state ? params.high : params.low;
+                            event.pitch = params.relative ? event.pitch + effectValue : effectValue;
+                            event.pitch = Math.max(0, Math.min(event.pitch, 127));
                             break;
                         case 'channel':
-                            event.channel = state ? params.high : params.low;
+                            event.channel = params.relative ? event.channel + effectValue : effectValue;
+                            event.channel = Math.max(1, Math.min(event.channel, 16));
                             break;
                     }
 
