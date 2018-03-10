@@ -18,17 +18,17 @@ export default function createCanvasProcessorViews(specs, my) {
             document.addEventListener(store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
                     case e.detail.actions.SET_THEME:
-                        setTheme();
+                        setTheme(e.detail.state);
                         break;
                 }
             });
         },
 
-        setTheme = function() {
+        setTheme = function(state) {
             const themeColors = getThemeColors();
             views.forEach(view => {
                 if (view.setTheme instanceof Function) {
-                    view.setTheme(themeColors);
+                    view.setTheme(themeColors, state.processors.byId[view.getID()].params.byId);
                 }
             });
         },

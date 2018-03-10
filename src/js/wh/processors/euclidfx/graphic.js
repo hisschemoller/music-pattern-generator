@@ -41,10 +41,10 @@ export function createGraphic(specs, my) {
             document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
             canvasDirtyCallback = specs.canvasDirtyCallback;
             initGraphics();
-            updateEuclid();
-            setTheme(specs.theme);
+            updateEuclid(specs.data.params.byId);
+            setTheme(specs.theme, specs.data.params.byId);
             updatePosition(specs.data.positionX, specs.data.positionY);
-            updateDuration();
+            updateDuration(specs.data.params.byId);
             redrawStaticCanvas();
             redrawPointerCanvas();
             redrawRotatingCanvas();
@@ -65,19 +65,21 @@ export function createGraphic(specs, my) {
                         my.params = e.detail.state.processors.byId[my.id].params.byId;
                         switch (e.detail.action.paramKey) {
                             case 'steps':
-                                updateDuration();
+                                updateDuration(e.detail.state.processors.byId[my.id].params.byId);
                                 // fall through
                             case 'pulses':
-                            case 'rotation':
-                                updateEuclid();
+                                updateEuclid(e.detail.state.processors.byId[my.id].params.byId);
                                 redrawRotatingCanvas();
+                                break;
+                            case 'rotation':
+                                canvasDirtyCallback();
                                 break;
                             case 'is_triplets':
                             case 'rate':
-                                updateDuration();
+                                updateDuration(e.detail.state.processors.byId[my.id].params.byId);
                                 break;
                             case 'name':
-                                updateName();
+                                updateName(e.detail.state.processors.byId[my.id].params.byId);
                                 break;
                         }
                     }
@@ -137,25 +139,34 @@ export function createGraphic(specs, my) {
         /**
          * Calculate the pattern's duration in milliseconds.
          */
-        updateDuration = function() {
-            const rate = my.params.is_triplets.value ? my.params.rate.value * (2 / 3) : my.params.rate.value,
+        updateDuration = function(params) {
+            const rate = params.is_triplets.value ? params.rate.value * (2 / 3) : params.rate.value,
                 stepDuration = rate * PPQN;
-            duration = my.params.steps.value * stepDuration;
+            duration = params.steps.value * stepDuration;
         },
 
-        updateEuclid = function() {
-            euclid = getEuclidPattern(my.params.steps.value, my.params.pulses.value);
-            euclid = rotateEuclidPattern(euclid, my.params.rotation.value);
+        updateEuclid = function(params) {
+            euclid = getEuclidPattern(params.steps.value, params.pulses.value);
         },
         
         /**
          * Update the pattern's name.
          */
-        updateName = function() {
+        updateName = function(params) {
             nameCtx.fillStyle = my.colorMid;
             nameCtx.clearRect(0, 0, nameCtx.canvas.width, nameCtx.canvas.height);
-            nameCtx.fillText(my.params.name.value, nameCtx.canvas.width / 2, nameCtx.canvas.height / 2);
+            nameCtx.fillText(params.name.value, nameCtx.canvas.width / 2, nameCtx.canvas.height / 2);
             canvasDirtyCallback();
+        },
+        
+        /**
+         * Show the playback position within the pattern.
+         * Indicated by the pointer's rotation.
+         * @param  {Number} position Position within pattern in ticks.
+         */
+        updatePlaybackPosition = function(position) {
+            pointerRotationPrevious = pointerRotation;
+            pointerRotation = -doublePI * ((position % duration) / duration);
         },
         
         /**
@@ -206,24 +217,13 @@ export function createGraphic(specs, my) {
             pointerCtx.arc(pointerCanvasCenter, locatorTop - locatorToZeroMarker, zeroMarkerRadius, 0, doublePI, true);
 
             pointerCtx.stroke();
-
-
-            // status dot
-            // const yPos = radius - (status ? outerRadius : innerRadius);
-            // pointerCtx.beginPath();
-            // pointerCtx.moveTo(pointerCanvasCenter, yPos);
-            // pointerCtx.arc(pointerCanvasCenter, yPos, dotRadius, 0, doublePI);
-            // pointerCtx.fill();
         },
 
         /**
          * The rotating canvas shows the necklace shape.
          */
         redrawRotatingCanvas = function() {
-            let steps = my.params.steps.value,
-                pulses = my.params.pulses.value,
-                rotation = my.params.rotation.value,
-                arc, x, y;
+            let arc, x, y;
 
             rotateCtx.clearRect(0, 0, rotateCtx.canvas.width, rotateCtx.canvas.height);
             rotateCtx.fillStyle = my.colorHigh;
@@ -256,10 +256,11 @@ export function createGraphic(specs, my) {
         },
         
         draw = function(position, processorEvents) {
-            showPlaybackPosition(position);
+            updatePlaybackPosition(position);
 
             // calculate status and redraw locator if needed
-            const currentStep = Math.floor(((position % duration) / duration) * my.params.steps.value);
+            let currentStep = Math.floor(((position % duration) / duration) * my.params.steps.value);
+            currentStep = (currentStep + my.params.rotation.value) % my.params.steps.value;
             const currentStatus = euclid[currentStep];
             if (currentStatus !== status) {
                 status = currentStatus;
@@ -278,29 +279,23 @@ export function createGraphic(specs, my) {
         },
         
         /**
-         * Show the playback position within the pattern.
-         * Indicated by the pointer's rotation.
-         * @param  {Number} position Position within pattern in ticks.
-         */
-        showPlaybackPosition = function(position) {
-            pointerRotationPrevious = pointerRotation;
-            pointerRotation = doublePI * (position % duration / duration);
-        },
-        
-        /**
          * Add the pattern's static canvas to the main static canvas.
          * @param  {Object} mainStaticCtx 2D canvas context.
          */
         addToStaticView = function(mainStaticCtx) {
+            // draw static canvas
             mainStaticCtx.drawImage(
                 staticCtx.canvas,
                 my.positionX - radius,
                 my.positionY - radius);
+            
+            // draw name canvas
             mainStaticCtx.drawImage(
                 nameCtx.canvas,
                 my.positionX - radius,
                 my.positionY + outerRadius + 4);
             
+            // draw pointer canvas
             let patternRotation = (my.params.rotation.value / my.params.steps.value) * doublePI;
             mainStaticCtx.save();
             mainStaticCtx.translate(my.positionX, my.positionY);
@@ -317,7 +312,7 @@ export function createGraphic(specs, my) {
             // draw rotating canvas
             mainDynamicCtx.save();
             mainDynamicCtx.translate(my.positionX, my.positionY);
-            mainDynamicCtx.rotate(-pointerRotation);
+            mainDynamicCtx.rotate(pointerRotation);
             mainDynamicCtx.drawImage(rotateCtx.canvas, -radius, -radius);
             mainDynamicCtx.restore();
             
@@ -339,7 +334,7 @@ export function createGraphic(specs, my) {
         clearFromDynamicView = function(mainDynamicCtx) {
             mainDynamicCtx.save();
             mainDynamicCtx.translate(my.positionX, my.positionY);
-            mainDynamicCtx.rotate(-pointerRotationPrevious);
+            mainDynamicCtx.rotate(pointerRotationPrevious);
             mainDynamicCtx.clearRect(-radius, -radius, rotateCtx.canvas.width, rotateCtx.canvas.height);
             mainDynamicCtx.restore();
         },
@@ -359,7 +354,7 @@ export function createGraphic(specs, my) {
          * Set the theme colours of the processor view.
          * @param {Object} theme Theme settings object.
          */
-        setTheme = function(theme) {
+        setTheme = function(theme, params) {
             my.colorHigh = theme.colorHigh;
             my.colorMid = theme.colorMid;
             my.colorLow = theme.colorLow;
@@ -368,9 +363,10 @@ export function createGraphic(specs, my) {
             rotateCtx.strokeStyle = my.colorHigh;
             pointerCtx.strokeStyle = my.colorHigh;
             pointerCtx.fillStyle = my.colorHigh;
-            updateName();
-            redrawRotatingCanvas();
-            redrawPointerCanvas();
+            
+            updateName(params);
+            redrawRotatingCanvas(params);
+            redrawPointerCanvas(params);
         };
         
         my = my || {};
