@@ -19,6 +19,7 @@
 import createActions from './wh/state/actions';
 import createReducers from './wh/state/reducers';
 import createStore from './wh/state/store';
+import persist from './wh/state/persist';
 
 import createAppView from './wh/view/app';
 import createCanvasView from './wh/view/canvas';
@@ -28,6 +29,7 @@ import createMIDINetwork from './wh/midi/network';
 import createPreferencesView from './wh/view/preferences';
 import createRemoteView from './wh/view/remote';
 import createTransport from './wh/core/transport';
+
 
 /**
  * Application startup.
@@ -85,11 +87,12 @@ document.addEventListener('DOMContentLoaded', function(e) {
         midiNetwork 
     });
 
+    // scan installed processors
     store.dispatch(store.getActions().rescanTypes());
 
     // initialise
     midi.connect().then(() => {
-        store.persist();
+        persist(store);
         transport.run();
     });
 });
