@@ -20,7 +20,6 @@ export function createGraphic(specs, my) {
         isNoteActive = false,
         pointerRotation,
         pointerRotationPrevious = 0,
-        pointerCanvasCenter,
         centerDotCounter = 0,
         centerDotNextStartTime = 0,
 
@@ -33,8 +32,10 @@ export function createGraphic(specs, my) {
         outerRadius = 46,
         dotRadius = 10,
         locatorLength = 38,
-        zeroMarkerRadius = 3,
-        locatorToZeroMarker = 7,
+        zeroMarkerRadius = 2,
+        zeroMarkerY = radius - centerRadius - zeroMarkerRadius - 3,
+        pointerCanvasCenter = centerRadius,
+        locatorTop = radius - pointerCanvasCenter - locatorLength,
         doublePI = Math.PI * 2,
 
         initialise = function() {
@@ -115,7 +116,6 @@ export function createGraphic(specs, my) {
             pointerCtx = canvas.getContext('2d');
             pointerCtx.lineWidth = lineWidth;
             pointerCtx.lineJoin = 'bevel';
-            pointerCanvasCenter = canvas.width / 2;
             
             // offscreen canvas for the name
             canvas = document.createElement('canvas');
@@ -193,8 +193,7 @@ export function createGraphic(specs, my) {
          * Redraw the location pointer and the status dot.
          */
         redrawPointerCanvas = function() {
-            const locatorTop = radius - pointerCanvasCenter - locatorLength,
-                necklacePos = radius - (status ? outerRadius : innerRadius),
+            const necklacePos = radius - (status ? outerRadius : innerRadius),
                 halfWayPos = necklacePos + ((locatorTop - necklacePos) / 2),
                 statusWidth = status ? 15 : 6,
                 sides = status ? locatorTop : halfWayPos;
@@ -211,10 +210,6 @@ export function createGraphic(specs, my) {
             pointerCtx.lineTo(pointerCanvasCenter, necklacePos);
             pointerCtx.lineTo(pointerCanvasCenter + statusWidth, sides);
             pointerCtx.lineTo(pointerCanvasCenter, locatorTop);
-
-            // zero marker
-            pointerCtx.moveTo(pointerCanvasCenter, locatorTop - locatorToZeroMarker + zeroMarkerRadius);
-            pointerCtx.arc(pointerCanvasCenter, locatorTop - locatorToZeroMarker, zeroMarkerRadius, 0, doublePI, true);
 
             pointerCtx.stroke();
         },
@@ -241,6 +236,12 @@ export function createGraphic(specs, my) {
 
             rotateCtx.closePath();
             rotateCtx.stroke();
+
+            // zero marker
+            rotateCtx.beginPath();
+            rotateCtx.moveTo(radius + zeroMarkerRadius, zeroMarkerY);
+            rotateCtx.arc(radius , zeroMarkerY, zeroMarkerRadius, 0, doublePI, true);
+            rotateCtx.fill();
         },
         
         /**
