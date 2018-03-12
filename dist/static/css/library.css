@@ -3,7 +3,7 @@
  ************************/
 
  .library.panel {
-    display: block;
+    display: none;
     width: 80px;
 }
 .library .panel__viewport {

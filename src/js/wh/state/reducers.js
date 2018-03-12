@@ -26,6 +26,7 @@ export default function createReducers() {
             learnTargetProcessorID: null,
             learnTargetParameterKey: null,
             showHelpPanel: false,
+            showLibraryPanel: true,
             showPreferencesPanel: false,
             showSettingsPanel: false,
         },
@@ -283,7 +284,8 @@ export default function createReducers() {
                         ...state,
                         showHelpPanel: action.panelName === 'help' ? !state.showHelpPanel : state.showHelpPanel,
                         showPreferencesPanel: action.panelName === 'preferences' ? !state.showPreferencesPanel : state.showPreferencesPanel,
-                        showSettingsPanel: action.panelName === 'settings' ? !state.showSettingsPanel : state.showSettingsPanel
+                        showSettingsPanel: action.panelName === 'settings' ? !state.showSettingsPanel : state.showSettingsPanel,
+                        showLibraryPanel: action.panelName === 'library' ? !state.showLibraryPanel : state.showLibraryPanel
                     };
                     return state;
                 

@@ -9,6 +9,7 @@ export default function createAppView(specs, my) {
         store = specs.store,
         rootEl = document.querySelector('#app'),
         panelsEl = document.querySelector('.panels'),
+        libraryEl = document.querySelector('.library'),
         helpEl = document.querySelector('.help'),
         prefsEl = document.querySelector('.prefs'),
         editEl = document.querySelector('.edit'),
@@ -36,6 +37,10 @@ export default function createAppView(specs, my) {
             bpm: {
                 type: 'number',
                 input: document.getElementById('bpm-number')
+            },
+            library: {
+                type: 'checkbox',
+                input: document.getElementById('library-check')
             },
             remote: {
                 type: 'checkbox',
@@ -77,6 +82,9 @@ export default function createAppView(specs, my) {
             });
             controls.remote.input.addEventListener('change', function(e) {
                 store.dispatch(store.getActions().toggleMIDILearnMode());
+            });
+            controls.library.input.addEventListener('change', function(e) {
+                store.dispatch(store.getActions().togglePanel('library'));
             });
             controls.prefs.input.addEventListener('change', function(e) {
                 store.dispatch(store.getActions().togglePanel('preferences'));
@@ -276,6 +284,9 @@ export default function createAppView(specs, my) {
 
             editEl.dataset.show = state.showSettingsPanel;
             controls.edit.input.checked = state.showSettingsPanel;
+
+            libraryEl.dataset.show = state.showLibraryPanel;
+            controls.library.input.checked = state.showLibraryPanel;
 
             controls.connections.input.checked = state.connectModeActive;
             
