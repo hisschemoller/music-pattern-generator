@@ -37,6 +37,7 @@ export default function createCanvasConnectionsView(specs, my) {
             allIds: []
         },
         cableHandleRadius = 10,
+        cableHandleCross = 4,
         connectorRadius = 12,
         sourceProcessorID,
         sourceConnectorID,
@@ -210,8 +211,6 @@ export default function createCanvasConnectionsView(specs, my) {
             cableData.byId = {};
             cableData.allIds = [];
             cablesCtx.clearRect(0, 0, cablesCanvas.width, cablesCanvas.height);
-            cablesCtx.strokeStyle = themeColors.colorMid;
-            cablesCtx.beginPath();
 
             state.connections.allIds.forEach(connectionID => {
                 const connection = state.connections.byId[connectionID];
@@ -227,7 +226,7 @@ export default function createCanvasConnectionsView(specs, my) {
                     }, {
                         x: destinationProcessor.positionX + destinationConnector.x,
                         y: destinationProcessor.positionY + destinationConnector.y
-                    });
+                    }, getThemeColors().colorMid, getThemeColors().colorHigh, 1);
 
                     cableData.byId[connectionID] = {
                         handleX: handlePosition.x,
@@ -236,8 +235,6 @@ export default function createCanvasConnectionsView(specs, my) {
                     cableData.allIds.push(connectionID);
                 }
             });
-
-            cablesCtx.stroke();
         },
         
         /**
@@ -267,21 +264,21 @@ export default function createCanvasConnectionsView(specs, my) {
         drawActiveCableCanvas = function() {
             activeCableCtx.clearRect(0, 0, activeCableCanvas.width, activeCableCanvas.height);
             if (dragData.isDragging) {
-                activeCableCtx.lineWidth = 2;
-                activeCableCtx.strokeStyle = getThemeColors().colorHigh;
-                activeCableCtx.beginPath();
-                drawCable(activeCableCtx, dragData.startPoint, dragData.endPoint);
-                activeCableCtx.stroke();
+                drawCable(activeCableCtx, dragData.startPoint, dragData.endPoint, getThemeColors().colorHigh, getThemeColors().colorHigh, 2);
             }
             my.markDirty();
         },
         
         /**
          * Draw a processor connection cable.
+         * @param  {Object} context Canvas context.
          * @param  {Object} startPoint {x, y} start coordinate.
          * @param  {Object} endPoint   {x, y} end coordinate.
+         * @param  {String} cableStrokeColor Hex color for the cable.
+         * @param  {String} btnStrokeColor Hex color for the remove button halfway the cable.
+         * @param  {Number} cableWidth Cable line width.
          */
-        drawCable = function(context, startPoint, endPoint) {
+        drawCable = function(context, startPoint, endPoint, cableStrokeColor, btnStrokeColor, cableWidth) {
             // line
             const distance = Math.sqrt(Math.pow(startPoint.x - endPoint.x, 2) + Math.pow(startPoint.y - endPoint.y, 2)),
                 tension = distance / 2,
@@ -289,6 +286,10 @@ export default function createCanvasConnectionsView(specs, my) {
                 cp1y = startPoint.y + tension,
                 cp2x = endPoint.x,
                 cp2y = endPoint.y + tension;
+            
+            context.strokeStyle = cableStrokeColor;
+            context.lineWidth = cableWidth;
+            context.beginPath();
             context.moveTo(startPoint.x, startPoint.y);
             context.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, endPoint.x, endPoint.y);
             
@@ -296,8 +297,9 @@ export default function createCanvasConnectionsView(specs, my) {
             const radius = 5;
             context.moveTo(endPoint.x + radius, endPoint.y);
             context.arc(endPoint.x, endPoint.y, radius, 0, Math.PI * 2, true);
+            context.stroke();
             
-            return drawCableHandle(context, startPoint.x, startPoint.y, cp1x, cp1y, cp2x, cp2y, endPoint.x, endPoint.y);
+            return drawCableHandle(context, startPoint.x, startPoint.y, cp1x, cp1y, cp2x, cp2y, endPoint.x, endPoint.y, btnStrokeColor);
         },
         
         /**
@@ -312,9 +314,10 @@ export default function createCanvasConnectionsView(specs, my) {
          * @param  {[type]} cy [description]
          * @param  {[type]} dx [description]
          * @param  {[type]} dy [description]
+         * @param  {String} btnStrokeColor Hex color for the remove button halfway the cable.
          * @return {Object}    Canvas x, y coordinate.
          */
-        drawCableHandle = function(context, ax, ay, bx, by, cx, cy, dx, dy) {
+        drawCableHandle = function(context, ax, ay, bx, by, cx, cy, dx, dy, btnStrokeColor) {
             const t = 0.5, // halfway the cable
                 b0t = Math.pow(1 - t, 3),
                 b1t = 3 * t * Math.pow(1 - t, 2),
@@ -324,8 +327,18 @@ export default function createCanvasConnectionsView(specs, my) {
                 pyt = (b0t * ay) + (b1t * by) + (b2t * cy) + (b3t * dy);
             
             if (my.isConnectMode) {
+                context.strokeStyle = btnStrokeColor;
+                context.lineWidth = 2;
+                context.beginPath();
                 context.moveTo(pxt + cableHandleRadius, pyt);
+                // circle
                 context.arc(pxt, pyt, cableHandleRadius, 0, Math.PI * 2, true);
+                // cross
+                context.moveTo(pxt - cableHandleCross, pyt - cableHandleCross);
+                context.lineTo(pxt + cableHandleCross, pyt + cableHandleCross);
+                context.moveTo(pxt + cableHandleCross, pyt - cableHandleCross);
+                context.lineTo(pxt - cableHandleCross, pyt + cableHandleCross);
+                context.stroke();
             }
             
             return { x: pxt, y: pyt };
