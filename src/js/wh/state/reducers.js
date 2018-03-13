@@ -17,6 +17,10 @@ export default function createReducers() {
                 byId: {},
                 allIds: []
             },
+            portProcessor: {
+                byId: {},
+                allIds: []
+            },
             bpm: 120,
             selectedID: null,
             theme: 'dev', // 'light|dark' 
@@ -233,6 +237,24 @@ export default function createReducers() {
                 
                 case actions.TOGGLE_MIDI_PREFERENCE:
                     return toggleMIDIPreference(state, action.id, action.preferenceName);
+                    
+                case actions.CREATE_PORT_NETWORK_RELATION:
+                    newState = { 
+                        ...state,
+                        portProcessor: { ...state.portProcessor }
+                    };
+                    newState.portProcessor.allIds.push(action.id);
+                    newState.portProcessor.byId[action.id] = data;
+                    return newState;
+                
+                case actions.DELETE_PORT_NETWORK_RELATION:
+                    newState = { 
+                        ...state,
+                        portProcessor: { ...state.portProcessor }
+                    };
+                    newState.portProcessor.allIds.splice(newState.portProcessor.allIds.indexOf(action.id), 1);
+                    delete newState.portProcessor.byId[action.id];
+                    return newState;
                 
                 case actions.TOGGLE_MIDI_LEARN_MODE:
                     return Object.assign({}, state, { 

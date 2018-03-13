@@ -146,21 +146,32 @@ export default function createActions(specs = {}, my = {}) {
         TOGGLE_PORT_NETWORK: TOGGLE_PORT_NETWORK,
         togglePortNetwork: (portID, isInput) => {
             return (dispatch, getState, getActions) => {
+                // update flag
                 dispatch(getActions().toggleMIDIPreference(portID, isInput, 'networkEnabled'));
+                
+                // create or remove processor and relation between processor and port
                 const state = getState();
                 if (state.ports.byId[portID].networkEnabled) {
                     dispatch(getActions().createProcessor({ 
-                        type: 'output', 
+                        type: 'output',
+                        id: processorID,
                         portID: portID,
                         name: state.ports.byId[portID].name,
                         positionX: window.innerWidth / 2,
                         positionY: window.innerHeight - 100
                     }));
+                    dispatch(getActions().createPortNetworkRelation(
+                        `rel_${createUUID()}`, {
+                            processorID: processorID,
+                            portID: portID
+                        }
+                    ));
                 } else {
-                    state.processors.allIds.forEach(id => {
-                        let processor = state.processors.byId[id];
-                        if (processor.portID && processor.portID === portID) {
-                            dispatch(getActions().deleteProcessor(processor.id));
+                    state.portProcessor.allIds.forEach(relationID => {
+                        const relation = state.portProcessor.byId[relationID];
+                        if (relation.portID === portID) {
+                            dispatch(getActions().deleteProcessor(relation.processorID));
+                            dispatch(getActions().deletePortNetworkRelation(relationID));
                         }
                     });
                 }
@@ -168,13 +179,19 @@ export default function createActions(specs = {}, my = {}) {
         },
 
         TOGGLE_PORT_SYNC: TOGGLE_PORT_SYNC,
-        togglePortSync: (id, isInput) => ({ type: TOGGLE_PORT_SYNC, id, isInput }),
+        togglePortSync: (id) => ({ type: TOGGLE_PORT_SYNC, id }),
 
         TOGGLE_PORT_REMOTE: TOGGLE_PORT_REMOTE,
-        togglePortRemote: (id, isInput) => ({ type: TOGGLE_PORT_REMOTE, id, isInput }),
+        togglePortRemote: (id) => ({ type: TOGGLE_PORT_REMOTE, id }),
 
         TOGGLE_MIDI_PREFERENCE: TOGGLE_MIDI_PREFERENCE,
         toggleMIDIPreference: (id, isInput, preferenceName) => ({ type: TOGGLE_MIDI_PREFERENCE, id, isInput, preferenceName }),
+        
+        CREATE_PORT_NETWORK_RELATION: CREATE_PORT_NETWORK_RELATION,
+        createPortNetworkRelation: (id, data) => ({ type: CREATE_PORT_NETWORK_RELATION, id, data }),
+
+        DELETE_PORT_NETWORK_RELATION: DELETE_PORT_NETWORK_RELATION,
+        deletePortNetworkRelation: (id) => ({ type: DELETE_PORT_NETWORK_RELATION, id }),
 
         TOGGLE_MIDI_LEARN_MODE: TOGGLE_MIDI_LEARN_MODE,
         toggleMIDILearnMode: () => ({ type: TOGGLE_MIDI_LEARN_MODE }),
