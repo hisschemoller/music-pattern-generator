@@ -224,7 +224,7 @@ export default function createActions(specs = {}, my = {}) {
         toggleConnectMode: () => ({ type: TOGGLE_CONNECT_MODE }),
 
         CONNECT_PROCESSORS: CONNECT_PROCESSORS,
-        connectProcessors: payload => ({ type: CONNECT_PROCESSORS, payload, id: createUUID() }),
+        connectProcessors: payload => ({ type: CONNECT_PROCESSORS, payload, id: `conn_${createUUID()}` }),
 
         DISCONNECT_PROCESSORS: DISCONNECT_PROCESSORS,
         disconnectProcessors: id => ({ type: DISCONNECT_PROCESSORS, id }),
