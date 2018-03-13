@@ -91,7 +91,7 @@ export default function createActions(specs = {}, my = {}) {
             return (dispatch, getState, getActions) => {
                 const dataTemplate = require(`json-loader!../processors/${data.type}/config.json`);
                 let fullData = JSON.parse(JSON.stringify(dataTemplate));
-                const id = `${data.type}_${createUUID()}`;
+                const id = data.id || `${data.type}_${createUUID()}`;
                 fullData = Object.assign(fullData, data);
                 fullData.id = id;
                 fullData.positionX = data.positionX;
