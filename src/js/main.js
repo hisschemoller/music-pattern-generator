@@ -19,7 +19,6 @@
 import createActions from './wh/state/actions';
 import createReducers from './wh/state/reducers';
 import createStore from './wh/state/store';
-import persist from './wh/state/persist';
 
 import createAppView from './wh/view/app';
 import createCanvasView from './wh/view/canvas';
@@ -92,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
 
     // initialise
     midi.connect().then(() => {
-        persist(store);
+        store.persist();
         transport.run();
     });
 });
