@@ -266,7 +266,7 @@ export default function createReducers() {
                     return toggleMIDIPreference(state, action.id, 'remoteEnabled');
                 
                 case actions.TOGGLE_MIDI_PREFERENCE:
-                    return toggleMIDIPreference(state, action.id, action.preferenceName);
+                    return toggleMIDIPreference(state, action.id, action.preferenceName, action.isEnabled);
                     
                 case actions.CREATE_PORT_NETWORK_RELATION:
                     newState = { 
@@ -437,7 +437,7 @@ function unassignParameter(parameters, action, state) {
     return params;
 }
 
-function toggleMIDIPreference(state, id, preferenceName) {
+function toggleMIDIPreference(state, id, preferenceName, isEnabled) {
     const newState = {
         ...state,
         ports: {
@@ -445,9 +445,12 @@ function toggleMIDIPreference(state, id, preferenceName) {
             byId: { ...state.ports.byId }
         }
     };
+
+    const newValue = typeof isEnabled === 'boolean' ? isEnabled : !state.ports.byId[id][preferenceName];
+    
     newState.ports.byId[id] = {
         ...newState.ports.byId[id],
-        [preferenceName]: !state.ports.byId[id][preferenceName]
+        [preferenceName]: newValue
     };
     return newState;
 }

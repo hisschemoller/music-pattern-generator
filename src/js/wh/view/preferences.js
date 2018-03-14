@@ -29,6 +29,8 @@ export default function createPreferencesView(specs) {
                         updateControl('dark-theme', e.detail.state.theme === 'dark');
                         break;
                     
+                    case e.detail.actions.CREATE_MIDI_PORT:
+                    case e.detail.actions.UPDATE_MIDI_PORT:
                     case e.detail.actions.MIDI_PORT_CHANGE:
                         updateMIDIPortViews(e.detail.state.ports);
                         break;
@@ -76,7 +78,10 @@ export default function createPreferencesView(specs) {
                         id: port.id,
                         name: port.name,
                         parentEl: parentEl,
-                        isInput: port.type === 'input'
+                        isInput: port.type === 'input',
+                        syncEnabled: port.syncEnabled,
+                        remoteEnabled: port.remoteEnabled,
+                        networkEnabled: port.networkEnabled
                     }));
                 }
             });

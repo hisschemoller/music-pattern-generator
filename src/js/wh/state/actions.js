@@ -1,4 +1,5 @@
 import { createUUID } from '../core/util';
+import { getConfig, setConfig } from '../core/config';
 
 export default function createActions(specs = {}, my = {}) {
     const RESCAN_TYPES = 'RESCAN_TYPES',
@@ -187,14 +188,18 @@ export default function createActions(specs = {}, my = {}) {
         },
 
         TOGGLE_PORT_NETWORK: TOGGLE_PORT_NETWORK,
-        togglePortNetwork: (portID, isInput) => {
+        togglePortNetwork: (portID, isInput, isEnabled) => {
             return (dispatch, getState, getActions) => {
                 // update flag
-                dispatch(getActions().toggleMIDIPreference(portID, isInput, 'networkEnabled'));
+                dispatch(getActions().toggleMIDIPreference(portID, isInput, 'networkEnabled', isEnabled));
                 
                 // create or remove processor and relation between processor and port
                 const state = getState();
+                
                 if (state.ports.byId[portID].networkEnabled) {
+
+                    const processorID = `${isInput ? 'input' : 'output'}_${createUUID()}`
+
                     dispatch(getActions().createProcessor({ 
                         type: 'output',
                         id: processorID,
@@ -203,12 +208,14 @@ export default function createActions(specs = {}, my = {}) {
                         positionX: window.innerWidth / 2,
                         positionY: window.innerHeight - 100
                     }));
+
                     dispatch(getActions().createPortNetworkRelation(
                         `rel_${createUUID()}`, {
                             processorID: processorID,
                             portID: portID
                         }
                     ));
+                    
                 } else {
                     state.portProcessor.allIds.forEach(relationID => {
                         const relation = state.portProcessor.byId[relationID];
@@ -228,7 +235,7 @@ export default function createActions(specs = {}, my = {}) {
         togglePortRemote: (id) => ({ type: TOGGLE_PORT_REMOTE, id }),
 
         TOGGLE_MIDI_PREFERENCE: TOGGLE_MIDI_PREFERENCE,
-        toggleMIDIPreference: (id, isInput, preferenceName) => ({ type: TOGGLE_MIDI_PREFERENCE, id, isInput, preferenceName }),
+        toggleMIDIPreference: (id, isInput, preferenceName, isEnabled) => ({ type: TOGGLE_MIDI_PREFERENCE, id, isInput, preferenceName, isEnabled }),
         
         CREATE_PORT_NETWORK_RELATION: CREATE_PORT_NETWORK_RELATION,
         createPortNetworkRelation: (id, data) => ({ type: CREATE_PORT_NETWORK_RELATION, id, data }),
