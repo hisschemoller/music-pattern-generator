@@ -14,7 +14,8 @@ export default function createActions(specs = {}, my = {}) {
         CHANGE_PARAMETER = 'CHANGE_PARAMETER',
         RECREATE_PARAMETER = 'RECREATE_PARAMETER',
         SET_TEMPO = 'SET_TEMPO',
-        MIDI_PORT_CHANGE = 'MIDI_PORT_CHANGE',
+        CREATE_MIDI_PORT = 'CREATE_MIDI_PORT',
+        UPDATE_MIDI_PORT = 'UPDATE_MIDI_PORT',
         TOGGLE_PORT_NETWORK = 'TOGGLE_PORT_NETWORK',
         TOGGLE_PORT_SYNC = 'TOGGLE_PORT_SYNC',
         TOGGLE_PORT_REMOTE = 'TOGGLE_PORT_REMOTE',
@@ -140,8 +141,50 @@ export default function createActions(specs = {}, my = {}) {
         SET_TEMPO: SET_TEMPO,
         setTempo: value => { return { type: SET_TEMPO, value } },
 
-        MIDI_PORT_CHANGE: MIDI_PORT_CHANGE,
-        midiPortChange: midiPort => ({ type: MIDI_PORT_CHANGE, midiPort }),
+        CREATE_MIDI_PORT: CREATE_MIDI_PORT,
+        createMIDIPort: (portID, data) => { return { type: CREATE_MIDI_PORT, portID, data } },
+
+        UPDATE_MIDI_PORT: UPDATE_MIDI_PORT,
+        updateMIDIPort: (portID, data) => { return { type: UPDATE_MIDI_PORT, portID, data } },
+
+        midiAccessChange: midiPort => {
+            return (dispatch, getState, getActions) => {
+
+                // check if the port already exists
+                const state = getState();
+                const portExists = state.ports.allIds.indexOf(midiPort) > -1;
+
+                // create port or update existing
+                if (portExists) {
+
+                    // update existing port
+                    dispatch(getActions().updateMIDIPort(midiPort.id, {
+                        connection: midiPort.connection,
+                        state: midiPort.state
+                    }));
+                } else {
+                    
+                    // restore settings from config
+                    const config = getConfig();
+                    const configPort = (config.ports && config.ports.byId) ? config.ports.byId[midiPort.id] : null;
+
+                    // create port
+                    dispatch(getActions().createMIDIPort(midiPort.id, {
+                        id: midiPort.id,
+                        type: midiPort.type,
+                        name: midiPort.name,
+                        connection: midiPort.connection,
+                        state: midiPort.state,
+                        networkEnabled: configPort ? configPort.networkEnabled : false,
+                        syncEnabled: configPort ? configPort.syncEnabled : false,
+                        remoteEnabled: configPort ? configPort.remoteEnabled : false
+                    }));
+                }
+
+                // store the changes in configuration
+                setConfig(getState());
+            };
+        },
 
         TOGGLE_PORT_NETWORK: TOGGLE_PORT_NETWORK,
         togglePortNetwork: (portID, isInput) => {

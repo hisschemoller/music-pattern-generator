@@ -192,42 +192,72 @@ export default function createReducers() {
                 
                 case actions.SET_TEMPO:
                     return Object.assign({}, state, { bpm: action.value });
-                
-                case actions.MIDI_PORT_CHANGE:
-                    newState = { 
+
+                case actions.CREATE_MIDI_PORT:
+                    return {
                         ...state,
                         ports: {
-                            byId: { ...state.ports.byId },
-                            allIds: [ ...state.ports.allIds ]
-                    }};
+                            allIds: [ ...state.ports.allIds, action.portID ],
+                            byId: { 
+                                ...state.ports.byId,
+                                [action.portID]: action.data
+                            }
+                        }
+                    };
+
+                case actions.UPDATE_MIDI_PORT:
+                    return {
+                        ...state,
+                        ports: {
+                            allIds: [ ...state.ports.allIds, action.portID ],
+                            byId: Object.values(state.ports.byId).reduce((returnObject, port) => {
+                                if (port.id === action.portID) {
+                                    returnObject[port.id] = { ...port, ...action.data };
+                                } else {
+                                    returnObject[port.id] = { ...port };
+                                }
+                                return returnObject;
+                            }, {})
+                        }
+                    };
+                
+                // case actions.MIDI_PORT_CHANGE:
+                //     newState = { 
+                //         ...state,
+                //         ports: {
+                //             byId: { ...state.ports.byId },
+                //             allIds: [ ...state.ports.allIds ]
+                //     }};
                     
-                    if (state.ports.byId[action.midiPort.id]) {
-                        // update existing port
-                        newState.ports.byId[action.midiPort.id] = {
-                            ...state.ports.byId[action.midiPort.id],
-                            connection: action.midiPort.connection,
-                            state: action.midiPort.state
-                        }
-                    } else {
-                        // add new port
-                        newState.ports.byId[action.midiPort.id] = {
-                            id: action.midiPort.id, 
-                            type: action.midiPort.type,
-                            name: action.midiPort.name,
-                            connection: action.midiPort.connection,
-                            state: action.midiPort.state,
-                            networkEnabled: false,
-                            syncEnabled: false,
-                            remoteEnabled: false
-                        }
-                        newState.ports.allIds.push(action.midiPort.id);
-                        newState.ports.allIds.sort((a, b) => {
-                            if (a.name < b.name) { return -1 }
-                            if (a.name > b.name) { return 1 }
-                            return 0;
-                        });
-                    }
-                    return newState;
+                //     if (state.ports.byId[action.midiPort.id]) {
+                //         console.log(`Update MIDI ${action.midiPort.type} with id ${action.midiPort.id}, connection is ${action.midiPort.connection}`);
+                //         // update existing port
+                //         newState.ports.byId[action.midiPort.id] = {
+                //             ...state.ports.byId[action.midiPort.id],
+                //             connection: action.midiPort.connection,
+                //             state: action.midiPort.state
+                //         }
+                //     } else {
+                //         // add new port
+                //         console.log(`Add new MIDI ${action.midiPort.type} with id ${action.midiPort.id}`);
+                //         newState.ports.byId[action.midiPort.id] = {
+                //             id: action.midiPort.id,
+                //             type: action.midiPort.type,
+                //             name: action.midiPort.name,
+                //             connection: action.midiPort.connection,
+                //             state: action.midiPort.state,
+                //             networkEnabled: false,
+                //             syncEnabled: false,
+                //             remoteEnabled: false
+                //         }
+                //         newState.ports.allIds.push(action.midiPort.id);
+                //         newState.ports.allIds.sort((a, b) => {
+                //             if (a.name < b.name) { return -1 }
+                //             if (a.name > b.name) { return 1 }
+                //             return 0;
+                //         });
+                //     }
+                //     return newState;
                 
                 case actions.TOGGLE_PORT_SYNC:
                     return toggleMIDIPreference(state, action.id, 'syncEnabled');

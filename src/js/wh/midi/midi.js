@@ -76,12 +76,12 @@ export default function createMIDI(specs) {
             const outputs = midiAccess.outputs.values();
             
             for (let port = inputs.next(); port && !port.done; port = inputs.next()) {
-                store.dispatch(store.getActions().midiPortChange(port.value));
+                store.dispatch(store.getActions().midiAccessChange(port.value));
                 port.value.onmidimessage = onMIDIMessage;
             }
             
             for (let port = outputs.next(); port && !port.done; port = outputs.next()) {
-                store.dispatch(store.getActions().midiPortChange(port.value));
+                store.dispatch(store.getActions().midiAccessChange(port.value));
             }
 
             midiAccess.onstatechange = onAccessStateChange;
@@ -97,7 +97,7 @@ export default function createMIDI(specs) {
          * @param {Object} e MIDIConnectionEvent object.
          */
         onAccessStateChange = function(e) {
-            store.dispatch(store.getActions().midiPortChange(e.port));
+            store.dispatch(store.getActions().midiAccessChange(e.port));
         },
 
         /**
