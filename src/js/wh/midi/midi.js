@@ -17,7 +17,8 @@ export default function createMIDI(specs) {
                         updateMIDIRemoteListeners(e.detail.state.ports);
                         break;
                     
-                    case e.detail.actions.SET_PROJECT:
+                    case e.detail.actions.CREATE_MIDI_PORT:
+                    case e.detail.actions.UPDATE_MIDI_PORT:
                         updateMIDISyncListeners(e.detail.state.ports);
                         updateMIDIRemoteListeners(e.detail.state.ports);
                         break;

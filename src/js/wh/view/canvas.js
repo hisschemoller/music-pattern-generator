@@ -50,8 +50,7 @@ export default function createCanvasView(specs, my) {
 
             document.addEventListener(store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
-                    case e.detail.actions.NEW_PROJECT:
-                    case e.detail.actions.SET_PROJECT:
+                    case e.detail.actions.CREATE_PROJECT:
                         my.setProcessorViews(e.detail.state.processors);
                         my.selectProcessorView(e.detail.state.selectedID);
                         my.markDirty();

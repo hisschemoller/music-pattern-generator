@@ -45,9 +45,9 @@ export default function createReducers() {
                         ports: state.ports
                     };
 
-                case actions.SET_PROJECT:
-                    console.log({ ...state, ...action.data });
-                    return { ...state, ...action.data };
+                case actions.CREATE_PROJECT:
+                    const data = action.data || {};
+                    return { ...state, ...data };
 
                 case actions.SET_THEME:
                     return { ...state, theme: state.theme === 'light' ? 'dark' : 'light' };

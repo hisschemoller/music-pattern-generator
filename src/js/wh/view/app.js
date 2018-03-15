@@ -112,8 +112,7 @@ export default function createAppView(specs, my) {
 
             document.addEventListener(store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
-                    case e.detail.actions.SET_PROJECT:
-                    case e.detail.actions.NEW_PROJECT:
+                    case e.detail.actions.CREATE_PROJECT:
                         setProject(e.detail.state);
                         showPanels(e.detail.state);
                         controls.bpm.input.value = e.detail.state.bpm;

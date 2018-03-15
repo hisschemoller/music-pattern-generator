@@ -2,8 +2,7 @@ const themeColors = {};
 
 export function memoize(state, action = {}, actions) {
     switch (action.type) {
-        case actions.SET_PROJECT:
-        case actions.NEW_PROJECT:
+        case actions.CREATE_PROJECT:
         case actions.SET_THEME:
             document.querySelector('#app').dataset.theme = state.theme;
             const themeStyles = window.getComputedStyle(document.querySelector('[data-theme]'));

@@ -3,8 +3,7 @@ import { getConfig, setConfig } from '../core/config';
 
 export default function createActions(specs = {}, my = {}) {
     const RESCAN_TYPES = 'RESCAN_TYPES',
-        NEW_PROJECT = 'NEW_PROJECT',
-        SET_PROJECT = 'SET_PROJECT',
+        CREATE_PROJECT = 'CREATE_PROJECT',
         SET_THEME = 'SET_THEME',
         CREATE_PROCESSOR = 'CREATE_PROCESSOR',
         ADD_PROCESSOR = 'ADD_PROCESSOR',
@@ -78,13 +77,9 @@ export default function createActions(specs = {}, my = {}) {
             return { type: NEW_PROJECT };
         },
 
-        // SET_PROJECT: SET_PROJECT,
-        // setProject: (data) => {
-        //     return { type: SET_PROJECT, data };
-        // },
         setProject: (data) => {
             return (dispatch, getState, getActions) => {
-                console.log('SET_PROJECT');
+                
                 // overwrite the state except the ports with the new project
                 const ports = data.ports;
                 const portProcessor = data.portProcessor;
