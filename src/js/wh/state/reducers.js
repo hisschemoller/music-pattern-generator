@@ -274,7 +274,7 @@ export default function createReducers() {
                         portProcessor: { ...state.portProcessor }
                     };
                     newState.portProcessor.allIds.push(action.id);
-                    newState.portProcessor.byId[action.id] = data;
+                    newState.portProcessor.byId[action.id] = action.data;
                     return newState;
                 
                 case actions.DELETE_PORT_NETWORK_RELATION:
