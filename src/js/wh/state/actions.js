@@ -78,9 +78,59 @@ export default function createActions(specs = {}, my = {}) {
             return { type: NEW_PROJECT };
         },
 
-        SET_PROJECT: SET_PROJECT,
+        // SET_PROJECT: SET_PROJECT,
+        // setProject: (data) => {
+        //     return { type: SET_PROJECT, data };
+        // },
         setProject: (data) => {
-            return { type: SET_PROJECT, data };
+            return (dispatch, getState, getActions) => {
+                console.log('SET_PROJECT');
+                // overwrite the state except the ports with the new project
+                const ports = data.ports;
+                const portProcessor = data.portProcessor;
+                delete data.ports;
+                delete data.portProcessor;
+                dispatch(getActions().createProject(data));
+
+                // restore the port settings
+                const state = getState();
+                ports.allIds.forEach(projectPortID => {
+                    const projectPort = ports.byId[projectPortID];
+                    let portExists = false;
+                    state.ports.allIds.forEach(statePortID => {
+                        if (statePortID === projectPortID) {
+
+                            // project port's settings exists, update the settings
+                            portExists = true;
+                            dispatch(getActions().updateMIDIPort(statePortID, {
+                                syncEnabled: projectPort.syncEnabled,
+                                remoteEnabled: projectPort.remoteEnabled,
+                                networkEnabled: projectPort.networkEnabled
+                            }));
+                        }
+                    });
+
+                    // port settings object doesn't exist in the state, so create it, but disabled
+                    if (!portExists) {
+                        dispatch(getActions().createMIDIPort(projectPortID, {
+                            id: projectPortID,
+                            type: projectPort.type,
+                            name: projectPort.name,
+                            connection: 'closed', // closed | open
+                            state: 'disconnected', // disconnected | connected
+                            syncEnabled: projectPort.syncEnabled,
+                            remoteEnabled: projectPort.remoteEnabled,
+                            networkEnabled: projectPort.networkEnabled
+                        }));
+                    }
+                });
+            }
+        },
+
+        CREATE_PROJECT: CREATE_PROJECT,
+        createProject: (data) => {
+            console.log('CREATE_PROJECT');
+            return { type: CREATE_PROJECT, data };
         },
 
         SET_THEME: SET_THEME,
