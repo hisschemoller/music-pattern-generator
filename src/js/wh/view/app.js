@@ -17,6 +17,7 @@ export default function createAppView(specs, my) {
         remoteEl = document.querySelector('.remote'),
         settingsViews = [],
         panelHeaderHeight,
+        resetKeyCombo = [],
         controls = {
             new: {
                 type: 'checkbox',
@@ -105,6 +106,22 @@ export default function createAppView(specs, my) {
                         // don't toggle play while typing space key in a text field.
                         if (!(e.target.tagName.toLowerCase() == 'input' && e.target.getAttribute('type') == 'text')) {
                             store.dispatch(store.getActions().setTransport('toggle'));
+                        }
+                        break;
+                }
+                e.keyCode = [];
+            });
+
+            document.addEventListener('keydown', e => {
+                switch (e.keyCode) {
+                    case 82:
+                    case 83:
+                    case 84:
+                        // clear all data on key combination 'rst' (reset)
+                        resetKeyCombo.push(e.keyCode);
+                        if (resetKeyCombo.indexOf(82) > -1 && resetKeyCombo.indexOf(83) > -1 && resetKeyCombo.indexOf(84) > -1) {
+                            localStorage.clear();
+                            store.dispatch(store.getActions().newProject());
                         }
                         break;
                 }
