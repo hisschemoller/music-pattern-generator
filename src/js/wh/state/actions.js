@@ -17,7 +17,6 @@ export default function createActions(specs = {}, my = {}) {
         SET_TEMPO = 'SET_TEMPO',
         CREATE_MIDI_PORT = 'CREATE_MIDI_PORT',
         UPDATE_MIDI_PORT = 'UPDATE_MIDI_PORT',
-        TOGGLE_PORT_NETWORK = 'TOGGLE_PORT_NETWORK',
         TOGGLE_PORT_SYNC = 'TOGGLE_PORT_SYNC',
         TOGGLE_PORT_REMOTE = 'TOGGLE_PORT_REMOTE',
         TOGGLE_MIDI_PREFERENCE = 'TOGGLE_MIDI_PREFERENCE',
@@ -241,7 +240,7 @@ export default function createActions(specs = {}, my = {}) {
 
                 // create port or update existing
                 if (portExists) {
-                    console.log(`update ${midiPort.id}, ${midiPort.type}, ${midiPort.connection}, ${midiPort.state}`);
+                    console.log(`update ${midiPort.id}, ${midiPort.type}, ${midiPort.name}, ${midiPort.connection}, ${midiPort.state}`);
                     // update existing port
                     dispatch(getActions().updateMIDIPort(midiPort.id, {
                         connection: midiPort.connection,
@@ -250,14 +249,14 @@ export default function createActions(specs = {}, my = {}) {
                 } else {
                     
                     // restore settings from config
-                    // const config = getConfig();
-                    // const configPort = (config.ports && config.ports.byId) ? config.ports.byId[midiPort.id] : null;
+                    const config = getConfig();
+                    const configPort = (config.ports && config.ports.byId) ? config.ports.byId[midiPort.id] : null;
 
                     // if (configPort && configPort.id == '202658789') {
                     //     configPort.networkEnabled = true;
                     //     console.log('test, set 202658789 (iac bus 1 output) networkEnabled to true');
                     // }
-                    console.log(`create ${midiPort.id}, ${midiPort.type}, ${midiPort.connection}, ${midiPort.state}`);
+                    console.log(`create ${midiPort.id}, ${midiPort.type}, ${midiPort.name}, ${midiPort.connection}, ${midiPort.state}`);
                     // create port
                     dispatch(getActions().createMIDIPort(midiPort.id, {
                         id: midiPort.id,
@@ -265,20 +264,22 @@ export default function createActions(specs = {}, my = {}) {
                         name: midiPort.name,
                         connection: midiPort.connection,
                         state: midiPort.state,
-                        networkEnabled: false, // configPort ? configPort.networkEnabled : false,
-                        syncEnabled: false, // configPort ? configPort.syncEnabled : false,
-                        remoteEnabled: false, // configPort ? configPort.remoteEnabled : false
+                        networkEnabled: configPort ? configPort.networkEnabled : false,
+                        syncEnabled: configPort ? configPort.syncEnabled : false,
+                        remoteEnabled: configPort ? configPort.remoteEnabled : false
                     }));
                 }
 
                 // store the changes in configuration
-                // setConfig(getState());
+                setConfig(getState());
+
+                console.log(state);
             };
         },
 
-        TOGGLE_PORT_NETWORK: TOGGLE_PORT_NETWORK,
         togglePortNetwork: (portID, isInput, isEnabled) => {
             return (dispatch, getState, getActions) => {
+
                 // update flag
                 dispatch(getActions().toggleMIDIPreference(portID, isInput, 'networkEnabled', isEnabled));
                 
@@ -286,8 +287,15 @@ export default function createActions(specs = {}, my = {}) {
                 const state = getState();
                 
                 if (state.ports.byId[portID].networkEnabled) {
-
+                    
                     const processorID = `${isInput ? 'input' : 'output'}_${createUUID()}`
+
+                    dispatch(getActions().createPortNetworkRelation(
+                        `rel_${createUUID()}`, {
+                            processorID: processorID,
+                            portID: portID
+                        }
+                    ));
 
                     dispatch(getActions().createProcessor({ 
                         type: 'output',
@@ -297,13 +305,6 @@ export default function createActions(specs = {}, my = {}) {
                         positionX: window.innerWidth / 2,
                         positionY: window.innerHeight - 100
                     }));
-
-                    dispatch(getActions().createPortNetworkRelation(
-                        `rel_${createUUID()}`, {
-                            processorID: processorID,
-                            portID: portID
-                        }
-                    ));
                     
                 } else {
                     state.portProcessor.allIds.forEach(relationID => {
