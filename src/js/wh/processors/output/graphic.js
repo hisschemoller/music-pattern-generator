@@ -5,6 +5,7 @@ import createCanvasProcessorBaseView from '../../view/canvasprocessorbase';
  */
 export function createGraphic(specs, my) {
     let that,
+        store = specs.store,
         canvasDirtyCallback = specs.canvasDirtyCallback,
         staticCanvas,
         staticCtx,
@@ -19,6 +20,7 @@ export function createGraphic(specs, my) {
         radius = 10,
         boxWidth = 80,
         selectRadius = 15,
+        disconnectSize = 7,
         doublePI = Math.PI * 2,
         
         initialise = function() {
@@ -47,14 +49,7 @@ export function createGraphic(specs, my) {
                     break;
 
                 case e.detail.actions.UPDATE_MIDI_PORT:
-                    let port;
-                    e.detail.state.portProcessor.allIds.forEach(relationID => {
-                        const relation = e.detail.state.portProcessor.byId[relationID];
-                        if (relation.processorID === my.id) {
-                            port = e.detail.state.ports.byId[relation.portID];
-                        }
-                    });
-                    updatePortState(port);
+                    redrawStaticCanvas();
                     break;
             }
         },
@@ -76,12 +71,6 @@ export function createGraphic(specs, my) {
             nameCtx.textAlign = 'center';
         },
 
-        updatePortState = function(port) {
-            if (!port || port.state !== 'connected') {
-
-            }
-        },
-
         setSelected = function(isSelectedView) {
             isSelected = isSelectedView;
             if (typeof redrawStaticCanvas == 'function' && typeof canvasDirtyCallback == 'function') {
@@ -96,6 +85,17 @@ export function createGraphic(specs, my) {
          * Redraw the graphic after a change.
          */
         redrawStaticCanvas = function() {
+
+            // get the MIDI port for this output processor
+            const state = store.getState();
+            let port;
+            state.portProcessor.allIds.forEach(relationID => {
+                const relation = state.portProcessor.byId[relationID];
+                if (relation.processorID === my.id) {
+                    port = state.ports.byId[relation.portID];
+                }
+            });
+
             staticCtx.strokeStyle = my.colorHigh;
 
             staticCtx.clearRect(0, 0, width, height);
@@ -114,6 +114,14 @@ export function createGraphic(specs, my) {
             staticCtx.moveTo(radius, 0);
             staticCtx.arc(0, 0, radius, 0, Math.PI * 2, true);
 
+            // disconnected cross
+            if (!port || port.state === 'disconnected') {
+                staticCtx.moveTo(-disconnectSize, -disconnectSize);
+                staticCtx.lineTo(disconnectSize, disconnectSize);
+                staticCtx.moveTo(disconnectSize, -disconnectSize);
+                staticCtx.lineTo(-disconnectSize, disconnectSize);
+            }
+
             // select circle
             if (isSelected) {
                 staticCtx.moveTo(selectRadius, 0);
@@ -122,6 +130,7 @@ export function createGraphic(specs, my) {
 
             staticCtx.stroke();
             staticCtx.restore();
+            canvasDirtyCallback();
         },
         
         /**
