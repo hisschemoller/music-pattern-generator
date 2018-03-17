@@ -21,6 +21,8 @@ export default function createActions(specs = {}, my = {}) {
         TOGGLE_PORT_SYNC = 'TOGGLE_PORT_SYNC',
         TOGGLE_PORT_REMOTE = 'TOGGLE_PORT_REMOTE',
         TOGGLE_MIDI_PREFERENCE = 'TOGGLE_MIDI_PREFERENCE',
+        CREATE_PORT_NETWORK_RELATION = 'CREATE_PORT_NETWORK_RELATION',
+        DELETE_PORT_NETWORK_RELATION = 'DELETE_PORT_NETWORK_RELATION',
         TOGGLE_MIDI_LEARN_MODE = 'TOGGLE_MIDI_LEARN_MODE',
         TOGGLE_MIDI_LEARN_TARGET = 'TOGGLE_MIDI_LEARN_TARGET',
         SET_TRANSPORT = 'SET_TRANSPORT',
@@ -33,9 +35,11 @@ export default function createActions(specs = {}, my = {}) {
         DISCONNECT_PROCESSORS = 'DISCONNECT_PROCESSORS';
 
     return {
+
         importProject: (file) => {
             return (dispatch, getState, getActions) => {
                 let fileReader = new FileReader();
+
                 // closure to capture the file information
                 fileReader.onload = (function(f) {
                     return function(e) {
@@ -50,6 +54,7 @@ export default function createActions(specs = {}, my = {}) {
                             isJSON = false;
                         }
                         if (!isJSON) {
+
                             // try if it's a legacy xml file
                             const legacyData = my.convertLegacyFile(e.target.result);
                             if (legacyData) {

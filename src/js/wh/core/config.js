@@ -21,6 +21,7 @@ export function setConfig(state) {
     };
 
     if (config && config.ports) {
+        
         // update the existing config with new data from the current state
         const ports = config.ports;
         state.ports.allIds.forEach(statePortID => {
@@ -28,6 +29,7 @@ export function setConfig(state) {
             config.ports.allIds.forEach(configPortID => {
                 if (configPortID === statePortID) {
                     portExistsInConfig = true;
+
                     // update port if it exists
                     const configPort = config.ports.byId[configPortID];
                     const statePort = state.ports.byId[statePortID];

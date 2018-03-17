@@ -109,7 +109,7 @@ export default function createAppView(specs, my) {
                         }
                         break;
                 }
-                e.keyCode = [];
+                resetKeyCombo = [];
             });
 
             document.addEventListener('keydown', e => {

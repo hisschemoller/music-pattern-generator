@@ -342,6 +342,7 @@ export default function createReducers() {
                     };
                 
                 case actions.CONNECT_PROCESSORS:
+
                     // abort if the connection already exists
                     for (let i = 0, n = state.connections.allIds.length; i < n; i++) {
                         const connection = state.connections.byId[state.connections.allIds[i]];
@@ -352,6 +353,7 @@ export default function createReducers() {
                             return state;
                         } 
                     }
+
                     // add new connection
                     newState = {
                         ...state,
@@ -364,6 +366,7 @@ export default function createReducers() {
                             allIds: [ ...state.processors.allIds ]
                         }
                     };
+
                     // reorder the processors
                     orderProcessors(newState);
                     return newState;
@@ -377,6 +380,7 @@ export default function createReducers() {
                             allIds: [ ...state.processors.allIds ]
                         }
                     };
+
                     // reorder the processors
                     orderProcessors(newState);
                     return newState;
@@ -399,14 +403,6 @@ export default function createReducers() {
         reduce: reduce
     }
 }
-
-// function addToNormalizedTable(stateObj, newItemID, newItem) {
-//     const clone = {
-//         byId: { ...stateObj.byId, [newItemID]: newItem },
-//         allIds: [ ...stateObj.allIds, newItemID ]
-//     };
-//     return clone;
-// }
 
 function deleteFromNormalizedTable(table, id) {
     const clone = {
