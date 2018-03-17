@@ -39,15 +39,9 @@ export default function createReducers() {
             let newState;
             switch(action.type) {
 
-                case actions.NEW_PROJECT:
-                    return { 
-                        ...initialState,
-                        ports: state.ports
-                    };
-
                 case actions.CREATE_PROJECT:
                     const data = action.data || {};
-                    return { ...state, ...data };
+                    return { ...initialState, ...data };
 
                 case actions.SET_THEME:
                     return { ...state, theme: state.theme === 'light' ? 'dark' : 'light' };
@@ -209,7 +203,7 @@ export default function createReducers() {
                     return {
                         ...state,
                         ports: {
-                            allIds: [ ...state.ports.allIds, action.portID ],
+                            allIds: [ ...state.ports.allIds ],
                             byId: Object.values(state.ports.byId).reduce((returnObject, port) => {
                                 if (port.id === action.portID) {
                                     returnObject[port.id] = { ...port, ...action.data };

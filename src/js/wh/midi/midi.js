@@ -77,12 +77,7 @@ export default function createMIDI(specs) {
             const outputs = midiAccess.outputs.values();
             
             for (let port = inputs.next(); port && !port.done; port = inputs.next()) {
-                store.dispatch(store.getActions().midiAccessChange(port.value));
                 port.value.onmidimessage = onMIDIMessage;
-            }
-            
-            for (let port = outputs.next(); port && !port.done; port = outputs.next()) {
-                store.dispatch(store.getActions().midiAccessChange(port.value));
             }
 
             midiAccess.onstatechange = onAccessStateChange;
@@ -202,4 +197,24 @@ export function getMIDIPortByID(id) {
             return port.value;
         }
     }
+}
+
+/**
+ * Get all MIDI input and output ports.
+ * @returns {Array} Array of all ports.
+ */
+export function getAllMIDIPorts() {
+    const allPorts = [];
+    const inputs = midiAccess.inputs.values();
+    const outputs = midiAccess.outputs.values();
+
+    for (let port = inputs.next(); port && !port.done; port = inputs.next()) {
+        allPorts.push(port.value);
+    }
+    
+    for (let port = outputs.next(); port && !port.done; port = outputs.next()) {
+        allPorts.push(port.value);
+    }
+
+    return allPorts;
 }

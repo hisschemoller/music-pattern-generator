@@ -1,5 +1,6 @@
 import { createUUID } from '../core/util';
 import { getConfig, setConfig } from '../core/config';
+import { getAllMIDIPorts } from '../midi/midi';
 
 export default function createActions(specs = {}, my = {}) {
     const RESCAN_TYPES = 'RESCAN_TYPES',
@@ -72,59 +73,92 @@ export default function createActions(specs = {}, my = {}) {
             }
         },
 
-        NEW_PROJECT: NEW_PROJECT,
-        newProject: (data) => {
-            return { type: NEW_PROJECT };
+        newProject: () => {
+            return (dispatch, getState, getActions) => {
+
+                // create an empty initial state
+                dispatch(getActions().createProject());
+
+                // add the existing MIDI ports
+                const existingMIDIPorts = getAllMIDIPorts();
+                existingMIDIPorts.forEach(port => {
+                    dispatch(getActions().midiAccessChange(port));
+                });
+
+                // recreate the state with the existing ports
+                dispatch(getActions().createProject(getState()));
+            }
         },
 
         setProject: (data) => {
             return (dispatch, getState, getActions) => {
-                
-                // overwrite the state except the ports with the new project
-                const ports = data.ports;
-                const portProcessor = data.portProcessor;
-                delete data.ports;
-                delete data.portProcessor;
-                dispatch(getActions().createProject(data));
 
-                // restore the port settings
-                const state = getState();
-                ports.allIds.forEach(projectPortID => {
-                    const projectPort = ports.byId[projectPortID];
+                // create an empty initial state
+                dispatch(getActions().createProject());
+
+                // add the existing MIDI ports
+                const existingMIDIPorts = getAllMIDIPorts();
+                existingMIDIPorts.forEach(port => {
+                    dispatch(getActions().midiAccessChange(port));
+                });
+
+                // copy the port settings of existing ports
+                const existingPorts = { ...getState().ports }
+
+                // copy the port settings defined in the project
+                const projectPorts = { ...data.ports };
+
+                // clear the project's port settings
+                data.ports.allIds = [];
+                data.ports.byId = {};
+
+                // add all existing ports to the project data
+                existingPorts.allIds.forEach(existingPortID => {
+                    data.ports.allIds.push(existingPortID);
+                    data.ports.byId[existingPortID] = existingPorts.byId[existingPortID];
+                });
+
+                // set the existing ports to the project's settings,
+                // and create ports that do not exist
+                projectPorts.allIds.forEach(projectPortID => {
+                    const projectPort = projectPorts.byId[projectPortID];
                     let portExists = false;
-                    state.ports.allIds.forEach(statePortID => {
-                        if (statePortID === projectPortID) {
+                    existingPorts.allIds.forEach(existingPortID => {
+                        if (existingPortID === projectPortID) {
+                            
+                            portExists = true;
 
                             // project port's settings exists, update the settings
-                            portExists = true;
-                            dispatch(getActions().updateMIDIPort(statePortID, {
-                                syncEnabled: projectPort.syncEnabled,
-                                remoteEnabled: projectPort.remoteEnabled,
-                                networkEnabled: projectPort.networkEnabled
-                            }));
+                            const existingPort = existingPorts.byId[existingPortID];
+                            existingPort.syncEnabled = projectPort.syncEnabled;
+                            existingPort.remoteEnabled = projectPort.remoteEnabled;
+                            existingPort.networkEnabled = projectPort.networkEnabled;
                         }
                     });
 
-                    // port settings object doesn't exist in the state, so create it, but disabled
+                    // port settings object doesn't exist, so create it, but disabled
                     if (!portExists) {
-                        dispatch(getActions().createMIDIPort(projectPortID, {
+                        data.ports.allIds.push(projectPortID);
+                        data.ports.byId[projectPortID] = {
                             id: projectPortID,
                             type: projectPort.type,
                             name: projectPort.name,
-                            connection: 'closed', // closed | open
+                            connection: 'closed', // closed | open | pending
                             state: 'disconnected', // disconnected | connected
                             syncEnabled: projectPort.syncEnabled,
                             remoteEnabled: projectPort.remoteEnabled,
                             networkEnabled: projectPort.networkEnabled
-                        }));
+                        }
                     }
                 });
+
+                // create the project with the merged ports
+                dispatch(getActions().createProject(data));
             }
         },
 
         CREATE_PROJECT: CREATE_PROJECT,
         createProject: (data) => {
-            console.log('CREATE_PROJECT');
             return { type: CREATE_PROJECT, data };
         },
 
@@ -198,11 +232,11 @@ export default function createActions(specs = {}, my = {}) {
 
                 // check if the port already exists
                 const state = getState();
-                const portExists = state.ports.allIds.indexOf(midiPort) > -1;
+                const portExists = state.ports.allIds.indexOf(midiPort.id) > -1;
 
                 // create port or update existing
                 if (portExists) {
-
+                    console.log(`update ${midiPort.id}, ${midiPort.type}, ${midiPort.connection}, ${midiPort.state}`);
                     // update existing port
                     dispatch(getActions().updateMIDIPort(midiPort.id, {
                         connection: midiPort.connection,
@@ -211,9 +245,14 @@ export default function createActions(specs = {}, my = {}) {
                 } else {
                     
                     // restore settings from config
-                    const config = getConfig();
-                    const configPort = (config.ports && config.ports.byId) ? config.ports.byId[midiPort.id] : null;
+                    // const config = getConfig();
+                    // const configPort = (config.ports && config.ports.byId) ? config.ports.byId[midiPort.id] : null;
 
+                    // if (configPort && configPort.id == '202658789') {
+                    //     configPort.networkEnabled = true;
+                    //     console.log('test, set 202658789 (iac bus 1 output) networkEnabled to true');
+                    // }
+                    console.log(`create ${midiPort.id}, ${midiPort.type}, ${midiPort.connection}, ${midiPort.state}`);
                     // create port
                     dispatch(getActions().createMIDIPort(midiPort.id, {
                         id: midiPort.id,
@@ -221,14 +260,14 @@ export default function createActions(specs = {}, my = {}) {
                         name: midiPort.name,
                         connection: midiPort.connection,
                         state: midiPort.state,
-                        networkEnabled: configPort ? configPort.networkEnabled : false,
-                        syncEnabled: configPort ? configPort.syncEnabled : false,
-                        remoteEnabled: configPort ? configPort.remoteEnabled : false
+                        networkEnabled: false, // configPort ? configPort.networkEnabled : false,
+                        syncEnabled: false, // configPort ? configPort.syncEnabled : false,
+                        remoteEnabled: false, // configPort ? configPort.remoteEnabled : false
                     }));
                 }
 
                 // store the changes in configuration
-                setConfig(getState());
+                // setConfig(getState());
             };
         },
 

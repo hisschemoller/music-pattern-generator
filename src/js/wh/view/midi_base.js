@@ -23,7 +23,7 @@ export default function createMIDIBaseView(specs, my) {
             my.networkEl = my.el.querySelector('.midi-port__network');
             my.syncEl = my.el.querySelector('.midi-port__sync');
             my.remoteEl = my.el.querySelector('.midi-port__remote');
-
+            
             // set checkboxes
             my.networkEl.querySelector('[type=checkbox]').checked = specs.networkEnabled;
             my.syncEl.querySelector('[type=checkbox]').checked = specs.syncEnabled;
@@ -46,17 +46,14 @@ export default function createMIDIBaseView(specs, my) {
                 }
             });
 
-            // create input or output processor for the MIDI port
-            if (specs.networkEnabled) {
-                my.store.dispatch(my.store.getActions().togglePortNetwork(my.id, my.isInput, true));
-            }
-
             // listen to state updates
             document.addEventListener(my.store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
+
                     case e.detail.actions.TOGGLE_MIDI_PREFERENCE:
                     case e.detail.actions.TOGGLE_PORT_SYNC:
                     case e.detail.actions.TOGGLE_PORT_REMOTE:
+                    case e.detail.actions.CREATE_PROJECT:
                         const port = e.detail.state.ports.byId[my.id];
                         if (port) {
                             my.networkEl.querySelector('[type=checkbox]').checked = port.networkEnabled;

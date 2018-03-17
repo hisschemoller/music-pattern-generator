@@ -39,10 +39,22 @@ export function createGraphic(specs, my) {
 
         handleStateChanges = function(e) {
             switch (e.detail.action.type) {
+
                 case e.detail.actions.DRAG_SELECTED_PROCESSOR:
                 case e.detail.actions.DRAG_ALL_PROCESSORS:
                     const processor = e.detail.state.processors.byId[my.id];
                     updatePosition(processor.positionX, processor.positionY);
+                    break;
+
+                case e.detail.actions.UPDATE_MIDI_PORT:
+                    let port;
+                    e.detail.state.portProcessor.allIds.forEach(relationID => {
+                        const relation = e.detail.state.portProcessor.byId[relationID];
+                        if (relation.processorID === my.id) {
+                            port = e.detail.state.ports.byId[relation.portID];
+                        }
+                    });
+                    updatePortState(port);
                     break;
             }
         },
@@ -62,6 +74,12 @@ export function createGraphic(specs, my) {
             nameCtx = nameCanvas.getContext('2d');
             nameCtx.font = '14px sans-serif';
             nameCtx.textAlign = 'center';
+        },
+
+        updatePortState = function(port) {
+            if (!port || port.state !== 'connected') {
+
+            }
         },
 
         setSelected = function(isSelectedView) {
