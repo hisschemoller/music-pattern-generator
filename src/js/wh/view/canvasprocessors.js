@@ -17,6 +17,26 @@ export default function createCanvasProcessorViews(specs, my) {
         init = function() {
             document.addEventListener(store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
+
+                    case e.detail.actions.CREATE_PROJECT:
+                        setProcessorViews(e.detail.state.processors);
+                        selectProcessorView(e.detail.state.selectedID);
+                        my.markDirty();
+                        break;
+                    
+                    case e.detail.actions.ADD_PROCESSOR:
+                        createProcessorViews(e.detail.state.processors);
+                        break;
+                    
+                    case e.detail.actions.DELETE_PROCESSOR:
+                        deleteProcessorView(e.detail.action.id);
+                        selectProcessorView(e.detail.state.selectedID);
+                        break;
+                    
+                    case e.detail.actions.SELECT_PROCESSOR:
+                        selectProcessorView(e.detail.state.selectedID);
+                        break;
+                        
                     case e.detail.actions.SET_THEME:
                         setTheme(e.detail.state);
                         break;
@@ -131,10 +151,10 @@ export default function createCanvasProcessorViews(specs, my) {
         };
 
     my = my || {};
-    my.setProcessorViews = setProcessorViews;
-    my.createProcessorViews = createProcessorViews;
-    my.selectProcessorView = selectProcessorView;
-    my.deleteProcessorView = deleteProcessorView;
+    // my.setProcessorViews = setProcessorViews;
+    // my.createProcessorViews = createProcessorViews;
+    // my.selectProcessorView = selectProcessorView;
+    // my.deleteProcessorView = deleteProcessorView;
     my.intersectsProcessor = intersectsProcessor;
     my.dragSelectedProcessor = dragSelectedProcessor;
     my.dragAllProcessors = dragAllProcessors;
