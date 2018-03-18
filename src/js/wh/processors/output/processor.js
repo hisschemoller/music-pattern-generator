@@ -22,7 +22,7 @@ export function createProcessor(specs, my) {
                 origin = performance.now() - (offset * ticksToMsMultiplier),
                 n = inputData.length;
             
-            if (midiOutput.state === 'connected') {
+            if (midiOutput && midiOutput.state === 'connected') {
                 for (var i = 0; i < n; i++) {
                     var item = inputData[i],
                         // item.timestampTicks is time since transport play started
