@@ -118,15 +118,43 @@ export default function createReducers() {
                     return { ...state, selectedID: action.id };
                 
                 case actions.DRAG_SELECTED_PROCESSOR:
-                    newState = { 
+                    // newState = { 
+                    //     ...state,
+                    //     processors: {
+                    //         byId: { ...state.processors.byId },
+                    //         allIds: [ ...state.processors.allIds ]
+                    //     } };
+                    // newState.processors.byId[newState.selectedID].positionX = action.x;
+                    // newState.processors.byId[newState.selectedID].positionY = action.y;
+                    // return newState;
+                
+                    return {
                         ...state,
                         processors: {
-                            byId: { ...state.processors.byId },
-                            allIds: [ ...state.processors.allIds ]
+                            allIds: [ ...state.processors.allIds ],
+                            byId: Object.values(state.processors.byId).reduce((accumulator, processor) => {
+                                if (processor.id === state.selectedID) {
+                                    accumulator[processor.id] = { ...processor, positionX: action.x, positionY: action.y };
+                                } else {
+                                    accumulator[processor.id] = { ...processor };
+                                }
+                                return accumulator;
+                            }, {})
+                            
                         } };
-                    newState.processors.byId[newState.selectedID].positionX = action.x;
-                    newState.processors.byId[newState.selectedID].positionY = action.y;
-                    return newState;
+                        // ports: {
+                        //     allIds: [ ...state.ports.allIds ],
+                        //     byId: Object.values(state.ports.byId).reduce((returnObject, port) => {
+                        //         if (port.id === action.portID) {
+                        //             returnObject[port.id] = { ...port, ...action.data };
+                        //         } else {
+                        //             returnObject[port.id] = { ...port };
+                        //         }
+                        //         return returnObject;
+                        //     }, {})
+                        // }
+                    // };
+                    
 
                 case actions.DRAG_ALL_PROCESSORS:
                     newState = { 
