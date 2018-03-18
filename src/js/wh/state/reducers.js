@@ -115,9 +115,7 @@ export default function createReducers() {
                     return newState;
                 
                 case actions.SELECT_PROCESSOR:
-                    return Object.assign({}, state, {
-                        selectedID: action.id
-                    });
+                    return { ...state, selectedID: action.id };
                 
                 case actions.DRAG_SELECTED_PROCESSOR:
                     newState = { 
