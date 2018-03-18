@@ -161,17 +161,17 @@ export default function createActions(specs = {}, my = {}) {
             }
         },
 
-        CREATE_PROJECT: CREATE_PROJECT,
+        CREATE_PROJECT,
         createProject: (data) => {
             return { type: CREATE_PROJECT, data };
         },
 
-        SET_THEME: SET_THEME,
+        SET_THEME,
         setTheme: (themeName) => {
             return { type: SET_THEME, themeName };
         },
 
-        CREATE_PROCESSOR: CREATE_PROCESSOR,
+        CREATE_PROCESSOR,
         createProcessor: (data) => {
             return (dispatch, getState, getActions) => {
                 const dataTemplate = require(`json-loader!../processors/${data.type}/config.json`);
@@ -187,48 +187,48 @@ export default function createActions(specs = {}, my = {}) {
             }
         },
 
-        ADD_PROCESSOR: ADD_PROCESSOR,
+        ADD_PROCESSOR,
         addProcessor: (data) => {
             return { type: ADD_PROCESSOR, data };
         },
 
-        DELETE_PROCESSOR: DELETE_PROCESSOR,
+        DELETE_PROCESSOR,
         deleteProcessor: id => {
             return { type: DELETE_PROCESSOR, id };
         },
 
-        SELECT_PROCESSOR: SELECT_PROCESSOR,
+        SELECT_PROCESSOR,
         selectProcessor: id => {
             return { type: SELECT_PROCESSOR, id };
         },
 
-        DRAG_SELECTED_PROCESSOR: DRAG_SELECTED_PROCESSOR,
+        DRAG_SELECTED_PROCESSOR,
         dragSelectedProcessor: (x, y) => {
             return { type: DRAG_SELECTED_PROCESSOR, x, y };
         },
 
-        DRAG_ALL_PROCESSORS: DRAG_ALL_PROCESSORS,
+        DRAG_ALL_PROCESSORS,
         dragAllProcessors: (x, y) => {
             return { type: DRAG_ALL_PROCESSORS, x, y };
         },
 
-        CHANGE_PARAMETER: CHANGE_PARAMETER,
+        CHANGE_PARAMETER,
         changeParameter: (processorID, paramKey, paramValue) => {
             return { type: CHANGE_PARAMETER, processorID, paramKey, paramValue };
         },
 
-        RECREATE_PARAMETER: RECREATE_PARAMETER,
+        RECREATE_PARAMETER,
         recreateParameter: (processorID, paramKey, paramObj) => {
             return { type: RECREATE_PARAMETER, processorID, paramKey, paramObj };
         },
 
-        SET_TEMPO: SET_TEMPO,
+        SET_TEMPO,
         setTempo: value => { return { type: SET_TEMPO, value } },
 
-        CREATE_MIDI_PORT: CREATE_MIDI_PORT,
+        CREATE_MIDI_PORT,
         createMIDIPort: (portID, data) => { return { type: CREATE_MIDI_PORT, portID, data } },
 
-        UPDATE_MIDI_PORT: UPDATE_MIDI_PORT,
+        UPDATE_MIDI_PORT,
         updateMIDIPort: (portID, data) => { return { type: UPDATE_MIDI_PORT, portID, data } },
 
         midiAccessChange: midiPort => {
@@ -311,31 +311,31 @@ export default function createActions(specs = {}, my = {}) {
             }
         },
 
-        TOGGLE_PORT_SYNC: TOGGLE_PORT_SYNC,
+        TOGGLE_PORT_SYNC,
         togglePortSync: (id) => ({ type: TOGGLE_PORT_SYNC, id }),
 
-        TOGGLE_PORT_REMOTE: TOGGLE_PORT_REMOTE,
+        TOGGLE_PORT_REMOTE,
         togglePortRemote: (id) => ({ type: TOGGLE_PORT_REMOTE, id }),
 
-        TOGGLE_MIDI_PREFERENCE: TOGGLE_MIDI_PREFERENCE,
+        TOGGLE_MIDI_PREFERENCE,
         toggleMIDIPreference: (id, isInput, preferenceName, isEnabled) => ({ type: TOGGLE_MIDI_PREFERENCE, id, isInput, preferenceName, isEnabled }),
         
-        CREATE_PORT_NETWORK_RELATION: CREATE_PORT_NETWORK_RELATION,
+        CREATE_PORT_NETWORK_RELATION,
         createPortNetworkRelation: (id, data) => ({ type: CREATE_PORT_NETWORK_RELATION, id, data }),
 
-        DELETE_PORT_NETWORK_RELATION: DELETE_PORT_NETWORK_RELATION,
+        DELETE_PORT_NETWORK_RELATION,
         deletePortNetworkRelation: (id) => ({ type: DELETE_PORT_NETWORK_RELATION, id }),
 
-        TOGGLE_MIDI_LEARN_MODE: TOGGLE_MIDI_LEARN_MODE,
+        TOGGLE_MIDI_LEARN_MODE,
         toggleMIDILearnMode: () => ({ type: TOGGLE_MIDI_LEARN_MODE }),
 
-        TOGGLE_MIDI_LEARN_TARGET: TOGGLE_MIDI_LEARN_TARGET,
+        TOGGLE_MIDI_LEARN_TARGET,
         toggleMIDILearnTarget: (processorID, parameterKey) => ({ type: TOGGLE_MIDI_LEARN_TARGET, processorID, parameterKey }),
 
-        SET_TRANSPORT: SET_TRANSPORT,
+        SET_TRANSPORT,
         setTransport: command => ({ type: SET_TRANSPORT, command }),
 
-        RECEIVE_MIDI_CC: RECEIVE_MIDI_CC,
+        RECEIVE_MIDI_CC,
         receiveMIDIControlChange: (data) => {
             return (dispatch, getState, getActions) => {
                 const state = getState();
@@ -361,25 +361,25 @@ export default function createActions(specs = {}, my = {}) {
             }
         },
 
-        ASSIGN_EXTERNAL_CONTROL: ASSIGN_EXTERNAL_CONTROL,
+        ASSIGN_EXTERNAL_CONTROL,
         assignExternalControl: data => ({type: ASSIGN_EXTERNAL_CONTROL, data}),
 
-        UNASSIGN_EXTERNAL_CONTROL: UNASSIGN_EXTERNAL_CONTROL,
+        UNASSIGN_EXTERNAL_CONTROL,
         unassignExternalControl: (processorID, paramKey) => ({type: UNASSIGN_EXTERNAL_CONTROL, processorID, paramKey}),
         
-        TOGGLE_PANEL: TOGGLE_PANEL,
+        TOGGLE_PANEL,
         togglePanel: panelName => ({type: TOGGLE_PANEL, panelName}),
 
-        TOGGLE_CONNECT_MODE: TOGGLE_CONNECT_MODE,
+        TOGGLE_CONNECT_MODE,
         toggleConnectMode: () => ({ type: TOGGLE_CONNECT_MODE }),
 
-        CONNECT_PROCESSORS: CONNECT_PROCESSORS,
+        CONNECT_PROCESSORS,
         connectProcessors: payload => ({ type: CONNECT_PROCESSORS, payload, id: `conn_${createUUID()}` }),
 
-        DISCONNECT_PROCESSORS: DISCONNECT_PROCESSORS,
+        DISCONNECT_PROCESSORS,
         disconnectProcessors: id => ({ type: DISCONNECT_PROCESSORS, id }),
 
-        RESCAN_TYPES: RESCAN_TYPES,
+        RESCAN_TYPES,
         rescanTypes: () => {
             const req = require.context('../processors/', true, /\processor.js$/);
             let types = {};
