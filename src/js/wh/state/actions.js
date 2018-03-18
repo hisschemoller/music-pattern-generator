@@ -240,7 +240,7 @@ export default function createActions(specs = {}, my = {}) {
 
                 // create port or update existing
                 if (portExists) {
-                    console.log(`update ${midiPort.id}, ${midiPort.type}, ${midiPort.name}, ${midiPort.connection}, ${midiPort.state}`);
+
                     // update existing port
                     dispatch(getActions().updateMIDIPort(midiPort.id, {
                         connection: midiPort.connection,
@@ -252,11 +252,6 @@ export default function createActions(specs = {}, my = {}) {
                     const config = getConfig();
                     const configPort = (config.ports && config.ports.byId) ? config.ports.byId[midiPort.id] : null;
 
-                    // if (configPort && configPort.id == '202658789') {
-                    //     configPort.networkEnabled = true;
-                    //     console.log('test, set 202658789 (iac bus 1 output) networkEnabled to true');
-                    // }
-                    console.log(`create ${midiPort.id}, ${midiPort.type}, ${midiPort.name}, ${midiPort.connection}, ${midiPort.state}`);
                     // create port
                     dispatch(getActions().createMIDIPort(midiPort.id, {
                         id: midiPort.id,
@@ -272,8 +267,6 @@ export default function createActions(specs = {}, my = {}) {
 
                 // store the changes in configuration
                 setConfig(getState());
-
-                console.log(state);
             };
         },
 
