@@ -10,6 +10,7 @@ export default function createActions(specs = {}, my = {}) {
         ADD_PROCESSOR = 'ADD_PROCESSOR',
         DELETE_PROCESSOR = 'DELETE_PROCESSOR',
         SELECT_PROCESSOR = 'SELECT_PROCESSOR',
+        ENABLE_PROCESSOR = 'ENABLE_PROCESSOR',
         DRAG_SELECTED_PROCESSOR = 'DRAG_SELECTED_PROCESSOR',
         DRAG_ALL_PROCESSORS = 'DRAG_ALL_PROCESSORS',
         CHANGE_PARAMETER = 'CHANGE_PARAMETER',
@@ -202,6 +203,12 @@ export default function createActions(specs = {}, my = {}) {
             return { type: SELECT_PROCESSOR, id };
         },
 
+        ENABLE_PROCESSOR,
+        enableProcessor: (id, isEnabled) => {
+            return { type: ENABLE_PROCESSOR, id, isEnabled };
+        },
+
+
         DRAG_SELECTED_PROCESSOR,
         dragSelectedProcessor: (x, y) => {
             return { type: DRAG_SELECTED_PROCESSOR, x, y };
@@ -293,7 +300,7 @@ export default function createActions(specs = {}, my = {}) {
                     if (processorExists) {
 
                         // (disabled) processor already exists, so enable it
-                        console.log('TODO: enable processor');
+                        dispatch(getActions().enableProcessor(processor.id, true));
                     } else {
 
                         // create a processor for this network enabled port
@@ -330,9 +337,9 @@ export default function createActions(specs = {}, my = {}) {
                                 dispatch(getActions().deleteProcessor(relation.processorID));
                                 dispatch(getActions().deletePortNetworkRelation(relationID));
                             } else {
-                                
+
                                 // port processor connected, do not delete but set disabled
-                                console.log('TODO: disable processor');
+                                dispatch(getActions().enableProcessor(processor.id, false));
                             }
                         }
                     });
@@ -509,16 +516,12 @@ function getProcessorCanBeDeleted(processor, state) {
         state.portProcessor.allIds.forEach(relationID => {
             const relation = state.portProcessor.byId[relationID];
             if (processor.id === relation.processorID) {
-                console.log('A processor.id: ', processor.id);
                 // check if the port is not network enabled
                 if (state.ports.byId[relation.portID].networkEnabled === false) {
-                    console.log('B');
                     // check if the processor is connected to others
                     state.connections.allIds.forEach(connectionID => {
                         const connection = state.connections.byId[connectionID];
-                        console.log('C connection: ', connection);
                         if (connection.sourceProcessorID === processor.id || connection.destinationProcessorID === processor.id) {
-                            console.log('D');
                             // processor is connected, do not delete
                             canBeDeleted = false;
                         }

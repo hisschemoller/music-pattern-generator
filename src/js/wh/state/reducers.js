@@ -100,6 +100,20 @@ export default function createReducers() {
                         }
                     }
 
+                    // in case of a port processor delete the relation entry
+                    newState.portProcessor = {
+                        byId: { ...state.portProcessor.byId },
+                        allIds: [ ...state.portProcessor.allIds ]
+                    }
+                    for (let i = newState.portProcessor.allIds.length -1, n = 0; i >= n; i--) {
+                        const relationID = newState.portProcessor.allIds[i];
+                        const relation = newState.portProcessor.byId[relationID];
+                        if (relation.processorID === action.id) {
+                            newState.portProcessor.allIds.splice(i, 1);
+                            delete newState.portProcessor.byId[relationID];
+                        }
+                    }
+
                     // select the next processor, if any, or a previous one
                     let newIndex;
                     if (newState.selectedID === action.id && newState.processors.allIds.length) {
@@ -116,6 +130,25 @@ export default function createReducers() {
                 
                 case actions.SELECT_PROCESSOR:
                     return { ...state, selectedID: action.id };
+                
+                case actions.ENABLE_PROCESSOR:
+                    return { 
+                        ...state, 
+                        processors: {
+                            allIds: [ ...state.processors.allIds ],
+                            byId: Object.values(state.processors.allIds).reduce((accumulator, processorID) => {
+                                if (processorID === action.id) {
+                                    accumulator[processorID] = { 
+                                        ...state.processors.byId[processorID],
+                                        enabled: action.isEnabled 
+                                    };
+                                } else {
+                                    accumulator[processorID] = { ...state.processors.byId[processorID] }
+                                }
+                                return accumulator;
+                            }, {})
+                        }
+                    };
                 
                 case actions.DRAG_SELECTED_PROCESSOR:
                     return {

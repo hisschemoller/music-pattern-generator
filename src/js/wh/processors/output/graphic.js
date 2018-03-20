@@ -26,9 +26,9 @@ export function createGraphic(specs, my) {
         initialise = function() {
             document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
             initGraphics();
-            setTheme(specs.theme);
+            setTheme(specs.theme, specs.state);
             updatePosition(specs.data.positionX, specs.data.positionY);
-            redrawStaticCanvas();
+            redrawStaticCanvas(specs.data.enabled);
         },
         
         /**
@@ -40,16 +40,17 @@ export function createGraphic(specs, my) {
         },
 
         handleStateChanges = function(e) {
+            const processor = e.detail.state.processors.byId[my.id];
             switch (e.detail.action.type) {
 
                 case e.detail.actions.DRAG_SELECTED_PROCESSOR:
                 case e.detail.actions.DRAG_ALL_PROCESSORS:
-                    const processor = e.detail.state.processors.byId[my.id];
                     updatePosition(processor.positionX, processor.positionY);
                     break;
 
                 case e.detail.actions.UPDATE_MIDI_PORT:
-                    redrawStaticCanvas();
+                case e.detail.actions.ENABLE_PROCESSOR:
+                    redrawStaticCanvas(processor.enabled);
                     break;
             }
         },
@@ -71,10 +72,10 @@ export function createGraphic(specs, my) {
             nameCtx.textAlign = 'center';
         },
 
-        setSelected = function(isSelectedView) {
+        setSelected = function(isSelectedView, state) {
             isSelected = isSelectedView;
             if (typeof redrawStaticCanvas == 'function' && typeof canvasDirtyCallback == 'function') {
-                redrawStaticCanvas();
+                redrawStaticCanvas(state.processors.byId[my.id].enabled);
                 canvasDirtyCallback();
             }
         },
@@ -84,7 +85,7 @@ export function createGraphic(specs, my) {
         /**
          * Redraw the graphic after a change.
          */
-        redrawStaticCanvas = function() {
+        redrawStaticCanvas = function(isEnabled = true) {
 
             // get the MIDI port for this output processor
             const state = store.getState();
@@ -115,7 +116,7 @@ export function createGraphic(specs, my) {
             staticCtx.arc(0, 0, radius, 0, Math.PI * 2, true);
 
             // disconnected cross
-            if (!port || port.state === 'disconnected') {
+            if (!port || port.state === 'disconnected' || !isEnabled) {
                 staticCtx.moveTo(-disconnectSize, -disconnectSize);
                 staticCtx.lineTo(disconnectSize, disconnectSize);
                 staticCtx.moveTo(disconnectSize, -disconnectSize);
@@ -191,11 +192,11 @@ export function createGraphic(specs, my) {
          * Set the theme colours of the processor view.
          * @param {Object} theme Theme settings object.
          */
-        setTheme = function(theme) {
+        setTheme = function(theme, state) {
             my.colorHigh = theme.colorHigh;
             my.colorMid = theme.colorMid;
             my.colorLow = theme.colorLow;
-            redrawStaticCanvas();
+            redrawStaticCanvas(state.processors.byId[my.id].enabled);
             updateName();
         };
         

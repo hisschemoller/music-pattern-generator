@@ -1,6 +1,7 @@
 {
     "name": "Output",
     "excludedFromLibrary": true,
+    "enabled": true,
     "positionX": 0,
     "positionY": 0,
     "inputs": {
