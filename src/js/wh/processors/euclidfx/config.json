@@ -60,14 +60,7 @@
                 "type": "itemized",
                 "default": 0.25,
                 "value": 0.25,
-                "model": [
-                    {"label": "1", "value": 4},
-                    {"label": "1/2", "value": 2},
-                    {"label": "1/4", "value": 1},
-                    {"label": "1/8", "value": 0.5},
-                    {"label": "1/16", "value": 0.25},
-                    {"label": "1/32", "value": 0.125}
-                ],
+                "modelId": "time",
                 "isMidiControllable": false
             },
             "is_triplets": {
@@ -81,13 +74,7 @@
                 "type": "itemized",
                 "default": "velocity",
                 "value": "velocity",
-                "model": [
-                    { "label": "Velocity", "value": "velocity" },
-                    { "label": "Pitch", "value": "pitch" },
-                    { "label": "Channel", "value": "channel" },
-                    { "label": "Note length", "value": "length" },
-                    { "label": "Output", "value": "output" }
-                ]
+                "modelId": "targets"
             },
             "low": {
                 "label": "Low value",
@@ -126,5 +113,25 @@
             }
         },
         "allIds": ["steps", "pulses", "rotation", "rate", "is_triplets", "target", "low", "high", "relative", "name"]
+    },
+    "models": {
+        "byId": {
+            "time": [
+                {"label": "1", "value": 4},
+                {"label": "1/2", "value": 2},
+                {"label": "1/4", "value": 1},
+                {"label": "1/8", "value": 0.5},
+                {"label": "1/16", "value": 0.25},
+                {"label": "1/32", "value": 0.125}
+            ],
+            "targets": [
+                { "label": "Velocity", "value": "velocity" },
+                { "label": "Pitch", "value": "pitch" },
+                { "label": "Channel", "value": "channel" },
+                { "label": "Note length", "value": "length" },
+                { "label": "Output", "value": "output" }
+            ]
+        },
+        "allIds": ["time", "targets"]
     }
 }

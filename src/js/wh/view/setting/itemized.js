@@ -15,7 +15,7 @@ export default function createItemizedSettingView(specs, my) {
             
             // add the radio buttons
             let radioTemplate = document.querySelector('#template-setting-itemized-item'),
-                model = my.data.model;
+                model = my.store.getState().processors.byId[my.processorID].models.byId[my.data.modelId];
             numInputs = model.length;
             for (var i = 0; i < numInputs; i++) {
                 let id = getTemporaryInputAndLabelId();
