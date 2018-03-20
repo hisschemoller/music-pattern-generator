@@ -98,11 +98,12 @@
                 "remoteChannel": null,
                 "remoteCC": null
             },
-            "relative": {
-                "label": "Relative",
-                "type": "boolean",
-                "default": false,
-                "value": false
+            "mode": {
+                "label": "Mode",
+                "type": "itemized",
+                "default": "absolute",
+                "value": "absolute",
+                "modelId": "mode"
             },
             "name": {
                 "label": "Name",
@@ -112,7 +113,7 @@
                 "isMidiControllable": false
             }
         },
-        "allIds": ["steps", "pulses", "rotation", "rate", "is_triplets", "target", "low", "high", "relative", "name"]
+        "allIds": ["steps", "pulses", "rotation", "rate", "is_triplets", "target", "low", "high", "mode", "name"]
     },
     "models": {
         "byId": {
@@ -130,6 +131,10 @@
                 { "label": "Channel", "value": "channel" },
                 { "label": "Note length", "value": "length" },
                 { "label": "Output", "value": "output" }
+            ],
+            "mode": [
+                { "label": "Absolute", "value": "absolute" },
+                { "label": "Relative", "value": "relative" }
             ]
         },
         "allIds": ["time", "targets"]

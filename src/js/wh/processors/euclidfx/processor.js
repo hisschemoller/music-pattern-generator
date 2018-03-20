@@ -14,7 +14,7 @@ export function createProcessor(specs, my) {
     const initialize = function() {
             document.addEventListener(store.STATE_CHANGE, handleStateChanges);
             updateEffectParameters(specs.data.params.byId);
-            updateRelativeSetting(specs.data.params.byId);
+            updateEffectMode(specs.data.params.byId);
             updatePattern(true);
         },
 
@@ -47,8 +47,8 @@ export function createProcessor(specs, my) {
                             case 'high':
                                 updateEffectParameters(e.detail.state.processors.byId[my.id].params.byId);
                                 break;
-                            case 'relative':
-                                updateRelativeSetting(e.detail.state.processors.byId[my.id].params.byId);
+                            case 'mode':
+                                updateEffectMode(e.detail.state.processors.byId[my.id].params.byId);
                                 break;
                         }
                     }
@@ -114,15 +114,15 @@ export function createProcessor(specs, my) {
                     // apply the effect to the event's target parameter
                     switch (params.target) {
                         case 'velocity':
-                            event.velocity = params.relative ? event.velocity + effectValue : effectValue;
+                            event.velocity = params.isRelative ? event.velocity + effectValue : effectValue;
                             event.velocity = Math.max(0, Math.min(event.velocity, 127));
                             break;
                         case 'pitch':
-                            event.pitch = params.relative ? event.pitch + effectValue : effectValue;
+                            event.pitch = params.isRelative ? event.pitch + effectValue : effectValue;
                             event.pitch = Math.max(0, Math.min(event.pitch, 127));
                             break;
                         case 'channel':
-                            event.channel = params.relative ? event.channel + effectValue : effectValue;
+                            event.channel = params.isRelative ? event.channel + effectValue : effectValue;
                             event.channel = Math.max(1, Math.min(event.channel, 16));
                             break;
                     }
@@ -185,11 +185,11 @@ export function createProcessor(specs, my) {
             switch (parameters.target.value) {
                 case 'velocity':
                 case 'pitch':
-                    min = parameters.relative.value ? -127 : 0;
+                    min = params.isRelative ? -127 : 0;
                     max = 127;
                     break;
                 case 'channel':
-                    min = parameters.relative.value ? -16 : 1;
+                    min = params.isRelative ? -16 : 1;
                     max = 16;
                     break;
                 case 'length':
@@ -216,8 +216,8 @@ export function createProcessor(specs, my) {
             params.low = parameters.low.value;
         },
         
-        updateRelativeSetting = function(parameters) {
-            params.relative = parameters.relative.value;
+        updateEffectMode = function(parameters) {
+            params.isRelative = parameters.mode.value !== parameters.mode.default
 
             let min, max, lowValue, highValue;
             
@@ -225,28 +225,28 @@ export function createProcessor(specs, my) {
             switch (parameters.target.value) {
                 case 'velocity':
                 case 'pitch':
-                    min = parameters.relative.value ? -127 : 0;
+                    min = params.isRelative ? -127 : 0;
                     max = 127;
-                    lowValue = parameters.relative.value ? 0 : 50;
-                    highValue = parameters.relative.value ? 0 : 100;
+                    lowValue = params.isRelative ? 0 : 50;
+                    highValue = params.isRelative ? 0 : 100;
                     break;
                 case 'channel':
-                    min = parameters.relative.value ? -16 : 1;
+                    min = params.isRelative ? -16 : 1;
                     max = 16;
-                    lowValue = parameters.relative.value ? 0 : 1;
-                    highValue = parameters.relative.value ? 0 : 1;
+                    lowValue = params.isRelative ? 0 : 1;
+                    highValue = params.isRelative ? 0 : 1;
                     break;
                 case 'length':
                     min = 0;
                     max = 1;
-                    lowValue = parameters.relative.value ? 0 : 1;
-                    highValue = parameters.relative.value ? 0 : 1;
+                    lowValue = params.isRelative ? 0 : 1;
+                    highValue = params.isRelative ? 0 : 1;
                     break;
                 case 'output':
                     min = 0;
                     max = 1;
-                    lowValue = parameters.relative.value ? 0 : 0;
-                    highValue = parameters.relative.value ? 0 : 0;
+                    lowValue = params.isRelative ? 0 : 0;
+                    highValue = params.isRelative ? 0 : 0;
                     break;
             }
 
