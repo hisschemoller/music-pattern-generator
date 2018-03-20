@@ -188,7 +188,7 @@ export default function createReducers() {
                     return newState;
                 
                 case actions.SET_TEMPO:
-                    return Object.assign({}, state, { bpm: action.value });
+                    return { ...state, bpm: action.value };
 
                 case actions.CREATE_MIDI_PORT:
                     return {
@@ -246,14 +246,14 @@ export default function createReducers() {
                     return newState;
                 
                 case actions.TOGGLE_MIDI_LEARN_MODE:
-                    return Object.assign({}, state, { 
-                        learnModeActive: !state.learnModeActive });
+                    return { ...state, learnModeActive: !state.learnModeActive };
                 
                 case actions.TOGGLE_MIDI_LEARN_TARGET:
-                    return Object.assign({}, state, { 
+                    return { 
+                        ...state, 
                         learnTargetProcessorID: action.processorID, 
                         learnTargetParameterKey: action.parameterKey 
-                    });
+                    };
                 
                 case actions.SET_TRANSPORT:
                     let value = action.command;
@@ -298,7 +298,6 @@ export default function createReducers() {
                         showSettingsPanel: action.panelName === 'settings' ? !state.showSettingsPanel : state.showSettingsPanel,
                         showLibraryPanel: action.panelName === 'library' ? !state.showLibraryPanel : state.showLibraryPanel
                     };
-                    return state;
                 
                 case actions.TOGGLE_CONNECT_MODE:
                     return {
