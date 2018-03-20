@@ -338,13 +338,26 @@ export default function createReducers() {
                 case actions.DISCONNECT_PROCESSORS:
                     newState =  {
                         ...state,
-                        connections: deleteFromNormalizedTable(state.connections, action.id),
+                        connections: {
+                            allIds: state.connections.allIds.reduce((accumulator, connectionID) => {
+                                if (connectionID !== action.id) {
+                                    accumulator.push(connectionID)
+                                }
+                                return accumulator;
+                            }, []),
+                            byId: Object.values(state.connections.allIds).reduce((accumulator, connectionID) => {
+                                if (connectionID !== action.id) {
+                                    accumulator[connectionID] = { ...state.connections.byId[connectionID] };
+                                }
+                                return accumulator;
+                            }, {})
+                        },
                         processors: {
                             byId: { ...state.processors.byId },
                             allIds: [ ...state.processors.allIds ]
                         }
                     };
-
+                    
                     // reorder the processors
                     orderProcessors(newState);
                     return newState;
@@ -366,15 +379,6 @@ export default function createReducers() {
     return {
         reduce: reduce
     }
-}
-
-function deleteFromNormalizedTable(table, id) {
-    const clone = {
-        byId: { ...table.byId },
-        allIds: table.allIds.filter(iid => iid !== id)
-    };
-    delete clone.byId[id];
-    return clone;
 }
  
 function assignParameter(parameters, action, state) {

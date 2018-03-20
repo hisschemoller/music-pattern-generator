@@ -278,33 +278,62 @@ export default function createActions(specs = {}, my = {}) {
                 
                 // create or remove processor and relation between processor and port
                 const state = getState();
-                
                 if (state.ports.byId[portID].networkEnabled) {
-                    
-                    const processorID = `${isInput ? 'input' : 'output'}_${createUUID()}`
 
-                    dispatch(getActions().createPortNetworkRelation(
-                        `rel_${createUUID()}`, {
-                            processorID: processorID,
-                            portID: portID
-                        }
-                    ));
-
-                    dispatch(getActions().createProcessor({ 
-                        type: 'output',
-                        id: processorID,
-                        portID: portID,
-                        name: state.ports.byId[portID].name,
-                        positionX: window.innerWidth / 2,
-                        positionY: window.innerHeight - 100
-                    }));
-                    
-                } else {
+                    // check if there is a (disabled) processor for this port
+                    let processor, processorExists = false;
                     state.portProcessor.allIds.forEach(relationID => {
                         const relation = state.portProcessor.byId[relationID];
                         if (relation.portID === portID) {
-                            dispatch(getActions().deleteProcessor(relation.processorID));
-                            dispatch(getActions().deletePortNetworkRelation(relationID));
+                            processor = state.processors.byId[relation.processorID];
+                            processorExists = true;
+                        }
+                    });
+
+                    if (processorExists) {
+
+                        // (disabled) processor already exists, so enable it
+                        console.log('TODO: enable processor');
+                    } else {
+
+                        // create a processor for this network enabled port
+                        const processorID = `${isInput ? 'input' : 'output'}_${createUUID()}`
+
+                        dispatch(getActions().createPortNetworkRelation(
+                            `rel_${createUUID()}`, {
+                                processorID: processorID,
+                                portID: portID
+                            }
+                        ));
+    
+                        dispatch(getActions().createProcessor({ 
+                            type: 'output',
+                            id: processorID,
+                            portID: portID,
+                            name: state.ports.byId[portID].name,
+                            positionX: window.innerWidth / 2,
+                            positionY: window.innerHeight - 100
+                        }));
+                    }
+                    
+                } else {
+
+                    // find the processor for this port
+                    state.portProcessor.allIds.forEach(relationID => {
+                        const relation = state.portProcessor.byId[relationID];
+                        if (relation.portID === portID) {
+                            const processor = state.processors.byId[relation.processorID];
+                            
+                            if (getProcessorCanBeDeleted(processor, state)) {
+
+                                // port processor not connected, so can be deleted
+                                dispatch(getActions().deleteProcessor(relation.processorID));
+                                dispatch(getActions().deletePortNetworkRelation(relationID));
+                            } else {
+                                
+                                // port processor connected, do not delete but set disabled
+                                console.log('TODO: disable processor');
+                            }
                         }
                     });
                 }
@@ -377,7 +406,28 @@ export default function createActions(specs = {}, my = {}) {
         connectProcessors: payload => ({ type: CONNECT_PROCESSORS, payload, id: `conn_${createUUID()}` }),
 
         DISCONNECT_PROCESSORS,
-        disconnectProcessors: id => ({ type: DISCONNECT_PROCESSORS, id }),
+        disconnectProcessors2: id => ({ type: DISCONNECT_PROCESSORS, id }),
+
+        disconnectProcessors: id => {
+            return (dispatch, getState, getActions) => {
+                let state = getState();
+                const connection = state.connections.byId[id];
+                const sourceProcessor = state.processors.byId[connection.sourceProcessorID];
+                const destinationProcessor = state.processors.byId[connection.destinationProcessorID];
+
+                // disconnect the processors
+                dispatch(getActions().disconnectProcessors2(id));
+                
+                // delete the processors if necessary
+                state = getState();
+                if (getProcessorShouldBeDeleted(sourceProcessor, state)) {
+                    dispatch(getActions().deleteProcessor(sourceProcessor.id));
+                }
+                if (getProcessorShouldBeDeleted(destinationProcessor, state)) {
+                    dispatch(getActions().deleteProcessor(destinationProcessor.id));
+                }
+            }
+        },
 
         RESCAN_TYPES,
         rescanTypes: () => {
@@ -397,6 +447,11 @@ export default function createActions(specs = {}, my = {}) {
     };
 }
 
+/**
+ * Convert a MIDI control value to a parameter value, depending on the parameter type.
+ * @param {Object} param Processor parameter.
+ * @param {Number} controllerValue MIDI controller value in the range 0 to 127.
+ */
 function midiControlToParameterValue(param, controllerValue) {
     const normalizedValue = controllerValue / 127;
     switch (param.type) {
@@ -417,8 +472,9 @@ function midiControlToParameterValue(param, controllerValue) {
 }
 
 /**
- * Set default processor name.
+ * Provide a default processor name.
  * @param {Object} processor Processor to name.
+ * @return {String} Name for a newly created processor.
  */
 function getProcessorDefaultName(processors) {
     let name, number, spaceIndex, 
@@ -437,4 +493,51 @@ function getProcessorDefaultName(processors) {
         }
     });
     return `${staticName} ${highestNumber + 1}`;
+}
+
+/**
+ * Determine whether an input or output port processor can be deleted,
+ * which is the case if the port preference is not network enabled
+ * and if it isn't connected to any other processor.
+ */
+function getProcessorCanBeDeleted(processor, state) {
+    let canBeDeleted = true;
+    if (processor.type === 'input' || processor.type === 'output') {
+        
+        // find the port for the processor
+        let port;
+        state.portProcessor.allIds.forEach(relationID => {
+            const relation = state.portProcessor.byId[relationID];
+            if (processor.id === relation.processorID) {
+                console.log('A processor.id: ', processor.id);
+                // check if the port is not network enabled
+                if (state.ports.byId[relation.portID].networkEnabled === false) {
+                    console.log('B');
+                    // check if the processor is connected to others
+                    state.connections.allIds.forEach(connectionID => {
+                        const connection = state.connections.byId[connectionID];
+                        console.log('C connection: ', connection);
+                        if (connection.sourceProcessorID === processor.id || connection.destinationProcessorID === processor.id) {
+                            console.log('D');
+                            // processor is connected, do not delete
+                            canBeDeleted = false;
+                        }
+                    });
+                }
+            }
+        });
+    }
+    
+    // processors that are not inputs or outputs can always be deleted
+    return canBeDeleted;
+}
+
+/**
+ * Check if a processor can be deleted.
+ * @param {Object} processor 
+ * @param {Object} state 
+ * @return {Boolean} True if the processor may be deleted.
+ */
+function getProcessorShouldBeDeleted(processor, state) {
+    return (processor.type === 'input' || processor.type === 'output') && getProcessorCanBeDeleted(processor, state);
 }
