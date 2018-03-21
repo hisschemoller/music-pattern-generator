@@ -14,6 +14,7 @@ export function createProcessor(specs, my) {
     const initialize = function() {
             document.addEventListener(store.STATE_CHANGE, handleStateChanges);
             updateEffectParameters(specs.data.params.byId);
+            updateEffectTarget(specs.data.params.byId);
             updateEffectMode(specs.data.params.byId);
             updatePattern(true);
         },
@@ -41,7 +42,7 @@ export function createProcessor(specs, my) {
                                 updatePattern();
                                 break;
                             case 'target':
-                                updateTarget(e.detail.state.processors.byId[my.id].params.byId);
+                                updateEffectTarget(e.detail.state.processors.byId[my.id].params.byId);
                                 break;
                             case 'low':
                             case 'high':
@@ -125,6 +126,17 @@ export function createProcessor(specs, my) {
                             event.channel = params.isRelative ? event.channel + effectValue : effectValue;
                             event.channel = Math.max(1, Math.min(event.channel, 16));
                             break;
+                        case 'length':
+                            const valueInTicks = (effectValue / 32) * PPQN * 4; // max 32 = 1 measure = PPQN * 4
+                            event.durationTicks = params.isRelative ? event.durationTicks + valueInTicks : valueInTicks;
+                            event.durationTicks = Math.max(1, event.durationTicks);
+                            break;
+                        case 'delay':
+                            // const valueInTicks = (effectValue / 32) * PPQN * 4; // 32 = 1 measure = PPQN * 4
+                            // event.timestampTicks = params.isRelative ? event.durationTicks + valueInTicks : valueInTicks;
+                            break;
+                        case 'output':
+                            break;
                     }
 
                     // add events to processorEvents for the canvas to show them
@@ -171,84 +183,72 @@ export function createProcessor(specs, my) {
             stepDuration = rate * PPQN;
             duration = my.params.steps.value * stepDuration;
         },
-
-        /**
-         * Effect target changed.
-         * @param {Object} parameters Parameters object from state.
-         */
-        updateTarget = function(parameters) {
-            params.target = parameters.target.value;
-
-            let min, max, lowValue, highValue;
-
-            // set minimum and maximum value according to target type
-            switch (parameters.target.value) {
-                case 'velocity':
-                case 'pitch':
-                    min = params.isRelative ? -127 : 0;
-                    max = 127;
-                    break;
-                case 'channel':
-                    min = params.isRelative ? -16 : 1;
-                    max = 16;
-                    break;
-                case 'length':
-                    min = 0;
-                    max = 1;
-                    break;
-                case 'output':
-                    min = 0;
-                    max = 1;
-                    break;
-            }
-
-            // clamp parameter's value between minimum and maximum value
-            lowValue = Math.max(min, Math.min(parameters.low.value, max));
-            highValue = Math.max(min, Math.min(parameters.high.value, max));
-
-            // apply all new settings to the effect parameters 
-            store.dispatch(store.getActions().recreateParameter(my.id, 'low', { min: min, max: max, value: lowValue }));
-            store.dispatch(store.getActions().recreateParameter(my.id, 'high', { min: min, max: max, value: highValue }));
-        },
         
         updateEffectParameters = function(parameters) {
             params.high = parameters.high.value;
             params.low = parameters.low.value;
         },
+
+        /**
+         * Effect target changed.
+         * @param {Object} parameters Parameters object from state.
+         */
+        updateEffectTarget = function(parameters) {
+            params.target = parameters.target.value;
+            updateEffectSettings();
+        },
         
         updateEffectMode = function(parameters) {
-            params.isRelative = parameters.mode.value !== parameters.mode.default
-
+            params.isRelative = parameters.mode.value !== parameters.mode.default;
+            updateEffectSettings();
+        },
+        
+        updateEffectSettings = function() {
             let min, max, lowValue, highValue;
-            
+
             // set minimum and maximum value according to target type
-            switch (parameters.target.value) {
+            switch (params.target) {
                 case 'velocity':
-                case 'pitch':
                     min = params.isRelative ? -127 : 0;
                     max = 127;
                     lowValue = params.isRelative ? 0 : 50;
                     highValue = params.isRelative ? 0 : 100;
                     break;
+                case 'pitch':
+                    min = params.isRelative ? -127 : 0;
+                    max = 127;
+                    lowValue = params.isRelative ? 0 : 58;
+                    highValue = params.isRelative ? 0 : 60;
+                    break;
                 case 'channel':
                     min = params.isRelative ? -16 : 1;
                     max = 16;
                     lowValue = params.isRelative ? 0 : 1;
-                    highValue = params.isRelative ? 0 : 1;
+                    highValue = params.isRelative ? 0 : 2;
                     break;
                 case 'length':
-                    min = 0;
-                    max = 1;
-                    lowValue = params.isRelative ? 0 : 1;
-                    highValue = params.isRelative ? 0 : 1;
+                    min = params.isRelative ? -32 : 0;
+                    max = 32;
+                    lowValue = params.isRelative ? 0 : 4;
+                    highValue = params.isRelative ? 0 : 8;
+                    break;
+                case 'delay':
+                    min = params.isRelative ? 0 : 0;
+                    max = 32;
+                    lowValue = params.isRelative ? 0 : 0;
+                    highValue = params.isRelative ? 0 : 2;
                     break;
                 case 'output':
-                    min = 0;
-                    max = 1;
-                    lowValue = params.isRelative ? 0 : 0;
-                    highValue = params.isRelative ? 0 : 0;
+                    min = 1;
+                    max = 2;
+                    lowValue = 1;
+                    highValue = 2;
                     break;
             }
+
+            // clamp parameter's value between minimum and maximum value
+            lowValue = Math.max(min, Math.min(lowValue, max));
+            highValue = Math.max(min, Math.min(highValue, max));
 
             // apply all new settings to the effect parameters 
             store.dispatch(store.getActions().recreateParameter(my.id, 'low', { min: min, max: max, value: lowValue }));
