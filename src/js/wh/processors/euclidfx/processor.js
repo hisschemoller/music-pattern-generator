@@ -9,7 +9,8 @@ export function createProcessor(specs, my) {
         duration = 0,
         stepDuration = 0,
         euclidPattern = [],
-        params = {};
+        params = {},
+        delayedEvents = [];
 
     const initialize = function() {
             document.addEventListener(store.STATE_CHANGE, handleStateChanges);
@@ -66,7 +67,7 @@ export function createProcessor(specs, my) {
          * 
          * Events are plain objects with properties:
          * @param {String} type 'note'
-         * @param {Number} timestampTicks Event start time, meaured from timeline start
+         * @param {Number} timestampTicks Event start time, measured from timeline start
          * @param {Number} durationTicks
          * @param {Number} channel 1 - 16
          * @param {Number} velocity 0 - 127
@@ -86,6 +87,7 @@ export function createProcessor(specs, my) {
 
             // abort if there's nothing to process
             if (inputData.length === 0) {
+                processDelayedEvents(scanStart, scanEnd);
                 return;
             }
 
@@ -103,6 +105,8 @@ export function createProcessor(specs, my) {
 
             for (let i = 0, n = inputData.length; i < n; i++) {
                 const event = inputData[i];
+
+                let isDelayed = false;
 
                 // handle only MIDI Note events
                 if (event.type === 'note') {
@@ -132,10 +136,23 @@ export function createProcessor(specs, my) {
                             event.durationTicks = Math.max(1, event.durationTicks);
                             break;
                         case 'delay':
-                            // const valueInTicks = (effectValue / 32) * PPQN * 4; // 32 = 1 measure = PPQN * 4
-                            // event.timestampTicks = params.isRelative ? event.durationTicks + valueInTicks : valueInTicks;
+                            if (effectValue > 0) {
+                                const delayInTicks = Math.max(0, (effectValue / 32) * PPQN * 4); // 32 = 1 measure = PPQN * 4
+                                console.log(delayInTicks);
+                                // store note if delayed start time falls outside of the current scanrange
+                                if (event.timestampTicks + delayInTicks > scanEnd) {
+                                    delayedEvents.push({
+                                        ...event,
+                                        timestampTicks: event.timestampTicks + delayInTicks
+                                    });
+                                    isDelayed = true;
+                                } else {
+                                    event.timestampTicks = event.timestampTicks + delayInTicks;
+                                }
+                            }
                             break;
                         case 'output':
+                            // v2.2
                             break;
                     }
 
@@ -150,10 +167,31 @@ export function createProcessor(specs, my) {
                         delayFromNowToNoteStart: delayFromNowToNoteStart,
                         delayFromNowToNoteEnd: delayFromNowToNoteStart + (event.durationTicks * ticksToMsMultiplier)
                     });
-                }
 
-                // push the event to the processor's output
-                my.setOutputData(event);
+                    // push the event to the processor's output
+                    if (!isDelayed) {
+                        my.setOutputData(event);
+                    }
+                }
+            }
+
+            processDelayedEvents(scanStart, scanEnd);
+        },
+            
+        /**
+         * Check if stored delayed events 
+         * @param {Number} scanStart Timespan start in ticks from timeline start.
+         * @param {Number} scanEnd   Timespan end in ticks from timeline start.
+         */
+        processDelayedEvents = function(scanStart, scanEnd) {
+            // console.log('d', scanStart, scanEnd);
+            var i = delayedEvents.length;
+            while (--i > -1) {
+                const timestampTicks = delayedEvents[i].timestampTicks;
+                // console.log('e', timestampTicks);
+                if (scanStart <= timestampTicks && scanEnd > timestampTicks) {
+                    my.setOutputData(delayedEvents.splice(i, 1));
+                }
             }
         },
 
