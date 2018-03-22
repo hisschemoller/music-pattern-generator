@@ -57,8 +57,7 @@
                 "default": 1,
                 "value": 1,
                 "min": 1,
-                "max": 16,
-                "isMidiControllable": false
+                "max": 16
             },
             "pitch_out": {
                 "label": "Pitch",
@@ -66,8 +65,7 @@
                 "default": 60,
                 "value": 60,
                 "min": 0,
-                "max": 127,
-                "isMidiControllable": false
+                "max": 127
             },
             "velocity_out": {
                 "label": "Velocity",
@@ -75,32 +73,41 @@
                 "default": 100,
                 "value": 100,
                 "min": 0,
-                "max": 127,
-                "isMidiControllable": false,
-                "": ""
+                "max": 127
             },
             "rate": {
                 "label": "Rate",
                 "type": "itemized",
                 "default": 0.25,
                 "value": 0.25,
-                "modelId": "time",
-                "isMidiControllable": false
+                "model": [
+                    {"label": "1", "value": 4},
+                    {"label": "1/2", "value": 2},
+                    {"label": "1/4", "value": 1},
+                    {"label": "1/8", "value": 0.5},
+                    {"label": "1/16", "value": 0.25},
+                    {"label": "1/32", "value": 0.125}
+                ]
             },
             "is_triplets": {
                 "label": "Triplets",
                 "type": "boolean",
                 "default": false,
-                "value": false,
-                "isMidiControllable": false
+                "value": false
             },
             "note_length": {
                 "label": "Note length",
                 "type": "itemized",
                 "default": 0.25,
                 "value": 0.25,
-                "modelId": "time",
-                "isMidiControllable": false
+                "model": [
+                    {"label": "1", "value": 4},
+                    {"label": "1/2", "value": 2},
+                    {"label": "1/4", "value": 1},
+                    {"label": "1/8", "value": 0.5},
+                    {"label": "1/16", "value": 0.25},
+                    {"label": "1/32", "value": 0.125}
+                ]
             },
             "is_mute": {
                 "label": "Mute",
@@ -115,23 +122,9 @@
                 "label": "Name",
                 "type": "string",
                 "default": "Unnamed",
-                "value": "Unnamed",
-                "isMidiControllable": false
+                "value": "Unnamed"
             }
         },
         "allIds": ["steps", "pulses", "rotation", "channel_out", "pitch_out", "velocity_out", "rate", "note_length", "is_triplets", "is_mute", "name"]
-    },
-    "models": {
-        "byId": {
-            "time": [
-                {"label": "1", "value": 4},
-                {"label": "1/2", "value": 2},
-                {"label": "1/4", "value": 1},
-                {"label": "1/8", "value": 0.5},
-                {"label": "1/16", "value": 0.25},
-                {"label": "1/32", "value": 0.125}
-            ]
-        },
-        "allIds": ["time"]
     }
 }

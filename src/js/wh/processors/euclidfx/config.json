@@ -61,8 +61,14 @@
                 "type": "itemized",
                 "default": 0.25,
                 "value": 0.25,
-                "modelId": "time",
-                "isMidiControllable": false
+                "model": [
+                    {"label": "1", "value": 4},
+                    {"label": "1/2", "value": 2},
+                    {"label": "1/4", "value": 1},
+                    {"label": "1/8", "value": 0.5},
+                    {"label": "1/16", "value": 0.25},
+                    {"label": "1/32", "value": 0.125}
+                ]
             },
             "is_triplets": {
                 "label": "Triplets",
@@ -75,7 +81,13 @@
                 "type": "itemized",
                 "default": "velocity",
                 "value": "velocity",
-                "modelId": "targets"
+                "model": [
+                    { "label": "Velocity", "value": "velocity" },
+                    { "label": "Pitch", "value": "pitch" },
+                    { "label": "Channel", "value": "channel" },
+                    { "label": "Note length", "value": "length" },
+                    { "label": "Note delay", "value": "delay" }
+                ]
             },
             "low": {
                 "label": "Low value",
@@ -104,7 +116,10 @@
                 "type": "itemized",
                 "default": "absolute",
                 "value": "absolute",
-                "modelId": "mode"
+                "model": [
+                    { "label": "Absolute", "value": "absolute" },
+                    { "label": "Relative", "value": "relative" }
+                ]
             },
             "name": {
                 "label": "Name",
@@ -115,29 +130,5 @@
             }
         },
         "allIds": ["steps", "pulses", "rotation", "rate", "is_triplets", "target", "low", "high", "mode", "name"]
-    },
-    "models": {
-        "byId": {
-            "time": [
-                {"label": "1", "value": 4},
-                {"label": "1/2", "value": 2},
-                {"label": "1/4", "value": 1},
-                {"label": "1/8", "value": 0.5},
-                {"label": "1/16", "value": 0.25},
-                {"label": "1/32", "value": 0.125}
-            ],
-            "targets": [
-                { "label": "Velocity", "value": "velocity" },
-                { "label": "Pitch", "value": "pitch" },
-                { "label": "Channel", "value": "channel" },
-                { "label": "Note length", "value": "length" },
-                { "label": "Output", "value": "output" }
-            ],
-            "mode": [
-                { "label": "Absolute", "value": "absolute" },
-                { "label": "Relative", "value": "relative" }
-            ]
-        },
-        "allIds": ["time", "targets"]
     }
 }
