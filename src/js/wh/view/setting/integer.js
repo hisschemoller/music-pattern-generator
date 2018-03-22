@@ -18,16 +18,15 @@ export default function createIntegerSettingView(specs, my) {
             numberEl.addEventListener('change', onChange);
 
             initData();
+            setValue(my.data.value);
         },
 
         initData = function() {
             rangeEl.setAttribute('min', my.data.min);
             rangeEl.setAttribute('max', my.data.max);
-            rangeEl.value = my.data.value;
 
             numberEl.setAttribute('min', my.data.min);
             numberEl.setAttribute('max', my.data.max);
-            numberEl.value = my.data.value;
         },
         
         onChange = function(e) {

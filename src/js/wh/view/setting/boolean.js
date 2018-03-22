@@ -18,6 +18,13 @@ export default function createBooleanSettingView(specs, my) {
             
             let labelEl = my.el.querySelector('.toggle__label');
             labelEl.setAttribute('for', id);
+            
+            initData();
+            setValue(my.data.value);
+        },
+
+        initData = function() {
+            
         },
         
         /**

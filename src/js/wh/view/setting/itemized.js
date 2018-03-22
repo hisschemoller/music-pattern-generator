@@ -6,12 +6,23 @@ import createBaseSettingView from './base';
  */
 export default function createItemizedSettingView(specs, my) {
     var that,
+        valueEl,
         radioInputs = [],
         numInputs,
         
         init = function() {
-            let parentEl = my.el.parentNode,
-                valueEl = my.el.querySelector('.setting__value');
+            valueEl = my.el.querySelector('.setting__value');
+
+            initData();
+            setValue(my.data.value);
+        },
+
+        initData = function() {
+            // remove previous radio buttons, if any
+            while (valueEl.firstChild) {
+                valueEl.firstChild.removeEventListener('change', onChange);
+                valueEl.removeChild(valueEl.firstChild);
+            }
             
             // add the radio buttons
             let radioTemplate = document.querySelector('#template-setting-itemized-item'),
@@ -26,7 +37,6 @@ export default function createItemizedSettingView(specs, my) {
                 radioInputEl.setAttribute('name', specs.key);
                 radioInputEl.setAttribute('id', id);
                 radioInputEl.value = model[i].value;
-                radioInputEl.checked = model[i].value == my.data.default;
                 radioInputEl.addEventListener('change', onChange);
                 radioInputs.push(radioInputEl);
                 
@@ -54,12 +64,13 @@ export default function createItemizedSettingView(specs, my) {
         },
 
         setValue = function(value) {
-            for (let i = 0; i < numInputs; i++) {
-                radioInputs[i].checked = (radioInputs[i].value == value);
-            }
+            radioInputs.forEach(radioInput => {
+                radioInput.checked = (radioInput.value == value);
+            });
         };
         
     my = my || {};
+    my.initData = initData;
     my.setValue = setValue;
     
     that = createBaseSettingView(specs, my);
