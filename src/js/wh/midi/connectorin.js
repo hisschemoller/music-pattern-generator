@@ -16,7 +16,6 @@ export default function createMIDIConnectorIn(specs, my) {
             for (var i = 0; i < numSources; i++) {
                 data = sources[i].getOutputData();
                 outputData = outputData.concat(data);
-                data.length = 0;
             }
             return outputData;
         },

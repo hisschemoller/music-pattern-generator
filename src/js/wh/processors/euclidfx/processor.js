@@ -82,6 +82,10 @@ export function createProcessor(specs, my) {
          * @param {Array} processorEvents Array to collect processor generated events to display in the view.
          */
         process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset, processorEvents) {
+            
+            // clear the output event stack
+            my.clearOutputData();
+
             // retrieve events waiting at the processor's input
             const inputData = my.getInputData();
 

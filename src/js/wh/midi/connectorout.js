@@ -5,6 +5,13 @@ export default function createMIDIConnectorOut(specs, my) {
     var that,
         outputData = [],
         destinations = [],
+
+        /**
+         * Clear the output stack when event processing starts.
+         */
+        clearOutputData = function() {
+            outputData.length = 0;
+        },
         
         /**
          * Set output data that is the result of this processor's processing.
@@ -82,6 +89,7 @@ export default function createMIDIConnectorOut(specs, my) {
         };
     
     my = my || {};
+    my.clearOutputData = clearOutputData;
     my.setOutputData = setOutputData;
     my.getDestinationsData = getDestinationsData;
 

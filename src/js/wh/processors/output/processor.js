@@ -8,8 +8,6 @@ export function createProcessor(specs, my) {
     let that,
         store = specs.store,
         midiOutput;
-        // portID = specs.data.portID,
-        // midiOutput = getMIDIPortByID(portID);
     
     const initialize = function() {
             document.addEventListener(store.STATE_CHANGE, handleStateChange);
@@ -45,7 +43,9 @@ export function createProcessor(specs, my) {
          * @param {Number} offset Time from doc start to timeline start in ticks.
          */
         process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset) {
-            var inputData = my.getInputData(),
+
+            // retrieve events waiting at the processor's input
+            const inputData = my.getInputData(),
                 origin = performance.now() - (offset * ticksToMsMultiplier),
                 n = inputData.length;
             
