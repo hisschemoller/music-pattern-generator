@@ -17,10 +17,6 @@ export default function createReducers() {
                 byId: {},
                 allIds: []
             },
-            portProcessor: {
-                byId: {},
-                allIds: []
-            },
             bpm: 120,
             selectedID: null,
             theme: 'dev', // 'light|dark' 
@@ -97,20 +93,6 @@ export default function createReducers() {
                         if (connection.sourceProcessorID === action.id || connection.destinationProcessorID === action.id) {
                             newState.connections.allIds.splice(i, 1);
                             delete newState.connections.byId[connectionID];
-                        }
-                    }
-
-                    // in case of a port processor delete the relation entry
-                    newState.portProcessor = {
-                        byId: { ...state.portProcessor.byId },
-                        allIds: [ ...state.portProcessor.allIds ]
-                    }
-                    for (let i = newState.portProcessor.allIds.length -1, n = 0; i >= n; i--) {
-                        const relationID = newState.portProcessor.allIds[i];
-                        const relation = newState.portProcessor.byId[relationID];
-                        if (relation.processorID === action.id) {
-                            newState.portProcessor.allIds.splice(i, 1);
-                            delete newState.portProcessor.byId[relationID];
                         }
                     }
 
@@ -202,6 +184,35 @@ export default function createReducers() {
                             break;
                     }
                     return newState;
+
+                    // return {
+                    //     ...state,
+                    //     processors: {
+                    //         allIds: [ ...state.processors.allIds ],
+                    //         byId: Object.values(state.processors.byId).reduce((accumulator, processor) => {
+                    //             if (processor.id === state.selectedID) {
+                    //                 accumulator[processor.id] = { 
+                    //                     ...processor, 
+                    //                     params: {
+                    //                         allIds: [ ...processor.params.allIds ],
+                    //                         byId: Object.values(processor.params.byId).reduce((acc, param) => {
+                    //                             if (action.paramKey === param.id) {
+                    //                                 acc[param.id] = { 
+                    //                                     ...param,
+                    //                                     value
+                    //                                 }
+                    //                             } else {
+                    //                                 acc[param.id] = { ...param };
+                    //                             }
+                    //                         })
+                    //                     } };
+                    //             } else {
+                    //                 accumulator[processor.id] = { ...processor };
+                    //             }
+                    //             return accumulator;
+                    //         })
+                    //     }
+                    // };
                 
                 case actions.RECREATE_PARAMETER:
                     // clone state
@@ -251,32 +262,24 @@ export default function createReducers() {
                         }
                     };
                 
-                case actions.TOGGLE_PORT_SYNC:
-                    return toggleMIDIPreference(state, action.id, 'syncEnabled');
-                
-                case actions.TOGGLE_PORT_REMOTE:
-                    return toggleMIDIPreference(state, action.id, 'remoteEnabled');
-                
                 case actions.TOGGLE_MIDI_PREFERENCE:
-                    return toggleMIDIPreference(state, action.id, action.preferenceName, action.isEnabled);
-                    
-                case actions.CREATE_PORT_NETWORK_RELATION:
-                    newState = { 
+                    return {
                         ...state,
-                        portProcessor: { ...state.portProcessor }
+                        ports: {
+                            allIds: [ ...state.ports.allIds ],
+                            byId: Object.values(state.ports.allIds).reduce((accumulator, portID) => {
+                                if (portID === action.id) {
+                                    accumulator[portID] = { 
+                                        ...state.ports.byId[portID],
+                                        [action.preferenceName]: typeof action.isEnabled === 'boolean' ? isEnabled : !state.ports.byId[action.id][action.preferenceName]
+                                    };
+                                } else {
+                                    accumulator[portID] = { ...state.ports.byId[portID] };
+                                }
+                                return accumulator;
+                            }, {})
+                        }
                     };
-                    newState.portProcessor.allIds.push(action.id);
-                    newState.portProcessor.byId[action.id] = action.data;
-                    return newState;
-                
-                case actions.DELETE_PORT_NETWORK_RELATION:
-                    newState = { 
-                        ...state,
-                        portProcessor: { ...state.portProcessor }
-                    };
-                    newState.portProcessor.allIds.splice(newState.portProcessor.allIds.indexOf(action.id), 1);
-                    delete newState.portProcessor.byId[action.id];
-                    return newState;
                 
                 case actions.TOGGLE_MIDI_LEARN_MODE:
                     return { ...state, learnModeActive: !state.learnModeActive };
@@ -426,24 +429,6 @@ function unassignParameter(parameters, action, state) {
     params[action.paramKey].remoteChannel = null;
     params[action.paramKey].remoteCC = null;
     return params;
-}
-
-function toggleMIDIPreference(state, id, preferenceName, isEnabled) {
-    const newState = {
-        ...state,
-        ports: {
-            allIds: [ ...state.ports.allIds ],
-            byId: { ...state.ports.byId }
-        }
-    };
-
-    const newValue = typeof isEnabled === 'boolean' ? isEnabled : !state.ports.byId[id][preferenceName];
-    
-    newState.ports.byId[id] = {
-        ...newState.ports.byId[id],
-        [preferenceName]: newValue
-    };
-    return newState;
 }
 
 /**

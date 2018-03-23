@@ -88,14 +88,15 @@ export function createGraphic(specs, my) {
         redrawStaticCanvas = function(isEnabled = true) {
 
             // get the MIDI port for this output processor
-            const state = store.getState();
-            let port;
-            state.portProcessor.allIds.forEach(relationID => {
-                const relation = state.portProcessor.byId[relationID];
-                if (relation.processorID === my.id) {
-                    port = state.ports.byId[relation.portID];
-                }
-            });
+            const port = null;
+            // const state = store.getState();
+            // let port;
+            // state.portProcessor.allIds.forEach(relationID => {
+            //     const relation = state.portProcessor.byId[relationID];
+            //     if (relation.processorID === my.id) {
+            //         port = state.ports.byId[relation.portID];
+            //     }
+            // });
 
             staticCtx.strokeStyle = my.colorHigh;
 

@@ -18,11 +18,7 @@ export default function createActions(specs = {}, my = {}) {
         SET_TEMPO = 'SET_TEMPO',
         CREATE_MIDI_PORT = 'CREATE_MIDI_PORT',
         UPDATE_MIDI_PORT = 'UPDATE_MIDI_PORT',
-        TOGGLE_PORT_SYNC = 'TOGGLE_PORT_SYNC',
-        TOGGLE_PORT_REMOTE = 'TOGGLE_PORT_REMOTE',
         TOGGLE_MIDI_PREFERENCE = 'TOGGLE_MIDI_PREFERENCE',
-        CREATE_PORT_NETWORK_RELATION = 'CREATE_PORT_NETWORK_RELATION',
-        DELETE_PORT_NETWORK_RELATION = 'DELETE_PORT_NETWORK_RELATION',
         TOGGLE_MIDI_LEARN_MODE = 'TOGGLE_MIDI_LEARN_MODE',
         TOGGLE_MIDI_LEARN_TARGET = 'TOGGLE_MIDI_LEARN_TARGET',
         SET_TRANSPORT = 'SET_TRANSPORT',
@@ -277,91 +273,9 @@ export default function createActions(specs = {}, my = {}) {
             };
         },
 
-        togglePortNetwork: (portID, isInput, isEnabled) => {
-            return (dispatch, getState, getActions) => {
-
-                // update flag
-                dispatch(getActions().toggleMIDIPreference(portID, isInput, 'networkEnabled', isEnabled));
-                
-                // create or remove processor and relation between processor and port
-                const state = getState();
-                if (state.ports.byId[portID].networkEnabled) {
-
-                    // check if there is a (disabled) processor for this port
-                    let processor, processorExists = false;
-                    state.portProcessor.allIds.forEach(relationID => {
-                        const relation = state.portProcessor.byId[relationID];
-                        if (relation.portID === portID) {
-                            processor = state.processors.byId[relation.processorID];
-                            processorExists = true;
-                        }
-                    });
-
-                    if (processorExists) {
-
-                        // (disabled) processor already exists, so enable it
-                        dispatch(getActions().enableProcessor(processor.id, true));
-                    } else {
-
-                        // create a processor for this network enabled port
-                        const processorID = `${isInput ? 'input' : 'output'}_${createUUID()}`
-
-                        dispatch(getActions().createPortNetworkRelation(
-                            `rel_${createUUID()}`, {
-                                processorID: processorID,
-                                portID: portID
-                            }
-                        ));
-    
-                        dispatch(getActions().createProcessor({ 
-                            type: 'output',
-                            id: processorID,
-                            portID: portID,
-                            name: state.ports.byId[portID].name,
-                            positionX: window.innerWidth / 2,
-                            positionY: window.innerHeight - 100
-                        }));
-                    }
-                    
-                } else {
-
-                    // find the processor for this port
-                    state.portProcessor.allIds.forEach(relationID => {
-                        const relation = state.portProcessor.byId[relationID];
-                        if (relation.portID === portID) {
-                            const processor = state.processors.byId[relation.processorID];
-                            
-                            if (getProcessorCanBeDeleted(processor, state)) {
-
-                                // port processor not connected, so can be deleted
-                                dispatch(getActions().deleteProcessor(relation.processorID));
-                                dispatch(getActions().deletePortNetworkRelation(relationID));
-                            } else {
-
-                                // port processor connected, do not delete but set disabled
-                                dispatch(getActions().enableProcessor(processor.id, false));
-                            }
-                        }
-                    });
-                }
-            }
-        },
-
-        TOGGLE_PORT_SYNC,
-        togglePortSync: (id) => ({ type: TOGGLE_PORT_SYNC, id }),
-
-        TOGGLE_PORT_REMOTE,
-        togglePortRemote: (id) => ({ type: TOGGLE_PORT_REMOTE, id }),
-
         TOGGLE_MIDI_PREFERENCE,
-        toggleMIDIPreference: (id, isInput, preferenceName, isEnabled) => ({ type: TOGGLE_MIDI_PREFERENCE, id, isInput, preferenceName, isEnabled }),
+        toggleMIDIPreference: (id, preferenceName, isEnabled) => ({ type: TOGGLE_MIDI_PREFERENCE, id, preferenceName, isEnabled }),
         
-        CREATE_PORT_NETWORK_RELATION,
-        createPortNetworkRelation: (id, data) => ({ type: CREATE_PORT_NETWORK_RELATION, id, data }),
-
-        DELETE_PORT_NETWORK_RELATION,
-        deletePortNetworkRelation: (id) => ({ type: DELETE_PORT_NETWORK_RELATION, id }),
-
         TOGGLE_MIDI_LEARN_MODE,
         toggleMIDILearnMode: () => ({ type: TOGGLE_MIDI_LEARN_MODE }),
 
