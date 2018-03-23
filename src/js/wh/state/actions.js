@@ -253,7 +253,17 @@ export default function createActions(specs = {}, my = {}) {
                     
                     // restore settings from config
                     const config = getConfig();
-                    const configPort = (config.ports && config.ports.byId) ? config.ports.byId[midiPort.id] : null;
+                    let configPort = (config.ports && config.ports.byId) ? config.ports.byId[midiPort.id] : null;
+
+                    if (!configPort && config.ports && config.ports.allIds) {
+                        for (let i = config.ports.allIds.length - 1; i >= 0; i--) {
+                            const port = config.ports.byId[config.ports.allIds[i]];
+                            if (port.name === midiPort.name && port.type === midiPort.type) {
+                                configPort = port;
+                                break;
+                            }
+                        }
+                    }
 
                     // create port
                     dispatch(getActions().createMIDIPort(midiPort.id, {
