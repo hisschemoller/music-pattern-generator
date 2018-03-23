@@ -113,25 +113,6 @@ export default function createReducers() {
                 case actions.SELECT_PROCESSOR:
                     return { ...state, selectedID: action.id };
                 
-                case actions.ENABLE_PROCESSOR:
-                    return { 
-                        ...state, 
-                        processors: {
-                            allIds: [ ...state.processors.allIds ],
-                            byId: Object.values(state.processors.allIds).reduce((accumulator, processorID) => {
-                                if (processorID === action.id) {
-                                    accumulator[processorID] = { 
-                                        ...state.processors.byId[processorID],
-                                        enabled: action.isEnabled 
-                                    };
-                                } else {
-                                    accumulator[processorID] = { ...state.processors.byId[processorID] }
-                                }
-                                return accumulator;
-                            }, {})
-                        }
-                    };
-                
                 case actions.DRAG_SELECTED_PROCESSOR:
                     return {
                         ...state,

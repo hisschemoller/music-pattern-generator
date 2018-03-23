@@ -10,7 +10,6 @@ export default function createActions(specs = {}, my = {}) {
         ADD_PROCESSOR = 'ADD_PROCESSOR',
         DELETE_PROCESSOR = 'DELETE_PROCESSOR',
         SELECT_PROCESSOR = 'SELECT_PROCESSOR',
-        ENABLE_PROCESSOR = 'ENABLE_PROCESSOR',
         DRAG_SELECTED_PROCESSOR = 'DRAG_SELECTED_PROCESSOR',
         DRAG_ALL_PROCESSORS = 'DRAG_ALL_PROCESSORS',
         CHANGE_PARAMETER = 'CHANGE_PARAMETER',
@@ -198,12 +197,6 @@ export default function createActions(specs = {}, my = {}) {
         selectProcessor: id => {
             return { type: SELECT_PROCESSOR, id };
         },
-
-        ENABLE_PROCESSOR,
-        enableProcessor: (id, isEnabled) => {
-            return { type: ENABLE_PROCESSOR, id, isEnabled };
-        },
-
 
         DRAG_SELECTED_PROCESSOR,
         dragSelectedProcessor: (x, y) => {

@@ -49,7 +49,6 @@ export function createGraphic(specs, my) {
                     break;
 
                 case e.detail.actions.UPDATE_MIDI_PORT:
-                case e.detail.actions.ENABLE_PROCESSOR:
                     redrawStaticCanvas();
                     break;
                 
