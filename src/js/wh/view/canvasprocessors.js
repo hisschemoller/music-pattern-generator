@@ -38,17 +38,17 @@ export default function createCanvasProcessorViews(specs, my) {
                         break;
                         
                     case e.detail.actions.SET_THEME:
-                        setTheme(e.detail.state);
+                        setTheme();
                         break;
                 }
             });
         },
 
-        setTheme = function(state) {
+        setTheme = function() {
             const themeColors = getThemeColors();
             views.forEach(view => {
                 if (view.setTheme instanceof Function) {
-                    view.setTheme(themeColors, state);
+                    view.setTheme(themeColors);
                 }
             });
         },
@@ -75,7 +75,6 @@ export default function createCanvasProcessorViews(specs, my) {
                 if (!views[i] || (id !== views[i].getID())) {
                     const module = require(`../processors/${processorData.type}/graphic`);
                     const view = module.createGraphic({ 
-                        state: state,
                         data: processorData,
                         store: store,
                         canvasDirtyCallback: my.markDirty,

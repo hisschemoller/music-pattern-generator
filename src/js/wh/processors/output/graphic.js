@@ -5,7 +5,6 @@ import createCanvasProcessorBaseView from '../../view/canvasprocessorbase';
  */
 export function createGraphic(specs, my) {
     let that,
-        store = specs.store,
         canvasDirtyCallback = specs.canvasDirtyCallback,
         staticCanvas,
         staticCtx,
@@ -26,7 +25,7 @@ export function createGraphic(specs, my) {
         initialise = function() {
             document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
             initGraphics();
-            setTheme(specs.theme, specs.state);
+            setTheme(specs.theme);
             updatePosition(specs.data.positionX, specs.data.positionY);
             redrawStaticCanvas();
         },
@@ -194,11 +193,11 @@ export function createGraphic(specs, my) {
          * Set the theme colours of the processor view.
          * @param {Object} theme Theme settings object.
          */
-        setTheme = function(theme, state) {
+        setTheme = function(theme) {
             my.colorHigh = theme.colorHigh;
             my.colorMid = theme.colorMid;
             my.colorLow = theme.colorLow;
-            redrawStaticCanvas(state.processors.byId[my.id].enabled);
+            redrawStaticCanvas();
             updateName();
         };
         

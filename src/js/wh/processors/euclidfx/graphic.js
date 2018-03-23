@@ -43,7 +43,7 @@ export function createGraphic(specs, my) {
             canvasDirtyCallback = specs.canvasDirtyCallback;
             initGraphics();
             updateEuclid(specs.data.params.byId);
-            setTheme(specs.theme, specs.data.params.byId);
+            setTheme(specs.theme);
             updatePosition(specs.data.positionX, specs.data.positionY);
             updateDuration(specs.data.params.byId);
             redrawStaticCanvas();
@@ -357,7 +357,7 @@ export function createGraphic(specs, my) {
          * Set the theme colours of the processor view.
          * @param {Object} theme Theme settings object.
          */
-        setTheme = function(theme, params) {
+        setTheme = function(theme) {
             my.colorHigh = theme.colorHigh;
             my.colorMid = theme.colorMid;
             my.colorLow = theme.colorLow;
@@ -367,9 +367,10 @@ export function createGraphic(specs, my) {
             pointerCtx.strokeStyle = my.colorHigh;
             pointerCtx.fillStyle = my.colorHigh;
             
-            updateName(params);
-            redrawRotatingCanvas(params);
-            redrawPointerCanvas(params);
+            updateName(my.store.getState().processors.byId[my.id].params.byId);
+            redrawStaticCanvas();
+            redrawRotatingCanvas();
+            redrawPointerCanvas();
         };
         
         my = my || {};
