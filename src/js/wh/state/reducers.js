@@ -45,6 +45,7 @@ export default function createReducers() {
                 case actions.ADD_PROCESSOR:
                     newState = { 
                         ...state,
+                        showSettingsPanel: true,
                         processors: {
                             byId: { 
                                 ...state.processors.byId,
@@ -65,9 +66,8 @@ export default function createReducers() {
                             break;
                         default:
                             newState.processors.allIds.splice(numInputProcessors, 0, action.data.id);
-                            newState.showSettingsPanel = true;
-
                     }
+                    
                     return newState;
                 
                 case actions.DELETE_PROCESSOR:
