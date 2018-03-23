@@ -14,9 +14,8 @@ export function createProcessor(specs, my) {
 
     const initialize = function() {
             document.addEventListener(store.STATE_CHANGE, handleStateChanges);
-            updateEffectParameters(specs.data.params.byId);
-            updateEffectTarget(specs.data.params.byId);
-            updateEffectMode(specs.data.params.byId);
+            updateParams(specs.data.params.byId);
+            updateEffectSettings();
             updatePattern(true);
         },
 
@@ -42,17 +41,25 @@ export function createProcessor(specs, my) {
                             case 'rate':
                                 updatePattern();
                                 break;
-                            case 'target':
-                                updateEffectTarget(e.detail.state.processors.byId[my.id].params.byId);
-                                break;
                             case 'low':
                             case 'high':
-                                updateEffectParameters(e.detail.state.processors.byId[my.id].params.byId);
+                                updateParams(e.detail.state.processors.byId[my.id].params.byId);
+                                break;
+                            case 'target':
+                                updateParams(e.detail.state.processors.byId[my.id].params.byId);
+                                updateEffectSettings();
                                 break;
                             case 'mode':
-                                updateEffectMode(e.detail.state.processors.byId[my.id].params.byId);
+                                updateParams(e.detail.state.processors.byId[my.id].params.byId);
+                                updateEffectSettings();
                                 break;
                         }
+                    }
+                    break;
+
+                case e.detail.actions.RECREATE_PARAMETER:
+                    if (e.detail.action.processorID === my.id) {
+                        updateParams(e.detail.state.processors.byId[my.id].params.byId);
                     }
                     break;
             }
@@ -225,24 +232,12 @@ export function createProcessor(specs, my) {
             stepDuration = rate * PPQN;
             duration = my.params.steps.value * stepDuration;
         },
-        
-        updateEffectParameters = function(parameters) {
+
+        updateParams = function(parameters) {
             params.high = parameters.high.value;
             params.low = parameters.low.value;
-        },
-
-        /**
-         * Effect target changed.
-         * @param {Object} parameters Parameters object from state.
-         */
-        updateEffectTarget = function(parameters) {
             params.target = parameters.target.value;
-            updateEffectSettings();
-        },
-        
-        updateEffectMode = function(parameters) {
             params.isRelative = parameters.mode.value !== parameters.mode.default;
-            updateEffectSettings();
         },
         
         updateEffectSettings = function() {

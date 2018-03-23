@@ -61,7 +61,9 @@ export function createGraphic(specs, my) {
         
         handleStateChanges = function(e) {
             switch (e.detail.action.type) {
+                
                 case e.detail.actions.CHANGE_PARAMETER:
+                case e.detail.actions.RECREATE_PARAMETER:
                     if (e.detail.action.processorID === my.id) {
                         my.params = e.detail.state.processors.byId[my.id].params.byId;
                         switch (e.detail.action.paramKey) {

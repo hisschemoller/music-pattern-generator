@@ -42,6 +42,7 @@ export default function createBaseSettingView(specs, my) {
                         e.detail.action.paramKey === my.key) {
                         my.data = e.detail.state.processors.byId[my.processorID].params.byId[my.key];
                         my.initData();
+                        my.setValue(e.detail.state.processors.byId[my.processorID].params.byId[my.key].value);
                     }
                     break;
                 
