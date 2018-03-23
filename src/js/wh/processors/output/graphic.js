@@ -52,6 +52,19 @@ export function createGraphic(specs, my) {
                 case e.detail.actions.ENABLE_PROCESSOR:
                     redrawStaticCanvas(processor.enabled);
                     break;
+                
+                case e.detail.actions.CHANGE_PARAMETER:
+                    if (e.detail.action.processorID === my.id) {
+                        my.params = e.detail.state.processors.byId[my.id].params.byId;
+                        switch (e.detail.action.paramKey) {
+                            case 'port':
+                                
+                            case 'name':
+                                updateName();
+                                break;
+                        }
+                    }
+                    break;
             }
         },
 
