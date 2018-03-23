@@ -31,6 +31,12 @@ export function createProcessor(specs, my) {
                         }
                     }
                     break;
+                
+                case e.detail.actions.CREATE_MIDI_PORT:
+                case e.detail.actions.UPDATE_MIDI_PORT:
+                case e.detail.actions.TOGGLE_MIDI_PREFERENCE:
+                    updatePortsParameter(e.detail.state);
+                    break;
             }
         },
 
@@ -90,17 +96,20 @@ export function createProcessor(specs, my) {
             ];
             state.ports.allIds.forEach(portID => {
                 const port = state.ports.byId[portID];
-                if (port.type === 'output') {
+                if (port.type === 'output' && port.networkEnabled && port.state === 'connected') {
                     portsModel.push({ label: port.name, value: port.id });
                 }
             });
             store.dispatch(store.getActions().recreateParameter(my.id, 'port', { model: portsModel }));
 
             // set the parameter's value
-            const value = specs.data.params.byId['port'].value,
-                model = specs.data.params.byId['port'].model,
-                item = model.find(element => element.value === value),
-                newValue = item ? value : 'none';
+            const recreatedState = store.getState(),
+                portParam = recreatedState.processors.byId[my.id].params.byId.port,
+                value = portParam.value,
+                model = portParam.model;
+            let item = model.find(element => element.value === value);
+            item = item || model.find(element => element.value === 'none');
+            
             store.dispatch(store.getActions().changeParameter(my.id, 'port', item.value));
             store.dispatch(store.getActions().changeParameter(my.id, 'name', item.label));
         },

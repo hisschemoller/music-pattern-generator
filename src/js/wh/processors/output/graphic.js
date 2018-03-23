@@ -28,7 +28,7 @@ export function createGraphic(specs, my) {
             initGraphics();
             setTheme(specs.theme, specs.state);
             updatePosition(specs.data.positionX, specs.data.positionY);
-            redrawStaticCanvas(specs.data.enabled);
+            redrawStaticCanvas();
         },
         
         /**
@@ -50,7 +50,7 @@ export function createGraphic(specs, my) {
 
                 case e.detail.actions.UPDATE_MIDI_PORT:
                 case e.detail.actions.ENABLE_PROCESSOR:
-                    redrawStaticCanvas(processor.enabled);
+                    redrawStaticCanvas();
                     break;
                 
                 case e.detail.actions.CHANGE_PARAMETER:
@@ -58,7 +58,8 @@ export function createGraphic(specs, my) {
                         my.params = e.detail.state.processors.byId[my.id].params.byId;
                         switch (e.detail.action.paramKey) {
                             case 'port':
-                                
+                                redrawStaticCanvas();
+                                break;
                             case 'name':
                                 updateName();
                                 break;
@@ -98,19 +99,7 @@ export function createGraphic(specs, my) {
         /**
          * Redraw the graphic after a change.
          */
-        redrawStaticCanvas = function(isEnabled = true) {
-
-            // get the MIDI port for this output processor
-            const port = null;
-            // const state = store.getState();
-            // let port;
-            // state.portProcessor.allIds.forEach(relationID => {
-            //     const relation = state.portProcessor.byId[relationID];
-            //     if (relation.processorID === my.id) {
-            //         port = state.ports.byId[relation.portID];
-            //     }
-            // });
-
+        redrawStaticCanvas = function() {
             staticCtx.strokeStyle = my.colorHigh;
 
             staticCtx.clearRect(0, 0, width, height);
@@ -130,7 +119,7 @@ export function createGraphic(specs, my) {
             staticCtx.arc(0, 0, radius, 0, Math.PI * 2, true);
 
             // disconnected cross
-            if (!port || port.state === 'disconnected' || !isEnabled) {
+            if (my.params.port.value === 'none') {
                 staticCtx.moveTo(-disconnectSize, -disconnectSize);
                 staticCtx.lineTo(disconnectSize, disconnectSize);
                 staticCtx.moveTo(disconnectSize, -disconnectSize);
