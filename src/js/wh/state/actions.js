@@ -338,15 +338,6 @@ export default function createActions(specs = {}, my = {}) {
 
                 // disconnect the processors
                 dispatch(getActions().disconnectProcessors2(id));
-                
-                // delete the processors if necessary
-                state = getState();
-                if (getProcessorShouldBeDeleted(sourceProcessor, state)) {
-                    dispatch(getActions().deleteProcessor(sourceProcessor.id));
-                }
-                if (getProcessorShouldBeDeleted(destinationProcessor, state)) {
-                    dispatch(getActions().deleteProcessor(destinationProcessor.id));
-                }
             }
         },
 
@@ -414,47 +405,4 @@ function getProcessorDefaultName(processors) {
         }
     });
     return `${staticName} ${highestNumber + 1}`;
-}
-
-/**
- * Determine whether an input or output port processor can be deleted,
- * which is the case if the port preference is not network enabled
- * and if it isn't connected to any other processor.
- */
-function getProcessorCanBeDeleted(processor, state) {
-    let canBeDeleted = true;
-    if (processor.type === 'input' || processor.type === 'output') {
-        
-        // find the port for the processor
-        let port;
-        state.portProcessor.allIds.forEach(relationID => {
-            const relation = state.portProcessor.byId[relationID];
-            if (processor.id === relation.processorID) {
-                // check if the port is not network enabled
-                if (state.ports.byId[relation.portID].networkEnabled === false) {
-                    // check if the processor is connected to others
-                    state.connections.allIds.forEach(connectionID => {
-                        const connection = state.connections.byId[connectionID];
-                        if (connection.sourceProcessorID === processor.id || connection.destinationProcessorID === processor.id) {
-                            // processor is connected, do not delete
-                            canBeDeleted = false;
-                        }
-                    });
-                }
-            }
-        });
-    }
-    
-    // processors that are not inputs or outputs can always be deleted
-    return canBeDeleted;
-}
-
-/**
- * Check if a processor can be deleted.
- * @param {Object} processor 
- * @param {Object} state 
- * @return {Boolean} True if the processor may be deleted.
- */
-function getProcessorShouldBeDeleted(processor, state) {
-    return (processor.type === 'input' || processor.type === 'output') && getProcessorCanBeDeleted(processor, state);
 }
