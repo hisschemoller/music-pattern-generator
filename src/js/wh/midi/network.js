@@ -39,6 +39,17 @@ export default function createMIDINetwork(specs, my) {
                         break;
                 }
             });
+
+            document.addEventListener('keyup', function(e) {
+                switch (e.keyCode) {
+                    case 83: // s
+                        console.log('    ++++    ');
+                        processors.forEach(processor => {
+                            console.log('network processor', processor.getID());
+                        });
+                        break;
+                }
+            });
         },
 
         /**
