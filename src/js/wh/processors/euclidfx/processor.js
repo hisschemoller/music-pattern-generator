@@ -142,15 +142,15 @@ export function createProcessor(specs, my) {
                             event.channel = Math.max(1, Math.min(event.channel, 16));
                             break;
                         case 'length':
-                            const valueInTicks = (effectValue / 32) * PPQN * 4; // max 32 = 1 measure = PPQN * 4
+                            const valueInTicks = (effectValue / 32) * PPQN * 4; // max 32 == 1 measure == PPQN * 4
                             event.durationTicks = params.isRelative ? event.durationTicks + valueInTicks : valueInTicks;
                             event.durationTicks = Math.max(1, event.durationTicks);
                             break;
                         case 'delay':
                             if (effectValue > 0) {
-                                const delayInTicks = Math.max(0, (effectValue / 32) * PPQN * 4); // 32 = 1 measure = PPQN * 4
+                                const delayInTicks = Math.max(0, (effectValue / 32) * PPQN * 4); // 32 == 1 measure == PPQN * 4
                                 console.log(delayInTicks);
-                                // store note if delayed start time falls outside of the current scanrange
+                                // store note if delayed start time falls outside of the current scan range
                                 if (event.timestampTicks + delayInTicks > scanEnd) {
                                     delayedEvents.push({
                                         ...event,
@@ -195,11 +195,9 @@ export function createProcessor(specs, my) {
          * @param {Number} scanEnd   Timespan end in ticks from timeline start.
          */
         processDelayedEvents = function(scanStart, scanEnd) {
-            // console.log('d', scanStart, scanEnd);
             var i = delayedEvents.length;
             while (--i > -1) {
                 const timestampTicks = delayedEvents[i].timestampTicks;
-                // console.log('e', timestampTicks);
                 if (scanStart <= timestampTicks && scanEnd > timestampTicks) {
                     my.setOutputData(delayedEvents.splice(i, 1));
                 }

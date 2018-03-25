@@ -108,6 +108,10 @@ export default function createAppView(specs, my) {
                             store.dispatch(store.getActions().setTransport('toggle'));
                         }
                         break;
+                    
+                    case 83: // s
+                        console.log('state', store.getState());
+                        break;
                 }
                 resetKeyCombo = [];
             });
@@ -127,8 +131,9 @@ export default function createAppView(specs, my) {
                 }
             });
 
-            document.addEventListener(store.STATE_CHANGE, (e) => {
+            document.addEventListener(store.STATE_CHANGE, e => {
                 switch (e.detail.action.type) {
+                    
                     case e.detail.actions.CREATE_PROJECT:
                         setProject(e.detail.state);
                         showPanels(e.detail.state);
