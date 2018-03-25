@@ -15,6 +15,7 @@ export default function createMIDINetwork(specs, my) {
                         deleteProcessors(e.detail.state.processors);
                         createProcessors(e.detail.state.processors);
                         connectProcessors(e.detail.state.connections);
+                        orderProcessors(e.detail.state.processors);
                         break;
 
                     case e.detail.actions.ADD_PROCESSOR:
@@ -24,14 +25,17 @@ export default function createMIDINetwork(specs, my) {
                     case e.detail.actions.DELETE_PROCESSOR:
                         disconnectProcessors(e.detail.state.connections);
                         deleteProcessors(e.detail.state.processors);
+                        orderProcessors(e.detail.state.processors);
                         break;
                     
                     case e.detail.actions.CONNECT_PROCESSORS:
                         connectProcessors(e.detail.state.connections);
+                        orderProcessors(e.detail.state.processors);
                         break;
                     
                     case e.detail.actions.DISCONNECT_PROCESSORS:
                         disconnectProcessors(e.detail.state.connections);
+                        orderProcessors(e.detail.state.processors);
                         break;
                 }
             });
@@ -141,6 +145,22 @@ export default function createMIDINetwork(specs, my) {
                     });
                 }
             });
+        },
+
+        /**
+         * Reorder the processors according to their order in the state.
+         * @param {Object} State processor table.
+         */
+        orderProcessors = function(processorsState) {
+            const orderedProcessors = [];
+            processorsState.allIds.forEach(processorID => {
+                processors.forEach(processor => {
+                    if (processor.getID() === processorID) {
+                        orderedProcessors.push(processor);
+                    }
+                });
+            });
+            processors = orderedProcessors;
         },
 
         /**
