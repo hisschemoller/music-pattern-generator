@@ -15,7 +15,7 @@ export default function createRemoteView(specs, my) {
         init = function() {
             document.addEventListener(store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
-                    case e.detail.actions.SET_PROJECT:
+                    case e.detail.actions.CREATE_PROJECT:
                         createRemoteGroups(e.detail.state.processors);
                         break;
 

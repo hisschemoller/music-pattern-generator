@@ -15,7 +15,7 @@ export default function createBaseSettingView(specs, my) {
             specs.parentEl.appendChild(my.el);
             
             // show label
-            my.el.querySelector('.setting__label-text').innerHTML = my.data.label;
+            my.el.querySelector('.setting__label').innerHTML = my.data.label;
 
             if (my.data.isMidiControllable) {
                 my.changeRemoteState(specs.store.getState());
@@ -42,6 +42,7 @@ export default function createBaseSettingView(specs, my) {
                         e.detail.action.paramKey === my.key) {
                         my.data = e.detail.state.processors.byId[my.processorID].params.byId[my.key];
                         my.initData();
+                        my.setValue(e.detail.state.processors.byId[my.processorID].params.byId[my.key].value);
                     }
                     break;
                 

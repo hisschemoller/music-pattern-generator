@@ -9,40 +9,43 @@ export function createProcessor(specs, my) {
         duration = 0,
         noteDuration,
         euclidPattern = [],
-        noteOffEvents = [],
         pulsesOnly = [];
 
     const initialize = function() {
-            document.addEventListener(store.STATE_CHANGE, (e) => {
-                switch (e.detail.action.type) {
-                    case e.detail.actions.CHANGE_PARAMETER:
-                        if (e.detail.action.processorID === my.id) {
-                            my.params = e.detail.state.processors.byId[my.id].params.byId;
-                            switch (e.detail.action.paramKey) {
-                                case 'steps':
-                                    updatePulsesAndRotation();
-                                    updatePattern(true);
-                                    break;
-                                case 'pulses':
-                                    updatePattern(true);
-                                    break;
-                                case 'rotation':
-                                case 'is_triplets':
-                                case 'rate':
-                                case 'note_length':
-                                    updatePattern();
-                                    break;
-                                case 'is_mute':
-                                    break;
-                            }
-                        }
-                        break;
-                }
-                updatePattern(true);
-            });        
+            document.addEventListener(store.STATE_CHANGE, handleStateChanges);
+            updatePattern(true);
         },
 
-        terminate = function() {},
+        terminate = function() {
+            document.removeEventListener(store.STATE_CHANGE, handleStateChanges);
+        },
+
+        handleStateChanges = function(e) {
+            switch (e.detail.action.type) {
+                case e.detail.actions.CHANGE_PARAMETER:
+                    if (e.detail.action.processorID === my.id) {
+                        my.params = e.detail.state.processors.byId[my.id].params.byId;
+                        switch (e.detail.action.paramKey) {
+                            case 'steps':
+                                updatePulsesAndRotation();
+                                updatePattern(true);
+                                break;
+                            case 'pulses':
+                                updatePattern(true);
+                                break;
+                            case 'rotation':
+                            case 'is_triplets':
+                            case 'rate':
+                            case 'note_length':
+                                updatePattern();
+                                break;
+                            case 'is_mute':
+                                break;
+                        }
+                    }
+                    break;
+            }
+        },
             
         /**
          * Process events to happen in a time slice.
@@ -52,41 +55,43 @@ export function createProcessor(specs, my) {
          *                        nowToScanStart
          * @param {Number} scanStart Timespan start in ticks from timeline start.
          * @param {Number} scanEnd   Timespan end in ticks from timeline start.
-         * @param {Number} nowToScanStart Timespan from current timeline position to scanStart.
+         * @param {Number} nowToScanStart Timespan from current timeline position to scanStart, in ticks.
          * @param {Number} ticksToMsMultiplier Duration of one tick in milliseconds.
          * @param {Number} offset Time from doc start to timeline start in ticks.
-         * @param {Array} processorEvents Array to collect processor generated events to displayin the view.
+         * @param {Array} processorEvents Array to collect processor generated events to displaying the view.
          */
         process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset, processorEvents) {
+
+            // clear the output event stack
+            my.clearOutputData();
             
-            // if the processor is muted only process remaining note offs.
+            // abort if the processor is muted
             if (my.params.is_mute.value) {
-                processNoteOffs(scanStart, scanEnd);
                 return;
             }
             
             // if the pattern loops during this timespan.
-            var localStart = scanStart % duration,
-                localEnd = scanEnd % duration,
-                localStart2 = false,
-                localEnd2;
-            if (localStart > localEnd) {
-                localStart2 = 0,
-                localEnd2 = localEnd;
-                localEnd = duration;
+            var localScanStart = scanStart % duration,
+                localScanEnd = scanEnd % duration,
+                localScanStart2 = false,
+                localScanEnd2;
+            if (localScanStart > localScanEnd) {
+                localScanStart2 = 0,
+                localScanEnd2 = localScanEnd;
+                localScanEnd = duration;
             }
             
             // check if notes occur during the current timespan
             var n = pulsesOnly.length;
-            for (var i = 0; i < n; i++) {
+            for (let i = 0; i < n; i++) {
                 var pulseStartTime = pulsesOnly[i].startTime,
-                    scanStartToNoteStart = pulseStartTime - localStart,
-                    isOn = (localStart <= pulseStartTime) && (pulseStartTime < localEnd);
+                    scanStartToNoteStart = pulseStartTime - localScanStart,
+                    isOn = (localScanStart <= pulseStartTime) && (pulseStartTime < localScanEnd);
                     
                 // if pattern looped back to the start
-                if (localStart2 !== false) {
-                    scanStartToNoteStart = pulseStartTime - localStart + duration;
-                    isOn = isOn || (localStart2 <= pulseStartTime) && (pulseStartTime < localEnd2);
+                if (localScanStart2 !== false) {
+                    scanStartToNoteStart = pulseStartTime - localScanStart + duration;
+                    isOn = isOn || (localScanStart2 <= pulseStartTime) && (pulseStartTime < localScanEnd2);
                 } 
                 
                 // if a note should play
@@ -99,52 +104,29 @@ export function createProcessor(specs, my) {
                     // send the Note On message
                     my.setOutputData({
                         timestampTicks: pulseStartTimestamp,
+                        durationTicks: noteDuration,
                         channel: channel,
-                        type: 'noteon',
+                        type: 'note',
                         pitch: pitch,
                         velocity: velocity
                     });
                     
-                    // store the Note Off message to send later
-                    noteOffEvents.push({
-                        timestampTicks: pulseStartTimestamp + noteDuration,
-                        channel: channel,
-                        type: 'noteoff',
-                        pitch: pitch,
-                        velocity: 0
-                    });
-                    
+                    // add events to processorEvents for the canvas to show them
                     if (!processorEvents[my.id]) {
                         processorEvents[my.id] = [];
                     }
+                    
                     const delayFromNowToNoteStart = (nowToScanStart + scanStartToNoteStart) * ticksToMsMultiplier;
                     processorEvents[my.id].push({
                         stepIndex: pulsesOnly[i].stepIndex,
                         delayFromNowToNoteStart: delayFromNowToNoteStart,
-                        delayFromNowToNoteEnd: (delayFromNowToNoteStart + noteDuration) * ticksToMsMultiplier
+                        delayFromNowToNoteEnd: delayFromNowToNoteStart + (noteDuration * ticksToMsMultiplier)
                     });
                 }
             }
             
-            if (localStart2 !== false) {
-                localStart = localStart2;
-            }
-            
-            processNoteOffs(scanStart, scanEnd);
-        },
-            
-        /**
-         * Check for scheduled note off events.
-         * @param {Number} scanStart Timespan start in ticks from timeline start.
-         * @param {Number} scanEnd   Timespan end in ticks from timeline start.
-         */
-        processNoteOffs = function(scanStart, scanEnd) {
-            var i = noteOffEvents.length;
-            while (--i > -1) {
-                var noteOffTime = noteOffEvents[i].timestampTicks;
-                if (scanStart <= noteOffTime && scanEnd > noteOffTime) {
-                    my.setOutputData(noteOffEvents.splice(i, 1)[0]);
-                }
+            if (localScanStart2 !== false) {
+                localScanStart = localScanStart2;
             }
         },
 
@@ -169,7 +151,7 @@ export function createProcessor(specs, my) {
                 euclidPattern = rotateEuclidPattern(euclidPattern, my.params.rotation.value);
             }
             
-            // playback propertie)s, changes in isTriplets, rate, noteLength
+            // playback properties, changes in isTriplets, rate, noteLength
             var rate = my.params.is_triplets.value ? my.params.rate.value * (2 / 3) : my.params.rate.value,
                 stepDuration = rate * PPQN;
             noteDuration = my.params.note_length.value * PPQN;

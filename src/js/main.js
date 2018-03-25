@@ -29,6 +29,7 @@ import createPreferencesView from './wh/view/preferences';
 import createRemoteView from './wh/view/remote';
 import createTransport from './wh/core/transport';
 
+
 /**
  * Application startup.
  */
@@ -85,6 +86,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         midiNetwork 
     });
 
+    // scan installed processors
     store.dispatch(store.getActions().rescanTypes());
 
     // initialise

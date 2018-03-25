@@ -9,6 +9,7 @@ export default function createAppView(specs, my) {
         store = specs.store,
         rootEl = document.querySelector('#app'),
         panelsEl = document.querySelector('.panels'),
+        libraryEl = document.querySelector('.library'),
         helpEl = document.querySelector('.help'),
         prefsEl = document.querySelector('.prefs'),
         editEl = document.querySelector('.edit'),
@@ -16,6 +17,7 @@ export default function createAppView(specs, my) {
         remoteEl = document.querySelector('.remote'),
         settingsViews = [],
         panelHeaderHeight,
+        resetKeyCombo = [],
         controls = {
             new: {
                 type: 'checkbox',
@@ -36,6 +38,10 @@ export default function createAppView(specs, my) {
             bpm: {
                 type: 'number',
                 input: document.getElementById('bpm-number')
+            },
+            library: {
+                type: 'checkbox',
+                input: document.getElementById('library-check')
             },
             remote: {
                 type: 'checkbox',
@@ -78,6 +84,9 @@ export default function createAppView(specs, my) {
             controls.remote.input.addEventListener('change', function(e) {
                 store.dispatch(store.getActions().toggleMIDILearnMode());
             });
+            controls.library.input.addEventListener('change', function(e) {
+                store.dispatch(store.getActions().togglePanel('library'));
+            });
             controls.prefs.input.addEventListener('change', function(e) {
                 store.dispatch(store.getActions().togglePanel('preferences'));
             });
@@ -99,13 +108,33 @@ export default function createAppView(specs, my) {
                             store.dispatch(store.getActions().setTransport('toggle'));
                         }
                         break;
+                    
+                    case 83: // s
+                        console.log('state', store.getState());
+                        break;
+                }
+                resetKeyCombo = [];
+            });
+
+            document.addEventListener('keydown', e => {
+                switch (e.keyCode) {
+                    case 82:
+                    case 83:
+                    case 84:
+                        // clear all data on key combination 'rst' (reset)
+                        resetKeyCombo.push(e.keyCode);
+                        if (resetKeyCombo.indexOf(82) > -1 && resetKeyCombo.indexOf(83) > -1 && resetKeyCombo.indexOf(84) > -1) {
+                            localStorage.clear();
+                            store.dispatch(store.getActions().newProject());
+                        }
+                        break;
                 }
             });
 
-            document.addEventListener(store.STATE_CHANGE, (e) => {
+            document.addEventListener(store.STATE_CHANGE, e => {
                 switch (e.detail.action.type) {
-                    case e.detail.actions.SET_PROJECT:
-                    case e.detail.actions.NEW_PROJECT:
+                    
+                    case e.detail.actions.CREATE_PROJECT:
                         setProject(e.detail.state);
                         showPanels(e.detail.state);
                         controls.bpm.input.value = e.detail.state.bpm;
@@ -154,18 +183,14 @@ export default function createAppView(specs, my) {
             state.processors.allIds.forEach((id, i) => {
                 const processorData = state.processors.byId[id];
                 if (!settingsViews[i] || (id !== settingsViews[i].getID())) {
-                    try {
-                        const template = require(`html-loader!../processors/${processorData.type}/settings.html`);
-                        settingsViews.splice(i, 0, createSettingsPanel({
-                            data: processorData,
-                            store: store,
-                            parentEl: editContentEl,
-                            template: template,
-                            isSelected: state.selectedID === processorData.id
-                        }));
-                    } catch(err) {
-                        console.log(`Error creating settings panel: ${err}`);
-                    }
+                    const template = require(`html-loader!../processors/${processorData.type}/settings.html`);
+                    settingsViews.splice(i, 0, createSettingsPanel({
+                        data: processorData,
+                        store: store,
+                        parentEl: editContentEl,
+                        template: template,
+                        isSelected: state.selectedID === processorData.id
+                    }));
                 }
             });
         },
@@ -280,6 +305,9 @@ export default function createAppView(specs, my) {
 
             editEl.dataset.show = state.showSettingsPanel;
             controls.edit.input.checked = state.showSettingsPanel;
+
+            libraryEl.dataset.show = state.showLibraryPanel;
+            controls.library.input.checked = state.showLibraryPanel;
 
             controls.connections.input.checked = state.connectModeActive;
             

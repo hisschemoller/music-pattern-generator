@@ -6,15 +6,23 @@ import createBaseSettingView from './base';
  */
 export default function createItemizedSettingView(specs, my) {
     var that,
+        valueEl,
         radioInputs = [],
         numInputs,
         
         init = function() {
-            let parentEl = my.el.parentNode;
-            
-            // add the main label
-            let label = my.el.querySelector('.setting__label-text');
-            parentEl.appendChild(label);
+            valueEl = my.el.querySelector('.setting__value');
+
+            initData();
+            setValue(my.data.value);
+        },
+
+        initData = function() {
+            // remove previous radio buttons, if any
+            while (valueEl.firstChild) {
+                valueEl.firstChild.removeEventListener('change', onChange);
+                valueEl.removeChild(valueEl.firstChild);
+            }
             
             // add the radio buttons
             let radioTemplate = document.querySelector('#template-setting-itemized-item'),
@@ -25,23 +33,19 @@ export default function createItemizedSettingView(specs, my) {
                 
                 // add a new cloned radio element
                 let radioInputEl = radioTemplate.content.children[0].cloneNode(true);
-                parentEl.appendChild(radioInputEl);
+                valueEl.appendChild(radioInputEl);
                 radioInputEl.setAttribute('name', specs.key);
                 radioInputEl.setAttribute('id', id);
                 radioInputEl.value = model[i].value;
-                radioInputEl.checked = model[i].value == my.data.default;
                 radioInputEl.addEventListener('change', onChange);
                 radioInputs.push(radioInputEl);
                 
                 // add a new cloned label element
                 let radioLabelEl = radioTemplate.content.children[1].cloneNode(true);
-                parentEl.appendChild(radioLabelEl);
+                valueEl.appendChild(radioLabelEl);
                 radioLabelEl.setAttribute('for', id);
                 radioLabelEl.innerHTML = model[i].label;
             }
-            
-            // remove the original element
-            parentEl.removeChild(my.el);
         },
         
         /**
@@ -60,12 +64,13 @@ export default function createItemizedSettingView(specs, my) {
         },
 
         setValue = function(value) {
-            for (let i = 0; i < numInputs; i++) {
-                radioInputs[i].checked = (radioInputs[i].value == value);
-            }
+            radioInputs.forEach(radioInput => {
+                radioInput.checked = (radioInput.value == value);
+            });
         };
         
     my = my || {};
+    my.initData = initData;
     my.setValue = setValue;
     
     that = createBaseSettingView(specs, my);

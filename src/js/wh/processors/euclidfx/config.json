@@ -1,10 +1,15 @@
 {
-    "name": "Euclidean",
+    "name": "Euclid FX",
     "positionX": 0,
     "positionY": 0,
     "inputs": {
-        "byId": {},
-        "allIds": []
+        "byId": {
+            "in": {
+                "x": 0,
+                "y": -50
+            }
+        },
+        "allIds": ["in"]
     },
     "outputs": {
         "byId": {
@@ -50,30 +55,6 @@
                 "remoteChannel": null,
                 "remoteCC": null
             },
-            "channel_out": {
-                "label": "Channel",
-                "type": "integer",
-                "default": 1,
-                "value": 1,
-                "min": 1,
-                "max": 16
-            },
-            "pitch_out": {
-                "label": "Pitch",
-                "type": "integer",
-                "default": 60,
-                "value": 60,
-                "min": 0,
-                "max": 127
-            },
-            "velocity_out": {
-                "label": "Velocity",
-                "type": "integer",
-                "default": 100,
-                "value": 100,
-                "min": 0,
-                "max": 127
-            },
             "rate": {
                 "label": "Rate",
                 "type": "itemized",
@@ -94,36 +75,59 @@
                 "default": false,
                 "value": false
             },
-            "note_length": {
-                "label": "Note length",
+            "target": {
+                "label": "Target",
                 "type": "itemized",
-                "default": 0.25,
-                "value": 0.25,
+                "default": "velocity",
+                "value": "velocity",
                 "model": [
-                    {"label": "1", "value": 4},
-                    {"label": "1/2", "value": 2},
-                    {"label": "1/4", "value": 1},
-                    {"label": "1/8", "value": 0.5},
-                    {"label": "1/16", "value": 0.25},
-                    {"label": "1/32", "value": 0.125}
+                    { "label": "Velocity", "value": "velocity" },
+                    { "label": "Pitch", "value": "pitch" },
+                    { "label": "Channel", "value": "channel" },
+                    { "label": "Note length", "value": "length" },
+                    { "label": "Note delay", "value": "delay" }
                 ]
             },
-            "is_mute": {
-                "label": "Mute",
-                "type": "boolean",
-                "default": false,
-                "value": false,
+            "low": {
+                "label": "Low value",
+                "type": "integer",
+                "default": 50,
+                "value": 50,
+                "min": 0,
+                "max": 127,
                 "isMidiControllable": true,
                 "remoteChannel": null,
                 "remoteCC": null
+            },
+            "high": {
+                "label": "High value",
+                "type": "integer",
+                "default": 100,
+                "value": 100,
+                "min": 0,
+                "max": 127,
+                "isMidiControllable": true,
+                "remoteChannel": null,
+                "remoteCC": null
+            },
+            "mode": {
+                "label": "Mode",
+                "type": "itemized",
+                "default": "absolute",
+                "value": "absolute",
+                "model": [
+                    { "label": "Absolute", "value": "absolute" },
+                    { "label": "Relative", "value": "relative" }
+                ]
             },
             "name": {
                 "label": "Name",
                 "type": "string",
                 "default": "Unnamed",
-                "value": "Unnamed"
+                "value": "Unnamed",
+                "isMidiControllable": false
             }
         },
-        "allIds": ["steps", "pulses", "rotation", "channel_out", "pitch_out", "velocity_out", "rate", "note_length", "is_triplets", "is_mute", "name"]
+        "allIds": ["steps", "pulses", "rotation", "rate", "is_triplets", "target", "low", "high", "mode", "name"]
     }
 }

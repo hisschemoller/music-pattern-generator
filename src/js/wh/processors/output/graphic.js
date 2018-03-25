@@ -10,32 +10,24 @@ export function createGraphic(specs, my) {
         staticCtx,
         nameCanvas,
         nameCtx,
+
+        isSelected = false,
+
         lineWidth = 2,
         width = 100,
         height = 50,
         radius = 10,
         boxWidth = 80,
+        selectRadius = 15,
+        disconnectSize = 7,
+        doublePI = Math.PI * 2,
         
         initialise = function() {
             document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
-
-            // offscreen canvas for static shapes
-            staticCanvas = document.createElement('canvas');
-            staticCanvas.height = height;
-            staticCanvas.width = width;
-            staticCtx = staticCanvas.getContext('2d');
-            staticCtx.lineWidth = lineWidth;
-            
-            // offscreen canvas for the name
-            nameCanvas = document.createElement('canvas');
-            nameCanvas.height = 40;
-            nameCanvas.width = 200;
-            nameCtx = nameCanvas.getContext('2d');
-            nameCtx.font = '14px sans-serif';
-            nameCtx.textAlign = 'center';
-            
+            initGraphics();
             setTheme(specs.theme);
             updatePosition(specs.data.positionX, specs.data.positionY);
+            redrawStaticCanvas();
         },
         
         /**
@@ -47,17 +39,57 @@ export function createGraphic(specs, my) {
         },
 
         handleStateChanges = function(e) {
+            const processor = e.detail.state.processors.byId[my.id];
             switch (e.detail.action.type) {
+
                 case e.detail.actions.DRAG_SELECTED_PROCESSOR:
                 case e.detail.actions.DRAG_ALL_PROCESSORS:
-                    const processor = e.detail.state.processors.byId[my.id];
                     updatePosition(processor.positionX, processor.positionY);
+                    break;
+
+                case e.detail.actions.UPDATE_MIDI_PORT:
+                    redrawStaticCanvas();
+                    break;
+                
+                case e.detail.actions.CHANGE_PARAMETER:
+                    if (e.detail.action.processorID === my.id) {
+                        my.params = e.detail.state.processors.byId[my.id].params.byId;
+                        switch (e.detail.action.paramKey) {
+                            case 'port':
+                                redrawStaticCanvas();
+                                break;
+                            case 'name':
+                                updateName();
+                                break;
+                        }
+                    }
                     break;
             }
         },
 
-        setSelected = function(isSelected) {
-            console.log('TODO: setSelected');
+        initGraphics = function() {
+            // offscreen canvas for static shapes
+            staticCanvas = document.createElement('canvas');
+            staticCanvas.height = height;
+            staticCanvas.width = width;
+            staticCtx = staticCanvas.getContext('2d');
+            staticCtx.lineWidth = lineWidth;
+
+            // offscreen canvas for the name
+            nameCanvas = document.createElement('canvas');
+            nameCanvas.height = 40;
+            nameCanvas.width = 200;
+            nameCtx = nameCanvas.getContext('2d');
+            nameCtx.font = '14px sans-serif';
+            nameCtx.textAlign = 'center';
+        },
+
+        setSelected = function(isSelectedView, state) {
+            isSelected = isSelectedView;
+            if (typeof redrawStaticCanvas == 'function' && typeof canvasDirtyCallback == 'function') {
+                redrawStaticCanvas(state.processors.byId[my.id].enabled);
+                canvasDirtyCallback();
+            }
         },
 
         draw = function() {},
@@ -65,24 +97,42 @@ export function createGraphic(specs, my) {
         /**
          * Redraw the graphic after a change.
          */
-        updateGraphic = function() {
+        redrawStaticCanvas = function() {
             staticCtx.strokeStyle = my.colorHigh;
 
             staticCtx.clearRect(0, 0, width, height);
             staticCtx.save();
-            staticCtx.translate(width / 2, height / 2 - 10);
+            staticCtx.translate(width / 2, height / 2 - 8);
             staticCtx.beginPath();
+
             // box
             staticCtx.rect(-boxWidth / 2, -radius, boxWidth, radius * 2);
             // arrow
             staticCtx.moveTo(-boxWidth / 2, radius);
             staticCtx.lineTo(0, radius + 20)
             staticCtx.lineTo(boxWidth / 2, radius);
+
             // circle
             staticCtx.moveTo(radius, 0);
             staticCtx.arc(0, 0, radius, 0, Math.PI * 2, true);
+
+            // disconnected cross
+            if (my.params.port.value === 'none') {
+                staticCtx.moveTo(-disconnectSize, -disconnectSize);
+                staticCtx.lineTo(disconnectSize, disconnectSize);
+                staticCtx.moveTo(disconnectSize, -disconnectSize);
+                staticCtx.lineTo(-disconnectSize, disconnectSize);
+            }
+
+            // select circle
+            if (isSelected) {
+                staticCtx.moveTo(selectRadius, 0);
+                staticCtx.arc(0, 0, selectRadius, 0, doublePI);
+            }
+
             staticCtx.stroke();
             staticCtx.restore();
+            canvasDirtyCallback();
         },
         
         /**
@@ -132,16 +182,11 @@ export function createGraphic(specs, my) {
          * Test if a coordinate intersects with the graphic's hit area.
          * @param  {Number} x Horizontal coordinate.
          * @param  {Number} y Vertical coordinate.
-         * @param  {String} type Hit area type, 'processor|inconnector|outconnector'
          * @return {Boolean} True if the point intersects. 
          */
-        intersectsWithPoint = function(x, y, type) {
-            let distance;
-            switch (type) {
-                case 'processor':
-                    distance = Math.sqrt(Math.pow(x - my.positionX, 2) + Math.pow(y - my.positionY, 2));
-                    return distance <= 10;
-                }
+        intersectsWithPoint = function(x, y) {
+            let distance = Math.sqrt(Math.pow(x - my.positionX, 2) + Math.pow(y - my.positionY, 2));
+            return distance <= 10;
         },
         
         /**
@@ -152,7 +197,7 @@ export function createGraphic(specs, my) {
             my.colorHigh = theme.colorHigh;
             my.colorMid = theme.colorMid;
             my.colorLow = theme.colorLow;
-            updateGraphic();
+            redrawStaticCanvas();
             updateName();
         };
         

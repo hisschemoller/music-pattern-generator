@@ -78,6 +78,9 @@
 .icon-connections:before {
   content: "\f1e0";
 }
+.icon-list:before {
+  content: "\f009";
+}
 
 :root {
     --assign-bg-color: rgba(0, 0, 0, 0.2);

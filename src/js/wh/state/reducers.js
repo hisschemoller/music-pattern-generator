@@ -1,3 +1,5 @@
+import orderProcessors from '../midi/network_ordering'
+
 export default function createReducers() {
 
     const initialState = {
@@ -19,13 +21,14 @@ export default function createReducers() {
             },
             bpm: 120,
             selectedID: null,
-            theme: 'light', // 'light|dark' 
+            theme: 'dev', // 'light|dark' 
             transport: 'stop', // 'play|pause|stop'
             connectModeActive: false,
             learnModeActive: false,
             learnTargetProcessorID: null,
             learnTargetParameterKey: null,
             showHelpPanel: false,
+            showLibraryPanel: true,
             showPreferencesPanel: false,
             showSettingsPanel: false,
         },
@@ -34,15 +37,9 @@ export default function createReducers() {
             let newState;
             switch(action.type) {
 
-                case actions.NEW_PROJECT:
-                    return { 
-                        ...initialState,
-                        ports: state.ports
-                    };
-
-                case actions.SET_PROJECT:
-                    console.log({ ...state, ...action.data });
-                    return { ...state, ...action.data };
+                case actions.CREATE_PROJECT:
+                    const data = action.data || {};
+                    return { ...initialState, ...data };
 
                 case actions.SET_THEME:
                     return { ...state, theme: state.theme === 'light' ? 'dark' : 'light' };
@@ -50,6 +47,7 @@ export default function createReducers() {
                 case actions.ADD_PROCESSOR:
                     newState = { 
                         ...state,
+                        showSettingsPanel: true,
                         processors: {
                             byId: { 
                                 ...state.processors.byId,
@@ -70,9 +68,8 @@ export default function createReducers() {
                             break;
                         default:
                             newState.processors.allIds.splice(numInputProcessors, 0, action.data.id);
-                            newState.showSettingsPanel = true;
-
                     }
+                    
                     return newState;
                 
                 case actions.DELETE_PROCESSOR:
@@ -116,33 +113,36 @@ export default function createReducers() {
                     return newState;
                 
                 case actions.SELECT_PROCESSOR:
-                    return Object.assign({}, state, {
-                        selectedID: action.id
-                    });
+                    return { ...state, selectedID: action.id };
                 
                 case actions.DRAG_SELECTED_PROCESSOR:
-                    newState = { 
+                    return {
                         ...state,
                         processors: {
-                            byId: { ...state.processors.byId },
-                            allIds: [ ...state.processors.allIds ]
+                            allIds: [ ...state.processors.allIds ],
+                            byId: Object.values(state.processors.byId).reduce((accumulator, processor) => {
+                                if (processor.id === state.selectedID) {
+                                    accumulator[processor.id] = { ...processor, positionX: action.x, positionY: action.y };
+                                } else {
+                                    accumulator[processor.id] = { ...processor };
+                                }
+                                return accumulator;
+                            }, {})
                         } };
-                    newState.processors.byId[newState.selectedID].positionX = action.x;
-                    newState.processors.byId[newState.selectedID].positionY = action.y;
-                    return newState;
 
                 case actions.DRAG_ALL_PROCESSORS:
-                    newState = { 
+                    return {
                         ...state,
                         processors: {
-                            byId: { ...state.processors.byId },
-                            allIds: [ ...state.processors.allIds ]
+                            allIds: [ ...state.processors.allIds ],
+                            byId: Object.values(state.processors.byId).reduce((accumulator, processor) => {
+                                accumulator[processor.id] = { 
+                                    ...processor, 
+                                    positionX: processor.positionX + action.x, 
+                                    positionY: processor.positionY + action.y };
+                                return accumulator;
+                            }, {})
                         } };
-                    newState.processors.allIds.forEach(id => {
-                        newState.processors.byId[id].positionX += action.x;
-                        newState.processors.byId[id].positionY += action.y;
-                    });
-                    return newState;
                 
                 case actions.CHANGE_PARAMETER:
                     newState = { 
@@ -167,77 +167,112 @@ export default function createReducers() {
                             break;
                     }
                     return newState;
+
+                    // return {
+                    //     ...state,
+                    //     processors: {
+                    //         allIds: [ ...state.processors.allIds ],
+                    //         byId: Object.values(state.processors.byId).reduce((accumulator, processor) => {
+                    //             if (processor.id === state.selectedID) {
+                    //                 accumulator[processor.id] = { 
+                    //                     ...processor, 
+                    //                     params: {
+                    //                         allIds: [ ...processor.params.allIds ],
+                    //                         byId: Object.values(processor.params.byId).reduce((acc, param) => {
+                    //                             if (action.paramKey === param.id) {
+                    //                                 acc[param.id] = { 
+                    //                                     ...param,
+                    //                                     value
+                    //                                 }
+                    //                             } else {
+                    //                                 acc[param.id] = { ...param };
+                    //                             }
+                    //                         })
+                    //                     } };
+                    //             } else {
+                    //                 accumulator[processor.id] = { ...processor };
+                    //             }
+                    //             return accumulator;
+                    //         })
+                    //     }
+                    // };
                 
                 case actions.RECREATE_PARAMETER:
+                    // clone state
                     newState = { 
                         ...state,
                         processors: {
                             byId: { ...state.processors.byId },
                             allIds: [ ...state.processors.allIds ]
                         } };
+                    
+                    // clone parameter, overwrite with new settings.
                     newState.processors.byId[action.processorID].params.byId[action.paramKey] = {
                         ...newState.processors.byId[action.processorID].params.byId[action.paramKey],
                         ...action.paramObj
                     };
+                    
                     return newState;
                 
                 case actions.SET_TEMPO:
-                    return Object.assign({}, state, { bpm: action.value });
-                
-                case actions.MIDI_PORT_CHANGE:
-                    newState = { 
+                    return { ...state, bpm: action.value };
+
+                case actions.CREATE_MIDI_PORT:
+                    return {
                         ...state,
                         ports: {
-                            byId: { ...state.ports.byId },
-                            allIds: [ ...state.ports.allIds ]
-                    }};
-                    
-                    if (state.ports.byId[action.midiPort.id]) {
-                        // update existing port
-                        newState.ports.byId[action.midiPort.id] = {
-                            ...state.ports.byId[action.midiPort.id],
-                            connection: action.midiPort.connection,
-                            state: action.midiPort.state
+                            allIds: [ ...state.ports.allIds, action.portID ],
+                            byId: { 
+                                ...state.ports.byId,
+                                [action.portID]: action.data
+                            }
                         }
-                    } else {
-                        // add new port
-                        newState.ports.byId[action.midiPort.id] = {
-                            id: action.midiPort.id, 
-                            type: action.midiPort.type,
-                            name: action.midiPort.name,
-                            connection: action.midiPort.connection,
-                            state: action.midiPort.state,
-                            networkEnabled: false,
-                            syncEnabled: false,
-                            remoteEnabled: false
+                    };
+
+                case actions.UPDATE_MIDI_PORT:
+                    return {
+                        ...state,
+                        ports: {
+                            allIds: [ ...state.ports.allIds ],
+                            byId: Object.values(state.ports.byId).reduce((returnObject, port) => {
+                                if (port.id === action.portID) {
+                                    returnObject[port.id] = { ...port, ...action.data };
+                                } else {
+                                    returnObject[port.id] = { ...port };
+                                }
+                                return returnObject;
+                            }, {})
                         }
-                        newState.ports.allIds.push(action.midiPort.id);
-                        newState.ports.allIds.sort((a, b) => {
-                            if (a.name < b.name) { return -1 }
-                            if (a.name > b.name) { return 1 }
-                            return 0;
-                        });
-                    }
-                    return newState;
-                
-                case actions.TOGGLE_PORT_SYNC:
-                    return toggleMIDIPreference(state, action.id, 'syncEnabled');
-                
-                case actions.TOGGLE_PORT_REMOTE:
-                    return toggleMIDIPreference(state, action.id, 'remoteEnabled');
+                    };
                 
                 case actions.TOGGLE_MIDI_PREFERENCE:
-                    return toggleMIDIPreference(state, action.id, action.preferenceName);
+                    return {
+                        ...state,
+                        ports: {
+                            allIds: [ ...state.ports.allIds ],
+                            byId: Object.values(state.ports.allIds).reduce((accumulator, portID) => {
+                                if (portID === action.id) {
+                                    accumulator[portID] = { 
+                                        ...state.ports.byId[portID],
+                                        [action.preferenceName]: typeof action.isEnabled === 'boolean' ? isEnabled : !state.ports.byId[action.id][action.preferenceName]
+                                    };
+                                } else {
+                                    accumulator[portID] = { ...state.ports.byId[portID] };
+                                }
+                                return accumulator;
+                            }, {})
+                        }
+                    };
                 
                 case actions.TOGGLE_MIDI_LEARN_MODE:
-                    return Object.assign({}, state, { 
-                        learnModeActive: !state.learnModeActive });
+                    return { ...state, learnModeActive: !state.learnModeActive };
                 
                 case actions.TOGGLE_MIDI_LEARN_TARGET:
-                    return Object.assign({}, state, { 
+                    return { 
+                        ...state, 
                         learnTargetProcessorID: action.processorID, 
                         learnTargetParameterKey: action.parameterKey 
-                    });
+                    };
                 
                 case actions.SET_TRANSPORT:
                     let value = action.command;
@@ -279,9 +314,9 @@ export default function createReducers() {
                         ...state,
                         showHelpPanel: action.panelName === 'help' ? !state.showHelpPanel : state.showHelpPanel,
                         showPreferencesPanel: action.panelName === 'preferences' ? !state.showPreferencesPanel : state.showPreferencesPanel,
-                        showSettingsPanel: action.panelName === 'settings' ? !state.showSettingsPanel : state.showSettingsPanel
+                        showSettingsPanel: action.panelName === 'settings' ? !state.showSettingsPanel : state.showSettingsPanel,
+                        showLibraryPanel: action.panelName === 'library' ? !state.showLibraryPanel : state.showLibraryPanel
                     };
-                    return state;
                 
                 case actions.TOGGLE_CONNECT_MODE:
                     return {
@@ -290,6 +325,7 @@ export default function createReducers() {
                     };
                 
                 case actions.CONNECT_PROCESSORS:
+
                     // abort if the connection already exists
                     for (let i = 0, n = state.connections.allIds.length; i < n; i++) {
                         const connection = state.connections.byId[state.connections.allIds[i]];
@@ -300,20 +336,46 @@ export default function createReducers() {
                             return state;
                         } 
                     }
+
                     // add new connection
-                    return {
+                    newState = {
                         ...state,
                         connections: {
                             byId: { ...state.connections.byId, [action.id]: action.payload },
                             allIds: [ ...state.connections.allIds, action.id ]
+                        },
+                        processors: {
+                            byId: { ...state.processors.byId },
+                            allIds: [ ...state.processors.allIds ]
                         }
                     };
+
+                    // reorder the processors
+                    orderProcessors(newState);
+                    return newState;
                 
                 case actions.DISCONNECT_PROCESSORS:
-                    return {
+                    newState =  {
                         ...state,
-                        connections: deleteFromNormalizedTable(state.connections, action.id)
+                        connections: {
+                            allIds: state.connections.allIds.reduce((accumulator, connectionID) => {
+                                if (connectionID !== action.id) {
+                                    accumulator.push(connectionID)
+                                }
+                                return accumulator;
+                            }, []),
+                            byId: Object.values(state.connections.allIds).reduce((accumulator, connectionID) => {
+                                if (connectionID !== action.id) {
+                                    accumulator[connectionID] = { ...state.connections.byId[connectionID] };
+                                }
+                                return accumulator;
+                            }, {})
+                        }
                     };
+                    
+                    // reorder the processors
+                    orderProcessors(newState);
+                    return newState;
 
                 case actions.RESCAN_TYPES:
                     return {
@@ -333,23 +395,6 @@ export default function createReducers() {
         reduce: reduce
     }
 }
-
-// function addToNormalizedTable(stateObj, newItemID, newItem) {
-//     const clone = {
-//         byId: { ...stateObj.byId, [newItemID]: newItem },
-//         allIds: [ ...stateObj.allIds, newItemID ]
-//     };
-//     return clone;
-// }
-
-function deleteFromNormalizedTable(table, id) {
-    const clone = {
-        byId: { ...table.byId },
-        allIds: table.allIds.filter(iid => iid !== id)
-    };
-    delete clone.byId[id];
-    return clone;
-}
  
 function assignParameter(parameters, action, state) {
     const params = { ...parameters };
@@ -363,19 +408,4 @@ function unassignParameter(parameters, action, state) {
     params[action.paramKey].remoteChannel = null;
     params[action.paramKey].remoteCC = null;
     return params;
-}
-
-function toggleMIDIPreference(state, id, preferenceName) {
-    const newState = {
-        ...state,
-        ports: {
-            allIds: [ ...state.ports.allIds ],
-            byId: { ...state.ports.byId }
-        }
-    };
-    newState.ports.byId[id] = {
-        ...newState.ports.byId[id],
-        [preferenceName]: !state.ports.byId[id][preferenceName]
-    };
-    return newState;
 }

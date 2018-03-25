@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>epg</title>
+    <title>mpg</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="static/css/style.css">
 </head>
@@ -23,6 +23,10 @@
                 <span class="icon-new" data-on="&#xe804;" data-off="&#xe802;"></span>
             </label>
             <input type="number" id="bpm-number" class="bpm" min="1" max="1000" value="" />
+            <input type="checkbox" id="library-check" class="toggle__check" />
+            <label for="library-check" class="toggle__label btn" title="Library">
+                <span class="icon-list" data-on="&#xf009;" data-off="&#xf009;"></span>
+            </label>
             <input type="checkbox" id="prefs-check" class="toggle__check" />
             <label for="prefs-check" class="toggle__label btn" title="Preferences">
                 <span class="icon-cog" data-on="&#xe805;" data-off="&#xe805;"></span>
@@ -258,64 +262,30 @@
         </main>
     </app>
 
-    <template id="template-settings-epg">
-        <div class="settings settings--epg">
-            <form><!-- form element separates radio groups of the same name -->
-                <div class="panel__header panel__header--sub">
-                    <span class="header__label">Euclidean Rhythm</span>
-                </div>
-                <fieldset class="settings__fieldset">
-                    <div class="settings__row steps"></div>
-                    <div class="settings__row pulses"></div>
-                    <div class="settings__row rotation"></div>
-                </fieldset>
-                <div class="panel__header panel__header--sub">
-                    <span class="header__label">Playback</span>
-                </div>
-                <fieldset class="settings__fieldset">
-                    <div class="settings__row rate"></div>
-                    <div class="settings__row note_length"></div>
-                    <div class="settings__row is_triplets"></div>
-                    <div class="settings__row is_mute"></div>
-                </fieldset>
-                <div class="panel__header panel__header--sub">
-                    <span class="header__label">MIDI Out</span>
-                </div>
-                <fieldset class="settings__fieldset">
-                    <div class="settings__row channel_out"></div>
-                    <div class="settings__row pitch_out"></div>
-                    <div class="settings__row velocity_out"></div>
-                </fieldset>
-                <div class="panel__header panel__header--sub">
-                    <span class="header__label">Other</span>
-                </div>
-                <fieldset class="settings__fieldset">
-                    <div class="settings__row name"></div>
-                    <span class="setting__label-text"></span>
-                    <button type="button" class="settings__delete btn">Delete</button>
-                </fieldset>
-            </form>
-        </div>
-    </template><!-- /template-settings-epg -->
     <template id="template-setting-integer">
-        <label class="setting__label setting__integer">
-            <span class="setting__label-text"></span>
-            <input type="range" min="" max="" step="1" class="setting__range" />
-            <input type="number" min="" max="" class="setting__number" />
-        </label>
+        <div class="setting">
+            <span class="setting__label"></span>
+            <div class="setting__value setting__integer">
+                <input type="range" min="" max="" step="1" class="setting__range" />
+                <input type="number" min="" max="" class="setting__number" />
+            </div>
+        </div>
     </template><!-- /template-setting-integer -->
     <template id="template-setting-boolean">
-        <span class="setting__label"><span class="setting__label-text"></span>
-            <input type="checkbox" id="" class="setting__check toggle__check" />
-            <label for="" class="toggle__label btn" title="">
-                <span class="" data-on="On" data-off="Off"></span>
-            </label>
-        </span>
+        <div class="setting">
+            <span class="setting__label"></span>
+            <div class="setting__value">
+                <input type="checkbox" id="" class="setting__check toggle__check" />
+                <label for="" class="toggle__label btn" title="">
+                    <span class="" data-on="On" data-off="Off"></span>
+                </label>
+            </div>
+        </div>
     </template><!-- /template-setting-boolean -->
     <template id="template-setting-itemized">
-        <div class="setting__itemized">
-            <label class="setting__label-text"></label>
-            <span class="setting__radios"></span>
+        <div class="setting">
+            <label class="setting__label"></label>
+            <div class="setting__value setting__radios"></div>
         </div>
     </template><!-- /template-setting-itemized -->
     <template id="template-setting-itemized-item">
@@ -323,9 +293,12 @@
         <label for="" class="setting__label-radio-text btn"></label>
     </template><!-- /template-setting-itemized-item -->
     <template id="template-setting-string">
-        <label class="setting__label"><span class="setting__label-text"></span>
-            <input type="text" class="setting__text" />
-        </label>
+        <div class="setting">
+            <label class="setting__label"></label>
+            <div class="setting__value">
+                <input type="text" class="setting__text" />
+            </div>
+        </div>
     </template><!-- /template-setting-string -->
     <template id="template-setting-learnmode">
         <div class="setting__learnmode"></div>

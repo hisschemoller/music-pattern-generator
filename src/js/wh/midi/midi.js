@@ -17,7 +17,8 @@ export default function createMIDI(specs) {
                         updateMIDIRemoteListeners(e.detail.state.ports);
                         break;
                     
-                    case e.detail.actions.SET_PROJECT:
+                    case e.detail.actions.CREATE_MIDI_PORT:
+                    case e.detail.actions.UPDATE_MIDI_PORT:
                         updateMIDISyncListeners(e.detail.state.ports);
                         updateMIDIRemoteListeners(e.detail.state.ports);
                         break;
@@ -76,12 +77,7 @@ export default function createMIDI(specs) {
             const outputs = midiAccess.outputs.values();
             
             for (let port = inputs.next(); port && !port.done; port = inputs.next()) {
-                store.dispatch(store.getActions().midiPortChange(port.value));
                 port.value.onmidimessage = onMIDIMessage;
-            }
-            
-            for (let port = outputs.next(); port && !port.done; port = outputs.next()) {
-                store.dispatch(store.getActions().midiPortChange(port.value));
             }
 
             midiAccess.onstatechange = onAccessStateChange;
@@ -97,7 +93,7 @@ export default function createMIDI(specs) {
          * @param {Object} e MIDIConnectionEvent object.
          */
         onAccessStateChange = function(e) {
-            store.dispatch(store.getActions().midiPortChange(e.port));
+            store.dispatch(store.getActions().midiAccessChange(e.port));
         },
 
         /**
@@ -201,4 +197,24 @@ export function getMIDIPortByID(id) {
             return port.value;
         }
     }
+}
+
+/**
+ * Get all MIDI input and output ports.
+ * @returns {Array} Array of all ports.
+ */
+export function getAllMIDIPorts() {
+    const allPorts = [];
+    const inputs = midiAccess.inputs.values();
+    const outputs = midiAccess.outputs.values();
+
+    for (let port = inputs.next(); port && !port.done; port = inputs.next()) {
+        allPorts.push(port.value);
+    }
+    
+    for (let port = outputs.next(); port && !port.done; port = outputs.next()) {
+        allPorts.push(port.value);
+    }
+
+    return allPorts;
 }

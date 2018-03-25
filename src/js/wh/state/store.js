@@ -45,7 +45,7 @@ export default function createStore(specs = {}, my = {}) {
                 dispatch(getActions().setProject(JSON.parse(data)));
             }
         };
-
+        
     that = specs.that || {};
 
     init();

@@ -11,9 +11,13 @@ export default function createStringSettingView(specs, my) {
         
         init = function() {
             textEl = my.el.getElementsByClassName('setting__text')[0];
-            textEl.value = my.data.value;
             textEl.addEventListener('input', onChange);
+            
+            initData();
+            setValue(my.data.value);
         },
+
+        initData = function() {},
         
         onChange = function(e) {
             e.preventDefault();

@@ -1,14 +1,14 @@
 {
-    "name": "euclidean-pattern-generator",
+    "name": "music-pattern-generator",
     "version": "2.0.1",
-    "description": "MIDI rhythm pattern generator",
+    "description": "MIDI rhythm and music pattern generator",
     "keywords": [
         "MIDI",
         "euclidean rhythm",
         "music",
         "percussion"
     ],
-    "homepage": "http://github.com/wouterhisschemoller/js-epg",
+    "homepage": "http://github.com/hisschemoller/music-pattern-generator",
     "license": "LGPL-3.0",
     "main": "electron.js",
     "scripts": {
@@ -20,7 +20,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/wouterhisschemoller/js-epg"
+        "url": "http://github.com/hisschemoller/music-pattern-generator"
     },
     "author": "Wouter Hisschemoller",
     "dependencies": {

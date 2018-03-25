@@ -1,6 +1,5 @@
 {
     "name": "Output",
-    "excludedFromLibrary": true,
     "positionX": 0,
     "positionY": 0,
     "inputs": {
@@ -18,14 +17,22 @@
     },
     "params": {
         "byId": {
+            "port": {
+                "label": "MIDI port",
+                "type": "itemized",
+                "default": "none",
+                "value": "none",
+                "model": [
+                    { "label": "No output", "value": "none" }
+                ]
+            },
             "name": {
                 "label": "Name",
                 "type": "string",
                 "default": "Unnamed",
-                "value": "Unnamed",
-                "isMidiControllable": false
+                "value": "Unnamed"
             }
         },
-        "allIds": ["name"]
+        "allIds": ["port", "name"]
     }
 }

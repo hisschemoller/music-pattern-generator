@@ -17,6 +17,26 @@ export default function createCanvasProcessorViews(specs, my) {
         init = function() {
             document.addEventListener(store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
+
+                    case e.detail.actions.CREATE_PROJECT:
+                        setProcessorViews(e.detail.state);
+                        selectProcessorView(e.detail.state);
+                        my.markDirty();
+                        break;
+                    
+                    case e.detail.actions.ADD_PROCESSOR:
+                        createProcessorViews(e.detail.state);
+                        break;
+                    
+                    case e.detail.actions.DELETE_PROCESSOR:
+                        deleteProcessorView(e.detail.action.id);
+                        selectProcessorView(e.detail.state);
+                        break;
+                    
+                    case e.detail.actions.SELECT_PROCESSOR:
+                        selectProcessorView(e.detail.state);
+                        break;
+                        
                     case e.detail.actions.SET_THEME:
                         setTheme();
                         break;
@@ -49,9 +69,9 @@ export default function createCanvasProcessorViews(specs, my) {
          * Create canvas 2D object if it exists for the type.
          * @param  {Array} data Array of current processors' state.
          */
-        createProcessorViews = function(processors) {
-            processors.allIds.forEach((id, i) => {
-                const processorData = processors.byId[id];
+        createProcessorViews = function(state) {
+            state.processors.allIds.forEach((id, i) => {
+                const processorData = state.processors.byId[id];
                 if (!views[i] || (id !== views[i].getID())) {
                     const module = require(`../processors/${processorData.type}/graphic`);
                     const view = module.createGraphic({ 
@@ -65,10 +85,10 @@ export default function createCanvasProcessorViews(specs, my) {
             });
         },
 
-        selectProcessorView = function(id) {
+        selectProcessorView = function(state) {
             views.forEach(view => {
                 if (typeof view.setSelected === 'function') {
-                    view.setSelected(view.getID() === id);
+                    view.setSelected(view.getID() === state.selectedID, state);
                 }
             });
         },
@@ -101,7 +121,7 @@ export default function createCanvasProcessorViews(specs, my) {
             dragOffsetX = x;
             dragOffsetY = y;
             for (let i = views.length - 1; i >= 0; i--) {
-                if (views[i].intersectsWithPoint(x, y, 'processor')) {
+                if (views[i].intersectsWithPoint(x, y)) {
                     isIntersect = true;
                     store.dispatch(store.getActions().selectProcessor(views[i].getID()));
                     // start dragging the view's graphic
@@ -131,10 +151,6 @@ export default function createCanvasProcessorViews(specs, my) {
         };
 
     my = my || {};
-    my.setProcessorViews = setProcessorViews;
-    my.createProcessorViews = createProcessorViews;
-    my.selectProcessorView = selectProcessorView;
-    my.deleteProcessorView = deleteProcessorView;
     my.intersectsProcessor = intersectsProcessor;
     my.dragSelectedProcessor = dragSelectedProcessor;
     my.dragAllProcessors = dragAllProcessors;

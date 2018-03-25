@@ -10,8 +10,7 @@ export default function createMIDINetwork(specs, my) {
         init = function() {
             document.addEventListener(store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
-                    case e.detail.actions.NEW_PROJECT:
-                    case e.detail.actions.SET_PROJECT:
+                    case e.detail.actions.CREATE_PROJECT:
                         disconnectProcessors(e.detail.state.connections);
                         deleteProcessors(e.detail.state.processors);
                         createProcessors(e.detail.state.processors);
@@ -54,6 +53,7 @@ export default function createMIDINetwork(specs, my) {
                 if (!exists) {
                     const module = require(`../processors/${processorData.type}/processor`);
                     const processor = module.createProcessor({
+                        that: {},
                         data: processorData,
                         store: store
                     });
@@ -69,12 +69,15 @@ export default function createMIDINetwork(specs, my) {
          */
         deleteProcessors = function(procsState) {
             for (let i = processors.length - 1, n = 0; i >= n; i--) {
+                // search for the processor in the state
                 let exists = false;
                 procsState.allIds.forEach(processorID => {
                     if (processorID === processors[i].getID()) {
                         exists = true;
                     }
                 });
+
+                // remove processor if it doesn't exist in the state
                 if (!exists) {
                     const processor = processors[i];
                     if (processor.terminate instanceof Function) {
@@ -83,6 +86,7 @@ export default function createMIDINetwork(specs, my) {
                     processors.splice(i, 1);
                 }
             }
+            numProcessors = processors.length;
         },
         
         /**

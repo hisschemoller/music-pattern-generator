@@ -1,9 +1,10 @@
 import { createUUID } from '../core/util';
+import { getConfig, setConfig } from '../core/config';
+import { getAllMIDIPorts } from '../midi/midi';
 
 export default function createActions(specs = {}, my = {}) {
     const RESCAN_TYPES = 'RESCAN_TYPES',
-        NEW_PROJECT = 'NEW_PROJECT',
-        SET_PROJECT = 'SET_PROJECT',
+        CREATE_PROJECT = 'CREATE_PROJECT',
         SET_THEME = 'SET_THEME',
         CREATE_PROCESSOR = 'CREATE_PROCESSOR',
         ADD_PROCESSOR = 'ADD_PROCESSOR',
@@ -14,10 +15,8 @@ export default function createActions(specs = {}, my = {}) {
         CHANGE_PARAMETER = 'CHANGE_PARAMETER',
         RECREATE_PARAMETER = 'RECREATE_PARAMETER',
         SET_TEMPO = 'SET_TEMPO',
-        MIDI_PORT_CHANGE = 'MIDI_PORT_CHANGE',
-        TOGGLE_PORT_NETWORK = 'TOGGLE_PORT_NETWORK',
-        TOGGLE_PORT_SYNC = 'TOGGLE_PORT_SYNC',
-        TOGGLE_PORT_REMOTE = 'TOGGLE_PORT_REMOTE',
+        CREATE_MIDI_PORT = 'CREATE_MIDI_PORT',
+        UPDATE_MIDI_PORT = 'UPDATE_MIDI_PORT',
         TOGGLE_MIDI_PREFERENCE = 'TOGGLE_MIDI_PREFERENCE',
         TOGGLE_MIDI_LEARN_MODE = 'TOGGLE_MIDI_LEARN_MODE',
         TOGGLE_MIDI_LEARN_TARGET = 'TOGGLE_MIDI_LEARN_TARGET',
@@ -31,9 +30,11 @@ export default function createActions(specs = {}, my = {}) {
         DISCONNECT_PROCESSORS = 'DISCONNECT_PROCESSORS';
 
     return {
+
         importProject: (file) => {
             return (dispatch, getState, getActions) => {
                 let fileReader = new FileReader();
+
                 // closure to capture the file information
                 fileReader.onload = (function(f) {
                     return function(e) {
@@ -48,6 +49,7 @@ export default function createActions(specs = {}, my = {}) {
                             isJSON = false;
                         }
                         if (!isJSON) {
+
                             // try if it's a legacy xml file
                             const legacyData = my.convertLegacyFile(e.target.result);
                             if (legacyData) {
@@ -71,27 +73,106 @@ export default function createActions(specs = {}, my = {}) {
             }
         },
 
-        NEW_PROJECT: NEW_PROJECT,
-        newProject: (data) => {
-            return { type: NEW_PROJECT };
+        newProject: () => {
+            return (dispatch, getState, getActions) => {
+
+                // create an empty initial state
+                dispatch(getActions().createProject());
+
+                // add the existing MIDI ports
+                const existingMIDIPorts = getAllMIDIPorts();
+                existingMIDIPorts.forEach(port => {
+                    dispatch(getActions().midiAccessChange(port));
+                });
+
+                // recreate the state with the existing ports
+                dispatch(getActions().createProject(getState()));
+            }
         },
 
-        SET_PROJECT: SET_PROJECT,
         setProject: (data) => {
-            return { type: SET_PROJECT, data };
+            return (dispatch, getState, getActions) => {
+
+                // create an empty initial state
+                dispatch(getActions().createProject());
+
+                // add the existing MIDI ports
+                const existingMIDIPorts = getAllMIDIPorts();
+                existingMIDIPorts.forEach(port => {
+                    dispatch(getActions().midiAccessChange(port));
+                });
+
+                // copy the port settings of existing ports
+                const existingPorts = { ...getState().ports }
+
+                // copy the port settings defined in the project
+                const projectPorts = { ...data.ports };
+
+                // clear the project's port settings
+                data.ports.allIds = [];
+                data.ports.byId = {};
+
+                // add all existing ports to the project data
+                existingPorts.allIds.forEach(existingPortID => {
+                    data.ports.allIds.push(existingPortID);
+                    data.ports.byId[existingPortID] = existingPorts.byId[existingPortID];
+                });
+
+                // set the existing ports to the project's settings,
+                // and create ports that do not exist
+                projectPorts.allIds.forEach(projectPortID => {
+                    const projectPort = projectPorts.byId[projectPortID];
+                    let portExists = false;
+                    existingPorts.allIds.forEach(existingPortID => {
+                        if (existingPortID === projectPortID) {
+                            
+                            portExists = true;
+
+                            // project port's settings exists, update the settings
+                            const existingPort = existingPorts.byId[existingPortID];
+                            existingPort.syncEnabled = projectPort.syncEnabled;
+                            existingPort.remoteEnabled = projectPort.remoteEnabled;
+                            existingPort.networkEnabled = projectPort.networkEnabled;
+                        }
+                    });
+
+                    // port settings object doesn't exist, so create it, but disabled
+                    if (!portExists) {
+                        data.ports.allIds.push(projectPortID);
+                        data.ports.byId[projectPortID] = {
+                            id: projectPortID,
+                            type: projectPort.type,
+                            name: projectPort.name,
+                            connection: 'closed', // closed | open | pending
+                            state: 'disconnected', // disconnected | connected
+                            syncEnabled: projectPort.syncEnabled,
+                            remoteEnabled: projectPort.remoteEnabled,
+                            networkEnabled: projectPort.networkEnabled
+                        }
+                    }
+                });
+
+                // create the project with the merged ports
+                dispatch(getActions().createProject(data));
+            }
         },
 
-        SET_THEME: SET_THEME,
+        CREATE_PROJECT,
+        createProject: (data) => {
+            return { type: CREATE_PROJECT, data };
+        },
+
+        SET_THEME,
         setTheme: (themeName) => {
             return { type: SET_THEME, themeName };
         },
 
-        CREATE_PROCESSOR: CREATE_PROCESSOR,
+        CREATE_PROCESSOR,
         createProcessor: (data) => {
             return (dispatch, getState, getActions) => {
                 const dataTemplate = require(`json-loader!../processors/${data.type}/config.json`);
                 let fullData = JSON.parse(JSON.stringify(dataTemplate));
-                const id = `${data.type}_${createUUID()}`;
+                const id = data.id || `${data.type}_${createUUID()}`;
                 fullData = Object.assign(fullData, data);
                 fullData.id = id;
                 fullData.positionX = data.positionX;
@@ -102,90 +183,112 @@ export default function createActions(specs = {}, my = {}) {
             }
         },
 
-        ADD_PROCESSOR: ADD_PROCESSOR,
+        ADD_PROCESSOR,
         addProcessor: (data) => {
             return { type: ADD_PROCESSOR, data };
         },
 
-        DELETE_PROCESSOR: DELETE_PROCESSOR,
+        DELETE_PROCESSOR,
         deleteProcessor: id => {
             return { type: DELETE_PROCESSOR, id };
         },
 
-        SELECT_PROCESSOR: SELECT_PROCESSOR,
+        SELECT_PROCESSOR,
         selectProcessor: id => {
             return { type: SELECT_PROCESSOR, id };
         },
 
-        DRAG_SELECTED_PROCESSOR: DRAG_SELECTED_PROCESSOR,
+        DRAG_SELECTED_PROCESSOR,
         dragSelectedProcessor: (x, y) => {
             return { type: DRAG_SELECTED_PROCESSOR, x, y };
         },
 
-        DRAG_ALL_PROCESSORS: DRAG_ALL_PROCESSORS,
+        DRAG_ALL_PROCESSORS,
         dragAllProcessors: (x, y) => {
             return { type: DRAG_ALL_PROCESSORS, x, y };
         },
 
-        CHANGE_PARAMETER: CHANGE_PARAMETER,
+        CHANGE_PARAMETER,
         changeParameter: (processorID, paramKey, paramValue) => {
             return { type: CHANGE_PARAMETER, processorID, paramKey, paramValue };
         },
 
-        RECREATE_PARAMETER: RECREATE_PARAMETER,
+        RECREATE_PARAMETER,
         recreateParameter: (processorID, paramKey, paramObj) => {
             return { type: RECREATE_PARAMETER, processorID, paramKey, paramObj };
         },
 
-        SET_TEMPO: SET_TEMPO,
+        SET_TEMPO,
         setTempo: value => { return { type: SET_TEMPO, value } },
 
-        MIDI_PORT_CHANGE: MIDI_PORT_CHANGE,
-        midiPortChange: midiPort => ({ type: MIDI_PORT_CHANGE, midiPort }),
+        CREATE_MIDI_PORT,
+        createMIDIPort: (portID, data) => { return { type: CREATE_MIDI_PORT, portID, data } },
 
-        TOGGLE_PORT_NETWORK: TOGGLE_PORT_NETWORK,
-        togglePortNetwork: (portID, isInput) => {
+        UPDATE_MIDI_PORT,
+        updateMIDIPort: (portID, data) => { return { type: UPDATE_MIDI_PORT, portID, data } },
+
+        midiAccessChange: midiPort => {
             return (dispatch, getState, getActions) => {
-                dispatch(getActions().toggleMIDIPreference(portID, isInput, 'networkEnabled'));
+
+                // check if the port already exists
                 const state = getState();
-                if (state.ports.byId[portID].networkEnabled) {
-                    dispatch(getActions().createProcessor({ 
-                        type: 'output', 
-                        portID: portID,
-                        name: state.ports.byId[portID].name,
-                        positionX: window.innerWidth / 2,
-                        positionY: window.innerHeight - 100
+                const portExists = state.ports.allIds.indexOf(midiPort.id) > -1;
+
+                // create port or update existing
+                if (portExists) {
+
+                    // update existing port
+                    dispatch(getActions().updateMIDIPort(midiPort.id, {
+                        connection: midiPort.connection,
+                        state: midiPort.state
                     }));
                 } else {
-                    state.processors.allIds.forEach(id => {
-                        let processor = state.processors.byId[id];
-                        if (processor.portID && processor.portID === portID) {
-                            dispatch(getActions().deleteProcessor(processor.id));
+                    
+                    // restore settings from config
+                    const config = getConfig();
+                    let configPort = (config.ports && config.ports.byId) ? config.ports.byId[midiPort.id] : null;
+
+                    if (!configPort && config.ports && config.ports.allIds) {
+                        for (let i = config.ports.allIds.length - 1; i >= 0; i--) {
+                            const port = config.ports.byId[config.ports.allIds[i]];
+                            if (port.name === midiPort.name && port.type === midiPort.type) {
+                                configPort = port;
+                                break;
+                            }
                         }
-                    });
+                    }
+
+                    // create port
+                    dispatch(getActions().createMIDIPort(midiPort.id, {
+                        id: midiPort.id,
+                        type: midiPort.type,
+                        name: midiPort.name,
+                        connection: midiPort.connection,
+                        state: midiPort.state,
+                        networkEnabled: configPort ? configPort.networkEnabled : false,
+                        syncEnabled: configPort ? configPort.syncEnabled : false,
+                        remoteEnabled: configPort ? configPort.remoteEnabled : false
+                    }));
                 }
-            }
+
+                // store the changes in configuration
+                setConfig(getState());
+            };
         },
 
-        TOGGLE_PORT_SYNC: TOGGLE_PORT_SYNC,
-        togglePortSync: (id, isInput) => ({ type: TOGGLE_PORT_SYNC, id, isInput }),
-
-        TOGGLE_PORT_REMOTE: TOGGLE_PORT_REMOTE,
-        togglePortRemote: (id, isInput) => ({ type: TOGGLE_PORT_REMOTE, id, isInput }),
-
-        TOGGLE_MIDI_PREFERENCE: TOGGLE_MIDI_PREFERENCE,
-        toggleMIDIPreference: (id, isInput, preferenceName) => ({ type: TOGGLE_MIDI_PREFERENCE, id, isInput, preferenceName }),
-
-        TOGGLE_MIDI_LEARN_MODE: TOGGLE_MIDI_LEARN_MODE,
+        TOGGLE_MIDI_PREFERENCE,
+        toggleMIDIPreference: (id, preferenceName, isEnabled) => ({ type: TOGGLE_MIDI_PREFERENCE, id, preferenceName, isEnabled }),
+        
+        TOGGLE_MIDI_LEARN_MODE,
         toggleMIDILearnMode: () => ({ type: TOGGLE_MIDI_LEARN_MODE }),
 
-        TOGGLE_MIDI_LEARN_TARGET: TOGGLE_MIDI_LEARN_TARGET,
+        TOGGLE_MIDI_LEARN_TARGET,
         toggleMIDILearnTarget: (processorID, parameterKey) => ({ type: TOGGLE_MIDI_LEARN_TARGET, processorID, parameterKey }),
 
-        SET_TRANSPORT: SET_TRANSPORT,
+        SET_TRANSPORT,
         setTransport: command => ({ type: SET_TRANSPORT, command }),
 
-        RECEIVE_MIDI_CC: RECEIVE_MIDI_CC,
+        RECEIVE_MIDI_CC,
         receiveMIDIControlChange: (data) => {
             return (dispatch, getState, getActions) => {
                 const state = getState();
@@ -211,25 +314,37 @@ export default function createActions(specs = {}, my = {}) {
             }
         },
 
-        ASSIGN_EXTERNAL_CONTROL: ASSIGN_EXTERNAL_CONTROL,
+        ASSIGN_EXTERNAL_CONTROL,
         assignExternalControl: data => ({type: ASSIGN_EXTERNAL_CONTROL, data}),
 
-        UNASSIGN_EXTERNAL_CONTROL: UNASSIGN_EXTERNAL_CONTROL,
+        UNASSIGN_EXTERNAL_CONTROL,
         unassignExternalControl: (processorID, paramKey) => ({type: UNASSIGN_EXTERNAL_CONTROL, processorID, paramKey}),
         
-        TOGGLE_PANEL: TOGGLE_PANEL,
+        TOGGLE_PANEL,
         togglePanel: panelName => ({type: TOGGLE_PANEL, panelName}),
 
-        TOGGLE_CONNECT_MODE: TOGGLE_CONNECT_MODE,
+        TOGGLE_CONNECT_MODE,
         toggleConnectMode: () => ({ type: TOGGLE_CONNECT_MODE }),
 
-        CONNECT_PROCESSORS: CONNECT_PROCESSORS,
-        connectProcessors: payload => ({ type: CONNECT_PROCESSORS, payload, id: createUUID() }),
+        CONNECT_PROCESSORS,
+        connectProcessors: payload => ({ type: CONNECT_PROCESSORS, payload, id: `conn_${createUUID()}` }),
 
-        DISCONNECT_PROCESSORS: DISCONNECT_PROCESSORS,
-        disconnectProcessors: id => ({ type: DISCONNECT_PROCESSORS, id }),
+        DISCONNECT_PROCESSORS,
+        disconnectProcessors2: id => ({ type: DISCONNECT_PROCESSORS, id }),
 
-        RESCAN_TYPES: RESCAN_TYPES,
+        disconnectProcessors: id => {
+            return (dispatch, getState, getActions) => {
+                let state = getState();
+                const connection = state.connections.byId[id];
+                const sourceProcessor = state.processors.byId[connection.sourceProcessorID];
+                const destinationProcessor = state.processors.byId[connection.destinationProcessorID];
+
+                // disconnect the processors
+                dispatch(getActions().disconnectProcessors2(id));
+            }
+        },
+
+        RESCAN_TYPES,
         rescanTypes: () => {
             const req = require.context('../processors/', true, /\processor.js$/);
             let types = {};
@@ -247,6 +362,11 @@ export default function createActions(specs = {}, my = {}) {
     };
 }
 
+/**
+ * Convert a MIDI control value to a parameter value, depending on the parameter type.
+ * @param {Object} param Processor parameter.
+ * @param {Number} controllerValue MIDI controller value in the range 0 to 127.
+ */
 function midiControlToParameterValue(param, controllerValue) {
     const normalizedValue = controllerValue / 127;
     switch (param.type) {
@@ -267,8 +387,9 @@ function midiControlToParameterValue(param, controllerValue) {
 }
 
 /**
- * Set default processor name.
+ * Provide a default processor name.
  * @param {Object} processor Processor to name.
+ * @return {String} Name for a newly created processor.
  */
 function getProcessorDefaultName(processors) {
     let name, number, spaceIndex, 

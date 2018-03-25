@@ -16,7 +16,6 @@ export default function createMIDIConnectorIn(specs, my) {
             for (var i = 0; i < numSources; i++) {
                 data = sources[i].getOutputData();
                 outputData = outputData.concat(data);
-                data.length = 0;
             }
             return outputData;
         },
@@ -28,7 +27,6 @@ export default function createMIDIConnectorIn(specs, my) {
         addConnection = function(processor) {
             sources.push(processor);
             numSources = sources.length;
-            console.log('Connect ' + processor.getType() + ' (id ' + processor.getID() + ') to ' + that.getType() + ' (id ' + that.getID() + ')');
         },
         
         /**
@@ -41,7 +39,6 @@ export default function createMIDIConnectorIn(specs, my) {
                 if (processor === sources[n]) {
                     sources.splice(n, 1);
                     numSources = sources.length;
-                    console.log('Disconnect ' + processor.getType() + ' (id ' + processor.getID() + ') from ' + that.getType() + ' (id ' + that.getID() + ')');
                     break;
                 }
             }
