@@ -34,9 +34,9 @@ export function createProcessor(specs, my) {
                                 updatePattern(true);
                                 break;
                             case 'pulses':
+                            case 'rotation':
                                 updatePattern(true);
                                 break;
-                            case 'rotation':
                             case 'is_triplets':
                             case 'rate':
                                 updatePattern();
