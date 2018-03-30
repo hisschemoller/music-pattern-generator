@@ -15,7 +15,6 @@ export function createProcessor(specs, my) {
     const initialize = function() {
             document.addEventListener(store.STATE_CHANGE, handleStateChanges);
             updateAllParams(specs.data.params.byId);
-            updateEffectSettings();
             updatePattern(true);
         },
 
@@ -228,6 +227,7 @@ export function createProcessor(specs, my) {
             params.pulses = parameters.pulses.value;
             params.rotation = parameters.rotation.value;
             params.isTriplets = parameters.is_triplets.value;
+            params.rate = parameters.rate.value;
             params.high = parameters.high.value;
             params.low = parameters.low.value;
             params.target = parameters.target.value;
