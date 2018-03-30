@@ -14,7 +14,7 @@ export function createProcessor(specs, my) {
 
     const initialize = function() {
             document.addEventListener(store.STATE_CHANGE, handleStateChanges);
-            updateParams(specs.data.params.byId);
+            updateAllParams(specs.data.params.byId);
             updateEffectSettings();
             updatePattern(true);
         },
@@ -27,7 +27,7 @@ export function createProcessor(specs, my) {
             switch (e.detail.action.type) {
                 case e.detail.actions.CHANGE_PARAMETER:
                     if (e.detail.action.processorID === my.id) {
-                        my.params = e.detail.state.processors.byId[my.id].params.byId;
+                        updateAllParams(e.detail.state.processors.byId[my.id].params.byId);
                         switch (e.detail.action.paramKey) {
                             case 'steps':
                                 updatePulsesAndRotation();
@@ -41,16 +41,8 @@ export function createProcessor(specs, my) {
                             case 'rate':
                                 updatePattern();
                                 break;
-                            case 'low':
-                            case 'high':
-                                updateParams(e.detail.state.processors.byId[my.id].params.byId);
-                                break;
                             case 'target':
-                                updateParams(e.detail.state.processors.byId[my.id].params.byId);
-                                updateEffectSettings();
-                                break;
                             case 'mode':
-                                updateParams(e.detail.state.processors.byId[my.id].params.byId);
                                 updateEffectSettings();
                                 break;
                         }
@@ -59,7 +51,7 @@ export function createProcessor(specs, my) {
 
                 case e.detail.actions.RECREATE_PARAMETER:
                     if (e.detail.action.processorID === my.id) {
-                        updateParams(e.detail.state.processors.byId[my.id].params.byId);
+                        updateAllParams(e.detail.state.processors.byId[my.id].params.byId);
                     }
                     break;
             }
@@ -208,10 +200,10 @@ export function createProcessor(specs, my) {
          * After a change of the steps parameter update the pulses and rotation parameters.
          */
         updatePulsesAndRotation = function() {
-            store.dispatch(store.getActions().recreateParameter(my.id, 'pulses', { max: my.params.steps.value }));
-            store.dispatch(store.getActions().recreateParameter(my.id, 'rotation', { max: my.params.steps.value - 1 }));
-            store.dispatch(store.getActions().changeParameter(my.id, 'pulses', my.params.pulses.value));
-            store.dispatch(store.getActions().changeParameter(my.id, 'rotation', my.params.rotation.value));
+            store.dispatch(store.getActions().recreateParameter(my.id, 'pulses', { max: params.steps }));
+            store.dispatch(store.getActions().recreateParameter(my.id, 'rotation', { max: params.steps - 1 }));
+            store.dispatch(store.getActions().changeParameter(my.id, 'pulses', params.pulses));
+            store.dispatch(store.getActions().changeParameter(my.id, 'rotation', params.rotation));
         },
             
         /**
@@ -221,17 +213,21 @@ export function createProcessor(specs, my) {
         updatePattern = function(isEuclidChange) {
             // euclidean pattern properties, changes in steps, pulses, rotation
             if (isEuclidChange) {
-                euclidPattern = getEuclidPattern(my.params.steps.value, my.params.pulses.value);
-                euclidPattern = rotateEuclidPattern(euclidPattern, my.params.rotation.value);
+                euclidPattern = getEuclidPattern(params.steps, params.pulses);
+                euclidPattern = rotateEuclidPattern(euclidPattern, params.rotation);
             }
             
             // playback properties, changes in isTriplets and rate
-            var rate = my.params.is_triplets.value ? my.params.rate.value * (2 / 3) : my.params.rate.value;
+            var rate = params.isTriplets ? params.rate * (2 / 3) : params.rate;
             stepDuration = rate * PPQN;
-            duration = my.params.steps.value * stepDuration;
+            duration = params.steps * stepDuration;
         },
 
-        updateParams = function(parameters) {
+        updateAllParams = function(parameters) {
+            params.steps = parameters.steps.value;
+            params.pulses = parameters.pulses.value;
+            params.rotation = parameters.rotation.value;
+            params.isTriplets = parameters.is_triplets.value;
             params.high = parameters.high.value;
             params.low = parameters.low.value;
             params.target = parameters.target.value;
