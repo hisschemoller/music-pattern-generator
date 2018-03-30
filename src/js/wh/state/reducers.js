@@ -38,8 +38,7 @@ export default function createReducers() {
             switch(action.type) {
 
                 case actions.CREATE_PROJECT:
-                    const data = action.data || {};
-                    return { ...initialState, ...data };
+                    return { ...initialState, ...(action.data || {}) };
 
                 case actions.SET_THEME:
                     return { ...state, theme: state.theme === 'light' ? 'dark' : 'light' };
