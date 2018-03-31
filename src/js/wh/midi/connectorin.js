@@ -11,11 +11,14 @@ export default function createMIDIConnectorIn(specs, my) {
          * @return {Array} MIDI event data from all connected processors.
          */
         getInputData = function() {
-            var outputData = [], 
+            let outputData = [], 
                 data = [];
-            for (var i = 0; i < numSources; i++) {
+            
+            for (let i = 0; i < numSources; i++) {
                 data = sources[i].getOutputData();
-                outputData = outputData.concat(data);
+                for (let j = 0, p = data.length; j < p; j++) {
+                    outputData.push({ ...data[j] });
+                }
             }
             return outputData;
         },
