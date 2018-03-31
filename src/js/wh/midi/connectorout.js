@@ -71,27 +71,11 @@ export default function createMIDIConnectorOut(specs, my) {
          */
         getDestinations = function() {
             return destinations;
-        },
-        
-        /**
-         * The destinations are the processors this output is connected to.
-         * This function collects the ID's of these processors and adds them
-         * to a data object that can be stored.
-         * So this project and its processor connections can be restored.
-         * @param  {Object} data Project data object.
-         */
-        getDestinationsData = function(data) {
-            data.destinations = [];
-            var n = destinations.length;
-            for (var i = 0; i < n; i++) {
-                data.destinations.push(destinations[i].getID());
-            }
         };
     
     my = my || {};
     my.clearOutputData = clearOutputData;
     my.setOutputData = setOutputData;
-    my.getDestinationsData = getDestinationsData;
 
     that = specs.that || {};
     
