@@ -190,7 +190,7 @@ export function createProcessor(specs, my) {
             while (--i > -1) {
                 const timestampTicks = delayedEvents[i].timestampTicks;
                 if (scanStart <= timestampTicks && scanEnd > timestampTicks) {
-                    my.setOutputData(delayedEvents.splice(i, 1));
+                    my.setOutputData(delayedEvents.splice(i, 1)[0]);
                 }
             }
         },
