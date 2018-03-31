@@ -5,14 +5,15 @@ export default function createMIDIConnectorIn(specs, my) {
     var that,
         sources = [],
         numSources = 0,
+        outputData = [],
+        data,
         
         /**
          * Collects data from all processors this input is connected to.
          * @return {Array} MIDI event data from all connected processors.
          */
         getInputData = function() {
-            let outputData = [], 
-                data = [];
+            outputData.length = 0;
             
             for (let i = 0; i < numSources; i++) {
                 data = sources[i].getOutputData();
@@ -37,7 +38,7 @@ export default function createMIDIConnectorIn(specs, my) {
          * @param  {Object} processor Network MIDI processor.
          */
         removeConnection = function(processor) {
-            var n = sources.length;
+            var n = numSources;
             while (--n >= 0) {
                 if (processor === sources[n]) {
                     sources.splice(n, 1);
