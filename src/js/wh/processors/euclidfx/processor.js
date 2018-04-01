@@ -139,8 +139,8 @@ export function createProcessor(specs, my) {
                             break;
                         case 'delay':
                             if (effectValue > 0) {
-                                const delayInTicks = Math.max(0, (effectValue / 32) * PPQN * 4); // 32 == 1 measure == PPQN * 4
-                                console.log(delayInTicks);
+                                const delayInTicks = Math.max(0, (effectValue / 32) * PPQN * 0.25); // 32 == 1 beat == PPQN
+                                
                                 // store note if delayed start time falls outside of the current scan range
                                 if (event.timestampTicks + delayInTicks > scanEnd) {
                                     delayedEvents.push({
