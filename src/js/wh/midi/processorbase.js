@@ -16,9 +16,8 @@ export default function createMIDIProcessorBase(specs, my) {
         };
     
     my = my || {};
-    my.type = specs.data.type,
-    my.id = specs.data.id,
-    my.params = specs.data.params.byId;
+    my.type = specs.data.type;
+    my.id = specs.data.id;
     
     that = specs.that || {};
     if (specs.data.inputs.allIds.length >= 1) {

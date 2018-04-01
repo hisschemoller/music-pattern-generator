@@ -8,11 +8,13 @@ export function createProcessor(specs, my) {
         position = 0,
         duration = 0,
         noteDuration,
+        params = {},
         euclidPattern = [],
         pulsesOnly = [];
 
     const initialize = function() {
             document.addEventListener(store.STATE_CHANGE, handleStateChanges);
+            updateAllParams(specs.data.params.byId);
             updatePattern(true);
         },
 
@@ -24,7 +26,7 @@ export function createProcessor(specs, my) {
             switch (e.detail.action.type) {
                 case e.detail.actions.CHANGE_PARAMETER:
                     if (e.detail.action.processorID === my.id) {
-                        my.params = e.detail.state.processors.byId[my.id].params.byId;
+                        updateAllParams(e.detail.state.processors.byId[my.id].params.byId);
                         switch (e.detail.action.paramKey) {
                             case 'steps':
                                 updatePulsesAndRotation();
@@ -66,7 +68,7 @@ export function createProcessor(specs, my) {
             my.clearOutputData();
             
             // abort if the processor is muted
-            if (my.params.is_mute.value) {
+            if (params.is_mute) {
                 return;
             }
             
@@ -96,9 +98,9 @@ export function createProcessor(specs, my) {
                 
                 // if a note should play
                 if (isOn) {
-                    var channel = my.params.channel_out.value,
-                        pitch = my.params.pitch_out.value,
-                        velocity = my.params.velocity_out.value,
+                    var channel = params.channel_out,
+                        pitch = params.pitch_out,
+                        velocity = params.velocity_out,
                         pulseStartTimestamp = scanStart + scanStartToNoteStart;
                     
                     // send the Note On message
@@ -130,14 +132,27 @@ export function createProcessor(specs, my) {
             }
         },
 
+        updateAllParams = function(parameters) {
+            params.steps = parameters.steps.value;
+            params.pulses = parameters.pulses.value;
+            params.rotation = parameters.rotation.value;
+            params.isTriplets = parameters.is_triplets.value;
+            params.rate = parameters.rate.value;
+            params.note_length = parameters.note_length.value;
+            params.is_mute = parameters.is_mute.value;
+            params.channel_out = parameters.channel_out.value;
+            params.pitch_out = parameters.pitch_out.value;
+            params.velocity_out = parameters.velocity_out.value;
+        },
+
         /**
          * After a change of the steps parameter update the pulses and rotation parameters.
          */
         updatePulsesAndRotation = function() {
-            store.dispatch(store.getActions().recreateParameter(my.id, 'pulses', { max: my.params.steps.value }));
-            store.dispatch(store.getActions().recreateParameter(my.id, 'rotation', { max: my.params.steps.value - 1 }));
-            store.dispatch(store.getActions().changeParameter(my.id, 'pulses', my.params.pulses.value));
-            store.dispatch(store.getActions().changeParameter(my.id, 'rotation', my.params.rotation.value));
+            store.dispatch(store.getActions().recreateParameter(my.id, 'pulses', { max: params.steps }));
+            store.dispatch(store.getActions().recreateParameter(my.id, 'rotation', { max: params.steps - 1 }));
+            store.dispatch(store.getActions().changeParameter(my.id, 'pulses', params.pulses));
+            store.dispatch(store.getActions().changeParameter(my.id, 'rotation', params.rotation));
         },
             
         /**
@@ -147,15 +162,15 @@ export function createProcessor(specs, my) {
         updatePattern = function(isEuclidChange) {
             // euclidean pattern properties, changes in steps, pulses, rotation
             if (isEuclidChange) {
-                euclidPattern = getEuclidPattern(my.params.steps.value, my.params.pulses.value);
-                euclidPattern = rotateEuclidPattern(euclidPattern, my.params.rotation.value);
+                euclidPattern = getEuclidPattern(params.steps, params.pulses);
+                euclidPattern = rotateEuclidPattern(euclidPattern, params.rotation);
             }
             
             // playback properties, changes in isTriplets, rate, noteLength
-            var rate = my.params.is_triplets.value ? my.params.rate.value * (2 / 3) : my.params.rate.value,
+            var rate = params.is_triplets ? params.rate * (2 / 3) : params.rate,
                 stepDuration = rate * PPQN;
-            noteDuration = my.params.note_length.value * PPQN;
-            duration = my.params.steps.value * stepDuration;
+            noteDuration = params.note_length * PPQN;
+            duration = params.steps * stepDuration;
             position = position % duration;
             
             // create array of note start times in ticks

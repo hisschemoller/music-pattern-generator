@@ -7,7 +7,8 @@ import { getMIDIPortByID } from '../../midi/midi';
 export function createProcessor(specs, my) {
     let that,
         store = specs.store,
-        midiOutput;
+        midiOutput,
+        params = {};
     
     const initialize = function() {
             document.addEventListener(store.STATE_CHANGE, handleStateChange);
@@ -23,7 +24,7 @@ export function createProcessor(specs, my) {
 
                 case e.detail.actions.CHANGE_PARAMETER:
                     if (e.detail.action.processorID === my.id) {
-                        my.params = e.detail.state.processors.byId[my.id].params.byId;
+                        updateAllParams(e.detail.state.processors.byId[my.id].params.byId);
                         switch (e.detail.action.paramKey) {
                             case 'port':
                                 updateMIDIPort();
@@ -73,16 +74,20 @@ export function createProcessor(specs, my) {
             }
         },
 
+        updateAllParams = function(parameters) {
+            params.port = parameters.port.value;
+            params.portName = parameters.port.model.find(element => element.value === params.port).label;
+        },
+
         /**
          * Retrieve the MIDI port the MIDI notes are sent to.
          * After a port parameter change.
          */
         updateMIDIPort = function() {
-            midiOutput = getMIDIPortByID(my.params.port.value);
+            midiOutput = getMIDIPortByID(params.port);
             
             // update the processor's name parameter
-            const item = my.params.port.model.find(element => element.value === my.params.port.value)
-            store.dispatch(store.getActions().changeParameter(my.id, 'name', item.label));
+            store.dispatch(store.getActions().changeParameter(my.id, 'name', params.portName));
         },
 
         /**
