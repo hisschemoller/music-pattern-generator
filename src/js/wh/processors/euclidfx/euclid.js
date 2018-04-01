@@ -1,4 +1,3 @@
-
 const cache = {};
 
 export function getEuclidPattern(steps, pulses) {
@@ -21,106 +20,53 @@ export function rotateEuclidPattern(pattern, rotation) {
  * @return {Array} Array of Booleans that form the pattern.
  */
 function createBjorklund(steps, pulses) {
-    var pauses = steps - pulses;
-    if (pulses >= steps) {
-        return buildPatternListFilledWith(steps, true);
-    } else if (steps == 1) {
-        return buildPatternListFilledWith(steps, pulses == 1);
-    } else if (steps == 0 || pulses == 0) {
-        return buildPatternListFilledWith(steps, false);
-    } else {
-        let distribution = [];
-        for (let i = 0; i < steps; i++) {
-            distribution.push([i < pulses]);
+    if (pulses < 0 || steps < 0 || steps < pulses) {
+        return [];
+    }
+  
+    // Create the two arrays
+    let first = new Array(pulses).fill([1]);
+    let second = new Array(steps - pulses).fill([0]);
+  
+    let firstLength = first.length;
+    let minLength = Math.min(firstLength, second.length);
+  
+    let loopThreshold = 0;
+    // Loop until at least one array has length gt 2 (1 for first loop)
+    while (minLength > loopThreshold) {
+
+        // Allow only loopThreshold to be zero on the first loop
+        if (loopThreshold === 0) {
+            loopThreshold = 1;
         }
-        return splitDistributionAndContinue(distribution, pauses);
-    }
-}
-
-/**
- * Divide as much as possible of the remainder over the distribution arrays.
- * @param {Array} distributionArray Two dimensional array of booleans.
- * @param {Number} remainder Amount of items not yet in distribution array.
- * @return {Function} One dimensional array of booleans, the Euclidean pattern.
- */
-function splitDistributionAndContinue(distributionArray, remainder) {
-    let newDistributionArray = [],
-        newRemainderArray = [];
-    if (remainder == 0) {
-        newDistributionArray = distributionArray;
-    } else {
-        let newDistributionSize = distributionArray.length - remainder;
-        for (let i = 0, n = distributionArray.length; i < n; i++) {
-            if (i < newDistributionSize) {
-                newDistributionArray.push(distributionArray[i]);
-            } else {
-                newRemainderArray.push(distributionArray[i]);
-            }
+  
+        // For the minimum array loop and concat
+        for (var x = 0; x < minLength; x++) {
+            first[x] = Array.prototype.concat.call(first[x], second[x]);
         }
-    }
-    return bjorklund(newDistributionArray, newRemainderArray);
-}
-
-/**
- * Divide as much as possible of the remainder over the distribution arrays.
- * @param {Object} distributionArray Two dimensional array.
- * @param {Object} remainderArray Two dimensional array.
- * @return {Object} One dimensional array of booleans, the Euclidean pattern.
- */
-function bjorklund(distributionArray, remainderArray) {
-    // handy for debugging
-    // console.log('distributionArray', toStringArrayList(distributionArray)); 
-    // console.log('remainderArray', toStringArrayList(remainderArray));
-    
-    if (remainderArray.length <= 1) {
-        return flattenArrays([distributionArray, remainderArray]);
-    } else {
-        let fullRounds = Math.floor(remainderArray.length / distributionArray.length),
-            remainder = remainderArray.length % distributionArray.length,
-            newRemainder = remainder == 0 ? 0 : distributionArray.length - remainder;
-        for (let i = 0; i < fullRounds; i++) {
-            let p = distributionArray.length;
-            for (let j = 0; j < p; j++) {
-                distributionArray[j].push(remainderArray.shift());
-            }
+  
+        // if the second was the bigger array, slice the remaining elements/arrays and update
+        if (minLength === firstLength) {
+            second = Array.prototype.slice.call(second, minLength);
         }
-        for (let i = 0; i < remainder; i++ ) {
-            distributionArray[i].push(remainderArray.shift());
+        // Otherwise update the second (smallest array) with the remainders of the first
+        // and update the first array to include onlt the extended sub-arrays
+        else {
+            second = Array.prototype.slice.call(first, minLength);
+            first = Array.prototype.slice.call(first, 0, minLength);
         }
-        
-        return splitDistributionAndContinue(distributionArray, newRemainder);
+        firstLength = first.length;
+        minLength = Math.min(firstLength, second.length);
     }
-}
-
-/**
- * Create a pattern filled with only pulses or silences.
- * @param {Number} steps Total amount of tsteps in the pattern.
- * @param {Boolen} value Value to fill the array with, true for pulses.
- * @return {Array} Array of Booleans that form the pattern.
- */
-function buildPatternListFilledWith(steps, value) {
-    let distribution = [];
-    for (let i = 0; i < steps; i++) {
-        distribution.push(value);
-    }
-    return distribution;
-}
-
-/**
- * Flatten a multidimensional array.
- * @param {Object} arr The array to flatten.
- * @return {Object} One dimensional flattened array.
- */
-function flattenArrays(arr) {
-    return arr.reduce(function (flat, toFlatten) {
-        return flat.concat(Array.isArray(toFlatten) ? flattenArrays(toFlatten) : toFlatten);
-    }, []);
-}
-
-function toStringArrayList(arrayList) {
-    var str = '';
-    for (let i = 0, n = arrayList.length; i < n; i++) {
-        str += '[' + arrayList[i] + ']';
-    }
-    return str;
+  
+    // Build the final array
+    let pattern = [];
+    first.forEach(f => {
+        pattern = Array.prototype.concat.call(pattern, f);
+    });
+    second.forEach(s => {
+        pattern = Array.prototype.concat.call(pattern, s);
+    });
+  
+    return pattern;
 }
