@@ -286,30 +286,41 @@ export default function createReducers() {
                     });
 
                 case actions.ASSIGN_EXTERNAL_CONTROL:
-                    if (state.learnModeActive && state.learnTargetProcessorID && state.learnTargetParameterKey) {
-                        newState = { 
-                            ...state,
-                            processors: {
-                                allIds: [ ...state.processors.allIds ],
-                                byId: { ...state.processors.byId }
-                            } };
-                        newState.processors.byId[state.learnTargetProcessorID].params.byId = assignParameter(newState.processors.byId[state.learnTargetProcessorID].params.byId, action, state);
-                        return newState;
-                    }
-                    return state;
-
                 case actions.UNASSIGN_EXTERNAL_CONTROL:
-                    if (state.learnModeActive && state.learnTargetProcessorID && state.learnTargetParameterKey) {
-                        newState = { 
-                            ...state,
-                            processors: {
-                                allIds: [ ...state.processors.allIds ],
-                                byId: { ...state.processors.byId }
-                            } };
-                        newState.processors.byId[state.learnTargetProcessorID].params.byId = unassignParameter(newState.processors.byId[state.learnTargetProcessorID].params.byId, action, state);
-                        return newState;
-                    }
-                    return state;
+                    return {
+                        ...state,
+                        processors: {
+                            allIds: [...state.processors.allIds],
+                            byId: state.processors.allIds.reduce((accumulator, processorID) => {
+                                const processor = state.processors.byId[processorID];
+                                if (action.processorID === processorID) {
+                                    accumulator[processorID] = {
+                                        ...processor,
+                                        params: {
+                                            allIds: [...processor.params.allIds],
+                                            byId: processor.params.allIds.reduce((pAccumulator, paramKey) => {
+                                                const param = processor.params.byId[paramKey];
+                                                if (action.paramKey === paramKey) {
+                                                    const isAssign = action.type === actions.ASSIGN_EXTERNAL_CONTROL;
+                                                    pAccumulator[paramKey] = {
+                                                        ...param,
+                                                        remoteChannel: isAssign ? action.remoteChannel : null,
+                                                        remoteCC: isAssign ? action.remoteCC : null
+                                                    }
+                                                } else {
+                                                    pAccumulator[paramKey] = {...param}
+                                                }
+                                                return pAccumulator;
+                                            }, {})
+                                        }
+                                    }
+                                } else {
+                                    accumulator[processorID] = {...processor}
+                                }
+                                return accumulator;
+                            }, {})
+                        }
+                    };
                 
                 case actions.TOGGLE_PANEL:
                     return {
@@ -396,18 +407,4 @@ export default function createReducers() {
     return {
         reduce: reduce
     }
-}
- 
-function assignParameter(parameters, action, state) {
-    const params = { ...parameters };
-    params[state.learnTargetParameterKey].remoteChannel = (action.data[0] & 0xf) + 1;
-    params[state.learnTargetParameterKey].remoteCC = action.data[1];
-    return params;
-}
-
-function unassignParameter(parameters, action, state) {
-    const params = { ...parameters };
-    params[action.paramKey].remoteChannel = null;
-    params[action.paramKey].remoteCC = null;
-    return params;
 }
