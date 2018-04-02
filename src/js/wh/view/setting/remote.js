@@ -22,7 +22,17 @@ export default function createRemoteSettingView(specs, my) {
             if (my.data.isMidiControllable) {
                 if (state.learnModeActive) {
                     showRemoteState('enter');
-                    if (my.data.remoteChannel != null && my.data.remoteCC != null) {
+
+                    // search for assignment
+                    let assignment;
+                    state.assignments.allIds.forEach(assignID => {
+                        const assign = state.assignments.byId[assignID];
+                        if (assign.processorID === my.processorID && assign.paramKey === my.key) {
+                            assignment = assign;
+                        }
+                    });
+
+                    if (assignment) {
                         showRemoteState('assigned');
                     } else {
                         showRemoteState('unassigned');
