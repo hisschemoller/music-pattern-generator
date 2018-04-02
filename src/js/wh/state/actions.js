@@ -1,6 +1,7 @@
 import { createUUID } from '../core/util';
 import { getConfig, setConfig } from '../core/config';
 import { getAllMIDIPorts } from '../midi/midi';
+import { getAssignedParamsByMIDIData } from './selectors';
 
 export default function createActions(specs = {}, my = {}) {
     const RESCAN_TYPES = 'RESCAN_TYPES',
@@ -292,30 +293,25 @@ export default function createActions(specs = {}, my = {}) {
         receiveMIDIControlChange: (data) => {
             return (dispatch, getState, getActions) => {
                 const state = getState();
+                const remoteChannel = (data[0] & 0xf) + 1;
+                const remoteCC = data[1];
                 if (state.learnModeActive) {
-                    dispatch(getActions().assignExternalControl(data));
+                    dispatch(getActions().assignExternalControl(state.learnTargetProcessorID, state.learnTargetParameterKey, remoteChannel, remoteCC));
                 } else {
-                    // find all parameters with the channel and conctrol
-                    const remoteChannel = (data[0] & 0xf) + 1,
-                        remoteCC = data[1];
-                    state.processors.allIds.forEach(id => {
-                        const processor = state.processors.byId[id];
-                        processor.params.allIds.forEach(id => {
-                            const param = processor.params.byId[id];
-                            if (param.isMidiControllable && 
-                                param.remoteChannel === remoteChannel &&
-                                param.remoteCC == remoteCC) {
-                                let paramValue = midiControlToParameterValue(param, data[2]);
-                                dispatch(getActions().changeParameter(processor.id, id, paramValue));
-                            }
+                    const paramsData = getAssignedParamsByMIDIData(remoteChannel, remoteCC);
+                    if (paramsData) {
+                        paramsData.forEach(paramData => {
+                            const param = state.processors.byId[paramData.processorID].params.byId[paramData.paramKey];
+                            const paramValue = midiControlToParameterValue(param, data[2]);
+                            dispatch(getActions().changeParameter(paramData.processorID, paramData.paramKey, paramValue));
                         });
-                    });
+                    }
                 }
             }
         },
 
         ASSIGN_EXTERNAL_CONTROL,
-        assignExternalControl: data => ({type: ASSIGN_EXTERNAL_CONTROL, data}),
+        assignExternalControl: (processorID, paramKey, remoteChannel, remoteCC) => ({type: ASSIGN_EXTERNAL_CONTROL, processorID, paramKey, remoteChannel, remoteCC}),
 
         UNASSIGN_EXTERNAL_CONTROL,
         unassignExternalControl: (processorID, paramKey) => ({type: UNASSIGN_EXTERNAL_CONTROL, processorID, paramKey}),
