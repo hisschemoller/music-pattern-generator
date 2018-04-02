@@ -295,19 +295,19 @@ export default function createActions(specs = {}, my = {}) {
                 const state = getState();
                 const remoteChannel = (data[0] & 0xf) + 1;
                 const remoteCC = data[1];
-                
+
                 if (state.learnModeActive) {
                     dispatch(getActions().unassignExternalControl(state.learnTargetProcessorID, state.learnTargetParameterKey));
                     dispatch(getActions().assignExternalControl(`assign_${createUUID()}`, state.learnTargetProcessorID, state.learnTargetParameterKey, remoteChannel, remoteCC));
                 } else {
-                    const paramsData = getAssignedParamsByMIDIData(remoteChannel, remoteCC);
-                    if (paramsData) {
-                        paramsData.forEach(paramData => {
-                            const param = state.processors.byId[paramData.processorID].params.byId[paramData.paramKey];
+                    state.assignments.allIds.forEach(assignID => {
+                        const assignment = state.assignments.byId[assignID];
+                        if (assignment.remoteChannel === remoteChannel && assignment.remoteCC === remoteCC) {
+                            const param = state.processors.byId[assignment.processorID].params.byId[assignment.paramKey];
                             const paramValue = midiControlToParameterValue(param, data[2]);
-                            dispatch(getActions().changeParameter(paramData.processorID, paramData.paramKey, paramValue));
-                        });
-                    }
+                            dispatch(getActions().changeParameter(assignment.processorID, assignment.paramKey, paramValue));
+                        }
+                    });
                 }
             }
         },
