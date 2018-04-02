@@ -7,7 +7,7 @@ import createRemoteItemView from './remote_item';
 export default function createRemoteGroupView(specs, my) {
     var that,
         store = specs.store,
-        processorID = specs.processor.id,
+        processorID = specs.processorID,
         parentEl = specs.parentEl,
         el,
         listEl,
@@ -26,8 +26,9 @@ export default function createRemoteGroupView(specs, my) {
             
             listEl = el.querySelector('.remote__group-list');
 
-            setName(specs.processor.params.byId.name.value);
-            updateViews(specs.processor);
+            const state = store.getState();
+            setName(state.processors.byId[processorID].params.byId.name.value);
+            updateViews(state);
 
             document.addEventListener(store.STATE_CHANGE, handleStateChange);
         },
@@ -58,35 +59,52 @@ export default function createRemoteGroupView(specs, my) {
             }
         },
 
-        updateViews = function(processor) {
-            processor.params.allIds.forEach(id => {
-                const param = processor.params.byId[id],
-                    isAssigned = param.isMidiControllable && param.remoteChannel && param.remoteCC,
-                    viewExists = views.byId[id];
-                if (isAssigned && !viewExists) {
-                    addView(id, param);
-                } else if (!isAssigned && viewExists) {
-                    removeView(id);
+        /**
+         * Update list to contain all assignments.
+         */
+        updateViews = function(state) {
+            state.processors.byId[processorID].params.allIds.forEach(paramKey => {
+                
+                // search assignment for this parameter
+                let assignment;
+                state.assignments.allIds.forEach(assignID => {
+                    const assign = state.assignments.byId[assignID];
+                    if (assign.processorID === processorID && assign.paramKey === paramKey) {
+                        assignment = assign;
+                    }
+                });
+
+                // create or delete the parameter's view
+                const view = views.byId[paramKey];
+                if (assignment && !view) {
+                    const param = state.processors.byId[processorID].params.byId[paramKey];
+                    addView(paramKey, param.label, assignment.remoteChannel, assignment.remoteCC);
+                } else if (!assignment && view) {
+                    removeView(paramKey);
                 }
             });
+
+            // show group if there are assignments
             el.dataset.hasAssignments = (views.allIds.length > 0);
         },
 
-        addView = function(key, param) {
-            views.byId[key] = createRemoteItemView({
-                store: store,
-                paramKey: key,
-                param: param,
-                processorID: processorID,
+        addView = function(paramKey, paramLabel, remoteChannel, remoteCC) {
+            views.byId[paramKey] = createRemoteItemView({
+                store,
+                paramKey,
+                paramLabel,
+                processorID,
+                remoteChannel,
+                remoteCC,
                 parentEl: listEl
             });
-            views.allIds.push(key);
+            views.allIds.push(paramKey);
         },
 
-        removeView = function(key) {
-            views.byId[key].terminate();
-            delete views.byId[key];
-            views.allIds.splice(views.allIds.indexOf(key), 1);
+        removeView = function(paramKey) {
+            views.byId[paramKey].terminate();
+            delete views.byId[paramKey];
+            views.allIds.splice(views.allIds.indexOf(paramKey), 1);
         },
         
         /**

@@ -6,8 +6,10 @@ export default function createRemoteItemView(specs, my) {
     var that,
         store = specs.store,
         paramKey = specs.paramKey,
-        param = specs.param,
+        paramLabel = specs.paramLabel,
         processorID = specs.processorID,
+        remoteChannel = specs.remoteChannel,
+        remoteCC = specs.remoteCC,
         parentEl = specs.parentEl,
         el,
         
@@ -16,9 +18,9 @@ export default function createRemoteItemView(specs, my) {
             let template = document.querySelector('#template-remote-item');
             let clone = template.content.cloneNode(true);
             el = clone.firstElementChild;
-            el.querySelector('.remote__item-label').innerHTML = param.label;
-            el.querySelector('.remote__item-channel').innerHTML = param.remoteChannel;
-            el.querySelector('.remote__item-control').innerHTML = param.remoteCC;
+            el.querySelector('.remote__item-label').innerHTML = paramLabel;
+            el.querySelector('.remote__item-channel').innerHTML = remoteChannel;
+            el.querySelector('.remote__item-control').innerHTML = remoteCC;
             parentEl.appendChild(el);
             
             // add DOM event listeners
@@ -31,7 +33,6 @@ export default function createRemoteItemView(specs, my) {
         terminate = function() {
             el.querySelector('.remote__item-delete').removeEventListener('click', onUnregisterClick);
             parentEl.removeChild(el);
-            param = null;
             parentEl = null;
         },
         

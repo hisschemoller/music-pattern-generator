@@ -15,8 +15,9 @@ export default function createRemoteView(specs, my) {
         init = function() {
             document.addEventListener(store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
+
                     case e.detail.actions.CREATE_PROJECT:
-                        createRemoteGroups(e.detail.state.processors);
+                        createRemoteGroups(e.detail.state);
                         break;
 
                     case e.detail.actions.ADD_PROCESSOR:
@@ -24,7 +25,7 @@ export default function createRemoteView(specs, my) {
                         break;
                         
                     case e.detail.actions.DELETE_PROCESSOR:
-                        deleteRemoteGroups(e.detail.state.processors);
+                        deleteRemoteGroups(e.detail.state);
                         break;
                     
                     case e.detail.actions.ASSIGN_EXTERNAL_CONTROL:
@@ -32,9 +33,9 @@ export default function createRemoteView(specs, my) {
                             const groupView = groupViews.byId[e.detail.state.learnTargetProcessorID],
                                 processor = e.detail.state.processors.byId[e.detail.state.learnTargetProcessorID];
                             if (!groupView) {
-                                createRemoteGroups(e.detail.state.processors);
+                                createRemoteGroups(e.detail.state);
                             } else {
-                                groupView.updateViews(processor);
+                                groupView.updateViews(e.detail.state);
                             }
                         }
                         break;
@@ -42,28 +43,37 @@ export default function createRemoteView(specs, my) {
                     case e.detail.actions.UNASSIGN_EXTERNAL_CONTROL:
                         const groupView = groupViews.byId[e.detail.action.processorID],
                             processor = e.detail.state.processors.byId[e.detail.state.learnTargetProcessorID];
-                            groupView.updateViews(processor);
+                            if (groupView && processor) {
+                                groupView.updateViews(e.detail.state);
+                            }
                         break;
                 }
             });
         },
 
-        createRemoteGroups = function(processors) {
-            processors.allIds.forEach(id => {
-                if (!groupViews.byId[id]) {
-                    const processor = processors.byId[id];
-                    let hasAssignment = false;
-                    processor.params.allIds.forEach(id => {
-                        const param = processor.params.byId[id];
-                        if (param.isMidiControllable && param.remoteChannel && param.remoteCC != null) {
-                            hasAssignment = true;
-                        }
-                    });
-                    if (hasAssignment) {
-                        createRemoteGroup(processor);
-                    }
+        createRemoteGroups = function(state) {
+            state.assignments.allIds.forEach(assignID => {
+                const assignment = state.assignments.byId[assignID];
+                if (!groupViews.byId[assignment.processorID]) {
+                    createRemoteGroup(state.processors.byId[assignment.processorID]);
                 }
             });
+
+            // processors.allIds.forEach(id => {
+            //     if (!groupViews.byId[id]) {
+            //         const processor = processors.byId[id];
+            //         let hasAssignment = false;
+            //         processor.params.allIds.forEach(id => {
+            //             const param = processor.params.byId[id];
+            //             if (param.isMidiControllable && param.remoteChannel && param.remoteCC != null) {
+            //                 hasAssignment = true;
+            //             }
+            //         });
+            //         if (hasAssignment) {
+            //             createRemoteGroup(processor);
+            //         }
+            //     }
+            // });
         },
         
         /**
@@ -75,7 +85,7 @@ export default function createRemoteView(specs, my) {
                 groupViews.allIds.push(processor.id);
                 groupViews.byId[processor.id] = createRemoteGroupView({
                     store: store,
-                    processor: processor,
+                    processorID: processor.id,
                     parentEl: listEl
                 });
             }
