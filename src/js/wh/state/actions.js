@@ -295,8 +295,10 @@ export default function createActions(specs = {}, my = {}) {
                 const state = getState();
                 const remoteChannel = (data[0] & 0xf) + 1;
                 const remoteCC = data[1];
+                
                 if (state.learnModeActive) {
-                    dispatch(getActions().assignExternalControl(state.learnTargetProcessorID, state.learnTargetParameterKey, remoteChannel, remoteCC));
+                    dispatch(getActions().unassignExternalControl(state.learnTargetProcessorID, state.learnTargetParameterKey));
+                    dispatch(getActions().assignExternalControl(`assign_${createUUID()}`, state.learnTargetProcessorID, state.learnTargetParameterKey, remoteChannel, remoteCC));
                 } else {
                     const paramsData = getAssignedParamsByMIDIData(remoteChannel, remoteCC);
                     if (paramsData) {
@@ -311,7 +313,7 @@ export default function createActions(specs = {}, my = {}) {
         },
 
         ASSIGN_EXTERNAL_CONTROL,
-        assignExternalControl: (processorID, paramKey, remoteChannel, remoteCC) => ({type: ASSIGN_EXTERNAL_CONTROL, processorID, paramKey, remoteChannel, remoteCC}),
+        assignExternalControl: (assignID, processorID, paramKey, remoteChannel, remoteCC) => ({type: ASSIGN_EXTERNAL_CONTROL, assignID, processorID, paramKey, remoteChannel, remoteCC}),
 
         UNASSIGN_EXTERNAL_CONTROL,
         unassignExternalControl: (processorID, paramKey) => ({type: UNASSIGN_EXTERNAL_CONTROL, processorID, paramKey}),
