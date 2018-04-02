@@ -19,6 +19,10 @@ export default function createReducers() {
                 byId: {},
                 allIds: []
             },
+            assignments: {
+                byId: {},
+                allIds: []
+            },
             bpm: 120,
             selectedID: null,
             theme: 'dev', // 'light|dark' 
@@ -286,41 +290,79 @@ export default function createReducers() {
                     });
 
                 case actions.ASSIGN_EXTERNAL_CONTROL:
+                    return {
+                        ...state,
+                        assignments: {
+                            allIds: [...state.assignments.allIds, action.assignID],
+                            byId: {
+                                ...state.assignments.byId,
+                                [action.assignID]: {
+                                    remoteChannel: action.remoteChannel,
+                                    remoteCC: action.remoteCC,
+                                    processorID: action.processorID,
+                                    paramKey: action.paramKey
+                                }
+                            }
+                        }
+                    };
+                
                 case actions.UNASSIGN_EXTERNAL_CONTROL:
                     return {
                         ...state,
-                        processors: {
-                            allIds: [...state.processors.allIds],
-                            byId: state.processors.allIds.reduce((accumulator, processorID) => {
-                                const processor = state.processors.byId[processorID];
-                                if (action.processorID === processorID) {
-                                    accumulator[processorID] = {
-                                        ...processor,
-                                        params: {
-                                            allIds: [...processor.params.allIds],
-                                            byId: processor.params.allIds.reduce((pAccumulator, paramKey) => {
-                                                const param = processor.params.byId[paramKey];
-                                                if (action.paramKey === paramKey) {
-                                                    const isAssign = action.type === actions.ASSIGN_EXTERNAL_CONTROL;
-                                                    pAccumulator[paramKey] = {
-                                                        ...param,
-                                                        remoteChannel: isAssign ? action.remoteChannel : null,
-                                                        remoteCC: isAssign ? action.remoteCC : null
-                                                    }
-                                                } else {
-                                                    pAccumulator[paramKey] = {...param}
-                                                }
-                                                return pAccumulator;
-                                            }, {})
-                                        }
-                                    }
-                                } else {
-                                    accumulator[processorID] = {...processor}
+                        assignments: {
+                            allIds: state.assignments.allIds.reduce((accumulator, assignID) => {
+                                const assignment = state.assignments.byId[assignID];
+                                if (assignment.processorID !== action.processorID || assignment.paramKey !== action.paramKey) {
+                                    accumulator.push(assignID);
+                                }
+                                return accumulator;
+                            }, []),
+                            byId: state.assignments.allIds.reduce((accumulator, assignID) => {
+                                const assignment = state.assignments.byId[assignID];
+                                if (assignment.processorID !== action.processorID || assignment.paramKey !== action.paramKey) {
+                                    accumulator[assignID] = {...assignment};
                                 }
                                 return accumulator;
                             }, {})
                         }
                     };
+
+                // case actions.ASSIGN_EXTERNAL_CONTROL:
+                // case actions.UNASSIGN_EXTERNAL_CONTROL:
+                //     return {
+                //         ...state,
+                //         processors: {
+                //             allIds: [...state.processors.allIds],
+                //             byId: state.processors.allIds.reduce((accumulator, processorID) => {
+                //                 const processor = state.processors.byId[processorID];
+                //                 if (action.processorID === processorID) {
+                //                     accumulator[processorID] = {
+                //                         ...processor,
+                //                         params: {
+                //                             allIds: [...processor.params.allIds],
+                //                             byId: processor.params.allIds.reduce((pAccumulator, paramKey) => {
+                //                                 const param = processor.params.byId[paramKey];
+                //                                 if (action.paramKey === paramKey) {
+                //                                     const isAssign = action.type === actions.ASSIGN_EXTERNAL_CONTROL;
+                //                                     pAccumulator[paramKey] = {
+                //                                         ...param,
+                //                                         remoteChannel: isAssign ? action.remoteChannel : null,
+                //                                         remoteCC: isAssign ? action.remoteCC : null
+                //                                     }
+                //                                 } else {
+                //                                     pAccumulator[paramKey] = {...param}
+                //                                 }
+                //                                 return pAccumulator;
+                //                             }, {})
+                //                         }
+                //                     }
+                //                 } else {
+                //                     accumulator[processorID] = {...processor}
+                //                 }
+                //                 return accumulator;
+                //             }, {})
+                //         }
+                //     };
                 
                 case actions.TOGGLE_PANEL:
                     return {

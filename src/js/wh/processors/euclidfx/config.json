@@ -29,9 +29,7 @@
                 "value": 16,
                 "min": 1,
                 "max": 64,
-                "isMidiControllable": true,
-                "remoteChannel": null,
-                "remoteCC": null
+                "isMidiControllable": true
             },
             "pulses": {
                 "label": "Pulses",
@@ -40,9 +38,7 @@
                 "value": 4,
                 "min": 0,
                 "max": 16,
-                "isMidiControllable": true,
-                "remoteChannel": null,
-                "remoteCC": null
+                "isMidiControllable": true
             },
             "rotation": {
                 "label": "Rotation",
@@ -51,9 +47,7 @@
                 "value": 0,
                 "min": 0,
                 "max": 15,
-                "isMidiControllable": true,
-                "remoteChannel": null,
-                "remoteCC": null
+                "isMidiControllable": true
             },
             "rate": {
                 "label": "Rate",
@@ -95,9 +89,7 @@
                 "value": 50,
                 "min": 0,
                 "max": 127,
-                "isMidiControllable": true,
-                "remoteChannel": null,
-                "remoteCC": null
+                "isMidiControllable": true
             },
             "high": {
                 "label": "High value",
@@ -106,9 +98,7 @@
                 "value": 100,
                 "min": 0,
                 "max": 127,
-                "isMidiControllable": true,
-                "remoteChannel": null,
-                "remoteCC": null
+                "isMidiControllable": true
             },
             "mode": {
                 "label": "Mode",
@@ -124,8 +114,7 @@
                 "label": "Name",
                 "type": "string",
                 "default": "Unnamed",
-                "value": "Unnamed",
-                "isMidiControllable": false
+                "value": "Unnamed"
             }
         },
         "allIds": ["steps", "pulses", "rotation", "rate", "is_triplets", "target", "low", "high", "mode", "name"]

@@ -24,9 +24,7 @@
                 "value": 16,
                 "min": 1,
                 "max": 64,
-                "isMidiControllable": true,
-                "remoteChannel": null,
-                "remoteCC": null
+                "isMidiControllable": true
             },
             "pulses": {
                 "label": "Pulses",
@@ -35,9 +33,7 @@
                 "value": 4,
                 "min": 0,
                 "max": 16,
-                "isMidiControllable": true,
-                "remoteChannel": null,
-                "remoteCC": null
+                "isMidiControllable": true
             },
             "rotation": {
                 "label": "Rotation",
@@ -46,9 +42,7 @@
                 "value": 0,
                 "min": 0,
                 "max": 15,
-                "isMidiControllable": true,
-                "remoteChannel": null,
-                "remoteCC": null
+                "isMidiControllable": true
             },
             "channel_out": {
                 "label": "Channel",
@@ -113,9 +107,7 @@
                 "type": "boolean",
                 "default": false,
                 "value": false,
-                "isMidiControllable": true,
-                "remoteChannel": null,
-                "remoteCC": null
+                "isMidiControllable": true
             },
             "name": {
                 "label": "Name",
