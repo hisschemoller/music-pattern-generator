@@ -1,3 +1,4 @@
+@import 'dialog.css';
 @import 'library.css';
 @import 'preferences.css';
 @import 'rangeslider.css';
@@ -91,6 +92,7 @@
     --btn-color: #999;
     --btn-active-color: #333;
     --btn-bg-color: #ccc;
+    --btn-active-bg-color: #aaa;
     --control-bar-height: 40px;
     --default-font-family: 'Alte-DIN-1451-Mittelschrift', sans-serif;
     --font-size: 16px;
@@ -116,6 +118,7 @@ div[data-theme='dev'] {
     --btn-color: #bbb;
     --btn-active-color: #999;
     --btn-bg-color: #eee;
+    --btn-active-bg-color: #ddd;
     --header-bg-color: #ccc;
     --header-color: #fff;
     --input-bg-color: #fff;
@@ -132,6 +135,7 @@ div[data-theme='dark'] {
     --btn-color: #999;
     --btn-active-color: #fff;
     --btn-bg-color: #333;
+    --btn-active-bg-color: #666;
     --input-bg-color: #666;
     --header-bg-color: #999;
     --header-color: #000;
