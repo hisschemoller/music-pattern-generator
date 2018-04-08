@@ -8,6 +8,7 @@
 const cache = {};
 
 export function getEuclidPattern(steps, pulses) {
+    pulses = Math.min(steps, pulses);
     const cacheKey = `${steps}_${pulses}`;
     if (!cache[cacheKey]) {
         cache[cacheKey] = createBjorklund(steps, pulses);

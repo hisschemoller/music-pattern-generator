@@ -1,6 +1,14 @@
+/**
+ * Euclidean pattern calculation by Michael Kontogiannis:
+ * https://github.com/mkontogiannis/euclidean-rhythms
+ * based on a Python script from disappeared website 
+ * http://www.atonalmicroshores.com/
+ */
+
 const cache = {};
 
 export function getEuclidPattern(steps, pulses) {
+    pulses = Math.min(steps, pulses);
     const cacheKey = `${steps}_${pulses}`;
     if (!cache[cacheKey]) {
         cache[cacheKey] = createBjorklund(steps, pulses);
