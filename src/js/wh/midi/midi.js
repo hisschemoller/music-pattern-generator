@@ -9,11 +9,9 @@ export default function createMIDI(specs) {
         init = function() {
             document.addEventListener(store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
-                    case e.detail.actions.TOGGLE_PORT_SYNC:
+
+                    case e.detail.actions.TOGGLE_MIDI_PREFERENCE:
                         updateMIDISyncListeners(e.detail.state.ports);
-                        break;
-                    
-                    case e.detail.actions.TOGGLE_PORT_REMOTE:
                         updateMIDIRemoteListeners(e.detail.state.ports);
                         break;
                     
