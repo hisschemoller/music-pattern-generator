@@ -28,7 +28,7 @@ export default function createMIDI(specs) {
 
         connect = function() {
             return new Promise((resolve, reject) => {
-                requestAccess(resolve, onAccessFailure, false);
+                requestAccess(resolve, reject, false);
             });
         },
 
@@ -44,13 +44,13 @@ export default function createMIDI(specs) {
                     sysex: !!sysex
                 }).then(function(_midiAccess) {
                     if (!_midiAccess.inputs.size && !_midiAccess.outputs.size) {
-                        failureCallback('No MIDI devices found on this system.');
+                        onAccessFailure('No MIDI devices found on this system.');
                     } else {
                         onAccessSuccess(_midiAccess);
                         successCallback();
                     }
                 }, function() {
-                    failureCallback('RequestMIDIAccess failed.');
+                    failureCallback('Request for MIDI access failed.');
                 });
             } else {
                 failureCallback('Web MIDI API not available.');

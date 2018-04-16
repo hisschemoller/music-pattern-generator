@@ -30,6 +30,8 @@ import createPreferencesView from './wh/view/preferences';
 import createRemoteView from './wh/view/remote';
 import createTransport from './wh/core/transport';
 
+import { showDialog } from './wh/view/dialog';
+
 
 /**
  * Application startup.
@@ -95,8 +97,12 @@ document.addEventListener('DOMContentLoaded', function(e) {
     store.dispatch(store.getActions().rescanTypes());
 
     // initialise
-    midi.connect().then(() => {
-        store.persist();
-        transport.run();
-    });
+    midi.connect()
+        .then(() => {
+            store.persist();
+            transport.run();
+        })
+        .catch(errorMsg => {
+            showDialog('MIDI access failure', `The app can't initialise because it failed to access the computer's MIDI ports. If you view the app in a browser, please check if it supports the Web MIDI API.<br>Error message: ${errorMsg}`);
+        });
 });
