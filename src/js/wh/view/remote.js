@@ -25,7 +25,7 @@ export default function createRemoteView(specs, my) {
                         break;
                         
                     case e.detail.actions.DELETE_PROCESSOR:
-                        deleteRemoteGroups(e.detail.state);
+                        deleteRemoteGroups(e.detail.state.processors);
                         break;
                     
                     case e.detail.actions.ASSIGN_EXTERNAL_CONTROL:
