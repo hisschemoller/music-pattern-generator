@@ -22,6 +22,7 @@ import createStore from './wh/state/store';
 
 import createAppView from './wh/view/app';
 import createCanvasView from './wh/view/canvas';
+import createDialog from './wh/view/dialog';
 import createLibraryView from './wh/view/library';
 import createMIDI from './wh/midi/midi';
 import createMIDINetwork from './wh/midi/network';
@@ -38,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     // Create all objects that will be the modules of the app.
     var appView = {},
         canvasView = {},
+        dialog = {},
         libraryView = {},
         midi = {},
         midiNetwork = {},
@@ -58,6 +60,9 @@ document.addEventListener('DOMContentLoaded', function(e) {
     createCanvasView({ 
         that: canvasView, 
         store 
+    });
+    createDialog({
+        that: dialog,
     });
     createLibraryView({ 
         that: libraryView, 

@@ -1,10 +1,14 @@
 .dialog {
     bottom: 0;
+    display: none;
     left: 0;
     position: fixed;
     right: 0;
     top: 0;
     z-index: 1;
+}
+.dialog[data-show='true'] {
+    display: block;
 }
 .dialog__layer {
     background-color: rgba(0, 0, 0, 0.4);
@@ -28,7 +32,7 @@
 .dialog__header.panel__header {
     padding-left: 20px;
 }
-.dialog__message {
+.dialog__body {
     display: block;
     padding: 10px 20px;
 }
