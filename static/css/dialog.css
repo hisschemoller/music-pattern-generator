@@ -1,0 +1,58 @@
+.dialog {
+    bottom: 0;
+    display: none;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 1;
+}
+.dialog[data-show='true'] {
+    display: block;
+}
+.dialog__layer {
+    background-color: rgba(0, 0, 0, 0.4);
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.dialog__window {
+    background-color: var(--bg-color);
+    left: 50%;
+    width: 400px;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+.dialog__window.panel {
+    display: block;
+}
+.dialog__header.panel__header {
+    padding-left: 20px;
+}
+.dialog__body {
+    display: block;
+    padding: 10px 20px;
+}
+.dialog__controls {
+    padding: 10px 20px 20px 20px;
+}
+.dialog__reject {
+    
+}
+.dialog__agree {
+    
+}
+.dialog__controls .btn {
+    background-color: var(--btn-bg-color);
+    color: var(--btn-color);
+    font-size: 14px;
+    padding: 8px 16px;
+    width: auto;
+}
+.dialog__controls .btn:hover {
+    background-color: var(--btn-active-bg-color);
+    color: var(--btn-active-color);
+}

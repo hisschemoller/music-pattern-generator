@@ -1,0 +1,105 @@
+/**
+ * Custom range input.
+ * @see https://css-tricks.com/styling-cross-browser-compatible-range-inputs-css/
+ */
+
+/* base */
+input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    background: transparent;
+}
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+}
+input[type=range]:focus {
+    outline: none;
+}
+input[type=range]::-ms-track {
+    width: 100%;
+    cursor: pointer;
+    background: transparent; 
+    border-color: transparent;
+    color: transparent;
+}
+
+/* thumb */
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: none;
+    height: var(--slider-thumb-height);
+    width: var(--slider-thumb-width);
+    border-radius: 0;
+    background: var(--btn-color);
+    cursor: pointer;
+    margin-top: -14px;
+    box-shadow: none;
+}
+input[type=range]::-moz-range-thumb {
+    box-shadow: none;
+    border: none;
+    height: var(--slider-thumb-height);
+    width: var(--slider-thumb-width);
+    border-radius: 0;
+    background: var(--btn-color);
+    cursor: pointer;
+}
+input[type=range]::-ms-thumb {
+    box-shadow: none;
+    border: none;
+    height: var(--slider-thumb-height);
+    width: var(--slider-thumb-width);
+    border-radius: 0;
+    background: var(--btn-color);
+    cursor: pointer;
+}
+
+/* track */
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: var(--slider-track-height);
+    cursor: pointer;
+    box-shadow: none;
+    background: var(--input-bg-color);
+    border-radius: 0;
+    border: none;
+}
+input[type=range]:focus::-webkit-slider-runnable-track {
+    background: var(--input-bg-color);
+}
+input[type=range]::-moz-range-track {
+    width: 100%;
+    height: var(--slider-track-height);
+    cursor: pointer;
+    box-shadow: none;
+    background: var(--input-bg-color);
+    border-radius: 0;
+    border: none;
+}
+input[type=range]::-ms-track {
+    width: 100%;
+    height: var(--slider-track-height);
+    cursor: pointer;
+    background: transparent;
+    border-color: transparent;
+    border-width: 16px 0;
+    color: transparent;
+}
+input[type=range]::-ms-fill-lower {
+    background: var(--input-bg-color);
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+input[type=range]:focus::-ms-fill-lower {
+    background: var(--input-bg-color);
+}
+input[type=range]::-ms-fill-upper {
+    background: var(--input-bg-color);
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+input[type=range]:focus::-ms-fill-upper {
+    background: var(--input-bg-color);
+}
