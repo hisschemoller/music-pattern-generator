@@ -1,11 +1,12 @@
 var path = require('path');
 var webpack = require('webpack');
+var GhPagesWebpackPlugin = require('gh-pages-webpack-plugin');
 
 module.exports = {
     entry: './src/js/main.js',
     output: {
         filename: 'bundle.js',
-        path: path.resolve(__dirname, 'dist')
+        path: path.resolve(__dirname, 'build')
     },
     module: {
         loaders: [{
@@ -19,5 +20,17 @@ module.exports = {
     stats: {
         colors: true
     },
-    devtool: 'eval-source-map'
+    devtool: 'eval-source-map',
+    plugins: [
+        new GhPagesWebpackPlugin({
+            path: './build',
+            options: {
+                message: 'Update GitHub Pages',
+                user: {
+                    name: 'Wouter Hisschemöller',
+                    email: 'wouter.hiscchemoller@gmail.com'
+                }
+            }
+        })
+    ]
 };
