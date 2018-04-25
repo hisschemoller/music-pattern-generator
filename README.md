@@ -12,22 +12,22 @@ https://hisschemoller.github.io/music-pattern-generator/
 
 ## Quick Start
 
-1. Create a pattern.
+1 Create a pattern.
   * Drag a Euclidean processor from the Library on the left and drop it in the empty area in the middle of the screen.
   * A Euclidean pattern wheel appears at the position you dropped it.
   * You can press play now, and the wheel will spin.
-2. Create a MIDI Output.
+2 Create a MIDI Output.
   * Drag an Output processor from the Library and drop it in the empty canvas area.
   * The Output processor represents a MIDI port to send MIDI events to.
   * The Output processor you just created is not yet assigned to a MIDI port.
-3. Connect the Euclidean pattern to the Output.
+3 Connect the Euclidean pattern to the Output.
   * Enter connect mode with the Connections button in the ControlBar.
   * Connector circles will now appear below the Euclidean processor and above the Output processor.
   * Output connectors appear below the processor and inputs above it.
   * Click and drag from the Euclidean processor's output to the Output processor's input.
   * When you drag a line will appear from the Euclidean processor's output.
   * If you finish the drag above an input, the connection is created and the connecting line remains visible.
-5. Select a MIDI Port.
+5 Select a MIDI Port.
   * Click the Output processor to show its Settings panel, if it wasn't visible already.
   * Open the Preferences panel with the Preferences button in the ControlBar.
   * The Preferences panel shows a list of all detected MIDI output devices.
@@ -36,7 +36,7 @@ https://hisschemoller.github.io/music-pattern-generator/
   * The Settings panel now shows the MIDI port as a selectable port.
   * Click the port in the Settings panel to select it.
   * The Output processor will now send MIDI events to the selected port.
-6. Play
+6 Play
   * Make sure you have a software or hardware sound generator connected to the MIDI port.
   * Make sure it listens to MIDI channel 1. That's the Euclidean processor's default channel.
   * Make sure it plays a sound on MIDI pitch 60. That's the Euclidean processor's default pitch.
