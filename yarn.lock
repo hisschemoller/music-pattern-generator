@@ -6,10 +6,6 @@
   version "16.6.0"
   resolved "https://registry.yarnpkg.com/@tweenjs/tween.js/-/tween.js-16.6.0.tgz#87674b87a5a759317ca0021e085f4166596a46dc"
 
-"@types/node@^8.0.24":
-  version "8.9.5"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.9.5.tgz#162b864bc70be077e6db212b322754917929e976"
-
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
@@ -1274,11 +1270,10 @@ electron-packager@^10.1.1:
     semver "^5.3.0"
     yargs-parser "^8.0.0"
 
-electron@^1.7.10:
-  version "1.8.3"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-1.8.3.tgz#001416ea3a25ce594e317cb5531bc41eadd22f7f"
+electron@1.4.6:
+  version "1.4.6"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-1.4.6.tgz#7e8ea042f03ff3f14f48afa132f7fdecc29b3df5"
   dependencies:
-    "@types/node" "^8.0.24"
     electron-download "^3.0.1"
     extract-zip "^1.0.3"
 
