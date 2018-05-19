@@ -2,6 +2,7 @@ import { createUUID } from '../core/util';
 import { getConfig, setConfig } from '../core/config';
 import { getAllMIDIPorts } from '../midi/midi';
 import { getAssignedParamsByMIDIData } from './selectors';
+import orderProcessors from '../midi/network_ordering';
 
 export default function createActions(specs = {}, my = {}) {
     const RESCAN_TYPES = 'RESCAN_TYPES',
@@ -152,6 +153,9 @@ export default function createActions(specs = {}, my = {}) {
                         }
                     }
                 });
+
+                // order the processors according to their connection (fix faulty data)
+                orderProcessors(data);
 
                 // create the project with the merged ports
                 dispatch(getActions().createProject(data));
