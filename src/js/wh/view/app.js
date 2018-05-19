@@ -182,7 +182,13 @@ export default function createAppView(specs, my) {
         createSettingsViews = function(state) {
             state.processors.allIds.forEach((id, i) => {
                 const processorData = state.processors.byId[id];
-                if (!settingsViews[i] || (id !== settingsViews[i].getID())) {
+                let exists = false;
+                settingsViews.forEach(settingsView => {
+                    if (settingsView.getID() === id) {
+                        exists = true;
+                    }
+                });
+                if (!exists) {
                     const template = require(`html-loader!../processors/${processorData.type}/settings.html`);
                     settingsViews.splice(i, 0, createSettingsPanel({
                         data: processorData,
