@@ -69,7 +69,7 @@ export default function createActions(specs = {}, my = {}) {
                 let jsonString = JSON.stringify(getState()),
                 blob = new Blob([jsonString], {type: 'application/json'}),
                 a = document.createElement('a');
-                a.download = 'epg.json';
+                a.download = 'mpg.json';
                 a.href = URL.createObjectURL(blob);
                 a.click();
             }
