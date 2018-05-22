@@ -82,7 +82,7 @@ input[type='number'].setting__number {
     font-size: var(--font-size);
     height: var(--input-height);
     padding: 0 6px;
-    width: 55%;
+    width: 80%;
 }
 .setting__learnmode {
     border: 3px dashed var(--assign-border-color);
