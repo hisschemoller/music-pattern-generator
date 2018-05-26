@@ -1,3 +1,4 @@
+import convertLegacyFile from '../core/convert_xml';
 import { createUUID } from '../core/util';
 import { getConfig, setConfig } from '../core/config';
 import { getAllMIDIPorts } from '../midi/midi';
@@ -53,7 +54,7 @@ export default function createActions(specs = {}, my = {}) {
                         if (!isJSON) {
 
                             // try if it's a legacy xml file
-                            const legacyData = my.convertLegacyFile(e.target.result);
+                            const legacyData = convertLegacyFile(e.target.result);
                             if (legacyData) {
                                 dispatch(getActions().setProject(legacyData));
                             }
