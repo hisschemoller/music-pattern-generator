@@ -4,6 +4,7 @@ import { getConfig, setConfig } from '../core/config';
 import { getAllMIDIPorts } from '../midi/midi';
 import { getAssignedParamsByMIDIData } from './selectors';
 import orderProcessors from '../midi/network_ordering';
+import { showDialog } from '../view/dialog';
 
 export default function createActions(specs = {}, my = {}) {
     const RESCAN_TYPES = 'RESCAN_TYPES',
@@ -41,14 +42,14 @@ export default function createActions(specs = {}, my = {}) {
                 // closure to capture the file information
                 fileReader.onload = (function(f) {
                     return function(e) {
-                        let isJSON = true
+                        let isJSON = true,
+                            isXML = false;
                         try {
                             const data = JSON.parse(e.target.result);
                             if (data) {
                                 dispatch(getActions().setProject(data));
                             }
                         } catch(errorMessage) {
-                            console.log(errorMessage);
                             isJSON = false;
                         }
                         if (!isJSON) {
@@ -57,7 +58,14 @@ export default function createActions(specs = {}, my = {}) {
                             const legacyData = convertLegacyFile(e.target.result);
                             if (legacyData) {
                                 dispatch(getActions().setProject(legacyData));
+                                isXML = true;
                             }
+                        }
+                        if (!isJSON && !isXML) {
+                            showDialog(
+                                'Import failed', 
+                                `The file to import wasn't recognised as a valid type for this application.`,
+                                'Ok');
                         }
                     };
                 })(file);
