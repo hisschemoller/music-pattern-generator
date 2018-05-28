@@ -11,21 +11,24 @@ const maxDepth = 100;
 export default function orderProcessors(state) {
     console.log('ORDER', state.processors.allIds.length);
     state.processors.allIds.sort((a, b) => {
+        const nameA = state.processors.byId[a].params.byId['name'].value;
+        const nameB = state.processors.byId[b].params.byId['name'].value;
         console.log('---');
         console.log('start sort');
-        console.log('start search a', a);
-        console.log('start search b', b);
+        console.log(`start search '${nameA}'`);
+        console.log(`start search '${nameB}'`);
         if (searchUpStream(a, b, state)) {
-            console.log(`1, source ${b} to destination ${a}`);
+            console.log(`1, source '${nameB}' to destination '${nameA}'`);
             return 1;
         } else if (searchDownStream(a, b, state)) {
-            console.log(`-1, source ${a} to destination ${b}`);
+            console.log(`-1, source '${nameA}' to destination '${nameB}'`);
             return -1;
         } else {
-            console.log(`0, no stream between ${a} and ${b}`);
+            console.log(`0, no stream between '${nameA}' and '${nameB}'`);
             return 0;
         }
     });
+    logResult(state);
 }
 
 function searchUpStream(a, b, state, depth = 0) {
@@ -84,4 +87,14 @@ function getDestinations(processorID, state) {
         }
     });
     return destinationIDs;
+}
+
+function logResult(state) {
+    console.log('===========');
+    console.log('PROCESSOR ORDER');
+    console.log('-----------');
+    state.processors.allIds.forEach(id => {
+        console.log(state.processors.byId[id].params.byId['name'].value);
+    });
+    console.log('===========');
 }
