@@ -24,6 +24,7 @@
     },
     "author": "Wouter Hisschemoller",
     "dependencies": {
+        "three": "^0.97.0",
         "@tweenjs/tween.js": "16.6.0"
     },
     "devDependencies": {
