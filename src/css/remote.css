@@ -1,0 +1,59 @@
+/************************
+ * remote assignments
+ ************************/
+
+.remote {
+    background-color: var(--panel-bg-color);
+    position: relative;
+    width: 340px;
+}
+.remote__group {
+    display: block;
+}
+.remote__group-header {
+    display: none;
+}
+.remote__group[data-has-assignments=true] .remote__group-header {
+    display: flex;
+}
+.remote__group-header-label {
+    flex-grow: 1;
+}
+.remote__group-header-channel {
+    text-align: right;
+    width: 60px;
+}
+.remote__group-header-control {
+    text-align: right;
+    width: 50px;
+}
+.remote__group-header-delete {
+    width: 40px;
+}
+.remote__item {
+    display: flex;
+    line-height: var(--input-height);
+}
+.remote__item:not(:last-of-type) {
+    border-bottom: 1px solid var(--border-color);
+}
+.remote__item-label {
+    flex-grow: 1;
+    padding-left: 10px;
+}
+.remote__item-channel {
+    text-align: right;
+    width: 60px;
+}
+.remote__item-control {
+    text-align: right;
+    width: 50px;
+}
+.remote__item-delete {
+    height: var(--input-height);
+    padding-bottom: 2px;
+    width: 40px;
+}
+.remote__item-delete .icon-cancel {
+    font-size: 16px;
+}

@@ -1,0 +1,99 @@
+/************************
+ * preferences
+ ************************/
+
+.prefs {
+    background-color: var(--panel-bg-color);
+    position: relative;
+    width: 340px;
+}
+    .prefs .btn {
+        height: var(--input-height);
+        font-size: var(--font-size);
+        line-height: 32px;
+    }
+.prefs__label-text {
+    display: inline-block;
+    line-height: var(--input-height);
+    padding-left: 8px;
+    width: 30%;
+}
+.prefs__inputs,
+.prefs__outputs {}
+.prefs__subheader {
+    display: flex;
+}
+.prefs__subheader-title {
+    flex-grow: 1;
+}
+.prefs__subheader-network {
+    width: 65px;
+}
+.prefs__subheader-sync {
+    width: 40px;
+}
+.prefs__subheader-remote {
+    width: 60px;
+}
+.prefs__setting,
+.midi-port {
+    display: flex;
+}
+.prefs__setting:first-of-type,
+.midi-port:first-of-type {
+    padding-top: 10px;
+}
+.prefs__setting:last-of-type,
+.midi-port:last-of-type {
+    padding-bottom: 10px;
+}
+.midi-port[data-connected] {
+    display: none;
+}
+.midi-port[data-connected=true] {
+    display: flex;
+}
+.prefs__label,
+.midi-port__label {
+    flex-grow: 1;
+    line-height: var(--input-height);
+    overflow: hidden;
+    padding-left: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.prefs__input {
+    flex-basis: 165px;
+    flex-shrink: 0;
+}
+.prefs__btn,
+.btn.midi-port__btn {
+    flex-basis: 55px;
+    flex-shrink: 0;
+    width: 55px;
+}
+.prefs__btn-check,
+.midi-port__btn-check {
+    position: absolute;
+    margin-left: -9999px;
+    visibility: hidden;
+}
+.prefs__btn-check + .prefs__btn-text:before,
+.midi-port__btn-check + .midi-port__btn-text:before {
+    content: attr(data-off);
+}
+.prefs__btn-check:checked + .prefs__btn-text:before,
+.midi-port__btn-check:checked + .midi-port__btn-text:before {
+    color: var(--btn-active-color);
+    content: attr(data-on);
+}
+.prefs__btn[data-disabled='true'],
+.prefs__btn[data-disabled='true']:hover,
+.midi-port__btn[data-disabled='true'],
+.midi-port__btn[data-disabled='true']:hover {
+    cursor: default;
+}
+.prefs__btn[data-disabled='true'] .prefs__btn-check + .prefs__btn-text:before,
+.midi-port__btn[data-disabled='true'] .midi-port__btn-check + .midi-port__btn-text:before {
+    content: attr(data-disabled);
+}
