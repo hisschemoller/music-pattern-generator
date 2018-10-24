@@ -21,7 +21,8 @@ import createReducers from './wh/state/reducers';
 import createStore from './wh/state/store';
 
 import createAppView from './wh/view/app';
-import createCanvasView from './wh/view/canvas';
+// import createCanvasView from './wh/view/canvas';
+import createCanvas3d from './wh/webgl/canvas';
 import createDialog from './wh/view/dialog';
 import createLibraryView from './wh/view/library';
 import createMIDI from './wh/midi/midi';
@@ -59,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         that: appView, 
         store 
     });
-    createCanvasView({ 
+    createCanvas3d({ 
         that: canvasView, 
         store 
     });
