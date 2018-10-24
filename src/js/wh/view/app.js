@@ -1,5 +1,5 @@
-import createSettingsPanel from './settings';
-import addWindowResize from './windowresize';
+import createSettingsPanel from './settings.js';
+import addWindowResize from './windowresize.js';
 
 /**
  * Main application view.

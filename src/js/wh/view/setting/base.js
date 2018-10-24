@@ -1,4 +1,4 @@
-import createRemoteSettingView from './remote';
+import createRemoteSettingView from './remote.js';
 
 /**
  * Processor setting view for a linear integer type parameter,

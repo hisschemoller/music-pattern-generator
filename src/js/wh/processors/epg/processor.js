@@ -1,6 +1,6 @@
-import createMIDIProcessorBase from '../../midi/processorbase';
-import { PPQN } from '../../core/config';
-import { getEuclidPattern, rotateEuclidPattern } from './euclid';
+import createMIDIProcessorBase from '../../midi/processorbase.js';
+import { PPQN } from '../../core/config.js';
+import { getEuclidPattern, rotateEuclidPattern } from './euclid.js';
 
 export function createProcessor(specs, my) {
     let that,

@@ -1,4 +1,4 @@
-import createBaseSettingView from './base';
+import createBaseSettingView from './base.js';
 
 /**
  * Processor setting view for a itemized type parameter,

@@ -1,7 +1,7 @@
-import createBooleanSettingView from './setting/boolean';
-import createIntegerSettingView from './setting/integer';
-import createItemizedSettingView from './setting/itemized';
-import createStringSettingView from './setting/string';
+import createBooleanSettingView from './setting/boolean.js';
+import createIntegerSettingView from './setting/integer.js';
+import createItemizedSettingView from './setting/itemized.js';
+import createStringSettingView from './setting/string.js';
 
 /**
  * Processor settings view.

@@ -1,4 +1,4 @@
-import createRemoteItemView from './remote_item';
+import createRemoteItemView from './remote_item.js';
 
 /**
  * Group within overview list of all assigned MIDI controller assignments.

@@ -1,6 +1,6 @@
-import createCanvasProcessorBaseView from '../../view/canvasprocessorbase';
-import { getEuclidPattern, rotateEuclidPattern } from './euclid';
-import { PPQN } from '../../core/config';
+import createCanvasProcessorBaseView from '../../view/canvasprocessorbase.js';
+import { getEuclidPattern, rotateEuclidPattern } from './euclid.js';
+import { PPQN } from '../../core/config.js';
 
 /**
  * Euclidean pattern animated necklace wheel drawn on canvas.

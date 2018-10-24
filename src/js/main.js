@@ -16,22 +16,20 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import createActions from './wh/state/actions';
-import createReducers from './wh/state/reducers';
-import createStore from './wh/state/store';
+import createReducers from './wh/state/reducers.js';
+import createStore from './wh/state/store.js';
 
-import createAppView from './wh/view/app';
-import createCanvasView from './wh/view/canvas';
-import createDialog from './wh/view/dialog';
-import createLibraryView from './wh/view/library';
-import createMIDI from './wh/midi/midi';
-import createMIDINetwork from './wh/midi/network';
-import createPreferencesView from './wh/view/preferences';
-import createRemoteView from './wh/view/remote';
-import createTransport from './wh/core/transport';
+import createAppView from './wh/view/app.js';
+import createCanvasView from './wh/view/canvas.js';
+import createDialog from './wh/view/dialog.js';
+import createLibraryView from './wh/view/library.js';
+import createMIDI from './wh/midi/midi.js';
+import createMIDINetwork from './wh/midi/network.js';
+import createPreferencesView from './wh/view/preferences.js';
+import createRemoteView from './wh/view/remote.js';
+import createTransport from './wh/core/transport.js';
 
-import { showDialog } from './wh/view/dialog';
-
+import { showDialog } from './wh/view/dialog.js';
 
 /**
  * Application startup.

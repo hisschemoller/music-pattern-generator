@@ -1,5 +1,5 @@
-import createMIDIConnectorIn from './connectorin';
-import createMIDIConnectorOut from './connectorout';
+import createMIDIConnectorIn from './connectorin.js';
+import createMIDIConnectorOut from './connectorout.js';
 
 /**
  * Base functionality for all MIDI processors.

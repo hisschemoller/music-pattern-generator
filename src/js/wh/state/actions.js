@@ -1,10 +1,9 @@
-import convertLegacyFile from '../core/convert_xml';
-import { createUUID } from '../core/util';
-import { getConfig, setConfig } from '../core/config';
-import { getAllMIDIPorts } from '../midi/midi';
-import { getAssignedParamsByMIDIData } from './selectors';
-import orderProcessors from '../midi/network_ordering';
-import { showDialog } from '../view/dialog';
+import convertLegacyFile from '../core/convert_xml.js';
+import { createUUID } from '../core/util.js';
+import { getConfig, setConfig } from '../core/config.js';
+import { getAllMIDIPorts } from '../midi/midi.js';
+import orderProcessors from '../midi/network_ordering.js';
+import { showDialog } from '../view/dialog.js';
 
 export default function createActions(specs = {}, my = {}) {
     const RESCAN_TYPES = 'RESCAN_TYPES',
@@ -186,14 +185,14 @@ export default function createActions(specs = {}, my = {}) {
             return (dispatch, getState, getActions) => {
                 const dataTemplate = require(`json-loader!../processors/${data.type}/config.json`);
                 let fullData = JSON.parse(JSON.stringify(dataTemplate));
-                const id = data.id || `${data.type}_${createUUID()}`;
+                        const id = data.id || `${data.type}_${createUUID()}`;
                 fullData = Object.assign(fullData, data);
-                fullData.id = id;
-                fullData.positionX = data.positionX;
-                fullData.positionY = data.positionY;
-                fullData.params.byId.name.value = data.name || getProcessorDefaultName(getState().processors);
-                dispatch(getActions().addProcessor(fullData));
-                dispatch(getActions().selectProcessor(id));
+                        fullData.id = id;
+                        fullData.positionX = data.positionX;
+                        fullData.positionY = data.positionY;
+                        fullData.params.byId.name.value = data.name || getProcessorDefaultName(getState().processors);
+                        dispatch(getActions().addProcessor(fullData));
+                        dispatch(getActions().selectProcessor(id));
             }
         },
 
@@ -365,7 +364,7 @@ export default function createActions(specs = {}, my = {}) {
                 if (!typeData.excludedFromLibrary) {
                     types[type] = {
                         name: typeData.name
-                    };
+            };
                 }
             });
             return { type: RESCAN_TYPES, types };

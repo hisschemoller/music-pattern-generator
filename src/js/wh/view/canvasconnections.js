@@ -1,4 +1,4 @@
-import { getThemeColors } from '../state/selectors';
+import { getThemeColors } from '../state/selectors.js';
 
 /**
  * Canvas processor connector input and output points,

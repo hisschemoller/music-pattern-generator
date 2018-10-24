@@ -1,4 +1,4 @@
-import { getThemeColors } from '../state/selectors';
+import { getThemeColors } from '../state/selectors.js';
 
 /**
  * Manages the canvas views of the processors in the network.

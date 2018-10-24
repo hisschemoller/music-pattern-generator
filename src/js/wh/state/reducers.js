@@ -1,4 +1,4 @@
-import orderProcessors from '../midi/network_ordering';
+import orderProcessors from '../midi/network_ordering.js';
 
 export default function createReducers() {
 
