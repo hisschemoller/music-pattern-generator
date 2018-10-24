@@ -66,13 +66,16 @@ export default function createMIDINetwork(specs, my) {
                     }
                 });
                 if (!exists) {
-                    const module = require(`../processors/${processorData.type}/processor`);
-                    const processor = module.createProcessor({
-                        that: {},
-                        data: processorData,
-                        store: store
-                    });
-                    processors.splice(i, 0, processor);
+                    const moduleSpecifier = `../processors/${processorData.type}/processor.js`;
+                    import(moduleSpecifier)
+                        .then((module) => {
+                            const processor = module.createProcessor({
+                                that: {},
+                                data: processorData,
+                                store: store
+                            });
+                            processors.splice(i, 0, processor);
+                        });
                 }
             });
             numProcessors = processors.length;

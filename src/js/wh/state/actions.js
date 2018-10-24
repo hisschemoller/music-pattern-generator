@@ -183,16 +183,21 @@ export default function createActions(specs = {}, my = {}) {
         CREATE_PROCESSOR,
         createProcessor: (data) => {
             return (dispatch, getState, getActions) => {
-                const dataTemplate = require(`json-loader!../processors/${data.type}/config.json`);
-                let fullData = JSON.parse(JSON.stringify(dataTemplate));
+                fetch(`js/wh/processors/${data.type}/config.json`)
+                    .then(
+                        response => response.json(),
+                        error => console.log('An error occurred.', error)
+                    )
+                    .then(json => {
                         const id = data.id || `${data.type}_${createUUID()}`;
-                fullData = Object.assign(fullData, data);
+                        const fullData = {...json, ...data};
                         fullData.id = id;
                         fullData.positionX = data.positionX;
                         fullData.positionY = data.positionY;
                         fullData.params.byId.name.value = data.name || getProcessorDefaultName(getState().processors);
                         dispatch(getActions().addProcessor(fullData));
                         dispatch(getActions().selectProcessor(id));
+                    });
             }
         },
 
