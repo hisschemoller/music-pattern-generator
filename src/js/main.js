@@ -36,7 +36,7 @@ import { showDialog } from './wh/view/dialog.js';
 /**
  * Application startup.
  */
-export default function init() {
+function init() {
     // Create all objects that will be the modules of the app.
     var appView = {},
         canvasView = {},
@@ -105,3 +105,8 @@ export default function init() {
             showDialog('MIDI access failure', `The app can't initialise because it failed to access the computer's MIDI ports. If you view the app in a browser, please check if it supports the Web MIDI API.<br>Error message: ${errorMsg}`);
         });
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOMContentLoaded');
+    init();
+});
