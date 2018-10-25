@@ -1,3 +1,4 @@
 node_modules
 release-builds
 yarn-error.log
+build/

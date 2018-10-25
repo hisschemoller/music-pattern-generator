@@ -1,6 +1,7 @@
-var path = require('path');
-var webpack = require('webpack');
-var GhPagesWebpackPlugin = require('gh-pages-webpack-plugin');
+const path = require('path');
+const webpack = require('webpack');
+const GhPagesWebpackPlugin = require('gh-pages-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     entry: './src/js/main.js',
@@ -28,9 +29,29 @@ module.exports = {
                 message: 'Update GitHub Pages',
                 user: {
                     name: 'Wouter Hisschemöller',
-                    email: 'wouter.hiscchemoller@gmail.com'
+                    email: 'wouter.hisschemoller@gmail.com'
                 }
             }
         })
+        ,
+        new CopyWebpackPlugin([{
+            from: 'src/js/wh/processors/epg/config.json',
+            to: 'js/wh/processors/epg/config.json'
+        }, {
+            from: 'src/js/wh/processors/epg/settings.html',
+            to: 'js/wh/processors/epg/settings.html'
+        },{
+            from: 'src/js/wh/processors/euclidfx/config.json',
+            to: 'js/wh/processors/euclidfx/config.json'
+        }, {
+            from: 'src/js/wh/processors/euclidfx/settings.html',
+            to: 'js/wh/processors/euclidfx/settings.html'
+        },{
+            from: 'src/js/wh/processors/output/config.json',
+            to: 'js/wh/processors/output/config.json'
+        }, {
+            from: 'src/js/wh/processors/output/settings.html',
+            to: 'js/wh/processors/output/settings.html'
+        }])
     ]
 };
