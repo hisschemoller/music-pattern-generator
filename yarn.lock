@@ -2,11 +2,6 @@
 # yarn lockfile v1
 
 
-"@tweenjs/tween.js@16.6.0":
-  version "16.6.0"
-  resolved "https://registry.yarnpkg.com/@tweenjs/tween.js/-/tween.js-16.6.0.tgz#87674b87a5a759317ca0021e085f4166596a46dc"
-  integrity sha1-h2dLh6WnWTF8oAIeCF9BZllqRtw=
-
 "@types/node@^8.0.24":
   version "8.10.36"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.10.36.tgz#eac05d576fbcd0b4ea3c912dc58c20475c08d9e4"
@@ -417,6 +412,11 @@ babel-plugin-check-es2015-constants@^6.22.0:
   integrity sha1-NRV7EBQm/S/9PaP3XH0ekYNbv4o=
   dependencies:
     babel-runtime "^6.22.0"
+
+babel-plugin-dynamic-import-webpack@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-dynamic-import-webpack/-/babel-plugin-dynamic-import-webpack-1.1.0.tgz#955306608cdae6191cd1d3f50cf93826ff69f4e1"
+  integrity sha512-Q/Vxl3zRwC5/DMyg97Ey2UD/f7ApvO+0zXgzwT3G2N7oajGFroqcUEmXZ23QXJsr0Y+DBVNK57saaUnQhCpllA==
 
 babel-plugin-syntax-object-rest-spread@^6.8.0:
   version "6.13.0"
