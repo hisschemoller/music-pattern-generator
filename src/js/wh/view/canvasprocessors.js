@@ -73,8 +73,7 @@ export default function createCanvasProcessorViews(specs, my) {
             state.processors.allIds.forEach((id, i) => {
                 const processorData = state.processors.byId[id];
                 if (!views[i] || (id !== views[i].getID())) {
-                    const moduleSpecifier = `../processors/${processorData.type}/graphic.js`;
-                    import(moduleSpecifier)
+                    import(`../processors/${processorData.type}/graphic.js`)
                         .then((module) => {
                             const view = module.createGraphic({ 
                                 data: processorData,

@@ -66,8 +66,7 @@ export default function createMIDINetwork(specs, my) {
                     }
                 });
                 if (!exists) {
-                    const moduleSpecifier = `../processors/${processorData.type}/processor.js`;
-                    import(moduleSpecifier)
+                    import(`../processors/${processorData.type}/processor.js`)
                         .then((module) => {
                             const processor = module.createProcessor({
                                 that: {},
