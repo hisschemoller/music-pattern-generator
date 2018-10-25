@@ -6,6 +6,15 @@
  */
 export const PPQN = 480;
 
+/**
+ * The processors available in the processors directory.
+ */
+export const processorTypes = {
+    epg: { name: 'Euclidean'},
+    euclidfx: { name: 'Euclid FX'},
+    output: { name: 'Output'},
+};
+
 const name = 'config';
 
 export function getConfig() {

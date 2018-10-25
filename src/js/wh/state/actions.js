@@ -1,6 +1,6 @@
 import convertLegacyFile from '../core/convert_xml.js';
 import { createUUID } from '../core/util.js';
-import { getConfig, setConfig } from '../core/config.js';
+import { getConfig, setConfig, processorTypes } from '../core/config.js';
 import { getAllMIDIPorts } from '../midi/midi.js';
 import orderProcessors from '../midi/network_ordering.js';
 import { showDialog } from '../view/dialog.js';
@@ -361,18 +361,7 @@ export default function createActions(specs = {}, my = {}) {
 
         RESCAN_TYPES,
         rescanTypes: () => {
-            const req = require.context('../processors/', true, /\processor.js$/);
-            let types = {};
-            req.keys().forEach(key => {
-                const type = key.substring(2, key.indexOf('/', 2));
-                const typeData = require(`json-loader!../processors/${type}/config.json`);
-                if (!typeData.excludedFromLibrary) {
-                    types[type] = {
-                        name: typeData.name
-            };
-                }
-            });
-            return { type: RESCAN_TYPES, types };
+            return { type: RESCAN_TYPES, types: processorTypes };
         }
     };
 }
