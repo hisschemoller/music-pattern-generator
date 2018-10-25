@@ -1,0 +1,86 @@
+
+* {
+    box-sizing: border-box;
+}
+body {
+    background-color: #eee;
+    font-family: sans-serif;
+    font-size: 14px;
+    margin: 0;
+}
+fieldset {
+    border: none;
+}
+legend {
+    display: none;
+    padding: 0;
+}
+.form {
+    border: 1px solid #ddd;
+    display: inline-block;
+    margin: 10px 10px 0 0;
+    padding: 10px;
+    vertical-align: top;
+}
+    .form__row {
+        line-height: 24px;
+    }
+        .form__label {
+            display: inline-block;
+            vertical-align: middle;
+            width: 80px;
+        }
+        .form__range {
+            vertical-align: middle;
+        }
+        .form__number {
+            vertical-align: middle;
+            width: 40px;
+        }
+.webgl {
+    height: 100vh;
+    position: absolute;
+    width: 100vw;
+    z-index: -1;
+}
+.webgl > canvas {
+    display: block;
+}
+.file {
+    display: inline-block;
+}
+#settings {
+    display: inline-block;
+    width: 380px;
+}
+#controls {
+    display: inline-block;
+    width: 150px;
+}
+#templates {
+    display: none;
+}
+#remote {
+    display: none;
+}
+    .settings__row {
+        position: relative;
+    }
+    .setting__learnmode {
+        background-color: rgba(255, 225, 200, 0.4);
+        bottom: 0;
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+    .setting__learnmode[data-selected='true'] {
+        background-color: rgba(255, 180, 100, 0.6);
+        border: 1px solid rgba(255, 180, 100, 1.0);
+    }
+    .setting__learnmode[data-assigned='true'] {
+        background-color: rgba(255, 200, 200, 0.4);
+    }
+    .externalcontrol__list {
+        
+    }

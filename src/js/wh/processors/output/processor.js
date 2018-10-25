@@ -1,5 +1,5 @@
-import createMIDIProcessorBase from '../../midi/processorbase';
-import { getMIDIPortByID } from '../../midi/midi';
+import createMIDIProcessorBase from '../../midi/processorbase.js';
+import { getMIDIPortByID } from '../../midi/midi.js';
 
 /**
  * MIDI output port processor.

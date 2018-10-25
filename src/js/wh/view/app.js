@@ -1,5 +1,5 @@
-import createSettingsPanel from './settings';
-import addWindowResize from './windowresize';
+import createSettingsPanel from './settings.js';
+import addWindowResize from './windowresize.js';
 
 /**
  * Main application view.
@@ -189,14 +189,28 @@ export default function createAppView(specs, my) {
                     }
                 });
                 if (!exists) {
-                    const template = require(`html-loader!../processors/${processorData.type}/settings.html`);
-                    settingsViews.splice(i, 0, createSettingsPanel({
-                        data: processorData,
-                        store: store,
-                        parentEl: editContentEl,
-                        template: template,
-                        isSelected: state.selectedID === processorData.id
-                    }));
+                    fetch(`js/wh/processors/${processorData.type}/settings.html`)
+                        .then(
+                            response => response.text(),
+                            error => console.log('An error occurred.', error)
+                        )
+                        .then(html => {
+                            settingsViews.splice(i, 0, createSettingsPanel({
+                                data: processorData,
+                                store: store,
+                                parentEl: editContentEl,
+                                template: html,
+                                isSelected: state.selectedID === processorData.id
+                            }));
+                        });
+                    // const template = require(`html-loader!../processors/${processorData.type}/settings.html`);
+                    // settingsViews.splice(i, 0, createSettingsPanel({
+                    //     data: processorData,
+                    //     store: store,
+                    //     parentEl: editContentEl,
+                    //     template: template,
+                    //     isSelected: state.selectedID === processorData.id
+                    // }));
                 }
             });
         },

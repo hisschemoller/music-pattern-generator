@@ -1,4 +1,4 @@
-import createMIDIBaseView from './midi_base';
+import createMIDIBaseView from './midi_base.js';
 
 /**
  * MIDI Output processor view.

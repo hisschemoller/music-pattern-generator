@@ -1,8 +1,7 @@
-import { util } from '../core/util';
-import addWindowResize from './windowresize';
-import createCanvasProcessorViews from './canvasprocessors';
-import createCanvasConnectionsView from './canvasconnections';
-import TWEEN from '@tweenjs/tween.js';
+import { util } from '../core/util.js';
+import addWindowResize from './windowresize.js';
+import createCanvasProcessorViews from './canvasprocessors.js';
+import createCanvasConnectionsView from './canvasconnections.js';
 
 /**
  * Graphic 2D view of the processor network.
@@ -182,7 +181,6 @@ export default function createCanvasView(specs, my) {
          * @param {Array} processorEvents Array to processor generated events to displayin the view.
          */
         draw = function(position, processorEvents) {
-            TWEEN.update();
             let i,
                 views = my.getProcessorViews(),
                 n = views.length;

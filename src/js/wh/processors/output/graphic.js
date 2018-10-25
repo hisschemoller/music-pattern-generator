@@ -1,4 +1,4 @@
-import createCanvasProcessorBaseView from '../../view/canvasprocessorbase';
+import createCanvasProcessorBaseView from '../../view/canvasprocessorbase.js';
 
 /**
  * MIDI output object drawn on canvas.

@@ -1,5 +1,5 @@
-import createMIDIInputView from './midi_input';
-import createMIDIOutputView from './midi_output';
+import createMIDIInputView from './midi_input.js';
+import createMIDIOutputView from './midi_output.js';
 
 /**
  * Preferences settings view.

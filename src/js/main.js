@@ -16,29 +16,27 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import createActions from './wh/state/actions';
-import createReducers from './wh/state/reducers';
-import createStore from './wh/state/store';
+import createActions from './wh/state/actions.js';
+import createReducers from './wh/state/reducers.js';
+import createStore from './wh/state/store.js';
 
-import createAppView from './wh/view/app';
-// import createCanvasView from './wh/view/canvas';
-import createCanvas3d from './wh/webgl/canvas';
-import createDialog from './wh/view/dialog';
-import createLibraryView from './wh/view/library';
-import createMIDI from './wh/midi/midi';
-import createMIDINetwork from './wh/midi/network';
-import createPreferencesView from './wh/view/preferences';
-import createRemoteView from './wh/view/remote';
-import createTransport from './wh/core/transport';
+import createAppView from './wh/view/app.js';
+// import createCanvasView from './wh/view/canvas.js';
+import createCanvas3d from './wh/webgl/canvas.js';
+import createDialog from './wh/view/dialog.js';
+import createLibraryView from './wh/view/library.js';
+import createMIDI from './wh/midi/midi.js';
+import createMIDINetwork from './wh/midi/network.js';
+import createPreferencesView from './wh/view/preferences.js';
+import createRemoteView from './wh/view/remote.js';
+import createTransport from './wh/core/transport.js';
 
-import { showDialog } from './wh/view/dialog';
-
+import { showDialog } from './wh/view/dialog.js';
 
 /**
  * Application startup.
  */
-document.addEventListener('DOMContentLoaded', function(e) {
-
+export default function init() {
     // Create all objects that will be the modules of the app.
     var appView = {},
         canvasView = {},
@@ -106,4 +104,4 @@ document.addEventListener('DOMContentLoaded', function(e) {
         .catch(errorMsg => {
             showDialog('MIDI access failure', `The app can't initialise because it failed to access the computer's MIDI ports. If you view the app in a browser, please check if it supports the Web MIDI API.<br>Error message: ${errorMsg}`);
         });
-});
+}

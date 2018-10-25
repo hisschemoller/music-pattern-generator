@@ -1,4 +1,4 @@
-import { getThemeColors } from '../state/selectors';
+import { getThemeColors } from '../state/selectors.js';
 
 /**
  * Manages the canvas views of the processors in the network.
@@ -73,14 +73,17 @@ export default function createCanvasProcessorViews(specs, my) {
             state.processors.allIds.forEach((id, i) => {
                 const processorData = state.processors.byId[id];
                 if (!views[i] || (id !== views[i].getID())) {
-                    const module = require(`../processors/${processorData.type}/graphic`);
-                    const view = module.createGraphic({ 
-                        data: processorData,
-                        store: store,
-                        canvasDirtyCallback: my.markDirty,
-                        theme: getThemeColors()
-                    });
-                    views.splice(i, 0, view);
+                    const moduleSpecifier = `../processors/${processorData.type}/graphic.js`;
+                    import(moduleSpecifier)
+                        .then((module) => {
+                            const view = module.createGraphic({ 
+                                data: processorData,
+                                store: store,
+                                canvasDirtyCallback: my.markDirty,
+                                theme: getThemeColors()
+                            });
+                            views.splice(i, 0, view);
+                        });
                 }
             });
         },

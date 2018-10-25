@@ -1,4 +1,4 @@
-import createRemoteGroupView from './remote_group';
+import createRemoteGroupView from './remote_group.js';
 
 /**
  * Overview list of all assigned MIDI controller assignments.

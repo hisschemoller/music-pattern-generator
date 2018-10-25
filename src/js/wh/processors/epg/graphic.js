@@ -1,7 +1,6 @@
-import createCanvasProcessorBaseView from '../../view/canvasprocessorbase';
-import { getEuclidPattern, rotateEuclidPattern } from './euclid';
-import TWEEN from '@tweenjs/tween.js';
-import { PPQN } from '../../core/config';
+import createCanvasProcessorBaseView from '../../view/canvasprocessorbase.js';
+import { getEuclidPattern, rotateEuclidPattern } from './euclid.js';
+import { PPQN } from '../../core/config.js';
 
 /**
  * Euclidean pattern animated necklace wheel drawn on canvas.
@@ -153,11 +152,12 @@ export function createGraphic(specs, my) {
 
         draw = function(position, processorEvents) {
             showPlaybackPosition(position);
+            updateNoteAnimations();
             
             if (processorEvents[my.id] && processorEvents[my.id].length) {
                 for (let i = 0, n = processorEvents[my.id].length; i < n; i++) {
                     const event = processorEvents[my.id][i];
-                    showNote(event.stepIndex, event.delayFromNowToNoteStart, event.delayFromNowToNoteEnd);
+                    startNoteAnimation(event.stepIndex, event.delayFromNowToNoteStart, event.delayFromNowToNoteEnd);
                 }
             }
         },
@@ -171,6 +171,19 @@ export function createGraphic(specs, my) {
             pointerRotationPrevious = pointerRotation;
             pointerRotation = doublePI * (position % duration / duration);
         },
+
+        /**
+         * Update the current nacklace dot animations.
+         */
+        updateNoteAnimations = function() {
+            Object.keys(dotAnimations).forEach(key => {
+                const obj = dotAnimations[key];
+                obj.dotRadius /= 1.1;
+                if (obj.isActive && obj.dotRadius < 1) {
+                    delete dotAnimations[key];
+                }
+            });
+        },
         
         /**
          * Show animation of the pattern dot that is about to play. 
@@ -178,7 +191,7 @@ export function createGraphic(specs, my) {
          * @param {Number} noteStartDelay Delay from now until note start in ms.
          * @param {Number} noteStopDelay Delay from now until note end in ms.
          */
-        showNote = function(stepIndex, noteStartDelay, noteStopDelay) {
+        startNoteAnimation = function(stepIndex, noteStartDelay, noteStopDelay) {
             // get the coordinates of the dot for this step
             let steps = my.params.steps.value;
             
@@ -187,24 +200,16 @@ export function createGraphic(specs, my) {
                 positionX: necklace[stepIndex].center.x,
                 positionY: necklace[stepIndex].center.y,
                 boundingBox: necklace[stepIndex].rect,
-                dotRadius: 0
+                dotRadius: 0,
+                isActive: false,
             }
             
-            let tweeningDot = dotAnimations[stepIndex];
-            
-            // animate the necklace dot
-            new TWEEN.Tween({currentRadius: dotActiveRadius})
-                .to({currentRadius: dotRadius}, 300)
-                .onUpdate(function() {
-                        // store new dot size
-                        tweeningDot.dotRadius = this.currentRadius;
-                    })
-                .onComplete(function() {
-                        // delete dot state object
-                        delete dotAnimations[stepIndex];
-                    })
-                .delay(noteStartDelay)
-                .start();
+            // delay start of animation
+            setTimeout(() => {
+                let tweeningDot = dotAnimations[stepIndex];
+                tweeningDot.dotRadius = dotActiveRadius;
+                tweeningDot.isActive = true;
+            }, noteStartDelay);
         },
 
         /**
@@ -328,7 +333,7 @@ export function createGraphic(specs, my) {
          */
         updateDots = function(steps, euclid, necklace) {
             dotRadius = dotMaxRadius - 3 - (Math.max(0, steps - 16) * 0.09);
-            dotActiveRadius = dotRadius * 2;
+            dotActiveRadius = dotRadius * 2.5;
             
             necklaceCtx.fillStyle = my.colorHigh;
             necklaceCtx.strokeStyle = my.colorHigh;
