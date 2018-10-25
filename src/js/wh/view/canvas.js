@@ -181,7 +181,6 @@ export default function createCanvasView(specs, my) {
          * @param {Array} processorEvents Array to processor generated events to displayin the view.
          */
         draw = function(position, processorEvents) {
-            TWEEN.update();
             let i,
                 views = my.getProcessorViews(),
                 n = views.length;

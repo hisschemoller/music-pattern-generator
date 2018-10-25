@@ -75,10 +75,10 @@ export default function createMIDINetwork(specs, my) {
                                 store: store
                             });
                             processors.splice(i, 0, processor);
+                            numProcessors = processors.length;
                         });
                 }
             });
-            numProcessors = processors.length;
         },
 
         /**
