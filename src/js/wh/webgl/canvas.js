@@ -1,5 +1,5 @@
-import { WebGLRenderer } from 'three';
-import addWindowResize from '../view/windowresize';
+import { WebGLRenderer } from '../../lib/three.module.js';
+import addWindowResize from '../view/windowresize.js';
 
 export default function createCanvas3d(specs, my) {
   let that,
