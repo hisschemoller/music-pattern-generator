@@ -333,7 +333,7 @@ export function createGraphic(specs, my) {
          */
         updateDots = function(steps, euclid, necklace) {
             dotRadius = dotMaxRadius - 3 - (Math.max(0, steps - 16) * 0.09);
-            dotActiveRadius = dotRadius * 2;
+            dotActiveRadius = dotRadius * 2.5;
             
             necklaceCtx.fillStyle = my.colorHigh;
             necklaceCtx.strokeStyle = my.colorHigh;
