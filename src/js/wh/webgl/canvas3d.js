@@ -23,12 +23,14 @@ export default function createCanvas3d(specs, my) {
     scene,
     camera,
     plane,
+    mousePoint = new Vector2(),
+    raycaster = new Raycaster(),
+    lineMaterial,
     allObjects = [],
+    views = [],
     doubleClickCounter = 0,
     doubleClickDelay = 300,
     doubleClickTimer,
-    mousePoint = new Vector2(),
-    raycaster = new Raycaster(),
 
     init = function() {
       my.addWindowResizeCallback(onWindowResize);
@@ -38,7 +40,11 @@ export default function createCanvas3d(specs, my) {
       draw();
 
       document.addEventListener(store.STATE_CHANGE, (e) => {
-        switch (e.detail.action.type) {
+        switch (e.detail.action.type) {       
+          case e.detail.actions.ADD_PROCESSOR:
+            createProcessorViews(e.detail.state);
+            break;
+
           case e.detail.actions.CREATE_PROJECT:
             setThemeOnWorld();
             break;
@@ -147,7 +153,7 @@ export default function createCanvas3d(specs, my) {
     setThemeOnWorld = function() {
       const themeColors = getThemeColors();
       renderer.setClearColor(new Color( themeColors.colorBackground ));
-      const lineMaterial = new LineBasicMaterial({
+      lineMaterial = new LineBasicMaterial({
         color: new Color( themeColors.colorHigh ),
         linewidth: 3,
       });
@@ -180,6 +186,57 @@ export default function createCanvas3d(specs, my) {
       }
       return object3d;
     },
+        
+    /**
+     * Create canvas 2D object if it exists for the type.
+     * @param  {Array} data Array of current processors' state.
+     */
+    createProcessorViews = function(state) {
+      console.log(state);
+      state.processors.allIds.forEach((id, i) => {
+        const processorData = state.processors.byId[id];
+        if (!views[i] || (id !== views[i].getID())) {
+          import(`../processors/${processorData.type}/object3d.js`)
+            .then(module => {
+              // const view = module.createGraphic({ 
+              //   data: processorData,
+              //   store: store,
+              //   canvasDirtyCallback: my.markDirty,
+              //   theme: getThemeColors()
+              // });
+              const object3d = module.createObject3d(lineMaterial, getThemeColors().colorHigh);
+              allObjects.push(object3d);
+              scene.add(object3d);
+              const view = null;
+              views.splice(i, 0, view);
+            });
+        }
+      });
+    },
+            
+    /**
+     * Create world object if it exists for the type.
+     * @param  {Object} processor MIDI processor for which the 3D object will be a view.
+     */
+    // createObject = function(processor) {
+    //   var type = processor.getType();
+    //   if (templates[type]) {
+    //     // create 3D object
+    //     const object3d = templates[type].clone();
+    //     objects.push(object3d);
+    //     scene.add(object3d);
+    //     // create view for the 3D object
+    //     switch (type) {
+    //       case 'epg':
+    //         var view = ns.createWorldEPGView({
+    //           processor: processor,
+    //           object3d: object3d
+    //         });
+    //         break;
+    //     }
+    //     views.push(view);
+    //   }
+    // },
         
     /**
      * Update any tween animations that are going on and

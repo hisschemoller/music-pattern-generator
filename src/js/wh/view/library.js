@@ -55,9 +55,7 @@ export default function createLibraryView(specs, my) {
         onDrop = function(e) {
             e.preventDefault();
             
-            const dynamicCanvas = document.querySelector('.canvas-dynamic');
-            const connectorsCanvas = document.querySelector('.canvas-connect');
-            const canvas = connectorsCanvas.offsetWidth > 0 ? connectorsCanvas : dynamicCanvas;
+            const canvas = document.querySelector('#canvas-container > canvas');
 
             if (e.target === canvas) {
                 const canvasRect = canvas.getBoundingClientRect();
