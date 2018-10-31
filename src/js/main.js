@@ -22,7 +22,7 @@ import createStore from './wh/state/store.js';
 
 import createAppView from './wh/view/app.js';
 // import createCanvasView from './wh/view/canvas.js';
-import createCanvas3d from './wh/webgl/canvas.js';
+import createCanvas3d from './wh/webgl/canvas3d.js';
 import createDialog from './wh/view/dialog.js';
 import createLibraryView from './wh/view/library.js';
 import createMIDI from './wh/midi/midi.js';
