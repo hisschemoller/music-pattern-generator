@@ -71,6 +71,8 @@ export function createObject3dController(specs, my) {
                 updateDuration(params.steps.value, params.rate.value);
                 break;
               case 'is_mute':
+                params = e.detail.state.processors.byId[my.id].params.byId;
+                updatePointer(params.is_mute.value);
                 break;
             }
           }
