@@ -31,7 +31,7 @@ export default function createCanvas3d(specs, my) {
     lineMaterial,
     dragObject,
     allObjects = [],
-    views = [],
+    controllers = [],
     doubleClickCounter = 0,
     doubleClickDelay = 300,
     doubleClickTimer,
@@ -44,7 +44,12 @@ export default function createCanvas3d(specs, my) {
       draw();
 
       document.addEventListener(store.STATE_CHANGE, (e) => {
-        switch (e.detail.action.type) {       
+        switch (e.detail.action.type) {
+                    
+          case e.detail.actions.SELECT_PROCESSOR:
+            selectProcessorView(e.detail.state);
+            break;
+
           case e.detail.actions.ADD_PROCESSOR:
             createProcessorViews(e.detail.state);
             break;
@@ -121,9 +126,12 @@ export default function createCanvas3d(specs, my) {
       if (intersects.length) {
         // get topmost parent of closest object
         const outerObject = getOuterParentObject(intersects[0]);
-        outerObject.dispatchEvent({
-          type: 'touchstart'
-        });
+
+        // 
+        store.dispatch(store.getActions().selectProcessor(outerObject.userData.id));
+        // outerObject.dispatchEvent({
+        //   type: 'touchstart'
+        // });
         dragStart(outerObject, mousePoint);
       }
     },
@@ -261,7 +269,7 @@ export default function createCanvas3d(specs, my) {
     createProcessorViews = function(state) {
       state.processors.allIds.forEach((id, i) => {
         const processorData = state.processors.byId[id];
-        if (!views[i] || (id !== views[i].getID())) {
+        if (!controllers[i] || (id !== controllers[i].getID())) {
           console.log('processorData', processorData);
           import(`../processors/${processorData.type}/object3d.js`)
             .then(module => {
@@ -273,11 +281,9 @@ export default function createCanvas3d(specs, my) {
               // });
 
               // create the processor 3d object
-              const object3d = module.createObject3d(lineMaterial, getThemeColors().colorHigh);
+              const object3d = module.createObject3d(lineMaterial, getThemeColors().colorHigh, processorData.id);
               allObjects.push(object3d);
               scene.add(object3d);
-              const view = null;
-              views.splice(i, 0, view);
 
               // update the picking ray with the camera and mouse position
               const point = {
@@ -290,8 +296,24 @@ export default function createCanvas3d(specs, my) {
               if (raycaster.ray.intersectPlane(plane, intersection)) {
                 object3d.position.copy(intersection.sub(offset));
               }
+
+              // create controller for the object
+              import(`../processors/${processorData.type}/object3dController.js`)
+                .then(module => {
+                  const controller = module.createObject3dController({ object3d, });
+                  controllers.splice(i, 0, controller);
+                });
             });
         }
+      });
+    },
+
+    /** 
+     * Show the selected state of the processors.
+     */
+    selectProcessorView = function(state) {
+      controllers.forEach(controller => {
+        controller.setSelected(state.selectedID);
       });
     },
             

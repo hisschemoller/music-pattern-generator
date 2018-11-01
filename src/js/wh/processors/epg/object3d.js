@@ -10,7 +10,7 @@ import {
   Vector3,
 } from '../../../lib/three.module.js';
 
-export function createObject3d(lineMaterial, defaultColor) {
+export function createObject3d(lineMaterial, defaultColor, id) {
     
   let circleOutline,
     circleFilled,
@@ -179,9 +179,10 @@ export function createObject3d(lineMaterial, defaultColor) {
       
       const wheel = new Object3D();
       wheel.name = 'wheel';
+      wheel.userData.id = id;
       wheel.add(hitarea);
       wheel.add(centreCircle);
-      // wheel.add(selectCircle);
+      wheel.add(selectCircle);
       // wheel.add(centreDot);
       wheel.add(pointer);
       // wheel.add(poly);
