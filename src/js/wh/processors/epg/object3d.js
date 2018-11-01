@@ -80,12 +80,12 @@ export function createObject3d(lineMaterial, defaultColor) {
      * @return {object} Line 3D object.
      */
     createPointer = function(lineMaterial) {
-      var geometry = new Geometry();
+      const geometry = new Geometry();
       geometry.vertices.push(
           new Vector3(0.0, 0.0, 0.0),
           new Vector3(0.0, 1.0, 0.0)
       );
-      var line = new Line(geometry, lineMaterial);
+      const line = new Line(geometry, lineMaterial);
       return line;
     },
     
@@ -143,54 +143,51 @@ export function createObject3d(lineMaterial, defaultColor) {
      * @return {object} Object3D of drag plane.
      */
     createWheel = function(lineMaterial) {
-      var wheel, hitarea, centreCircle, selectCircle, centreDot, pointer, 
-        poly, dots, zeroMarker, rotatedMarker;
-      
-      hitarea = createCircleFilled(defaultColor);
+      const hitarea = createCircleFilled(defaultColor);
       hitarea.name = 'hitarea';
       hitarea.material.opacity = 0.0;
       
-      centreCircle = circleOutline.clone();
+      const centreCircle = circleOutline.clone();
       centreCircle.name = 'centreCircle';
       centreCircle.scale.set(0.3, 0.3, 1);
       
-      selectCircle = circleOutline.clone();
+      const selectCircle = circleOutline.clone();
       selectCircle.name = 'select';
       selectCircle.scale.set(0.2, 0.2, 1);
       selectCircle.visible = false;
       
-      centreDot = circleLineAndFill.clone();
+      const centreDot = circleLineAndFill.clone();
       centreDot.name = 'centreDot';
       centreDot.scale.set(0.1, 0.1, 1);
       centreDot.visible = false;
       
-      pointer = createPointer(lineMaterial);
+      const pointer = createPointer(lineMaterial);
       pointer.name = 'pointer';
       
-      poly = polygon.clone();
+      const poly = polygon.clone();
       poly.name = 'polygon';
       
-      dots = new Object3D();
+      const dots = new Object3D();
       dots.name = 'dots';
 
-      zeroMarker = circleOutline.clone();
+      const zeroMarker = circleOutline.clone();
       zeroMarker.name = 'zeroMarker';
       zeroMarker.scale.set(0.05, 0.05, 1);
       
-      rotatedMarker = createRotatedMarker(lineMaterial);
+      const rotatedMarker = createRotatedMarker(lineMaterial);
       rotatedMarker.name = 'rotatedMarker';
       
-      wheel = new Object3D();
+      const wheel = new Object3D();
       wheel.name = 'wheel';
       wheel.add(hitarea);
       wheel.add(centreCircle);
-      wheel.add(selectCircle);
-      wheel.add(centreDot);
+      // wheel.add(selectCircle);
+      // wheel.add(centreDot);
       wheel.add(pointer);
-      wheel.add(poly);
-      wheel.add(dots);
-      wheel.add(zeroMarker);
-      wheel.add(rotatedMarker);
+      // wheel.add(poly);
+      // wheel.add(dots);
+      // wheel.add(zeroMarker);
+      // wheel.add(rotatedMarker);
       
       return wheel;
     };
