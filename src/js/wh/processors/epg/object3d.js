@@ -183,12 +183,12 @@ export function createObject3d(lineMaterial, defaultColor, id) {
       wheel.add(hitarea);
       wheel.add(centreCircle);
       wheel.add(selectCircle);
-      // wheel.add(centreDot);
+      wheel.add(centreDot);
       wheel.add(pointer);
-      // wheel.add(poly);
-      // wheel.add(dots);
-      // wheel.add(zeroMarker);
-      // wheel.add(rotatedMarker);
+      wheel.add(poly);
+      wheel.add(dots);
+      wheel.add(zeroMarker);
+      wheel.add(rotatedMarker);
       
       return wheel;
     };

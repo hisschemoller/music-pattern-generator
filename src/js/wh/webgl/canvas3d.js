@@ -269,17 +269,10 @@ export default function createCanvas3d(specs, my) {
     createProcessorViews = function(state) {
       state.processors.allIds.forEach((id, i) => {
         const processorData = state.processors.byId[id];
-        if (!controllers[i] || (id !== controllers[i].getID())) {
-          console.log('processorData', processorData);
+        const isExists = allObjects.find(obj3d => obj3d.userData.id === id);
+        if (!isExists) {
           import(`../processors/${processorData.type}/object3d.js`)
             .then(module => {
-              // const view = module.createGraphic({ 
-              //   data: processorData,
-              //   store: store,
-              //   canvasDirtyCallback: my.markDirty,
-              //   theme: getThemeColors()
-              // });
-
               // create the processor 3d object
               const object3d = module.createObject3d(lineMaterial, getThemeColors().colorHigh, processorData.id);
               allObjects.push(object3d);
@@ -300,8 +293,8 @@ export default function createCanvas3d(specs, my) {
               // create controller for the object
               import(`../processors/${processorData.type}/object3dController.js`)
                 .then(module => {
-                  const controller = module.createObject3dController({ object3d, });
-                  controllers.splice(i, 0, controller);
+                  const controller = module.createObject3dController({ object3d, processorData, store, });
+                  controllers.push(controller);
                 });
             });
         }
@@ -313,7 +306,7 @@ export default function createCanvas3d(specs, my) {
      */
     selectProcessorView = function(state) {
       controllers.forEach(controller => {
-        controller.setSelected(state.selectedID);
+        controller.updateSelectCircle(state.selectedID);
       });
     },
             
