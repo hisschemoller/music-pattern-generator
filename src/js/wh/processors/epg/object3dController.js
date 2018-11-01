@@ -310,15 +310,26 @@ export function createObject3dController(specs, my) {
      * Update the current nacklace dot animations.
      */
     updateNoteAnimations = function() {
-        Object.keys(dotAnimations).forEach(key => {
-            const obj = dotAnimations[key];
-            obj.scale /= 1.05;
-            obj.dot.scale.set(obj.scale, obj.scale, 1);
-            if (obj.isActive && obj.scale <= 0.1) {
-              obj.dot.scale.set(0.1, 0.1, 1);
-                delete dotAnimations[key];
-            }
-        });
+      let largestScale = 0;
+      let isNoteActive = false;
+
+      Object.keys(dotAnimations).forEach(key => {
+        const obj = dotAnimations[key];
+        obj.scale /= 1.07;
+        obj.dot.scale.set(obj.scale, obj.scale, 1);
+        largestScale = Math.max(largestScale, obj.scale);
+        isNoteActive = true;
+        if (obj.isActive && obj.scale <= 0.1) {
+          obj.dot.scale.set(0.1, 0.1, 1);
+          delete dotAnimations[key];
+        }
+      });
+            
+      // center dot
+      centreDot3d.visible = isNoteActive;
+      if (isNoteActive) {
+        centreDot3d.scale.set(largestScale, largestScale, 1);
+      }
     };
   
   my = my || {};
