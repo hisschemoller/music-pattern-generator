@@ -6,6 +6,7 @@ import {
 } from '../../../lib/three.module.js';
 import createObject3dControllerBase from '../../webgl/object3dControllerBase.js';
 import { getEuclidPattern, rotateEuclidPattern } from './euclid.js';
+import { PPQN } from '../../core/config.js';
 
 const TWO_PI = Math.PI * 2;
 
@@ -21,6 +22,10 @@ export function createObject3dController(specs, my) {
     select3d,
     zeroMarker3d,
     radius3d,
+    duration,
+    pointerRotation,
+    pointerRotationPrevious = 0,
+    dotAnimations = {},
 
     initialize = function() {
       centreCircle3d = my.object3d.getObjectByName('centreCircle'),
@@ -34,9 +39,10 @@ export function createObject3dController(specs, my) {
       zeroMarker3d = my.object3d.getObjectByName('zeroMarker'),
 
       document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
-      
+
       const params = specs.processorData.params.byId;
       updateNecklace(params.steps.value, params.pulses.value, params.rotation.value, params.is_mute.value);
+      updateDuration(params.steps.value, params.rate.value);
     },
 
     terminate = function() {
@@ -47,17 +53,22 @@ export function createObject3dController(specs, my) {
       switch (e.detail.action.type) {
         case e.detail.actions.CHANGE_PARAMETER:
           if (e.detail.action.processorID === my.id) {
+            let params;
             switch (e.detail.action.paramKey) {
               case 'steps':
               case 'pulses':
+                params = e.detail.state.processors.byId[my.id].params.byId;
+                updateDuration(params.steps.value, params.rate.value);
+                // fall through intended
               case 'rotation':
-                const params = e.detail.state.processors.byId[my.id].params.byId;
+                params = params || e.detail.state.processors.byId[my.id].params.byId;
                 updateNecklace(params.steps.value, params.pulses.value, params.rotation.value, params.is_mute.value);
                 break;
               case 'is_triplets':
               case 'rate':
               case 'note_length':
-                // updatePattern();
+                params = e.detail.state.processors.byId[my.id].params.byId;
+                updateDuration(params.steps.value, params.rate.value);
                 break;
               case 'is_mute':
                 break;
@@ -235,6 +246,78 @@ export function createObject3dController(specs, my) {
      */
     updateSelectCircle = function(selectedId) {
       my.object3d.getObjectByName('select').visible = my.id === selectedId;
+    },
+
+    /**
+     * Calculate the pattern's duration in milliseconds.
+     */
+    updateDuration = function(steps, rate) {
+      // const rate = my.params.is_triplets.value ? my.params.rate.value * (2 / 3) : my.params.rate.value;
+      const stepDuration = rate * PPQN;
+      duration = steps * stepDuration;
+    },
+    
+    draw = function(position, processorEvents) {
+      showPlaybackPosition(position);
+      updateNoteAnimations();
+
+      if (processorEvents[my.id] && processorEvents[my.id].length) {
+        for (let i = 0, n = processorEvents[my.id].length; i < n; i++) {
+          const event = processorEvents[my.id][i];
+          startNoteAnimation(event.stepIndex, event.delayFromNowToNoteStart, event.delayFromNowToNoteEnd);
+        }
+      }
+    },
+        
+    /**
+     * Show the playback position within the pattern.
+     * Indicated by the pointer's rotation.
+     * @param  {Number} position Position within pattern in ticks.
+     */
+    showPlaybackPosition = function(position) {
+        pointerRotationPrevious = pointerRotation;
+        pointerRotation = TWO_PI * (-position % duration / duration);
+        pointer3d.rotation.z = pointerRotation;
+    },
+        
+    /**
+     * Show animation of the pattern dot that is about to play. 
+     * @param {Number} stepIndex Index of the step to play.
+     * @param {Number} noteStartDelay Delay from now until note start in ms.
+     * @param {Number} noteStopDelay Delay from now until note end in ms.
+     */
+    startNoteAnimation = function(stepIndex, noteStartDelay, noteStopDelay) {
+        // // get the coordinates of the dot for this step
+        // let steps = my.params.steps.value;
+        
+        // // retain necklace dot state in object
+        // dotAnimations[stepIndex] = {
+        //     positionX: necklace[stepIndex].center.x,
+        //     positionY: necklace[stepIndex].center.y,
+        //     boundingBox: necklace[stepIndex].rect,
+        //     dotRadius: 0,
+        //     isActive: false,
+        // }
+        
+        // // delay start of animation
+        // setTimeout(() => {
+        //     let tweeningDot = dotAnimations[stepIndex];
+        //     tweeningDot.dotRadius = dotActiveRadius;
+        //     tweeningDot.isActive = true;
+        // }, noteStartDelay);
+    },
+
+    /**
+     * Update the current nacklace dot animations.
+     */
+    updateNoteAnimations = function() {
+        Object.keys(dotAnimations).forEach(key => {
+            const obj = dotAnimations[key];
+            obj.dotRadius /= 1.1;
+            if (obj.isActive && obj.dotRadius < 1) {
+                delete dotAnimations[key];
+            }
+        });
     };
   
   my = my || {};
@@ -244,5 +327,6 @@ export function createObject3dController(specs, my) {
   initialize();
 
   that.updateSelectCircle = updateSelectCircle;
+  that.draw = draw;
   return that;
 }

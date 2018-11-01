@@ -341,6 +341,7 @@ export default function createCanvas3d(specs, my) {
      * @param {Array} processorEvents Array to processor generated events to displayin the view.
      */
     draw = function(position, processorEvents) {
+      controllers.forEach(controller => controller.draw(position, processorEvents));
       renderer.render(scene, camera);
     };
 
