@@ -289,24 +289,21 @@ export function createObject3dController(specs, my) {
      * @param {Number} noteStopDelay Delay from now until note end in ms.
      */
     startNoteAnimation = function(stepIndex, noteStartDelay, noteStopDelay) {
-        // // get the coordinates of the dot for this step
-        // let steps = my.params.steps.value;
-        
-        // // retain necklace dot state in object
-        // dotAnimations[stepIndex] = {
-        //     positionX: necklace[stepIndex].center.x,
-        //     positionY: necklace[stepIndex].center.y,
-        //     boundingBox: necklace[stepIndex].rect,
-        //     dotRadius: 0,
-        //     isActive: false,
-        // }
-        
-        // // delay start of animation
-        // setTimeout(() => {
-        //     let tweeningDot = dotAnimations[stepIndex];
-        //     tweeningDot.dotRadius = dotActiveRadius;
-        //     tweeningDot.isActive = true;
-        // }, noteStartDelay);
+      const dot = dots3d.children[stepIndex];
+      
+      // retain necklace dot state in object
+      dotAnimations[stepIndex] = {
+          dot,
+          scale: 0.1,
+          isActive: false,
+      }
+
+      // delay start of animation
+      setTimeout(() => {
+          let tweeningDot = dotAnimations[stepIndex];
+          tweeningDot.scale = 0.2;
+          tweeningDot.isActive = true;
+      }, noteStartDelay);
     },
 
     /**
@@ -315,8 +312,10 @@ export function createObject3dController(specs, my) {
     updateNoteAnimations = function() {
         Object.keys(dotAnimations).forEach(key => {
             const obj = dotAnimations[key];
-            obj.dotRadius /= 1.1;
-            if (obj.isActive && obj.dotRadius < 1) {
+            obj.scale /= 1.05;
+            obj.dot.scale.set(obj.scale, obj.scale, 1);
+            if (obj.isActive && obj.scale <= 0.1) {
+              obj.dot.scale.set(0.1, 0.1, 1);
                 delete dotAnimations[key];
             }
         });
