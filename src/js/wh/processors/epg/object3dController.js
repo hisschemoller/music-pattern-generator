@@ -338,6 +338,7 @@ export function createObject3dController(specs, my) {
 
   initialize();
 
+  that.terminate = terminate;
   that.updateSelectCircle = updateSelectCircle;
   that.draw = draw;
   return that;

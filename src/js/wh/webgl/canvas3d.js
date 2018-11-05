@@ -53,6 +53,11 @@ export default function createCanvas3d(specs, my) {
           case e.detail.actions.ADD_PROCESSOR:
             createProcessorViews(e.detail.state);
             break;
+                    
+          case e.detail.actions.DELETE_PROCESSOR:
+              deleteProcessorView(e.detail.action.id);
+              selectProcessorView(e.detail.state);
+              break;
 
           case e.detail.actions.CREATE_PROJECT:
             setThemeOnWorld();
@@ -310,30 +315,31 @@ export default function createCanvas3d(specs, my) {
         controller.updateSelectCircle(state.selectedID);
       });
     },
-            
+        
     /**
-     * Create world object if it exists for the type.
+     * Delete canvas 2D object when the processor is deleted.
      * @param  {Object} processor MIDI processor for which the 3D object will be a view.
      */
-    // createObject = function(processor) {
-    //   var type = processor.getType();
-    //   if (templates[type]) {
-    //     // create 3D object
-    //     const object3d = templates[type].clone();
-    //     objects.push(object3d);
-    //     scene.add(object3d);
-    //     // create view for the 3D object
-    //     switch (type) {
-    //       case 'epg':
-    //         var view = ns.createWorldEPGView({
-    //           processor: processor,
-    //           object3d: object3d
-    //         });
-    //         break;
-    //     }
-    //     views.push(view);
-    //   }
-    // },
+    deleteProcessorView = function(id) {
+      // remove 3D object from allObjects
+      allObjects = allObjects.reduce((accumulator, object3D) => {
+        if (object3D.userData.id === id) {
+          // remove 3D object from scene
+          scene.remove(object3D);
+          return accumulator;
+        }
+        return [...accumulator, object3D];
+      }, []);
+
+      // remove controller
+      controllers = controllers.reduce((accumulator, controller) => {
+        if (controller.getID() === id) {
+          controller.terminate();
+          return accumulator;
+        }
+        return [...accumulator, controller];
+      }, []);
+    },
         
     /**
      * Update any tween animations that are going on and
