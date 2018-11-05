@@ -200,17 +200,9 @@ export default function createAppView(specs, my) {
                                 store: store,
                                 parentEl: editContentEl,
                                 template: html,
-                                isSelected: state.selectedID === processorData.id
+                                isSelected: store.getState().selectedID === processorData.id
                             }));
                         });
-                    // const template = require(`html-loader!../processors/${processorData.type}/settings.html`);
-                    // settingsViews.splice(i, 0, createSettingsPanel({
-                    //     data: processorData,
-                    //     store: store,
-                    //     parentEl: editContentEl,
-                    //     template: template,
-                    //     isSelected: state.selectedID === processorData.id
-                    // }));
                 }
             });
         },
