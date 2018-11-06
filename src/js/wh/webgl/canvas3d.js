@@ -61,6 +61,7 @@ export default function createCanvas3d(specs, my) {
 
           case e.detail.actions.CREATE_PROJECT:
             setThemeOnWorld();
+            createProcessorViews(e.detail.state);
             break;
 
           case e.detail.actions.SET_THEME:
