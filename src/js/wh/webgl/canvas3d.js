@@ -55,12 +55,13 @@ export default function createCanvas3d(specs, my) {
             break;
                     
           case e.detail.actions.DELETE_PROCESSOR:
-              deleteProcessorView(e.detail.action.id);
-              selectProcessorView(e.detail.state);
-              break;
+            deleteProcessorView(e.detail.action.id);
+            selectProcessorView(e.detail.state);
+            break;
 
           case e.detail.actions.CREATE_PROJECT:
             setThemeOnWorld();
+            clearProcessorViews();
             createProcessorViews(e.detail.state);
             break;
 
@@ -315,6 +316,20 @@ export default function createCanvas3d(specs, my) {
       controllers.forEach(controller => {
         controller.updateSelectCircle(state.selectedID);
       });
+    },
+
+    clearProcessorViews = function() {
+      // remove all processor 3D objects
+      allObjects = allObjects.reduce((accumulator, object3D) => {
+        scene.remove(object3D);
+        return accumulator;
+      }, []);
+
+      // remove all controllers
+      controllers = controllers.reduce((accumulator, controller) => {
+        controller.terminate();
+        return accumulator;
+      }, []);
     },
         
     /**
