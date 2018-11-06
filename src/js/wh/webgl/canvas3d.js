@@ -25,11 +25,13 @@ export default function createCanvas3d(specs, my) {
     plane,
     mousePoint = new Vector2(),
     intersection = new Vector3(),
-    offset = new Vector3(),
+    intersectionPrevious = new Vector3(),
     raycaster = new Raycaster(),
     intersectedObject,
     lineMaterial,
     dragObject,
+    dragObjectType,
+    dragOffset = new Vector3(),
     allObjects = [],
     controllers = [],
     doubleClickCounter = 0,
@@ -127,20 +129,20 @@ export default function createCanvas3d(specs, my) {
     onTouchStart = function(e) {
       // update picking ray
       updateMouseRay(e);
-      // get intersected objects
+      // get intersected processor
       const intersects = raycaster.intersectObjects(allObjects, true);
+      let outerObject = null;
       // select first wheel in the intersects
       if (intersects.length) {
         // get topmost parent of closest object
-        const outerObject = getOuterParentObject(intersects[0]);
-
-        // 
+        outerObject = getOuterParentObject(intersects[0]);
+        // select the touched processor
         store.dispatch(store.getActions().selectProcessor(outerObject.userData.id));
-        // outerObject.dispatchEvent({
-        //   type: 'touchstart'
-        // });
-        dragStart(outerObject, mousePoint);
+        dragObjectType = 'processor';
+      } else {
+        dragObjectType = 'background';
       }
+      dragStart(outerObject, mousePoint);
     },
             
     /**
@@ -148,16 +150,24 @@ export default function createCanvas3d(specs, my) {
      * @param {object} object3d The Object3D to be dragged.
      */
     dragStart = function(object3d, mousePoint) {
-        dragObject = object3d;
-        // update the picking ray with the camera and mouse position
-        raycaster.setFromCamera(mousePoint, camera);
-        // if ray intersects plane, store point in vector 'intersection'
-        if (raycaster.ray.intersectPlane(plane, intersection)) {
+      dragObject = object3d;
+      // update the picking ray with the camera and mouse position
+      raycaster.setFromCamera(mousePoint, camera);
+      // if ray intersects plane, store point in vector 'intersection'
+      if (raycaster.ray.intersectPlane(plane, intersection)) {
+        switch (dragObjectType) {
+          case 'processor':
             // offset is the intersection point minus object position,
             // so distance from object to mouse
-            offset.copy(intersection).sub(object3d.position);
-            rootEl.style.cursor = 'move';
+            dragOffset.copy(intersection).sub(dragObject.position);
+            break;
+          case 'background':
+            dragOffset = new Vector3();
+            intersectionPrevious.copy(intersection);
+            break;
         }
+        rootEl.style.cursor = 'move';
+      }
     },
             
     /**
@@ -165,28 +175,40 @@ export default function createCanvas3d(specs, my) {
      * @param  {Object} e Event.
      */
     dragMove = function(e) {
-        e.preventDefault();
-        // update picking ray.
-        updateMouseRay(e);
-        // if ray intersects plane, store point in vector 'intersection'
-        if (dragObject) {
-            if (raycaster.ray.intersectPlane(plane, intersection)) {
-                dragObject.position.copy(intersection.sub(offset));
-            }
-            return;
-        }
-        
+      e.preventDefault();
+
+      // update picking ray.
+      updateMouseRay(e);
+      switch (dragObjectType) {
+        case 'processor':
+          if (raycaster.ray.intersectPlane(plane, intersection)) {
+            dragObject.position.copy(intersection.sub(dragOffset));
+          }
+          break;
+        case 'background':
+          if (raycaster.ray.intersectPlane(plane, intersection)) {
+            let current = intersection.clone();
+            dragOffset.copy(current.sub(intersectionPrevious));
+            intersectionPrevious.copy(intersection);
+            allObjects.forEach(object3d => {
+              object3d.position.add(dragOffset);
+            });
+          }
+          break;
+
         // when not dragging
-        var intersects = raycaster.intersectObjects(allObjects, true);
-        if (intersects.length > 0) {
+        default:
+          var intersects = raycaster.intersectObjects(allObjects, true);
+          if (intersects.length > 0) {
             if (intersectedObject != intersects[0].object) {
               intersectedObject = intersects[0].object;
             }
             rootEl.style.cursor = 'pointer';
-        } else {
+          } else {
             intersectedObject = null;
             rootEl.style.cursor = 'auto';
-        }
+          }
+      }
     },
             
     /**
@@ -195,12 +217,8 @@ export default function createCanvas3d(specs, my) {
      */
     dragEnd = function(e) {
         e.preventDefault();
-        if (dragObject) {
-            dragObject.dispatchEvent({
-                type: 'dragend'
-            });
-        }
         dragObject = null;
+        dragObjectType = null;
         rootEl.style.cursor = 'auto';
     },
 
@@ -294,7 +312,7 @@ export default function createCanvas3d(specs, my) {
               
               // position the new processor in the scene
               if (raycaster.ray.intersectPlane(plane, intersection)) {
-                object3d.position.copy(intersection.sub(offset));
+                object3d.position.copy(intersection.sub(dragOffset));
               }
 
               // create controller for the object
