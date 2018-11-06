@@ -60,15 +60,6 @@ export default function createSettingsPanel(specs, my) {
                 });
             }
 
-            document.addEventListener(store.STATE_CHANGE, (e) => {
-                switch (e.detail.action.type) {
-                    case e.detail.actions.SELECT_PROCESSOR:
-                    case e.detail.actions.DELETE_PROCESSOR:
-                        show(e.detail.state.selectedID === data.id);
-                        break;
-                }
-            });
-
             show(specs.isSelected);
         },
         
@@ -93,6 +84,14 @@ export default function createSettingsPanel(specs, my) {
       }
     },
         
+    /**
+     * Show or hide settings depending on ID.
+     * @param {String} id ID of the selected processor.
+     */
+    select = function(id) {
+      show(id === data.id);
+    },
+        
         getID = function() {
             return data.id;
         };
@@ -102,6 +101,7 @@ export default function createSettingsPanel(specs, my) {
     initialize();
     
     that.terminate = terminate;
+    that.select = select;
     that.getID = getID;
     return that;
 }

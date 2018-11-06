@@ -160,6 +160,8 @@ export default function createAppView(specs, my) {
                         break;
                     
                     case e.detail.actions.SELECT_PROCESSOR:
+                        selectSettingsView(e.detail.action.id);
+                        // fall through intentional
                     case e.detail.actions.TOGGLE_MIDI_LEARN_MODE:
                     case e.detail.actions.TOGGLE_PANEL:
                         showPanels(e.detail.state);
