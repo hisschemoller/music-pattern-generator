@@ -81,17 +81,17 @@ export default function createSettingsPanel(specs, my) {
             }
         },
         
-        /**
-         * Show settings if the processor is selected, else remove.
-         * @param {Boolean} isSelected True if selected.
-         */
-        show = function(isSelected)  {
-            if (isSelected) {
-                parentEl.appendChild(el);
-            } else if (el.parentNode === parentEl) {
-                parentEl.removeChild(el);
-            }
-        },
+    /**
+     * Show settings if the processor is selected, else remove.
+     * @param {Boolean} isSelected True if selected.
+     */
+    show = function(isSelected)  {
+      if (isSelected) {
+        parentEl.appendChild(el);
+      } else if (parentEl.contains(el)) {
+        parentEl.removeChild(el);
+      }
+    },
         
         getID = function() {
             return data.id;

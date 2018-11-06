@@ -207,20 +207,27 @@ export default function createAppView(specs, my) {
             });
         },
         
-        /**
-         * Delete settings controls view for a processor.
-         * @param  {String} id MIDI processor ID.
-         */
-        deleteSettingsView = function(id) {
-            var n = settingsViews.length;
-            while (--n >= 0) {
-                if (settingsViews[n].getID() === id) {
-                    settingsViews[n].terminate();
-                    settingsViews.splice(n, 1);
-                    return false;
-                }
-            }
-        },
+  /**
+   * Delete settings controls view for a processor.
+   * @param  {String} id MIDI processor ID.
+   */
+  deleteSettingsView = function(id) {
+    settingsViews = settingsViews.reduce((accumulator, view) => {
+      if (view.getID() === id) {
+        view.terminate();
+        return accumulator;
+      }
+      return [...accumulator, view];
+    }, []);
+  },
+        
+  /**
+   * Show the settings controls view for a processor.
+   * @param  {String} id MIDI processor ID.
+   */
+  selectSettingsView = function(id) {
+    settingsViews.forEach(view => view.select(id));
+  },
 
         setProject = function(state) {
             var n = settingsViews.length;
