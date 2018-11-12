@@ -5,6 +5,7 @@ import {
   Vector3,
 } from '../../../lib/three.module.js';
 import createObject3dControllerBase from '../../webgl/object3dControllerBase.js';
+import setText3d from '../../webgl/text3d.js';
 import { getEuclidPattern, rotateEuclidPattern } from './euclid.js';
 import { PPQN } from '../../core/config.js';
 
@@ -16,12 +17,14 @@ export function createObject3dController(specs, my) {
     centreDot3d,
     dots3d,
     hitarea3d,
+    label3d,
     pointer3d,
     polygon3d,
     rotatedMarker3d,
     select3d,
     zeroMarker3d,
     radius3d,
+    lineMaterial,
     duration,
     pointerRotation,
     pointerRotationPrevious = 0,
@@ -32,6 +35,7 @@ export function createObject3dController(specs, my) {
       centreDot3d = my.object3d.getObjectByName('centreDot'),
       dots3d = my.object3d.getObjectByName('dots'),
       hitarea3d = my.object3d.getObjectByName('hitarea'),
+      label3d = my.object3d.getObjectByName('label'),
       pointer3d = my.object3d.getObjectByName('pointer'),
       polygon3d = my.object3d.getObjectByName('polygon'),
       rotatedMarker3d = my.object3d.getObjectByName('rotatedMarker'),
@@ -41,6 +45,7 @@ export function createObject3dController(specs, my) {
       document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
 
       const params = specs.processorData.params.byId;
+      updateLabel(params.name.value);
       updateNecklace(params.steps.value, params.pulses.value, params.rotation.value, params.is_mute.value);
       updateDuration(params.steps.value, params.rate.value);
     },
@@ -53,31 +58,37 @@ export function createObject3dController(specs, my) {
       switch (e.detail.action.type) {
         case e.detail.actions.CHANGE_PARAMETER:
           if (e.detail.action.processorID === my.id) {
-            let params;
+            let params = e.detail.state.processors.byId[my.id].params.byId;
             switch (e.detail.action.paramKey) {
               case 'steps':
               case 'pulses':
-                params = e.detail.state.processors.byId[my.id].params.byId;
                 updateDuration(params.steps.value, params.rate.value);
                 // fall through intended
               case 'rotation':
-                params = params || e.detail.state.processors.byId[my.id].params.byId;
                 updateNecklace(params.steps.value, params.pulses.value, params.rotation.value, params.is_mute.value);
                 break;
               case 'is_triplets':
               case 'rate':
               case 'note_length':
-                params = e.detail.state.processors.byId[my.id].params.byId;
                 updateDuration(params.steps.value, params.rate.value);
                 break;
+              case 'name':
+                updateLabel(params.name.value);
+                break;
               case 'is_mute':
-                params = e.detail.state.processors.byId[my.id].params.byId;
                 updatePointer(params.is_mute.value);
                 break;
             }
           }
           break;
       }
+    },
+
+    /** 
+     * 
+     */
+    updateTheme = function(lineMat) {
+      lineMaterial = lineMat;
     },
 
     updateNecklace = function(steps, pulses, rotation, isMute) {
@@ -122,6 +133,7 @@ export function createObject3dController(specs, my) {
       updatePointer(isMute);
       updateZeroMarker(steps, rotation);
       updateRotatedMarker(rotation);
+      updateLabelPosition();
     },
             
     /**
@@ -241,6 +253,10 @@ export function createObject3dController(specs, my) {
         rotatedMarker3d.position.y = radius3d + 3;
         rotatedMarker3d.visible = rotation !== 0;
     },
+
+    updateLabelPosition = function() {
+      label3d.position.y = -radius3d - 3;
+    },
             
     /**
      * Show circle if the processor is selected, else hide.
@@ -257,6 +273,13 @@ export function createObject3dController(specs, my) {
       // const rate = my.params.is_triplets.value ? my.params.rate.value * (2 / 3) : my.params.rate.value;
       const stepDuration = rate * PPQN;
       duration = steps * stepDuration;
+    },
+        
+    /**
+     * Update the pattern's name.
+     */
+    updateLabel = function(labelString) {
+        setText3d(label3d, labelString.toUpperCase(), lineMaterial);
     },
     
     draw = function(position, processorEvents) {
@@ -340,6 +363,7 @@ export function createObject3dController(specs, my) {
 
   that.terminate = terminate;
   that.updateSelectCircle = updateSelectCircle;
+  that.updateTheme = updateTheme;
   that.draw = draw;
   return that;
 }

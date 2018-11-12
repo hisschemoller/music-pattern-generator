@@ -8,6 +8,7 @@ import {
   Shape,
   ShapeGeometry,
   Vector3,
+  Group,
 } from '../../../lib/three.module.js';
 
 export function createObject3d(lineMaterial, defaultColor, id) {
@@ -176,6 +177,11 @@ export function createObject3d(lineMaterial, defaultColor, id) {
       
       const rotatedMarker = createRotatedMarker(lineMaterial);
       rotatedMarker.name = 'rotatedMarker';
+
+      const label = new Group();
+      label.name = 'label';
+      label.scale.set(0.1, 0.1, 1);
+      label.translateY(-10);
       
       const wheel = new Object3D();
       wheel.name = 'wheel';
@@ -189,6 +195,7 @@ export function createObject3d(lineMaterial, defaultColor, id) {
       wheel.add(dots);
       wheel.add(zeroMarker);
       wheel.add(rotatedMarker);
+      wheel.add(label);
       
       return wheel;
     };

@@ -256,6 +256,11 @@ export default function createCanvas3d(specs, my) {
         color: new Color( themeColors.colorHigh ),
         linewidth: 3,
       });
+      
+      // update all controllers with the new theme
+      controllers.forEach(controller => {
+        controller.updateTheme(lineMaterial);
+      });
     },
             
     /**
@@ -320,6 +325,7 @@ export default function createCanvas3d(specs, my) {
                 .then(module => {
                   const controller = module.createObject3dController({ object3d, processorData, store, });
                   controller.updateSelectCircle(store.getState().selectedID);
+                  controller.updateTheme(lineMaterial);
                   controllers.push(controller);
                 });
             });
