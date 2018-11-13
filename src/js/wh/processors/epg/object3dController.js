@@ -1,5 +1,6 @@
 import {
   Geometry,
+  LineBasicMaterial,
   Shape,
   ShapeGeometry,
   Vector3,
@@ -9,6 +10,10 @@ import createObject3dControllerBase from '../../webgl/object3dControllerBase.js'
 import setText3d from '../../webgl/text3d.js';
 import { getEuclidPattern, rotateEuclidPattern } from './euclid.js';
 import { PPQN } from '../../core/config.js';
+import {
+  createCircleOutline,
+  createCircleOutlineFilled,
+} from '../../webgl/util3d.js';
 
 const TWO_PI = Math.PI * 2;
 
@@ -30,6 +35,7 @@ export function createObject3dController(specs, my) {
     pointerRotation,
     pointerRotationPrevious = 0,
     dotAnimations = {},
+    defaultColor,
 
     initialize = function() {
       centreCircle3d = my.object3d.getObjectByName('centreCircle'),
@@ -44,6 +50,11 @@ export function createObject3dController(specs, my) {
       zeroMarker3d = my.object3d.getObjectByName('zeroMarker'),
 
       document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
+    
+      defaultColor = getThemeColors().colorHigh;
+      lineMaterial = new LineBasicMaterial({
+        color: defaultColor,
+      });
 
       const params = specs.processorData.params.byId;
       updateLabel(params.name.value);
@@ -129,11 +140,11 @@ export function createObject3dController(specs, my) {
         let dot;
         const rad = TWO_PI * (i / steps);
         if (euclid[i]) {
-          dot = centreDot3d.clone();
+          dot = createCircleOutlineFilled(lineMaterial, defaultColor, 1);
         } else {
-          dot = select3d.clone();
+          dot = createCircleOutline(lineMaterial, 1);
         }
-        dot.scale.set(0.1, 0.1, 1);
+        // dot.scale.set(0.1, 0.1, 1);
         dot.translateX(Math.sin(rad) * radius3d);
         dot.translateY(Math.cos(rad) * radius3d);
         dot.visible = true;

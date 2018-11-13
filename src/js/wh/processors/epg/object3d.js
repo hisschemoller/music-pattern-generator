@@ -2,6 +2,7 @@ import {
   CircleGeometry,
   Geometry,
   Line,
+  LineBasicMaterial,
   Mesh,
   MeshBasicMaterial,
   Object3D,
@@ -10,69 +11,32 @@ import {
   Vector3,
   Group,
 } from '../../../lib/three.module.js';
+import {
+  createCircleOutline,
+  createCircleFilled,
+  createCircleOutlineFilled,
+} from '../../webgl/util3d.js';
+import { getThemeColors } from '../../state/selectors.js';
 
-export function createObject3d(lineMaterial, defaultColor, id) {
+export function createObject3d(id) {
     
-  let circleOutline,
-    circleFilled,
-    circleLineAndFill,
-    polygon,
+  let polygon,
     wheel,
     TWO_PI = Math.PI * 2,
     centreRadius = 3,
+    defaultColor,
+    lineMaterial,
     
     /**
      * Initialization.
      */
     init = function() {
-      circleOutline = createCircleOutline(lineMaterial);
-      circleFilled = createCircleFilled(defaultColor);
-      circleLineAndFill = createCircleLineAndFill(circleOutline, circleFilled);
+      defaultColor = getThemeColors().colorHigh;
+      lineMaterial = new LineBasicMaterial({
+        color: defaultColor,
+      });
       polygon = createPolygon(lineMaterial, defaultColor);
       wheel = createWheel(lineMaterial);
-    },
-    
-    /**
-     * Create a circle outline.
-     * @param {object} lineMaterial
-     */
-    createCircleOutline = function(lineMaterial) {
-        var radius = 10,
-          numSegments = 64,
-          geometry = new CircleGeometry(radius, numSegments);
-        
-        geometry.vertices.shift();
-        return new Line(geometry, lineMaterial);
-    },
-    
-    /**
-     * Create a circle fill.
-     * @param {number} color Fill color.
-     */
-    createCircleFilled = function(color) {
-      var radius = 10,
-        numSegments = 8,
-        material = new MeshBasicMaterial({
-          color: color,
-          transparent: true
-        }),
-        geometry = new CircleGeometry(radius, numSegments);              
-    
-      material.opacity = 1.0;
-      return new Mesh(geometry, material);
-    },
-    
-    /**
-     * Create circle with outline and fill.
-     * @param {object} circleOutline Circle outline 3D object.
-     * @param {object} circleFill Circle fill 3D object.
-     * @return {object} Line 3D object.
-     */
-    createCircleLineAndFill = function(circleOutline, circleFill) {
-      var circle = new Object3D();
-      circle.add(circleFill.clone());
-      circle.add(circleOutline.clone());
-      return circle;
     },
     
     /**
@@ -144,22 +108,19 @@ export function createObject3d(lineMaterial, defaultColor, id) {
      * @return {object} Object3D of drag plane.
      */
     createWheel = function(lineMaterial) {
-      const hitarea = createCircleFilled(defaultColor);
+      const hitarea = createCircleFilled(defaultColor, 3);
       hitarea.name = 'hitarea';
       hitarea.material.opacity = 0.0;
       
-      const centreCircle = circleOutline.clone();
+      const centreCircle = createCircleOutline(lineMaterial, 3);
       centreCircle.name = 'centreCircle';
-      centreCircle.scale.set(0.3, 0.3, 1);
       
-      const selectCircle = circleOutline.clone();
+      const selectCircle = createCircleOutline(lineMaterial, 2);
       selectCircle.name = 'select';
-      selectCircle.scale.set(0.2, 0.2, 1);
       selectCircle.visible = false;
       
-      const centreDot = circleLineAndFill.clone();
+      const centreDot = createCircleOutlineFilled(lineMaterial, defaultColor, 1);
       centreDot.name = 'centreDot';
-      centreDot.scale.set(0.1, 0.1, 1);
       centreDot.visible = false;
       
       const pointer = createPointer(lineMaterial);
@@ -171,9 +132,8 @@ export function createObject3d(lineMaterial, defaultColor, id) {
       const dots = new Object3D();
       dots.name = 'dots';
 
-      const zeroMarker = circleOutline.clone();
+      const zeroMarker = createCircleOutline(lineMaterial, 0.5);
       zeroMarker.name = 'zeroMarker';
-      zeroMarker.scale.set(0.05, 0.05, 1);
       
       const rotatedMarker = createRotatedMarker(lineMaterial);
       rotatedMarker.name = 'rotatedMarker';
