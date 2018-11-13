@@ -298,7 +298,7 @@ export function createObject3dController(specs, my) {
      * Update the pattern's name.
      */
     updateLabel = function(labelString) {
-        setText3d(label3d, labelString.toUpperCase(), lineMaterial);
+        setText3d(label3d, labelString.toUpperCase(), getThemeColors().colorHigh);
     },
     
     draw = function(position, processorEvents) {
@@ -382,7 +382,6 @@ export function createObject3dController(specs, my) {
 
   that.terminate = terminate;
   that.updateSelectCircle = updateSelectCircle;
-  that.updateTheme = updateTheme;
   that.draw = draw;
   return that;
 }

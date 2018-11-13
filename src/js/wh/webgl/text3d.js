@@ -12,6 +12,11 @@ import {
   Vector3,
 } from '../../lib/three.module.js';
 
+const lineMaterial = new LineBasicMaterial({
+  color: new Color(0x000000),
+  linewidth: 3,
+});
+
 /**
  * Create a single line text object.
  *
@@ -21,9 +26,10 @@ import {
  * @param {LineBasicMaterial} lineMaterial The material to render the text with.
  * @return Group object containing all the text meshes.
  */
-export default function setText3d(group, str, lineMaterial) {
-  console.log(lineMaterial);
-  // empty
+export default function setText3d(group, str, color) {
+  lineMaterial.color.set( color );
+
+  // clear old text
   while (group.children.length) {
     group.remove(group.children[0]);
   }

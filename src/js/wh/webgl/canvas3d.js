@@ -321,7 +321,6 @@ export default function createCanvas3d(specs, my) {
                 .then(module => {
                   const controller = module.createObject3dController({ object3d, processorData, store, });
                   controller.updateSelectCircle(store.getState().selectedID);
-                  controller.updateTheme(lineMaterial);
                   controllers.push(controller);
                 });
             });
