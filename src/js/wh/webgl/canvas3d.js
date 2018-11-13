@@ -247,20 +247,16 @@ export default function createCanvas3d(specs, my) {
         camera.getWorldDirection(plane.normal),
         new Vector3(0,0,0));
       
+      lineMaterial = new LineBasicMaterial({
+        color: new Color(0x000000),
+        linewidth: 3,
+      });
     },
 
     setThemeOnWorld = function() {
       const themeColors = getThemeColors();
       renderer.setClearColor(new Color( themeColors.colorBackground ));
-      lineMaterial = new LineBasicMaterial({
-        color: new Color( themeColors.colorHigh ),
-        linewidth: 3,
-      });
-      
-      // update all controllers with the new theme
-      controllers.forEach(controller => {
-        controller.updateTheme(lineMaterial);
-      });
+      lineMaterial.color.set( themeColors.colorHigh );
     },
             
     /**

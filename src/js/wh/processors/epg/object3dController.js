@@ -4,6 +4,7 @@ import {
   ShapeGeometry,
   Vector3,
 } from '../../../lib/three.module.js';
+import { getThemeColors } from '../../state/selectors.js';
 import createObject3dControllerBase from '../../webgl/object3dControllerBase.js';
 import setText3d from '../../webgl/text3d.js';
 import { getEuclidPattern, rotateEuclidPattern } from './euclid.js';
@@ -81,14 +82,32 @@ export function createObject3dController(specs, my) {
             }
           }
           break;
+        case e.detail.actions.SET_THEME:
+          updateTheme();
+          break;
       }
     },
 
     /** 
-     * 
+     * Set theme colors on the 3D pattern.
      */
-    updateTheme = function(lineMat) {
-      lineMaterial = lineMat;
+    updateTheme = function() {
+      const themeColors = getThemeColors();
+      setThemeColorRecursively(my.object3d, themeColors.colorHigh);
+    },
+
+    /** 
+     * Loop through all the object3d's children to set the color.
+     * @param {Object3d} An Object3d of which to change the color.
+     * @param {String} HEx color string of the new color.
+     */
+    setThemeColorRecursively = function(object3d, color) {
+      if (object3d.material && object3d.material.color) {
+        object3d.material.color.set( color );
+      }
+      object3d.children.forEach(childObject3d => {
+        setThemeColorRecursively(childObject3d, color);
+      });
     },
 
     updateNecklace = function(steps, pulses, rotation, isMute) {
