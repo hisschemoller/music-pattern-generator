@@ -1,7 +1,6 @@
 import {
   Color,
   DirectionalLight,
-  LineBasicMaterial,
   PerspectiveCamera,
   Plane,
   Raycaster,
@@ -28,7 +27,6 @@ export default function createCanvas3d(specs, my) {
     intersectionPrevious = new Vector3(),
     raycaster = new Raycaster(),
     intersectedObject,
-    lineMaterial,
     dragObject,
     dragObjectType,
     dragOffset = new Vector3(),
@@ -132,15 +130,17 @@ export default function createCanvas3d(specs, my) {
       // get intersected processor
       const intersects = raycaster.intersectObjects(allObjects, true);
       let outerObject = null;
+      dragObjectType = 'background';
       // select first wheel in the intersects
       if (intersects.length) {
-        // get topmost parent of closest object
-        outerObject = getOuterParentObject(intersects[0]);
-        // select the touched processor
-        store.dispatch(store.getActions().selectProcessor(outerObject.userData.id));
-        dragObjectType = 'processor';
-      } else {
-        dragObjectType = 'background';
+        const intersect = intersects.find(intersect => intersect.object.name === 'hitarea')
+        if (intersect) {
+          // get topmost parent of closest object
+          outerObject = getOuterParentObject(intersect.object);
+          // select the touched processor
+          store.dispatch(store.getActions().selectProcessor(outerObject.userData.id));
+          dragObjectType = 'processor';
+        }
       }
       dragStart(outerObject, mousePoint);
     },
@@ -246,17 +246,10 @@ export default function createCanvas3d(specs, my) {
       plane.setFromNormalAndCoplanarPoint(
         camera.getWorldDirection(plane.normal),
         new Vector3(0,0,0));
-      
-      lineMaterial = new LineBasicMaterial({
-        color: new Color(0x000000),
-        linewidth: 3,
-      });
     },
 
     setThemeOnWorld = function() {
-      const themeColors = getThemeColors();
-      renderer.setClearColor(new Color( themeColors.colorBackground ));
-      lineMaterial.color.set( themeColors.colorHigh );
+      renderer.setClearColor(new Color( getThemeColors().colorBackground ));
     },
             
     /**
@@ -300,7 +293,7 @@ export default function createCanvas3d(specs, my) {
           import(`../processors/${processorData.type}/object3d.js`)
             .then(module => {
               // create the processor 3d object
-              const object3d = module.createObject3d(lineMaterial, getThemeColors().colorHigh, processorData.id);
+              const object3d = module.createObject3d(processorData.id);
               allObjects.push(object3d);
               scene.add(object3d);
 
