@@ -10,6 +10,7 @@ import {
   WebGLRenderer 
 } from '../../lib/three.module.js';
 import addWindowResize from '../view/windowresize.js';
+import addConnections3d from './connections3d.js';
 import { getThemeColors } from '../state/selectors.js';
 import { util } from '../core/util.js';
 
@@ -19,7 +20,6 @@ export default function createCanvas3d(specs, my) {
     rootEl,
     canvasRect,
     renderer,
-    scene,
     camera,
     plane,
     mousePoint = new Vector2(),
@@ -127,13 +127,15 @@ export default function createCanvas3d(specs, my) {
     onTouchStart = function(e) {
       // update picking ray
       updateMouseRay(e);
-      // get intersected processor
+
+      // get intersected object3ds
       const intersects = raycaster.intersectObjects(allObjects, true);
       let outerObject = null;
       dragObjectType = 'background';
-      // select first wheel in the intersects
       if (intersects.length) {
-        const intersect = intersects.find(intersect => intersect.object.name === 'hitarea');
+
+        // test for processors
+        let intersect = intersects.find(intersect => intersect.object.name === 'hitarea');
         if (intersect) {
           // get topmost parent of closest object
           outerObject = getOuterParentObject(intersect.object);
@@ -141,10 +143,22 @@ export default function createCanvas3d(specs, my) {
           store.dispatch(store.getActions().selectProcessor(outerObject.userData.id));
           dragObjectType = 'processor';
         }
+
+        // test for output connectors
+        intersect = intersects.find(intersect => intersect.object.name === 'output');
+        if (intersect && my.isConnectMode) {
+          // get outer parent of closest object
+          outerObject = getOuterParentObject(intersect.object);
+          my.dragStartConnection(
+            outerObject.userData.id, 
+            intersect.object.userData.id, 
+            outerObject.clone().position.add(intersect.object.position));
+          dragObjectType = 'connection';
+        }
       }
       dragStart(outerObject, mousePoint);
     },
-            
+
     /**
      * Initialise object dragging.
      * @param {object} object3d The Object3D to be dragged.
@@ -156,11 +170,16 @@ export default function createCanvas3d(specs, my) {
       // if ray intersects plane, store point in vector 'intersection'
       if (raycaster.ray.intersectPlane(plane, intersection)) {
         switch (dragObjectType) {
+
           case 'processor':
             // offset is the intersection point minus object position,
             // so distance from object to mouse
             dragOffset.copy(intersection).sub(dragObject.position);
             break;
+          
+          case 'connection':
+            break;
+
           case 'background':
             dragOffset = new Vector3();
             intersectionPrevious.copy(intersection);
@@ -185,6 +204,7 @@ export default function createCanvas3d(specs, my) {
             dragObject.position.copy(intersection.sub(dragOffset));
           }
           break;
+
         case 'background':
           if (raycaster.ray.intersectPlane(plane, intersection)) {
             let current = intersection.clone();
@@ -193,6 +213,12 @@ export default function createCanvas3d(specs, my) {
             allObjects.forEach(object3d => {
               object3d.position.add(dragOffset);
             });
+          }
+          break;
+
+        case 'connection':
+          if (raycaster.ray.intersectPlane(plane, intersection)) {
+            my.dragMoveConnection(intersection);
           }
           break;
 
@@ -217,10 +243,15 @@ export default function createCanvas3d(specs, my) {
      * @param  {Object} e Event.
      */
     dragEnd = function(e) {
-        e.preventDefault();
-        dragObject = null;
-        dragObjectType = null;
-        rootEl.style.cursor = 'auto';
+      e.preventDefault();
+      switch (dragObjectType) {
+        case 'connection':
+          my.dragEndConnection(intersection);
+          break;
+      }
+      dragObject = null;
+      dragObjectType = null;
+      rootEl.style.cursor = 'auto';
     },
 
     /**
@@ -234,16 +265,17 @@ export default function createCanvas3d(specs, my) {
       rootEl = document.querySelector('#canvas-container');
       rootEl.appendChild(renderer.domElement);
 
-      scene = new Scene();
+      my.scene = new Scene();
 
       camera = new PerspectiveCamera(45, 1, 1, 500);
-      scene.add(camera);
+      my.scene.add(camera);
 
       const light = new DirectionalLight(0xffffff, 1.5);
       light.position.set(0, 0, 1);
-      scene.add(light);
+      my.scene.add(light);
 
       plane = new Plane();
+      plane.name = 'plane';
       plane.setFromNormalAndCoplanarPoint(
         camera.getWorldDirection(plane.normal),
         new Vector3(0,0,0));
@@ -296,7 +328,7 @@ export default function createCanvas3d(specs, my) {
               // create the processor 3d object
               const object3d = module.createObject3d(processorData.id, processorData.inputs, processorData.outputs);
               allObjects.push(object3d);
-              scene.add(object3d);
+              my.scene.add(object3d);
 
               // update the picking ray with the camera and mouse position
               const point = {
@@ -334,7 +366,7 @@ export default function createCanvas3d(specs, my) {
     clearProcessorViews = function() {
       // remove all processor 3D objects
       allObjects = allObjects.reduce((accumulator, object3D) => {
-        scene.remove(object3D);
+        my.scene.remove(object3D);
         return accumulator;
       }, []);
 
@@ -354,7 +386,7 @@ export default function createCanvas3d(specs, my) {
       allObjects = allObjects.reduce((accumulator, object3D) => {
         if (object3D.userData.id === id) {
           // remove 3D object from scene
-          scene.remove(object3D);
+          my.scene.remove(object3D);
           return accumulator;
         }
         return [...accumulator, object3D];
@@ -378,12 +410,14 @@ export default function createCanvas3d(specs, my) {
      */
     draw = function(position, processorEvents) {
       controllers.forEach(controller => controller.draw(position, processorEvents));
-      renderer.render(scene, camera);
+      renderer.render(my.scene, camera);
     };
 
   my = my || {};
+  my.scene = null;
   
   that = addWindowResize(specs, my);
+  that = addConnections3d(specs, my);
 
   init();
     

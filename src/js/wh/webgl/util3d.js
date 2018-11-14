@@ -59,7 +59,7 @@ export function drawConnectors(rootObj, inputs, outputs, lineMaterial) {
   inputs.allIds.forEach(id => {
     const input = inputs.byId[id];
     const connector = createCircleOutline(lineMaterial, 0.6);
-    connector.userData.name = 'input';
+    connector.name = 'input';
     connector.userData.id = id;
     connector.translateX(input.x);
     connector.translateY(input.y);
@@ -70,7 +70,7 @@ export function drawConnectors(rootObj, inputs, outputs, lineMaterial) {
   outputs.allIds.forEach(id => {
     const output = outputs.byId[id];
     const connector = createCircleOutline(lineMaterial, 0.6);
-    connector.userData.name = 'output';
+    connector.name = 'output';
     connector.userData.id = id;
     connector.translateX(output.x);
     connector.translateY(output.y);
