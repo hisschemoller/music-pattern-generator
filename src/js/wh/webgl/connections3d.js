@@ -7,6 +7,7 @@ import {
   Object3D,
   Shape,
   Vector3,
+  Group,
 } from '../../lib/three.module.js';
 import { getThemeColors } from '../state/selectors.js';
 
@@ -21,14 +22,16 @@ export default function addConnections3d(specs, my) {
     defaultColor,
     lineMaterial,
     currentCable,
+    cablesGroup,
     
     init = function() {
       document.addEventListener(store.STATE_CHANGE, (e) => {
         switch (e.detail.action.type) {
+
           case e.detail.actions.TOGGLE_CONNECT_MODE:
             toggleConnectMode(e.detail.state.connectModeActive);
             // drawConnectCanvas(e.detail.state);
-            // drawCablesCanvas(e.detail.state);
+            // drawCables(e.detail.state);
             break;
           
           case e.detail.actions.ADD_PROCESSOR:
@@ -38,16 +41,20 @@ export default function addConnections3d(specs, my) {
           case e.detail.actions.CONNECT_PROCESSORS:
           case e.detail.actions.DISCONNECT_PROCESSORS:
             // drawConnectCanvas(e.detail.state);
-            // drawCablesCanvas(e.detail.state);
+            clearCables();
+            drawCables(e.detail.state);
             break;
           
           case e.detail.actions.CREATE_PROJECT:
+            setTheme();
+            clearCables();
+            drawCables(e.detail.state);
+            break;
           case e.detail.actions.SET_THEME:
             // createConnectorGraphic();
             setTheme();
             toggleConnectMode(e.detail.state.connectModeActive);
             // drawConnectCanvas(e.detail.state);
-            // drawCablesCanvas(e.detail.state);
             break;
         }
       });
@@ -91,6 +98,48 @@ export default function addConnections3d(specs, my) {
       }));
       state.sourceProcessorID = null;
       state.sourceConnectorID = null;
+    },
+
+    clearCables = function() {
+      if (cablesGroup) {
+        while (cablesGroup.children.length) {
+          cablesGroup.remove(cablesGroup.children[0]);
+        }
+      }
+    },
+
+    drawCables = function(state) {
+      if (!cablesGroup) {
+        cablesGroup = new Group();
+        my.scene.add(cablesGroup);
+      }
+
+      state.connections.allIds.forEach(connectionID => {
+        const connection = state.connections.byId[connectionID];
+        const sourceProcessor = my.scene.children.find(object3d => object3d.userData.id === connection.sourceProcessorID);
+        const destinationProcessor = my.scene.children.find(object3d => object3d.userData.id === connection.destinationProcessorID);
+        
+        if (sourceProcessor && destinationProcessor) {
+          const sourceConnector = sourceProcessor.children.find(object3d => object3d.userData.id === connection.sourceConnectorID);
+          const destinationConnector = destinationProcessor.children.find(object3d => object3d.userData.id === connection.destinationConnectorID);
+          const sourcePosition = new Vector3().addVectors(sourceProcessor.position, sourceConnector.position);
+          const destinationPosition = new Vector3().addVectors(destinationProcessor.position, destinationConnector.position);
+          const handlePosition = drawCable(sourcePosition, destinationPosition);
+
+          // cableData.byId[connectionID] = {
+          //     handleX: handlePosition.x,
+          //     handleY: handlePosition.y
+          // };
+          // cableData.allIds.push(connectionID);
+        }
+      });
+    },
+
+    drawCable = function(sourcePosition, destinationPosition) {
+      const geometry = new Geometry();
+      geometry.vertices.push(sourcePosition, destinationPosition);
+      const cable = new Line(geometry, lineMaterial);
+      cablesGroup.add(cable);
     },
         
     /**
