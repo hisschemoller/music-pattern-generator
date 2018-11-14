@@ -7,7 +7,6 @@ import {
 } from '../../../lib/three.module.js';
 import { getThemeColors } from '../../state/selectors.js';
 import createObject3dControllerBase from '../../webgl/object3dControllerBase.js';
-import setText3d from '../../webgl/text3d.js';
 import { getEuclidPattern, rotateEuclidPattern } from './euclid.js';
 import { PPQN } from '../../core/config.js';
 import {
@@ -22,8 +21,6 @@ export function createObject3dController(specs, my) {
     centreCircle3d,
     centreDot3d,
     dots3d,
-    hitarea3d,
-    label3d,
     pointer3d,
     polygon3d,
     rotatedMarker3d,
@@ -41,8 +38,6 @@ export function createObject3dController(specs, my) {
       centreCircle3d = my.object3d.getObjectByName('centreCircle'),
       centreDot3d = my.object3d.getObjectByName('centreDot'),
       dots3d = my.object3d.getObjectByName('dots'),
-      hitarea3d = my.object3d.getObjectByName('hitarea'),
-      label3d = my.object3d.getObjectByName('label'),
       pointer3d = my.object3d.getObjectByName('pointer'),
       polygon3d = my.object3d.getObjectByName('polygon'),
       rotatedMarker3d = my.object3d.getObjectByName('rotatedMarker'),
@@ -57,7 +52,7 @@ export function createObject3dController(specs, my) {
       });
 
       const params = specs.processorData.params.byId;
-      updateLabel(params.name.value);
+      my.updateLabel(params.name.value);
       updateNecklace(params.steps.value, params.pulses.value, params.rotation.value, params.is_mute.value);
       updateDuration(params.steps.value, params.rate.value);
     },
@@ -85,7 +80,7 @@ export function createObject3dController(specs, my) {
                 updateDuration(params.steps.value, params.rate.value);
                 break;
               case 'name':
-                updateLabel(params.name.value);
+                my.updateLabel(params.name.value);
                 break;
               case 'is_mute':
                 updatePointer(params.is_mute.value);
@@ -209,7 +204,7 @@ export function createObject3dController(specs, my) {
      */
     updateHitarea = function() {
         const scale = (radius3d + 3) * 0.1;
-        hitarea3d.scale.set(scale, scale, 1);
+        my.hitarea3d.scale.set(scale, scale, 1);
     },
             
     /**
@@ -285,7 +280,7 @@ export function createObject3dController(specs, my) {
     },
 
     updateLabelPosition = function() {
-      label3d.position.y = -radius3d - 2;
+      my.label3d.position.y = -radius3d - 2;
     },
             
     /**
@@ -293,7 +288,7 @@ export function createObject3dController(specs, my) {
      * @param {Boolean} isSelected True if selected.
      */
     updateSelectCircle = function(selectedId) {
-      my.object3d.getObjectByName('select').visible = my.id === selectedId;
+      select3d.visible = my.id === selectedId;
     },
 
     /**
@@ -303,13 +298,6 @@ export function createObject3dController(specs, my) {
       // const rate = my.params.is_triplets.value ? my.params.rate.value * (2 / 3) : my.params.rate.value;
       const stepDuration = rate * PPQN;
       duration = steps * stepDuration;
-    },
-        
-    /**
-     * Update the pattern's name.
-     */
-    updateLabel = function(labelString) {
-        setText3d(label3d, labelString.toUpperCase(), getThemeColors().colorHigh);
     },
     
     draw = function(position, processorEvents) {

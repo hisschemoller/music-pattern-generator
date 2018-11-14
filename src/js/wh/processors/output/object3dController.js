@@ -1,25 +1,20 @@
 
 import { getThemeColors } from '../../state/selectors.js';
 import createObject3dControllerBase from '../../webgl/object3dControllerBase.js';
-import setText3d from '../../webgl/text3d.js';
 
 export function createObject3dController(specs, my) {
   let that,
     centreCircle3d,
-    hitarea3d,
-    label3d,
     select3d,
 
     initialize = function() {
       centreCircle3d = my.object3d.getObjectByName('centreCircle'),
-      hitarea3d = my.object3d.getObjectByName('hitarea'),
-      label3d = my.object3d.getObjectByName('label'),
       select3d = my.object3d.getObjectByName('select'),
 
       document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
-      
+
       const params = specs.processorData.params.byId;
-      updateLabel(params.name.value);
+      my.updateLabel(params.name.value);
     },
 
     terminate = function() {
@@ -42,7 +37,7 @@ export function createObject3dController(specs, my) {
                 redrawStaticCanvas();
                 break;
               case 'name':
-                updateLabel();
+                my.updateLabel();
                 break;
             }
           }
@@ -83,26 +78,19 @@ export function createObject3dController(specs, my) {
     updateSelectCircle = function(selectedId) {
       select3d.visible = my.id === selectedId;
     },
-          
-    /**
-     * Update the pattern's name.
-     */
-    updateLabel = function(labelString) {
-        setText3d(label3d, labelString.toUpperCase(), getThemeColors().colorHigh);
-    },
       
     draw = function(position, processorEvents) {
       
     };
   
-my = my || {};
+  my = my || {};
 
-that = createObject3dControllerBase(specs, my);
+  that = createObject3dControllerBase(specs, my);
 
-initialize();
+  initialize();
 
-that.terminate = terminate;
-that.updateSelectCircle = updateSelectCircle;
-that.draw = draw;
-return that;
+  that.terminate = terminate;
+  that.updateSelectCircle = updateSelectCircle;
+  that.draw = draw;
+  return that;
 }
