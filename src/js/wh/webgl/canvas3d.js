@@ -294,7 +294,7 @@ export default function createCanvas3d(specs, my) {
           import(`../processors/${processorData.type}/object3d.js`)
             .then(module => {
               // create the processor 3d object
-              const object3d = module.createObject3d(processorData.id);
+              const object3d = module.createObject3d(processorData.id, processorData.inputs, processorData.outputs);
               allObjects.push(object3d);
               scene.add(object3d);
 

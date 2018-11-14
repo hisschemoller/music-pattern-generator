@@ -285,7 +285,7 @@ export function createObject3dController(specs, my) {
     },
 
     updateLabelPosition = function() {
-      label3d.position.y = -radius3d - 3;
+      label3d.position.y = -radius3d - 2;
     },
             
     /**

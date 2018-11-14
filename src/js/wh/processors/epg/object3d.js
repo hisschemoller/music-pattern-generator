@@ -15,13 +15,13 @@ import {
   createCircleOutline,
   createCircleFilled,
   createCircleOutlineFilled,
+  drawConnectors,
 } from '../../webgl/util3d.js';
 import { getThemeColors } from '../../state/selectors.js';
 
-export function createObject3d(id) {
+export function createObject3d(id, inputs, outputs) {
     
   let polygon,
-    wheel,
     TWO_PI = Math.PI * 2,
     centreRadius = 3,
     defaultColor,
@@ -36,7 +36,6 @@ export function createObject3d(id) {
         color: defaultColor,
       });
       polygon = createPolygon(lineMaterial, defaultColor);
-      wheel = createWheel(lineMaterial);
     },
     
     /**
@@ -86,7 +85,7 @@ export function createObject3d(id) {
     },
     
     /**
-     *  Create icon to indicate that the pattern is rotated.
+     * Create icon to indicate that the pattern is rotated.
      * @param {object} lineMaterial Default line drawing material.
      * @return {object} Object3D of rotated icon.
      */
@@ -104,10 +103,9 @@ export function createObject3d(id) {
     
     /**
      * Create combined Object3D of wheel.
-     * @param {object} lineMaterial Default line drawing material.
      * @return {object} Object3D of drag plane.
      */
-    createWheel = function(lineMaterial) {
+    createWheel = function() {
       const hitarea = createCircleFilled(defaultColor, 3);
       hitarea.name = 'hitarea';
       hitarea.material.opacity = 0.0;
@@ -156,11 +154,14 @@ export function createObject3d(id) {
       wheel.add(zeroMarker);
       wheel.add(rotatedMarker);
       wheel.add(label);
+
+      // add inputs and outputs
+      drawConnectors(wheel, inputs, outputs, lineMaterial);
       
       return wheel;
     };
   
   init();
   
-  return wheel;
+  return createWheel();
 }

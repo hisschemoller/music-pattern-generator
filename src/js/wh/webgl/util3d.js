@@ -48,3 +48,32 @@ export function createCircleOutlineFilled(lineMaterial, color, radius) {
   circle.add(createCircleOutline(lineMaterial, radius));
   return circle;
 }
+
+/**
+ * Add input and/or output connectors to a processor  .
+ * @return {rootObj} Outer object3D.
+ */
+export function drawConnectors(rootObj, inputs, outputs, lineMaterial) {
+
+  // inputs
+  inputs.allIds.forEach(id => {
+    const input = inputs.byId[id];
+    const connector = createCircleOutline(lineMaterial, 0.6);
+    connector.userData.name = 'input';
+    connector.userData.id = id;
+    connector.translateX(input.x);
+    connector.translateY(input.y);
+    rootObj.add(connector);
+  });
+
+  // outputs
+  outputs.allIds.forEach(id => {
+    const output = outputs.byId[id];
+    const connector = createCircleOutline(lineMaterial, 0.6);
+    connector.userData.name = 'output';
+    connector.userData.id = id;
+    connector.translateX(output.x);
+    connector.translateY(output.y);
+    rootObj.add(connector);
+  });
+}
