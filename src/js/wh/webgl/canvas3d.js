@@ -133,7 +133,7 @@ export default function createCanvas3d(specs, my) {
       dragObjectType = 'background';
       // select first wheel in the intersects
       if (intersects.length) {
-        const intersect = intersects.find(intersect => intersect.object.name === 'hitarea')
+        const intersect = intersects.find(intersect => intersect.object.name === 'hitarea');
         if (intersect) {
           // get topmost parent of closest object
           outerObject = getOuterParentObject(intersect.object);
@@ -200,13 +200,14 @@ export default function createCanvas3d(specs, my) {
         default:
           var intersects = raycaster.intersectObjects(allObjects, true);
           if (intersects.length > 0) {
-            if (intersectedObject != intersects[0].object) {
-              intersectedObject = intersects[0].object;
+            const intersectHitarea = intersects.find(intersect => intersect.object.name === 'hitarea');
+            if (intersectHitarea) {
+              intersectedObject = intersectHitarea;
+              rootEl.style.cursor = 'pointer';
+            } else {
+              intersectedObject = null;
+              rootEl.style.cursor = 'auto';
             }
-            rootEl.style.cursor = 'pointer';
-          } else {
-            intersectedObject = null;
-            rootEl.style.cursor = 'auto';
           }
       }
     },
