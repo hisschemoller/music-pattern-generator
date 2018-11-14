@@ -81,6 +81,17 @@ export default function addConnections3d(specs, my) {
       currentCable.geometry = new Geometry();
       my.scene.remove(currentCable);
     },
+
+    createConnection = function(destinationProcessorID, destinationConnectorID) {
+      store.dispatch(store.getActions().connectProcessors({
+        sourceProcessorID: state.sourceProcessorID, 
+        sourceConnectorID: state.sourceConnectorID,
+        destinationProcessorID: destinationProcessorID,
+        destinationConnectorID: destinationConnectorID,
+      }));
+      state.sourceProcessorID = null;
+      state.sourceConnectorID = null;
+    },
         
     /**
      * Enter or leave application connect mode.
@@ -103,6 +114,7 @@ export default function addConnections3d(specs, my) {
   my.dragStartConnection = dragStartConnection;
   my.dragMoveConnection = dragMoveConnection;
   my.dragEndConnection = dragEndConnection;
+  my.createConnection = createConnection;
   // my.intersectsConnector = intersectsConnector;
   // my.intersectsCableHandle = intersectsCableHandle;
   // my.addConnectionsToCanvas = addConnectionsToCanvas;

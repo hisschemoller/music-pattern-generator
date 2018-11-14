@@ -246,7 +246,18 @@ export default function createCanvas3d(specs, my) {
       e.preventDefault();
       switch (dragObjectType) {
         case 'connection':
-          my.dragEndConnection(intersection);
+          my.dragEndConnection();
+
+          // test for input connectors
+          const intersects = raycaster.intersectObjects(allObjects, true);
+          const intersect = intersects.find(intersect => intersect.object.name === 'input');
+          if (intersect && my.isConnectMode) {
+            const outerObject = getOuterParentObject(intersect.object);
+            my.createConnection(
+              outerObject.userData.id, 
+              intersect.object.userData.id, 
+              outerObject.clone().position.add(intersect.object.position));
+          }
           break;
       }
       dragObject = null;
