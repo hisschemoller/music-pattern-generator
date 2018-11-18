@@ -1,3 +1,5 @@
+import orderProcessorsNew from './network_ordering_new.js';
+
 const maxDepth = 100;
 
 /**
@@ -29,6 +31,7 @@ export default function orderProcessors(state) {
         }
     });
     logResult(state);
+    orderProcessorsNew(state);
 }
 
 function searchUpStream(a, b, state, depth = 0) {
