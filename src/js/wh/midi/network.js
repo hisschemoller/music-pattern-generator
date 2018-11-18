@@ -13,13 +13,13 @@ export default function createMIDINetwork(specs, my) {
                     case e.detail.actions.CREATE_PROJECT:
                         disconnectProcessors(e.detail.state.connections);
                         deleteProcessors(e.detail.state.processors);
-                        createProcessors(e.detail.state.processors);
+                        createProcessors(e.detail.state.processors, e.detail.state.connections);
                         connectProcessors(e.detail.state.connections);
                         orderProcessors(e.detail.state.processors);
                         break;
 
                     case e.detail.actions.ADD_PROCESSOR:
-                        createProcessors(e.detail.state.processors);
+                        createProcessors(e.detail.state.processors, e.detail.state.connections);
                         break;
                     
                     case e.detail.actions.DELETE_PROCESSOR:
@@ -56,7 +56,9 @@ export default function createMIDINetwork(specs, my) {
          * Create a new processor in the network.
          * @param {Object} state State processors table.
          */
-        createProcessors = function(procsState) {
+        createProcessors = function(procsState, connectionsState) {
+            let uglyTempCounter = 0;
+
             procsState.allIds.forEach((id, i) => {
                 const processorData = procsState.byId[id];
                 let exists = false;
@@ -66,6 +68,7 @@ export default function createMIDINetwork(specs, my) {
                     }
                 });
                 if (!exists) {
+                    uglyTempCounter++;
                     import(`../processors/${processorData.type}/processor.js`)
                         .then((module) => {
                             const processor = module.createProcessor({
@@ -75,6 +78,11 @@ export default function createMIDINetwork(specs, my) {
                             });
                             processors.splice(i, 0, processor);
                             numProcessors = processors.length;
+                            uglyTempCounter--;
+                            console.log('uglyTempCounter', uglyTempCounter);
+                            if (uglyTempCounter === 0) {
+                                connectProcessors(connectionsState);
+                            }
                         });
                 }
             });
