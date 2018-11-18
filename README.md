@@ -1,6 +1,12 @@
 # JS-EPG
 Javascript version of the Euclidean Pattern Generator
 
+## Note
+
+Current development in branches:
+- feature/mpg-007_webgl_graphics
+- feature/mpg-008_bug_fixes
+
 ## Introduction
 This is an application to create rhythm patterns that can be used in music. It doesn't produce any sounds by itself, but sends MIDI messages for other applications to receive. These applications are typically music programs like Ableton Live, Cubase or FL Studio. But MIDI messages can also be sent to external hardware instruments like drum machines, samplers or synthesizers. 
 
