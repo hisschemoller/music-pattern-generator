@@ -107,6 +107,9 @@ export function createObject3dController(specs, my) {
       setThemeColorRecursively(my.object3d, themeColors.colorHigh);
     },
 
+    /** 
+     * Set the 3D pattern's position in the scene.
+     */
     updatePosition = function(state) {
       if (state.selectedID === my.id) {
         const data = state.processors.byId[my.id];

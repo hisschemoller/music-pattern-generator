@@ -63,10 +63,15 @@ export default function createCanvas3d(specs, my) {
             setThemeOnWorld();
             clearProcessorViews();
             createProcessorViews(e.detail.state);
+            onWindowResize();
             break;
 
           case e.detail.actions.SET_THEME:
             setThemeOnWorld();
+            break;
+          
+          case e.detail.actions.SET_CAMERA_POSITION:
+            updateCamera(e.detail.state);
             break;
         }
       });
@@ -98,7 +103,8 @@ export default function createCanvas3d(specs, my) {
       let scale = 0.15;
       let fieldOfView = camera.fov * (Math.PI / 180); // convert fov to radians
       let targetZ = canvasRect.height / (2 * Math.tan(fieldOfView / 2));
-      camera.position.set(0, 0, targetZ * scale);
+
+      store.dispatch(store.getActions().setCameraPosition(camera.position.x, camera.position.y, targetZ * scale));
     },
         
     /**
@@ -292,6 +298,13 @@ export default function createCanvas3d(specs, my) {
       plane.setFromNormalAndCoplanarPoint(
         camera.getWorldDirection(plane.normal),
         new Vector3(0,0,0));
+    },
+
+    /**
+     * Update the camera position to what's stored in the state.
+     */
+    updateCamera = function(state) {
+      camera.position.set(state.camera.x, state.camera.y, state.camera.z);
     },
 
     setThemeOnWorld = function() {

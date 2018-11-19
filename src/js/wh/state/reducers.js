@@ -23,6 +23,11 @@ export default function createReducers() {
                 byId: {},
                 allIds: []
             },
+            camera: {
+                x: 0,
+                y: 0,
+                z: 0,
+            },
             bpm: 120,
             selectedID: null,
             theme: 'dev', // 'light|dark' 
@@ -438,6 +443,16 @@ export default function createReducers() {
                         types: {
                             allIds: Object.keys(action.types),
                             byId: action.types
+                        }
+                    };
+                
+                case actions.SET_CAMERA_POSITION:
+                    return {
+                        ...state,
+                        camera: {
+                            x: action.x,
+                            y: action.y,
+                            z: action.z,
                         }
                     };
 

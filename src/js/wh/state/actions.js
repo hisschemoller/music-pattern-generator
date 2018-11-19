@@ -30,7 +30,8 @@ export default function createActions(specs = {}, my = {}) {
         TOGGLE_PANEL = 'TOGGLE_PANEL',
         TOGGLE_CONNECT_MODE = 'TOGGLE_CONNECT_MODE',
         CONNECT_PROCESSORS = 'CONNECT_PROCESSORS',
-        DISCONNECT_PROCESSORS = 'DISCONNECT_PROCESSORS';
+        DISCONNECT_PROCESSORS = 'DISCONNECT_PROCESSORS',
+        SET_CAMERA_POSITION = 'SET_CAMERA_POSITION';
 
     return {
 
@@ -362,7 +363,12 @@ export default function createActions(specs = {}, my = {}) {
         RESCAN_TYPES,
         rescanTypes: () => {
             return { type: RESCAN_TYPES, types: processorTypes };
-        }
+        },
+
+        SET_CAMERA_POSITION,
+        setCameraPosition: (x, y, z) => {
+            return { type: SET_CAMERA_POSITION, x, y, z, };
+        },
     };
 }
 
