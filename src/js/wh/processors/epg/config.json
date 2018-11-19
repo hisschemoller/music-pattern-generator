@@ -2,6 +2,7 @@
     "name": "Euclidean",
     "positionX": 0,
     "positionY": 0,
+    "positionZ": 0,
     "inputs": {
         "byId": {},
         "allIds": []

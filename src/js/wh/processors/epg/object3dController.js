@@ -88,6 +88,11 @@ export function createObject3dController(specs, my) {
             }
           }
           break;
+
+        case e.detail.actions.DRAG_SELECTED_PROCESSOR:
+          updatePosition(e.detail.state);
+          break;
+
         case e.detail.actions.SET_THEME:
           updateTheme();
           break;
@@ -100,6 +105,13 @@ export function createObject3dController(specs, my) {
     updateTheme = function() {
       const themeColors = getThemeColors();
       setThemeColorRecursively(my.object3d, themeColors.colorHigh);
+    },
+
+    updatePosition = function(state) {
+      if (state.selectedID === my.id) {
+        const data = state.processors.byId[my.id];
+        my.object3d.position.set(data.positionX, data.positionY, data.positionZ);
+      }
     },
 
     /** 

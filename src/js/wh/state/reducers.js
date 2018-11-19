@@ -128,7 +128,7 @@ export default function createReducers() {
                             allIds: [ ...state.processors.allIds ],
                             byId: Object.values(state.processors.byId).reduce((accumulator, processor) => {
                                 if (processor.id === state.selectedID) {
-                                    accumulator[processor.id] = { ...processor, positionX: action.x, positionY: action.y };
+                                    accumulator[processor.id] = { ...processor, positionX: action.x, positionY: action.y, positionZ: action.z };
                                 } else {
                                     accumulator[processor.id] = { ...processor };
                                 }

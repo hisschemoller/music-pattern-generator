@@ -217,8 +217,8 @@ export default function createActions(specs = {}, my = {}) {
         },
 
         DRAG_SELECTED_PROCESSOR,
-        dragSelectedProcessor: (x, y) => {
-            return { type: DRAG_SELECTED_PROCESSOR, x, y };
+        dragSelectedProcessor: (x, y, z) => {
+            return { type: DRAG_SELECTED_PROCESSOR, x, y, z };
         },
 
         DRAG_ALL_PROCESSORS,

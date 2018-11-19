@@ -201,7 +201,9 @@ export default function createCanvas3d(specs, my) {
       switch (dragObjectType) {
         case 'processor':
           if (raycaster.ray.intersectPlane(plane, intersection)) {
-            dragObject.position.copy(intersection.sub(dragOffset));
+            // set position of dragObject to the mouse intersection minus the offset
+            const position = intersection.sub(dragOffset);
+            store.dispatch(store.getActions().dragSelectedProcessor(position.x, position.y, position.z));
           }
           break;
 
