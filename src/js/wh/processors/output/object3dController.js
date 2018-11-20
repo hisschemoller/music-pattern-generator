@@ -43,6 +43,10 @@ export function createObject3dController(specs, my) {
           }
           break;
 
+        case e.detail.actions.DRAG_SELECTED_PROCESSOR:
+          my.updatePosition(e.detail.state);
+          break;
+
         case e.detail.actions.SET_THEME:
           updateTheme();
           break;

@@ -17,6 +17,16 @@ export default function createObject3dControllerBase(specs, my) {
     updateLabel = function(labelString) {
       setText3d(my.label3d, labelString.toUpperCase(), getThemeColors().colorHigh);
     },
+
+    /** 
+     * Set the 3D pattern's position in the scene.
+     */
+    updatePosition = function(state) {
+      if (state.selectedID === my.id) {
+        const data = state.processors.byId[my.id];
+        my.object3d.position.set(data.positionX, data.positionY, data.positionZ);
+      }
+    },
       
     getID = function() {
       return my.id;
@@ -28,6 +38,7 @@ export default function createObject3dControllerBase(specs, my) {
   my.hitarea3d = my.object3d.getObjectByName('hitarea'),
   my.label3d = my.object3d.getObjectByName('label'),
   my.updateLabel = updateLabel;
+  my.updatePosition = updatePosition;
 
   that = specs.that || {};
   that.getID = getID;

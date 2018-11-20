@@ -285,8 +285,6 @@ export default function createCanvas3d(specs, my) {
     onDrop = function(e) {
       updateMouseRay(e);
       if (raycaster.ray.intersectPlane(plane, intersection)) {
-        console.log(e.dataTransfer.getData('text/plain'));
-        console.log(intersection);
         store.dispatch(store.getActions().createProcessor({
           type: e.dataTransfer.getData('text/plain'),
           positionX: intersection.x,
@@ -370,7 +368,7 @@ export default function createCanvas3d(specs, my) {
     createProcessorViews = function(state) {
       state.processors.allIds.forEach((id, i) => {
         const processorData = state.processors.byId[id];
-        const { id, inputs, outputs, positionX, positionY, positionZ, type } = processorData;
+        const { inputs, outputs, positionX, positionY, positionZ, type } = processorData;
         const isExists = allObjects.find(obj3d => obj3d.userData.id === id);
         if (!isExists) {
           import(`../processors/${type}/object3d.js`)
