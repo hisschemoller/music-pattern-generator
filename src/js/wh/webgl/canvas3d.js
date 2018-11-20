@@ -86,6 +86,7 @@ export default function createCanvas3d(specs, my) {
       renderer.domElement.addEventListener(util.eventType.start, onTouchStart);
       renderer.domElement.addEventListener(util.eventType.move, dragMove);
       renderer.domElement.addEventListener(util.eventType.end, dragEnd);
+      renderer.domElement.addEventListener('drop', onDrop);
 
       // prevent system doubleclick to interfere with the custom doubleclick
       renderer.domElement.addEventListener('dblclick', function(e) {e.preventDefault();});
@@ -278,6 +279,24 @@ export default function createCanvas3d(specs, my) {
     },
 
     /**
+     * Drop of object dragged from library.
+     * Create a new processor.
+     */
+    onDrop = function(e) {
+      updateMouseRay(e);
+      if (raycaster.ray.intersectPlane(plane, intersection)) {
+        console.log(e.dataTransfer.getData('text/plain'));
+        console.log(intersection);
+        store.dispatch(store.getActions().createProcessor({
+          type: e.dataTransfer.getData('text/plain'),
+          positionX: intersection.x,
+          positionY: intersection.y,
+          positionZ: intersection.z,
+        }));
+      };
+    },
+
+    /**
      * Set up the 3D world.
      */
     initWorld = function() {
@@ -351,29 +370,19 @@ export default function createCanvas3d(specs, my) {
     createProcessorViews = function(state) {
       state.processors.allIds.forEach((id, i) => {
         const processorData = state.processors.byId[id];
+        const { id, inputs, outputs, positionX, positionY, positionZ, type } = processorData;
         const isExists = allObjects.find(obj3d => obj3d.userData.id === id);
         if (!isExists) {
-          import(`../processors/${processorData.type}/object3d.js`)
+          import(`../processors/${type}/object3d.js`)
             .then(module => {
               // create the processor 3d object
-              const object3d = module.createObject3d(processorData.id, processorData.inputs, processorData.outputs);
+              const object3d = module.createObject3d(id, inputs, outputs);
+              object3d.position.set(positionX, positionY, positionZ);
               allObjects.push(object3d);
               my.scene.add(object3d);
 
-              // update the picking ray with the camera and mouse position
-              const point = {
-                x: (processorData.positionX / canvasRect.width ) * 2 - 1,
-                y: - (processorData.positionY / canvasRect.height ) * 2 + 1,
-              };
-              raycaster.setFromCamera(point, camera);
-              
-              // position the new processor in the scene
-              if (raycaster.ray.intersectPlane(plane, intersection)) {
-                object3d.position.copy(intersection.sub(dragOffset));
-              }
-
               // create controller for the object
-              import(`../processors/${processorData.type}/object3dController.js`)
+              import(`../processors/${type}/object3dController.js`)
                 .then(module => {
                   const controller = module.createObject3dController({ object3d, processorData, store, });
                   controller.updateSelectCircle(store.getState().selectedID);
