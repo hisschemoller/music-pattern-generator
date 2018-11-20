@@ -366,8 +366,8 @@ export default function createActions(specs = {}, my = {}) {
         },
 
         SET_CAMERA_POSITION,
-        setCameraPosition: (x, y, z) => {
-            return { type: SET_CAMERA_POSITION, x, y, z, };
+        setCameraPosition: (x, y, z, isRelative = false) => {
+            return { type: SET_CAMERA_POSITION, x, y, z, isRelative, };
         },
     };
 }

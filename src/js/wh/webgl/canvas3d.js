@@ -23,6 +23,7 @@ export default function createCanvas3d(specs, my) {
     camera,
     plane,
     mousePoint = new Vector2(),
+    mousePointPrevious = new Vector2(),
     intersection = new Vector3(),
     intersectionPrevious = new Vector3(),
     raycaster = new Raycaster(),
@@ -133,6 +134,7 @@ export default function createCanvas3d(specs, my) {
     onTouchStart = function(e) {
       // update picking ray
       updateMouseRay(e);
+      mousePointPrevious = { ...mousePoint };
 
       // get intersected object3ds
       const intersects = raycaster.intersectObjects(allObjects, true);
@@ -162,6 +164,11 @@ export default function createCanvas3d(specs, my) {
           dragObjectType = 'connection';
         }
       }
+
+      if (dragObjectType === 'background') {
+        outerObject = camera;
+      }
+
       dragStart(outerObject, mousePoint);
     },
 
@@ -187,8 +194,9 @@ export default function createCanvas3d(specs, my) {
             break;
 
           case 'background':
-            dragOffset = new Vector3();
+            // dragOffset = new Vector3();
             intersectionPrevious.copy(intersection);
+            dragOffset.copy(intersection).sub(dragObject.position);
             break;
         }
         rootEl.style.cursor = 'move';
@@ -209,19 +217,14 @@ export default function createCanvas3d(specs, my) {
           if (raycaster.ray.intersectPlane(plane, intersection)) {
             // set position of dragObject to the mouse intersection minus the offset
             const position = intersection.sub(dragOffset);
-            store.dispatch(store.getActions().dragSelectedProcessor(position.x, position.y, position.z));
+            store.dispatch(store.getActions().dragSelectedProcessor(intersection.x, intersection.y, position.z));
           }
           break;
 
         case 'background':
-          if (raycaster.ray.intersectPlane(plane, intersection)) {
-            let current = intersection.clone();
-            dragOffset.copy(current.sub(intersectionPrevious));
-            intersectionPrevious.copy(intersection);
-            allObjects.forEach(object3d => {
-              object3d.position.add(dragOffset);
-            });
-          }
+          const x = (mousePointPrevious.x - mousePoint.x) * 50;
+          const y = (mousePointPrevious.y - mousePoint.y) * 50;
+          store.dispatch(store.getActions().setCameraPosition(x, y, 0, true));
           break;
 
         case 'connection':
@@ -244,6 +247,7 @@ export default function createCanvas3d(specs, my) {
             }
           }
       }
+      mousePointPrevious = { ...mousePoint };
     },
             
     /**

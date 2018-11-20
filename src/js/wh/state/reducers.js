@@ -447,12 +447,13 @@ export default function createReducers() {
                     };
                 
                 case actions.SET_CAMERA_POSITION:
+                    const { x, y, z, isRelative } = action;
                     return {
                         ...state,
                         camera: {
-                            x: action.x,
-                            y: action.y,
-                            z: action.z,
+                            x: isRelative ? state.camera.x + x : x,
+                            y: isRelative ? state.camera.y + y : y,
+                            z: isRelative ? state.camera.z + z : z,
                         }
                     };
 
