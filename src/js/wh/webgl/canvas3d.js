@@ -1,6 +1,5 @@
 import {
   Color,
-  DirectionalLight,
   PerspectiveCamera,
   Plane,
   Raycaster,
@@ -25,9 +24,7 @@ export default function createCanvas3d(specs, my) {
     mousePoint = new Vector2(),
     mousePointPrevious = new Vector2(),
     intersection = new Vector3(),
-    intersectionPrevious = new Vector3(),
     raycaster = new Raycaster(),
-    intersectedObject,
     dragObject,
     dragObjectType,
     dragOffset = new Vector3(),
@@ -195,8 +192,6 @@ export default function createCanvas3d(specs, my) {
             break;
 
           case 'background':
-            // dragOffset = new Vector3();
-            intersectionPrevious.copy(intersection);
             dragOffset.copy(intersection).sub(dragObject.position);
             break;
         }
@@ -240,10 +235,8 @@ export default function createCanvas3d(specs, my) {
           if (intersects.length > 0) {
             const intersectHitarea = intersects.find(intersect => intersect.object.name === 'hitarea');
             if (intersectHitarea) {
-              intersectedObject = intersectHitarea;
               rootEl.style.cursor = 'pointer';
             } else {
-              intersectedObject = null;
               rootEl.style.cursor = 'auto';
             }
           }
@@ -309,10 +302,6 @@ export default function createCanvas3d(specs, my) {
 
       camera = new PerspectiveCamera(45, 1, 1, 500);
       my.scene.add(camera);
-
-      const light = new DirectionalLight(0xffffff, 1.5);
-      light.position.set(0, 0, 1);
-      my.scene.add(light);
 
       plane = new Plane();
       plane.name = 'plane';
@@ -440,8 +429,7 @@ export default function createCanvas3d(specs, my) {
     },
         
     /**
-     * Update any tween animations that are going on and
-     * redraw the canvases if needed.
+     * Update any tween animations that are going on and redraw the canvases if needed.
      * @param {Number} position Transport playback position in ticks.
      * @param {Array} processorEvents Array to processor generated events to displayin the view.
      */
