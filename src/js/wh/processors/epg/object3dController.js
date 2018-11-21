@@ -144,7 +144,7 @@ export function createObject3dController(specs, my) {
         } else {
           dot = createCircleOutline(lineMaterial, 1);
         }
-        // dot.scale.set(0.1, 0.1, 1);
+        dot.name = 'dot';
         dot.translateX(Math.sin(rad) * radius3d);
         dot.translateY(Math.cos(rad) * radius3d);
         dot.visible = true;
@@ -336,18 +336,18 @@ export function createObject3dController(specs, my) {
      */
     startNoteAnimation = function(stepIndex, noteStartDelay, noteStopDelay) {
       const dot = dots3d.children[stepIndex];
-      
+
       // retain necklace dot state in object
       dotAnimations[stepIndex] = {
           dot,
-          scale: 0.1,
+          scale: 1,
           isActive: false,
       }
 
       // delay start of animation
       setTimeout(() => {
           let tweeningDot = dotAnimations[stepIndex];
-          tweeningDot.scale = 0.2;
+          tweeningDot.scale = 2;
           tweeningDot.isActive = true;
       }, noteStartDelay);
     },
@@ -365,8 +365,8 @@ export function createObject3dController(specs, my) {
         obj.dot.scale.set(obj.scale, obj.scale, 1);
         largestScale = Math.max(largestScale, obj.scale);
         isNoteActive = true;
-        if (obj.isActive && obj.scale <= 0.1) {
-          obj.dot.scale.set(0.1, 0.1, 1);
+        if (obj.isActive && obj.scale <= 1) {
+          obj.dot.scale.set(1, 1, 1);
           delete dotAnimations[key];
         }
       });
