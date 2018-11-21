@@ -23,6 +23,7 @@ export function createObject3d(id, inputs, outputs) {
     
   let defaultColor,
     lineMaterial,
+    radius = 3,
 
     init = function() {
       defaultColor = getThemeColors().colorHigh;
@@ -41,22 +42,35 @@ export function createObject3d(id, inputs, outputs) {
       label.scale.set(0.1, 0.1, 1);
       label.translateY(-7);
       
-      const centreCircle = createCircleOutline(lineMaterial, 3);
+      const centreCircle = createCircleOutline(lineMaterial, radius);
       centreCircle.name = 'centreCircle';
       
       const selectCircle = createCircleOutline(lineMaterial, 2);
       selectCircle.name = 'select';
       selectCircle.visible = false;
 
+      const geometry = new Geometry();
+      geometry.vertices.push(
+          new Vector3(-radius, -radius, 0.0),
+          new Vector3(radius, -radius, 0.0),
+          new Vector3(radius, radius, 0.0),
+          new Vector3(-radius, radius, 0.0),
+          new Vector3(-radius, -radius, 0.0),
+          new Vector3(0, -radius * 1.8, 0.0),
+          new Vector3(radius, -radius, 0.0)
+      );
+      const graphic = new Line(geometry, lineMaterial);
+
       const group = new Group();
       group.name = 'output';
       group.userData.id = id;
       group.add(hitarea);
+      group.add(graphic);
       group.add(centreCircle);
       group.add(selectCircle);
       group.add(label);
 
-      // add inputs and outputs
+      // add inputs and outputs 
       drawConnectors(group, inputs, outputs, lineMaterial);
 
       return group;
