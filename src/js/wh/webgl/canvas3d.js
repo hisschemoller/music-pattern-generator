@@ -35,12 +35,7 @@ export default function createCanvas3d(specs, my) {
     doubleClickTimer,
 
     init = function() {
-      my.addWindowResizeCallback(onWindowResize);
-      initWorld();
-      initDOMEvents();
-      onWindowResize();
-      draw();
-
+      
       document.addEventListener(store.STATE_CHANGE, (e) => {
         switch (e.detail.action.type) {
                     
@@ -62,6 +57,7 @@ export default function createCanvas3d(specs, my) {
             updateCamera(e.detail.state);
             clearProcessorViews();
             createProcessorViews(e.detail.state);
+            onWindowResize();
             break;
 
           case e.detail.actions.SET_THEME:
@@ -73,6 +69,12 @@ export default function createCanvas3d(specs, my) {
             break;
         }
       });
+      
+      my.addWindowResizeCallback(onWindowResize);
+      initWorld();
+      initDOMEvents();
+      onWindowResize();
+      draw();
     },
             
     /**
@@ -105,7 +107,24 @@ export default function createCanvas3d(specs, my) {
 
       store.dispatch(store.getActions().setCameraPosition(camera.position.x, camera.position.y, targetZ * scale));
     },
-        
+
+    /**
+     * Drop of object dragged from library.
+     * Create a new processor.
+     */
+    onDrop = function(e) {
+      e.preventDefault();
+      updateMouseRay(e);
+      if (raycaster.ray.intersectPlane(plane, intersection)) {
+        store.dispatch(store.getActions().createProcessor({
+          type: e.dataTransfer.getData('text/plain'),
+          positionX: intersection.x,
+          positionY: intersection.y,
+          positionZ: intersection.z,
+        }));
+      };
+    },
+
     /**
      * Separate click and doubleclick.
      * @see http://stackoverflow.com/questions/6330431/jquery-bind-double-click-and-single-click-separately
@@ -269,22 +288,6 @@ export default function createCanvas3d(specs, my) {
       dragObject = null;
       dragObjectType = null;
       rootEl.style.cursor = 'auto';
-    },
-
-    /**
-     * Drop of object dragged from library.
-     * Create a new processor.
-     */
-    onDrop = function(e) {
-      updateMouseRay(e);
-      if (raycaster.ray.intersectPlane(plane, intersection)) {
-        store.dispatch(store.getActions().createProcessor({
-          type: e.dataTransfer.getData('text/plain'),
-          positionX: intersection.x,
-          positionY: intersection.y,
-          positionZ: intersection.z,
-        }));
-      };
     },
 
     /**
