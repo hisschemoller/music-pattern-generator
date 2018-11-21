@@ -113,17 +113,26 @@ export default function addConnections3d(specs, my) {
         cablesGroup = new Group();
         my.scene.add(cablesGroup);
       }
-
+      
       state.connections.allIds.forEach(connectionID => {
         const connection = state.connections.byId[connectionID];
-        const sourceProcessor = my.scene.children.find(object3d => object3d.userData.id === connection.sourceProcessorID);
-        const destinationProcessor = my.scene.children.find(object3d => object3d.userData.id === connection.destinationProcessorID);
-        
+        const sourceProcessor = state.processors.byId[connection.sourceProcessorID];
+        const destinationProcessor = state.processors.byId[connection.destinationProcessorID];
+
         if (sourceProcessor && destinationProcessor) {
-          const sourceConnector = sourceProcessor.children.find(object3d => object3d.userData.id === connection.sourceConnectorID);
-          const destinationConnector = destinationProcessor.children.find(object3d => object3d.userData.id === connection.destinationConnectorID);
-          const sourcePosition = new Vector3().addVectors(sourceProcessor.position, sourceConnector.position);
-          const destinationPosition = new Vector3().addVectors(destinationProcessor.position, destinationConnector.position);
+          const sourceConnector = sourceProcessor.outputs.byId[connection.sourceConnectorID];
+          const destinationConnector = destinationProcessor.inputs.byId[connection.destinationConnectorID];
+
+          const sourcePosition = new Vector3(
+            sourceProcessor.positionX + sourceConnector.x,
+            sourceProcessor.positionY + sourceConnector.y,
+            sourceProcessor.positionZ + sourceConnector.z,
+          );
+          const destinationPosition = new Vector3(
+            destinationProcessor.positionX + destinationConnector.x,
+            destinationProcessor.positionY + destinationConnector.y,
+            destinationProcessor.positionZ + destinationConnector.z,
+          );
           const handlePosition = drawCable(sourcePosition, destinationPosition);
 
           // cableData.byId[connectionID] = {
@@ -136,6 +145,7 @@ export default function addConnections3d(specs, my) {
     },
 
     drawCable = function(sourcePosition, destinationPosition) {
+      console.log('drawCable');
       const geometry = new Geometry();
       geometry.vertices.push(sourcePosition, destinationPosition);
       const cable = new Line(geometry, lineMaterial);
