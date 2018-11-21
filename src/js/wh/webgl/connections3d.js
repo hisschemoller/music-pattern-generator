@@ -10,6 +10,7 @@ import {
   Group,
 } from '../../lib/three.module.js';
 import { getThemeColors } from '../state/selectors.js';
+import { createCircleOutline } from './util3d.js';
 
 export default function addConnections3d(specs, my) {
   let that,
@@ -22,9 +23,14 @@ export default function addConnections3d(specs, my) {
     defaultColor,
     lineMaterial,
     currentCable,
+    currentCableDragHandle,
     cablesGroup,
+    dragHandleRadius = 1.5,
     
     init = function() {
+      currentCableDragHandle = createCircleOutline(lineMaterial, dragHandleRadius);
+      currentCableDragHandle.name = 'dragHandle';
+
       document.addEventListener(store.STATE_CHANGE, (e) => {
         switch (e.detail.action.type) {
 
@@ -69,7 +75,11 @@ export default function addConnections3d(specs, my) {
     dragStartConnection = function(sourceProcessorID, sourceConnectorID, sourceConnectorPosition) {
       state = { ...state, sourceProcessorID, sourceConnectorID, sourceConnectorPosition, };
       currentCable = new Line(new Geometry(), lineMaterial);
-      my.scene.add(currentCable);
+      currentCable.name = 'currentCable';
+      cablesGroup.add(currentCable);
+
+      currentCableDragHandle.position.copy(sourceConnectorPosition);
+      cablesGroup.add(currentCableDragHandle);
     },
         
     /**
@@ -81,12 +91,15 @@ export default function addConnections3d(specs, my) {
       geometry.vertices.push(state.sourceConnectorPosition.clone(), position3d.clone());
       currentCable.geometry.dispose();
       currentCable.geometry = geometry;
+
+      currentCableDragHandle.position.copy(position3d);
     },
 
     dragEndConnection = function() {
       currentCable.geometry.dispose();
       currentCable.geometry = new Geometry();
-      my.scene.remove(currentCable);
+      cablesGroup.remove(currentCable);
+      cablesGroup.remove(currentCableDragHandle);
     },
 
     createConnection = function(destinationProcessorID, destinationConnectorID) {
@@ -133,8 +146,9 @@ export default function addConnections3d(specs, my) {
             destinationProcessor.positionY + destinationConnector.y,
             destinationProcessor.positionZ + destinationConnector.z,
           );
-          const handlePosition = drawCable(sourcePosition, destinationPosition);
-
+          
+          drawCable(sourcePosition, destinationPosition);
+          
           // cableData.byId[connectionID] = {
           //     handleX: handlePosition.x,
           //     handleY: handlePosition.y
@@ -144,14 +158,18 @@ export default function addConnections3d(specs, my) {
       });
     },
 
+    /**
+     * Enter or leave application connect mode.
+     * @param {Vector3} sourcePosition Cable start position.
+     * @param {Vector3} destinationPosition Cable end position.
+     */
     drawCable = function(sourcePosition, destinationPosition) {
-      console.log('drawCable');
       const geometry = new Geometry();
       geometry.vertices.push(sourcePosition, destinationPosition);
       const cable = new Line(geometry, lineMaterial);
       cablesGroup.add(cable);
     },
-        
+
     /**
      * Enter or leave application connect mode.
      * @param {Boolean} isEnabled True to enable connect mode.
@@ -165,6 +183,7 @@ export default function addConnections3d(specs, my) {
       lineMaterial = new LineBasicMaterial({
         color: defaultColor,
       });
+      currentCableDragHandle.material.color.set( defaultColor );
     };
 
   my = my || {};
