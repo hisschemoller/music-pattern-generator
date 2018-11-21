@@ -38,6 +38,21 @@ export function createObject3d(id, inputs, outputs) {
     },
     
     /**
+     * Create pointer triangle.
+     * @param {object} lineMaterial Default line drawing material.
+     * @return {object} Line 3D object.
+     */
+    createPointer = function(lineMaterial) {
+      const geometry = new Geometry();
+      geometry.vertices.push(
+          new Vector3(0.0, 0.0, 0.0),
+          new Vector3(0.0, 1.0, 0.0)
+      );
+      const line = new Line(geometry, lineMaterial);
+      return line;
+    },
+    
+    /**
      * Create combined Object3D of wheel.
      * @return {object} Object3D of drag plane.
      */
@@ -56,6 +71,12 @@ export function createObject3d(id, inputs, outputs) {
       const centreDot = createCircleOutlineFilled(lineMaterial, defaultColor, 1);
       centreDot.name = 'centreDot';
       centreDot.visible = false;
+      
+      const pointer = createPointer(lineMaterial);
+      pointer.name = 'pointer';
+      
+      const necklace = new Line(new Geometry(), lineMaterial);
+      necklace.name = 'necklace';
 
       const label = new Group();
       label.name = 'label';
@@ -69,6 +90,8 @@ export function createObject3d(id, inputs, outputs) {
       root.add(centreCircle);
       root.add(selectCircle);
       root.add(centreDot);
+      root.add(necklace);
+      root.add(pointer);
       root.add(label);
 
       // add inputs and outputs

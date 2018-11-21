@@ -239,11 +239,11 @@ export function createObject3dController(specs, my) {
       if (isNoteInControlled) {
         var halfRadius = centreRadius + ((radius - centreRadius) / 2);
         geometry.vertices.push(
-            new Vector3(0.0, centreRadius, 0.0),
-            new Vector3(-0.9, halfRadius, 0.0),
+          new Vector3(0.0, centreRadius, 0.0),
+          new Vector3(-0.9, halfRadius, 0.0),
           new Vector3(0.0, radius, 0.0),
-            new Vector3(0.9, halfRadius, 0.0),
-            new Vector3(0.0, centreRadius, 0.0)
+          new Vector3(0.9, halfRadius, 0.0),
+          new Vector3(0.0, centreRadius, 0.0)
         );
       } else {
         geometry.vertices.push(
@@ -304,7 +304,12 @@ export function createObject3dController(specs, my) {
       const stepDuration = rate * PPQN;
       duration = steps * stepDuration;
     },
-    
+
+    /**
+     * Redraw the pattern if needed.
+     * @param {Number} position Transport playback position in ticks.
+     * @param {Array} processorEvents Array of processor generated events to display.
+     */
     draw = function(position, processorEvents) {
       showPlaybackPosition(position);
       updateNoteAnimations();

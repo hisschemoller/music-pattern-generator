@@ -430,11 +430,11 @@ export default function createCanvas3d(specs, my) {
         return [...accumulator, controller];
       }, []);
     },
-        
+
     /**
      * Update any tween animations that are going on and redraw the canvases if needed.
      * @param {Number} position Transport playback position in ticks.
-     * @param {Array} processorEvents Array to processor generated events to displayin the view.
+     * @param {Array} processorEvents Array of processor generated events to displayin the view.
      */
     draw = function(position, processorEvents) {
       controllers.forEach(controller => controller.draw(position, processorEvents));
