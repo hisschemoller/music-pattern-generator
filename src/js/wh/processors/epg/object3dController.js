@@ -287,7 +287,7 @@ export function createObject3dController(specs, my) {
     updateLabelPosition = function() {
       my.label3d.position.y = -radius3d - 2;
     },
-            
+
     /**
      * Show circle if the processor is selected, else hide.
      * @param {Boolean} isSelected True if selected.
