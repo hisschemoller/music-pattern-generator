@@ -131,6 +131,7 @@ export function createObject3dController(specs, my) {
 
     updateRotation = function(numRotation) {
       rotation = numRotation;
+      pointer3d.rotation.z = (rotation / steps) * doublePI;
     },
 
     /**
