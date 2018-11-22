@@ -38,21 +38,6 @@ export function createObject3d(id, inputs, outputs) {
     },
     
     /**
-     * Create pointer triangle.
-     * @param {object} lineMaterial Default line drawing material.
-     * @return {object} Line 3D object.
-     */
-    createPointer = function(lineMaterial) {
-      const geometry = new Geometry();
-      geometry.vertices.push(
-          new Vector3(0.0, 0.0, 0.0),
-          new Vector3(0.0, 1.0, 0.0)
-      );
-      const line = new Line(geometry, lineMaterial);
-      return line;
-    },
-    
-    /**
      * Create combined Object3D of wheel.
      * @return {object} Object3D of drag plane.
      */
@@ -72,7 +57,7 @@ export function createObject3d(id, inputs, outputs) {
       centreDot.name = 'centreDot';
       centreDot.visible = false;
       
-      const pointer = createPointer(lineMaterial);
+      const pointer = new Line(new Geometry(), lineMaterial);
       pointer.name = 'pointer';
       
       const necklace = new Line(new Geometry(), lineMaterial);

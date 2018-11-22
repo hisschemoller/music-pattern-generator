@@ -34,18 +34,14 @@ export function createObject3dController(specs, my) {
     euclid,
     steps,
     rotation,
-    scale = 0.2,
-    radius = 70 * scale,
-    centerRadius = 20 * scale,
-    selectRadius = 15 * scale,
-    innerRadius = 30 * scale,
-    outerRadius = 46 * scale,
-    dotRadius = 10 * scale,
-    locatorLength = 38 * scale,
-    zeroMarkerRadius = 2 * scale,
-    zeroMarkerY = radius - centerRadius - zeroMarkerRadius - 3 * scale,
-    pointerCanvasCenter = centerRadius,
-    locatorTop = radius - pointerCanvasCenter - locatorLength,
+    centerRadius = 3,
+    selectRadius = 2,
+    innerRadius = 6,
+    outerRadius = 8,
+    dotRadius = 1,
+    locatorRadius = 10,
+    zeroMarkerRadius = 0.5,
+    zeroMarkerY = outerRadius + zeroMarkerRadius + 1,
     doublePI = Math.PI * 2,
 
     initialize = function() {
@@ -141,26 +137,26 @@ export function createObject3dController(specs, my) {
      * Redraw the location pointer and the status dot.
      */
     updatePointer = function() {
-      const necklacePos = radius - (status ? outerRadius : innerRadius)
-      const halfWayPos = necklacePos + ((locatorTop - necklacePos) / 2);
-      const statusWidth = status ? 15 * scale : 6 * scale;
-      const sides = status ? locatorTop : halfWayPos;
+      const necklacePos = status ? outerRadius : innerRadius;
+      const halfWayPos = necklacePos + ((locatorRadius - necklacePos) / 2);
+      const statusWidth = status ? 2.5 : 1;
+      const sides = status ? locatorRadius : halfWayPos;
 
       pointer3d.geometry.dispose();
       pointer3d.geometry = new Geometry();
 
       // position locator
       pointer3d.geometry.vertices.push(
-        new Vector3(pointerCanvasCenter, radius - pointerCanvasCenter),
-        new Vector3(pointerCanvasCenter, locatorTop),
+        new Vector3(0, centerRadius),
+        new Vector3(0, locatorRadius),
       );
 
       // status indicator
       pointer3d.geometry.vertices.push(
-        new Vector3(pointerCanvasCenter - statusWidth, sides),
-        new Vector3(pointerCanvasCenter, necklacePos),
-        new Vector3(pointerCanvasCenter + statusWidth, sides),
-        new Vector3(pointerCanvasCenter, locatorTop),
+        new Vector3(-statusWidth, sides),
+        new Vector3(0, necklacePos),
+        new Vector3(statusWidth, sides),
+        new Vector3(0, locatorRadius),
       );
 
       // pointerCtx.clearRect(0, 0, pointerCtx.canvas.width, pointerCtx.canvas.height);
