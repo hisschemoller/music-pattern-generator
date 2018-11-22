@@ -93,6 +93,10 @@ export function createObject3dController(specs, my) {
           my.updatePosition(e.detail.state);
           break;
 
+        case e.detail.actions.TOGGLE_CONNECT_MODE:
+          my.updateConnectMode(e.detail.state)
+          break;
+
         case e.detail.actions.SET_THEME:
           updateTheme();
           break;

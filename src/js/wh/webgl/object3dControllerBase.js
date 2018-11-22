@@ -27,7 +27,15 @@ export default function createObject3dControllerBase(specs, my) {
         my.object3d.position.set(data.positionX, data.positionY, data.positionZ);
       }
     },
-      
+
+    updateConnectMode = function(state) {
+      my.object3d.children.forEach(child3d => {
+        if (child3d.name === 'input' || child3d.name === 'output') {
+          child3d.getObjectByName('active').visible = state.connectModeActive;
+        }
+      });
+    },
+
     getID = function() {
       return my.id;
     };
@@ -39,6 +47,7 @@ export default function createObject3dControllerBase(specs, my) {
   my.label3d = my.object3d.getObjectByName('label'),
   my.updateLabel = updateLabel;
   my.updatePosition = updatePosition;
+  my.updateConnectMode = updateConnectMode;
 
   that = specs.that || {};
   that.getID = getID;
