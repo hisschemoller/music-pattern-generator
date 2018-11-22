@@ -63,6 +63,11 @@ export function createObject3d(id, inputs, outputs) {
       const necklace = new LineLoop(new Geometry(), lineMaterial);
       necklace.name = 'necklace';
 
+      const zeroMarker = createCircleOutline(lineMaterial, 0.5);
+      zeroMarker.name = 'zeroMarker';
+      zeroMarker.translateY(2.5);
+      necklace.add(zeroMarker);
+
       const label = new Group();
       label.name = 'label';
       label.scale.set(0.1, 0.1, 1);
@@ -75,8 +80,8 @@ export function createObject3d(id, inputs, outputs) {
       root.add(centreCircle);
       root.add(selectCircle);
       root.add(centreDot);
-      root.add(necklace);
       root.add(pointer);
+      root.add(necklace);
       root.add(label);
 
       // add inputs and outputs
