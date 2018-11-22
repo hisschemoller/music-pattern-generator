@@ -3,6 +3,7 @@ import {
   Geometry,
   Line,
   LineBasicMaterial,
+  LineLoop,
   Mesh,
   MeshBasicMaterial,
   Object3D,
@@ -20,7 +21,6 @@ import {
 import { getThemeColors } from '../../state/selectors.js';
 
 export function createObject3d(id, inputs, outputs) {
-    
   let polygon,
     TWO_PI = Math.PI * 2,
     centreRadius = 3,
@@ -60,7 +60,7 @@ export function createObject3d(id, inputs, outputs) {
       const pointer = new Line(new Geometry(), lineMaterial);
       pointer.name = 'pointer';
       
-      const necklace = new Line(new Geometry(), lineMaterial);
+      const necklace = new LineLoop(new Geometry(), lineMaterial);
       necklace.name = 'necklace';
 
       const label = new Group();

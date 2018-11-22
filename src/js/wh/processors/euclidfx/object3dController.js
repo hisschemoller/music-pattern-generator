@@ -36,10 +36,10 @@ export function createObject3dController(specs, my) {
     rotation,
     centerRadius = 3,
     selectRadius = 2,
-    innerRadius = 6,
-    outerRadius = 8,
+    innerRadius = 4,
+    outerRadius = 6,
     dotRadius = 1,
-    locatorRadius = 10,
+    locatorRadius = 8,
     zeroMarkerRadius = 0.5,
     zeroMarkerY = outerRadius + zeroMarkerRadius + 1,
     doublePI = Math.PI * 2,
@@ -110,27 +110,23 @@ export function createObject3dController(specs, my) {
       euclid = rotateEuclidPattern(euclid, rotation);
       
       necklace3d.geometry.dispose();
-      // necklace3d.geometry = new Geometry();
-      // necklace3d.geometry.vertices.push(
-      //   new Vector3(0, 0),
-      //   new Vector3(0, locatorTop),
-      // );
+      let points = [];
+
       for (let i = 0, n = euclid.length; i < n; i++) {
         const stepRadius = euclid[i] ? outerRadius : innerRadius;
-        // rotateCtx.arc(radius, radius, stepRadius, ((i / n) * doublePI) - (Math.PI / 2), (((i + 1) / n) * doublePI) - (Math.PI / 2), false);
 
         const curve = new EllipseCurve(
-          0,  0, // ax, aY
+          0, 0, // ax, aY
           stepRadius, stepRadius, // xRadius, yRadius
           ((i / n) * doublePI) - (Math.PI / 2), // aStartAngle
           (((i + 1) / n) * doublePI) - (Math.PI / 2), // aEndAngle
           false, // aClockwise,
           0, // aRotation
         );
-        const points = curve.getPoints(5);
-        const geometry = new BufferGeometry().setFromPoints(points);
-        necklace3d.geometry = geometry;
+        points = [...points, ...curve.getPoints(5)];
       }
+      const geometry = new BufferGeometry().setFromPoints(points);
+      necklace3d.geometry = geometry;
     },
 
     updateRotation = function(numRotation) {
