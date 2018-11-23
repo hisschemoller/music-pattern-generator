@@ -116,6 +116,10 @@ export default function createReducers() {
                         }
                         newState.selectedID = newState.processors.allIds[newIndex];
                     }
+                    
+                    // reorder the processors
+                    orderProcessors(newState);
+
                     return newState;
                 
                 case actions.SELECT_PROCESSOR:
