@@ -1,103 +1,88 @@
-import orderProcessorsNew from './network_ordering_new.js';
-
-const maxDepth = 100;
 
 /**
- * Order thee processors according to their connections
- * to optimise the flow from inputs to outputs.
  * 
- * Rule: when connected, the source goes before the destination
- * 
- * @param {Object} state The whole state object.
+ * @param {Object} state Application state.
  */
 export default function orderProcessors(state) {
-    console.log('ORDER', state.processors.allIds.length);
-    state.processors.allIds.sort((a, b) => {
-        const nameA = state.processors.byId[a].params.byId['name'].value;
-        const nameB = state.processors.byId[b].params.byId['name'].value;
-        console.log('---');
-        console.log('start sort');
-        console.log(`start search '${nameA}'`);
-        console.log(`start search '${nameB}'`);
-        if (searchUpStream(a, b, state)) {
-            console.log(`1, source '${nameB}' to destination '${nameA}'`);
-            return 1;
-        } else if (searchDownStream(a, b, state)) {
-            console.log(`-1, source '${nameA}' to destination '${nameB}'`);
-            return -1;
-        } else {
-            console.log(`0, no stream between '${nameA}' and '${nameB}'`);
-            return 0;
-        }
-    });
-    logResult(state);
-    orderProcessorsNew(state);
-}
-
-function searchUpStream(a, b, state, depth = 0) {
-    if (depth >= maxDepth) {
-        console.log(`Error: maximum (${maxDepth}) recursions reached while searching source.`);
-        return false;
+  const ordered = [];
+  const nodes = createNodes(state);
+  nodes.forEach(node => {
+    if (node.sourceIds.length === 0) {
+      followDownStream(node, nodes, ordered);
     }
-    const sources = getSources(a, state);
-    for (let i = 0, n = sources.length; i < n; i++) {
-        if (sources[i] === b) {
-            console.log('found upstream');
-            return true;
-        } else {
-            return searchUpStream(sources[i], b, state, depth + 1);
-        }
+  });
+  ordered.forEach(id => {
+    console.log(':', state.processors.byId[id].params.byId['name'].value);
+  });
+  state.processors.allIds = [ ...ordered ];
+}
+
+/**
+ * Recursively follow the processor nodes by destination.
+ * @param {Object} node Processor node.
+ * @param {Array} nodes All processor nodes, unordered.
+ * @param {Array} ordered Ordered processor IDs.
+ */
+function followDownStream(node, nodes, ordered) {
+  console.log('node id', node.id);
+  ordered.push(node.id);
+  node.destinationIds.forEach(destinationId => {
+    const nextNode = nodes.find(node => node.id === destinationId);
+    if (nextNode.sourceIds.length === 1) {
+      followDownStream(nextNode, nodes, ordered);
+    } else if (nextNode.sourceIds.length > 1) {
+      const isAllSourcesOrdered = nextNode.sourceIds.every(sourceId => {
+        return ordered.indexOf(sourceId) > -1;
+      });
+      if (isAllSourcesOrdered) {
+        followDownStream(nextNode, nodes, ordered);
+      }
     }
-    console.log('not found upstream');
-    return false;
+  });
 }
 
-function searchDownStream(a, b, state, depth = 0) {
-    if (depth >= maxDepth) {
-        console.log(`Error: maximum (${maxDepth}) recursions reached while searching destination.`);
-        return false;
-    }
-    const destinations = getDestinations(a, state);
-    for (let i = 0, n = destinations.length; i < n; i++) {
-        if (destinations[i] === b) {
-            console.log('found downstream');
-            return true;
-        } else {
-            return searchDownStream(destinations[i], b, state, depth + 1);
-        }
-    }
-    console.log('not found downstream');
-    return false;
+/**
+ * Create node objects from state processor and connection data.
+ * @param {Object} state Application state.
+ */
+function createNodes(state) {
+  return state.processors.allIds.map(id => {
+    return {
+      id,
+      sourceIds: getSourceIds(id, state.connections),
+      destinationIds: getDestinationIds(id, state.connections),
+    };
+  });
 }
 
-function getSources(processorID, state) {
-    const sourceIDs = [];
-    state.connections.allIds.forEach(connectionID => {
-        const connection = state.connections.byId[connectionID];
-        if (connection.destinationProcessorID === processorID) {
-            sourceIDs.push(connection.sourceProcessorID);
-        }
-    });
-    return sourceIDs;
+/**
+ * Find all processors connected to the processor's input.
+ * @param {String} processorId Processor ID.
+ * @param {Object} connections State connections data.
+ * @returns {Array} Processor IDs.
+ */
+function getSourceIds(processorId, connections) {
+  return connections.allIds.reduce((sourceIds, connectionId) => {
+    const connection = connections.byId[connectionId];
+    if (connection.destinationProcessorID === processorId) {
+      return [...sourceIds, connection.sourceProcessorID];
+    };
+    return sourceIds;
+  }, []);
 }
 
-function getDestinations(processorID, state) {
-    const destinationIDs = [];
-    state.connections.allIds.forEach(connectionID => {
-        const connection = state.connections.byId[connectionID];
-        if (connection.sourceProcessorID === processorID) {
-            destinationIDs.push(connection.destinationProcessorID);
-        }
-    });
-    return destinationIDs;
-}
-
-function logResult(state) {
-    console.log('===========');
-    console.log('PROCESSOR ORDER');
-    console.log('-----------');
-    state.processors.allIds.forEach(id => {
-        console.log(state.processors.byId[id].params.byId['name'].value);
-    });
-    console.log('===========');
+/**
+ * Find all processors connected to the processor's output.
+ * @param {String} processorId Processor ID.
+ * @param {Object} connections State connections data.
+ * @returns {Array} Processor IDs.
+ */
+function getDestinationIds(processorId, connections) {
+  return connections.allIds.reduce((destinationIds, connectionId) => {
+    const connection = connections.byId[connectionId];
+    if (connection.sourceProcessorID === processorId) {
+      return [...destinationIds, connection.destinationProcessorID];
+    };
+    return destinationIds;
+  }, []);
 }
