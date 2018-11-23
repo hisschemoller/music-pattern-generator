@@ -11,6 +11,7 @@ export default function orderProcessors(state) {
       followDownStream(node, nodes, ordered);
     }
   });
+  console.log('Processor order:');
   ordered.forEach(id => {
     console.log(':', state.processors.byId[id].params.byId['name'].value);
   });
@@ -24,7 +25,6 @@ export default function orderProcessors(state) {
  * @param {Array} ordered Ordered processor IDs.
  */
 function followDownStream(node, nodes, ordered) {
-  console.log('node id', node.id);
   ordered.push(node.id);
   node.destinationIds.forEach(destinationId => {
     const nextNode = nodes.find(node => node.id === destinationId);

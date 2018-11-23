@@ -23,17 +23,17 @@ export default function createMIDINetwork(specs, my) {
                     case e.detail.actions.DELETE_PROCESSOR:
                         disconnectProcessors(e.detail.state.connections);
                         deleteProcessors(e.detail.state.processors);
-                        orderProcessors(e.detail.state.processors);
+                        reorderProcessors(e.detail.state.processors);
                         break;
                     
                     case e.detail.actions.CONNECT_PROCESSORS:
                         connectProcessors(e.detail.state.connections);
-                        orderProcessors(e.detail.state.processors);
+                        reorderProcessors(e.detail.state.processors);
                         break;
                     
                     case e.detail.actions.DISCONNECT_PROCESSORS:
                         disconnectProcessors(e.detail.state.connections);
-                        orderProcessors(e.detail.state.processors);
+                        reorderProcessors(e.detail.state.processors);
                         break;
                 }
             });
@@ -91,11 +91,11 @@ export default function createMIDINetwork(specs, my) {
          * Delete a processor.
          * @param {Object} state State processors table.
          */
-        deleteProcessors = function(procsState) {
+        deleteProcessors = function(processorsState) {
             for (let i = processors.length - 1, n = 0; i >= n; i--) {
                 // search for the processor in the state
                 let exists = false;
-                procsState.allIds.forEach(processorID => {
+                processorsState.allIds.forEach(processorID => {
                     if (processorID === processors[i].getID()) {
                         exists = true;
                     }
@@ -171,7 +171,7 @@ export default function createMIDINetwork(specs, my) {
          * Reorder the processors according to their order in the state.
          * @param {Object} State processor table.
          */
-        orderProcessors = function(processorsState) {
+        reorderProcessors = function(processorsState) {
             const orderedProcessors = [];
             processorsState.allIds.forEach(processorID => {
                 processors.forEach(processor => {

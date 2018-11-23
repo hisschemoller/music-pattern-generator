@@ -2,7 +2,6 @@ import convertLegacyFile from '../core/convert_xml.js';
 import { createUUID } from '../core/util.js';
 import { getConfig, setConfig, processorTypes } from '../core/config.js';
 import { getAllMIDIPorts } from '../midi/midi.js';
-import orderProcessors from '../midi/network_ordering.js';
 import { showDialog } from '../view/dialog.js';
 
 export default function createActions(specs = {}, my = {}) {
@@ -162,8 +161,10 @@ export default function createActions(specs = {}, my = {}) {
                     }
                 });
 
-                // order the processors according to their connection (fix faulty data)
-                orderProcessors(data);
+                console.log('Processor order:');
+                data.processors.allIds.forEach(id => {
+                    console.log(':', data.processors.byId[id].params.byId['name'].value);
+                });
 
                 // create the project with the merged ports
                 dispatch(getActions().createProject(data));
