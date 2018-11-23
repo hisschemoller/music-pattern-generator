@@ -14,8 +14,6 @@ export default function createMIDINetwork(specs, my) {
                         disconnectProcessors(e.detail.state.connections);
                         deleteProcessors(e.detail.state.processors);
                         createProcessors(e.detail.state.processors, e.detail.state.connections);
-                        connectProcessors(e.detail.state.connections);
-                        orderProcessors(e.detail.state.processors);
                         break;
 
                     case e.detail.actions.ADD_PROCESSOR:
@@ -56,11 +54,11 @@ export default function createMIDINetwork(specs, my) {
          * Create a new processor in the network.
          * @param {Object} state State processors table.
          */
-        createProcessors = function(procsState, connectionsState) {
+        createProcessors = function(processorsState, connectionsState) {
             let uglyTempCounter = 0;
 
-            procsState.allIds.forEach((id, i) => {
-                const processorData = procsState.byId[id];
+            processorsState.allIds.forEach((id, i) => {
+                const processorData = processorsState.byId[id];
                 let exists = false;
                 processors.forEach(processor => {
                     if (processor.getID() === id) {
@@ -82,6 +80,7 @@ export default function createMIDINetwork(specs, my) {
                             console.log('uglyTempCounter', uglyTempCounter);
                             if (uglyTempCounter === 0) {
                                 connectProcessors(connectionsState);
+                                reorderProcessors(processorsState);
                             }
                         });
                 }
