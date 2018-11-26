@@ -1,11 +1,13 @@
 import {
   Geometry,
   Color,
+  CubicBezierCurve,
   BufferGeometry,
   Line,
   LineBasicMaterial,
   Object3D,
   Shape,
+  Vector2,
   Vector3,
   Group,
 } from '../../lib/three.module.js';
@@ -74,7 +76,7 @@ export default function addConnections3d(specs, my) {
      */
     dragStartConnection = function(sourceProcessorID, sourceConnectorID, sourceConnectorPosition) {
       state = { ...state, sourceProcessorID, sourceConnectorID, sourceConnectorPosition, };
-      currentCable = new Line(new Geometry(), lineMaterial);
+      currentCable = new Line(new BufferGeometry(), lineMaterial);
       currentCable.name = 'currentCable';
       cablesGroup.add(currentCable);
 
@@ -87,11 +89,10 @@ export default function addConnections3d(specs, my) {
      * @param {Vector3} position3d
      */
     dragMoveConnection = function(position3d) {
-      const geometry = new Geometry();
-      geometry.vertices.push(state.sourceConnectorPosition.clone(), position3d.clone());
-      currentCable.geometry.dispose();
-      currentCable.geometry = geometry;
-
+      drawCable(
+        currentCable.name,
+        new Vector2(state.sourceConnectorPosition.x, state.sourceConnectorPosition.y), 
+        new Vector2(position3d.x, position3d.y));
       currentCableDragHandle.position.copy(position3d);
     },
 
@@ -135,27 +136,26 @@ export default function addConnections3d(specs, my) {
         if (sourceProcessor && destinationProcessor) {
           const sourceConnector = sourceProcessor.outputs.byId[connection.sourceConnectorID];
           const destinationConnector = destinationProcessor.inputs.byId[connection.destinationConnectorID];
-
-          const sourcePosition = new Vector3(
-            sourceProcessor.positionX + sourceConnector.x,
-            sourceProcessor.positionY + sourceConnector.y,
-            sourceProcessor.positionZ + sourceConnector.z,
-          );
-          const destinationPosition = new Vector3(
-            destinationProcessor.positionX + destinationConnector.x,
-            destinationProcessor.positionY + destinationConnector.y,
-            destinationProcessor.positionZ + destinationConnector.z,
-          );
           
-          drawCable(sourcePosition, destinationPosition);
-          
-          // cableData.byId[connectionID] = {
-          //     handleX: handlePosition.x,
-          //     handleY: handlePosition.y
-          // };
-          // cableData.allIds.push(connectionID);
+          const cable = createCable(connectionID);
+          drawCable(
+            connectionID,
+            new Vector2(
+              sourceProcessor.positionX + sourceConnector.x,
+              sourceProcessor.positionY + sourceConnector.y,), 
+            new Vector2(
+              destinationProcessor.positionX + destinationConnector.x,
+              destinationProcessor.positionY + destinationConnector.y,));
         }
       });
+    },
+
+    createCable = function(connectionID) {
+      const cable = new Line(new BufferGeometry(), lineMaterial);
+      cable.name = connectionID;
+      cable.userData.type = 'cable';
+      cablesGroup.add(cable);
+      return cable;
     },
 
     /**
@@ -163,11 +163,21 @@ export default function addConnections3d(specs, my) {
      * @param {Vector3} sourcePosition Cable start position.
      * @param {Vector3} destinationPosition Cable end position.
      */
-    drawCable = function(sourcePosition, destinationPosition) {
-      const geometry = new Geometry();
-      geometry.vertices.push(sourcePosition, destinationPosition);
-      const cable = new Line(geometry, lineMaterial);
-      cablesGroup.add(cable);
+    drawCable = function(connectionID, sourcePosition, destinationPosition) {
+      const cable = cablesGroup.getObjectByName(connectionID);
+      if (cable) {
+        const distance = sourcePosition.distanceTo(destinationPosition);
+        const curveStrength = Math.min(distance / 2, 30);
+        const curve = new CubicBezierCurve(
+          sourcePosition.clone(),
+          sourcePosition.clone().sub(new Vector2(0, curveStrength)),
+          destinationPosition.clone().add(new Vector2(0, curveStrength)),
+          destinationPosition.clone()
+        );
+        const points = curve.getPoints(50);
+        cable.geometry.dispose();
+        cable.geometry.setFromPoints(points);
+      }
     },
 
     /**
