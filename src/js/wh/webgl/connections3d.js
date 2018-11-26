@@ -1,15 +1,16 @@
 import {
-  Geometry,
+  BufferAttribute,
+  BufferGeometry,
   Color,
   CubicBezierCurve,
-  BufferGeometry,
+  Geometry,
+  Group,
   Line,
   LineBasicMaterial,
   Object3D,
   Shape,
   Vector2,
   Vector3,
-  Group,
 } from '../../lib/three.module.js';
 import { getThemeColors } from '../state/selectors.js';
 import { createCircleOutline } from './util3d.js';
@@ -28,6 +29,7 @@ export default function addConnections3d(specs, my) {
     currentCableDragHandle,
     cablesGroup,
     deleteButtonRadius = 2.0,
+    deleteCrossRadius = 0.8,
     dragHandleRadius = 1.5,
     
     init = function() {
@@ -58,6 +60,7 @@ export default function addConnections3d(specs, my) {
             updateCables(e.detail.state);
             drawCables(e.detail.state);
             break;
+
           case e.detail.actions.SET_THEME:
             setTheme();
             toggleConnectMode(e.detail.state.connectModeActive);
@@ -160,6 +163,20 @@ export default function addConnections3d(specs, my) {
       deleteBtn.name = 'delete';
       deleteBtn.visible = false;
       cable.add(deleteBtn);
+
+      let line = new Line(new BufferGeometry(), lineMaterial);
+      line.geometry.addAttribute('position', new BufferAttribute( new Float32Array([
+        -deleteCrossRadius, -deleteCrossRadius, 0.0,
+         deleteCrossRadius,  deleteCrossRadius, 0.0
+      ]), 3));
+      deleteBtn.add(line);
+
+      line = new Line(new BufferGeometry(), lineMaterial);
+      line.geometry.addAttribute('position', new BufferAttribute( new Float32Array([
+        -deleteCrossRadius,  deleteCrossRadius, 0.0,
+         deleteCrossRadius, -deleteCrossRadius, 0.0
+      ]), 3));
+      deleteBtn.add(line);
 
       return cable;
     },
