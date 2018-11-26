@@ -27,6 +27,7 @@ export default function addConnections3d(specs, my) {
     currentCable,
     currentCableDragHandle,
     cablesGroup,
+    deleteButtonRadius = 2.0,
     dragHandleRadius = 1.5,
     
     init = function() {
@@ -38,31 +39,28 @@ export default function addConnections3d(specs, my) {
 
           case e.detail.actions.TOGGLE_CONNECT_MODE:
             toggleConnectMode(e.detail.state.connectModeActive);
-            // drawConnectCanvas(e.detail.state);
-            // drawCables(e.detail.state);
             break;
           
-          case e.detail.actions.ADD_PROCESSOR:
           case e.detail.actions.DELETE_PROCESSOR:
-          case e.detail.actions.DRAG_SELECTED_PROCESSOR:
-          case e.detail.actions.DRAG_ALL_PROCESSORS:
           case e.detail.actions.CONNECT_PROCESSORS:
           case e.detail.actions.DISCONNECT_PROCESSORS:
-            // drawConnectCanvas(e.detail.state);
-            clearCables();
+            updateCables(e.detail.state);
+            drawCables(e.detail.state);
+            break;
+          
+          case e.detail.actions.DRAG_SELECTED_PROCESSOR:
+          case e.detail.actions.DRAG_ALL_PROCESSORS:
             drawCables(e.detail.state);
             break;
           
           case e.detail.actions.CREATE_PROJECT:
             setTheme();
-            clearCables();
+            updateCables(e.detail.state);
             drawCables(e.detail.state);
             break;
           case e.detail.actions.SET_THEME:
-            // createConnectorGraphic();
             setTheme();
             toggleConnectMode(e.detail.state.connectModeActive);
-            // drawConnectCanvas(e.detail.state);
             break;
         }
       });
@@ -95,7 +93,10 @@ export default function addConnections3d(specs, my) {
         new Vector2(position3d.x, position3d.y));
       currentCableDragHandle.position.copy(position3d);
     },
-
+        
+    /**
+     * Drag connection cable ended.
+     */
     dragEndConnection = function() {
       currentCable.geometry.dispose();
       currentCable.geometry = new Geometry();
@@ -103,7 +104,12 @@ export default function addConnections3d(specs, my) {
       cablesGroup.remove(currentCableDragHandle);
     },
 
-    createConnection = function(destinationProcessorID, destinationConnectorID) {
+    /**
+     * Create connection between two processors.
+     * @param {String} destinationProcessorID Processor ID.
+     * @param {String} destinationConnectorID Connector ID.
+     */
+    createConnection = function(sourceConnectorID, destinationConnectorID) {
       store.dispatch(store.getActions().connectProcessors({
         sourceProcessorID: state.sourceProcessorID, 
         sourceConnectorID: state.sourceConnectorID,
@@ -114,20 +120,55 @@ export default function addConnections3d(specs, my) {
       state.sourceConnectorID = null;
     },
 
-    clearCables = function() {
-      if (cablesGroup) {
-        while (cablesGroup.children.length) {
-          cablesGroup.remove(cablesGroup.children[0]);
-        }
-      }
-    },
-
-    drawCables = function(state) {
+    /**
+     * Create and delete cables acctording to the state.
+     * @param {Object} state Application state.
+     */
+    updateCables = function(state) {
       if (!cablesGroup) {
         cablesGroup = new Group();
         my.scene.add(cablesGroup);
       }
-      
+
+      // delete all removed cables
+      cablesGroup.children.forEach(cable => {
+        if (state.connections.allIds.indexOf(cable.name) === -1) {
+          cablesGroup.remove(cable);
+        }
+      });
+
+      // create all new cables
+      state.connections.allIds.forEach(connectionId => {
+        if (!cablesGroup.getObjectByName(connectionId)) {
+          createCable(connectionId);
+        }
+      });
+    },
+
+    /**
+     * Draw all cables acctording to the state.
+     * @param {String} connectionID Connection ID.
+     * @return {Object} Cable object3d.
+     */
+    createCable = function(connectionID) {
+      const cable = new Line(new BufferGeometry(), lineMaterial);
+      cable.name = connectionID;
+      cable.userData.type = 'cable';
+      cablesGroup.add(cable);
+
+      const deleteBtn = createCircleOutline(lineMaterial, deleteButtonRadius);
+      deleteBtn.name = 'delete';
+      deleteBtn.visible = false;
+      cable.add(deleteBtn);
+
+      return cable;
+    },
+
+    /**
+     * Draw all cables acctording to the state.
+     * @param {Object} state Application state.
+     */
+    drawCables = function(state) {
       state.connections.allIds.forEach(connectionID => {
         const connection = state.connections.byId[connectionID];
         const sourceProcessor = state.processors.byId[connection.sourceProcessorID];
@@ -137,7 +178,7 @@ export default function addConnections3d(specs, my) {
           const sourceConnector = sourceProcessor.outputs.byId[connection.sourceConnectorID];
           const destinationConnector = destinationProcessor.inputs.byId[connection.destinationConnectorID];
           
-          const cable = createCable(connectionID);
+          const cable = cablesGroup.getObjectByName(connectionID);
           drawCable(
             connectionID,
             new Vector2(
@@ -148,14 +189,6 @@ export default function addConnections3d(specs, my) {
               destinationProcessor.positionY + destinationConnector.y,));
         }
       });
-    },
-
-    createCable = function(connectionID) {
-      const cable = new Line(new BufferGeometry(), lineMaterial);
-      cable.name = connectionID;
-      cable.userData.type = 'cable';
-      cablesGroup.add(cable);
-      return cable;
     },
 
     /**
@@ -177,7 +210,26 @@ export default function addConnections3d(specs, my) {
         const points = curve.getPoints(50);
         cable.geometry.dispose();
         cable.geometry.setFromPoints(points);
+
+        if (my.isConnectMode) {
+          const deleteBtn = cable.getObjectByName('delete');
+          if (deleteBtn) {
+            setDeletePosition(cable, deleteBtn);
+          }
+        }
       }
+    },
+
+    /**
+     * Position the delete button halfway the cable.
+     * @param {Object} cable Cable object3d.
+     * @param {Object} deleteBtn Delete button object3d.
+     */
+    setDeletePosition = function(cable, deleteBtn) {
+      const position = cable.geometry.getAttribute('position');
+      const index = Math.floor(position.count / 2) * position.itemSize;
+      deleteBtn.position.x = position.array[index];
+      deleteBtn.position.y = position.array[index + 1];
     },
 
     /**
@@ -186,8 +238,22 @@ export default function addConnections3d(specs, my) {
      */
     toggleConnectMode = function(isEnabled) {
         my.isConnectMode = isEnabled;
+
+        // toggle cable delete buttons
+        cablesGroup.children.forEach(cable => {
+          const deleteBtn = cable.getObjectByName('delete');
+          deleteBtn.visible = my.isConnectMode;
+          
+          // position the delete buttons halfway the cable
+          if (my.isConnectMode) {
+            setDeletePosition(cable, deleteBtn);
+          }
+        });
     },
-    
+
+    /**
+     * Update theme colors.
+     */
     setTheme = function() {
       defaultColor = getThemeColors().colorHigh;
       lineMaterial = new LineBasicMaterial({
@@ -198,14 +264,10 @@ export default function addConnections3d(specs, my) {
 
   my = my || {};
   my.isConnectMode = false,
-  // my.resizeConnections = resizeConnections;
   my.dragStartConnection = dragStartConnection;
   my.dragMoveConnection = dragMoveConnection;
   my.dragEndConnection = dragEndConnection;
   my.createConnection = createConnection;
-  // my.intersectsConnector = intersectsConnector;
-  // my.intersectsCableHandle = intersectsCableHandle;
-  // my.addConnectionsToCanvas = addConnectionsToCanvas;
   
   that = specs.that || {};
   
