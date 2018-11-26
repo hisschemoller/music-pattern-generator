@@ -35,6 +35,7 @@ export function createObject3dController(specs, my) {
     steps,
     rotation,
     centerRadius = 3,
+    centerScale = 0,
     selectRadius = 2,
     innerRadius = 4,
     outerRadius = 6,
@@ -237,6 +238,32 @@ export function createObject3dController(specs, my) {
         pointerRotation = TWO_PI * (-position % duration / duration);
         necklace3d.rotation.z = pointerRotation;
     },
+        
+    /**
+     * Show animation of the pattern dot that is about to play. 
+     * @param {Number} stepIndex Index of the step to play.
+     * @param {Number} noteStartDelay Delay from now until note start in ms.
+     * @param {Number} noteStopDelay Delay from now until note end in ms.
+     */
+    startNoteAnimation = function(stepIndex, noteStartDelay, noteStopDelay) {
+      // delay start of animation
+      setTimeout(() => {
+        centreDot3d.visible = true;
+        centerScale = 1;
+      }, noteStartDelay);
+    },
+
+    /**
+     * Update the current nacklace dot animations.
+     */
+    updateNoteAnimation = function() {
+      centreDot3d.scale.set(centerScale, centerScale, 1);
+      centerScale *= 0.90;
+      if (centerScale <= 0.05) {
+        centreDot3d.visible = false;
+        centerScale = 0;
+      }
+    },
 
     /**
      * Redraw the pattern if needed.
@@ -253,6 +280,17 @@ export function createObject3dController(specs, my) {
       if (currentStatus !== status) {
         status = currentStatus;
         updatePointer();
+      }
+
+      // start center dot animation
+      if (processorEvents[my.id] && processorEvents[my.id].length) {
+        const event = processorEvents[my.id][processorEvents[my.id].length - 1];
+        startNoteAnimation(event.stepIndex, event.delayFromNowToNoteStart, event.delayFromNowToNoteEnd);
+      }
+
+      // update center dot animation
+      if (centerScale !== 0) {
+        updateNoteAnimation();
       }
     };
   
