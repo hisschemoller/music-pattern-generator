@@ -59,6 +59,7 @@ export default function addConnections3d(specs, my) {
             setTheme();
             updateCables(e.detail.state);
             drawCables(e.detail.state);
+            toggleConnectMode(e.detail.state.connectModeActive);
             break;
 
           case e.detail.actions.SET_THEME:

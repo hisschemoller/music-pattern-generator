@@ -65,6 +65,7 @@ export function createObject3dController(specs, my) {
       updateDuration(params.steps.value, params.rate.value);
       updateRotation(params.rotation.value);  
       updatePointer();
+      my.updateConnectMode(specs.isConnectMode);
     },
 
     terminate = function() {
@@ -94,7 +95,7 @@ export function createObject3dController(specs, my) {
           break;
 
         case e.detail.actions.TOGGLE_CONNECT_MODE:
-          my.updateConnectMode(e.detail.state)
+          my.updateConnectMode(e.detail.state.connectModeActive);
           break;
 
         case e.detail.actions.SET_THEME:

@@ -378,6 +378,7 @@ export default function createCanvas3d(specs, my) {
      * @param  {Array} data Array of current processors' state.
      */
     createProcessorViews = function(state) {
+      const isConnectMode = state.connectModeActive;
       state.processors.allIds.forEach((id, i) => {
         const processorData = state.processors.byId[id];
         const { inputs, outputs, positionX, positionY, positionZ, type } = processorData;
@@ -394,7 +395,7 @@ export default function createCanvas3d(specs, my) {
               // create controller for the object
               import(`../processors/${type}/object3dController.js`)
                 .then(module => {
-                  const controller = module.createObject3dController({ object3d, processorData, store, });
+                  const controller = module.createObject3dController({ object3d, processorData, store, isConnectMode, });
                   controller.updateSelectCircle(store.getState().selectedID);
                   controllers.push(controller);
                 });
