@@ -71,7 +71,7 @@ export function createObject3d(id, inputs, outputs) {
       const label = new Group();
       label.name = 'label';
       label.scale.set(0.1, 0.1, 1);
-      label.translateY(-10);
+      label.translateY(-8);
       
       const root = new Object3D();
       root.name = 'root';
