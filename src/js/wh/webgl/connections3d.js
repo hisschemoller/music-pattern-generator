@@ -162,7 +162,7 @@ export default function addConnections3d(specs, my) {
 
       const deleteBtn = createCircleFilled(lineMaterial.color, deleteButtonRadius, 0);
       deleteBtn.name = 'delete';
-      deleteBtn.visible = false;
+      deleteBtn.visible = my.isConnectMode;
       cable.add(deleteBtn);
 
       const deleteBtnBorder = createCircleOutline(lineMaterial, deleteButtonRadius);
