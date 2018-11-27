@@ -13,7 +13,7 @@ import {
   Vector3,
 } from '../../lib/three.module.js';
 import { getThemeColors } from '../state/selectors.js';
-import { createCircleOutline } from './util3d.js';
+import { createCircleFilled, createCircleOutline } from './util3d.js';
 
 export default function addConnections3d(specs, my) {
   let that,
@@ -130,6 +130,7 @@ export default function addConnections3d(specs, my) {
     updateCables = function(state) {
       if (!cablesGroup) {
         cablesGroup = new Group();
+        my.cablesGroup = cablesGroup;
         my.scene.add(cablesGroup);
       }
 
@@ -163,6 +164,9 @@ export default function addConnections3d(specs, my) {
       deleteBtn.name = 'delete';
       deleteBtn.visible = false;
       cable.add(deleteBtn);
+
+      const deleteBtnFill = createCircleFilled(lineMaterial.color, deleteButtonRadius, 0);
+      deleteBtn.add(deleteBtnFill);
 
       let line = new Line(new BufferGeometry(), lineMaterial);
       line.geometry.addAttribute('position', new BufferAttribute( new Float32Array([
@@ -278,9 +282,10 @@ export default function addConnections3d(specs, my) {
       });
       currentCableDragHandle.material.color.set( defaultColor );
     };
-
+  
   my = my || {};
   my.isConnectMode = false,
+  my.cablesGroup = cablesGroup;
   my.dragStartConnection = dragStartConnection;
   my.dragMoveConnection = dragMoveConnection;
   my.dragEndConnection = dragEndConnection;

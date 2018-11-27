@@ -24,7 +24,7 @@ export function createCircleOutline(lineMaterial, radius) {
  * Create a circle fill.
  * @param {number} color Fill color.
  */
-export function createCircleFilled(color, radius) {
+export function createCircleFilled(color, radius, alpha = 1) {
   let numSegments = 8,
     material = new MeshBasicMaterial({
       color,
@@ -32,7 +32,7 @@ export function createCircleFilled(color, radius) {
     }),
     geometry = new CircleGeometry(radius, numSegments);              
 
-  material.opacity = 1.0;
+  material.opacity = alpha;
   return new Mesh(geometry, material);
 }
 

@@ -136,6 +136,7 @@ export default function createCanvas3d(specs, my) {
             doubleClickTimer = setTimeout(function() {
                 doubleClickCounter = 0;
                 // implement single click behaviour here
+                handleClick(e);
             }, doubleClickDelay);
         } else {
             clearTimeout(doubleClickTimer);
@@ -269,6 +270,8 @@ export default function createCanvas3d(specs, my) {
      */
     dragEnd = function(e) {
       e.preventDefault();
+      updateMouseRay(e);
+
       switch (dragObjectType) {
         case 'connection':
           my.dragEndConnection();
@@ -283,13 +286,24 @@ export default function createCanvas3d(specs, my) {
               intersect.object.userData.id);
           }
           break;
-
-          }
-          break;
       }
       dragObject = null;
       dragObjectType = null;
       rootEl.style.cursor = 'auto';
+    },
+
+    /**
+     * Handle single mouse click.
+     */
+    handleClick = function(e) {
+      updateMouseRay(e);
+
+      // look for click on connection cable delete button
+      const cableIntersects = raycaster.intersectObjects(my.cablesGroup.children, true);
+      const cableIntersect = cableIntersects.find(intersect => intersect.object.userData.type === 'cable');
+      if (cableIntersect) {
+        store.dispatch(store.getActions().disconnectProcessors(cableIntersect.object.name));
+      }
     },
 
     /**
