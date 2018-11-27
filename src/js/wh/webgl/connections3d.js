@@ -112,7 +112,7 @@ export default function addConnections3d(specs, my) {
      * @param {String} destinationProcessorID Processor ID.
      * @param {String} destinationConnectorID Connector ID.
      */
-    createConnection = function(sourceConnectorID, destinationConnectorID) {
+    createConnection = function(destinationProcessorID, destinationConnectorID) {
       store.dispatch(store.getActions().connectProcessors({
         sourceProcessorID: state.sourceProcessorID, 
         sourceConnectorID: state.sourceConnectorID,

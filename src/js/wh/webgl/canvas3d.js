@@ -280,8 +280,10 @@ export default function createCanvas3d(specs, my) {
             const outerObject = getOuterParentObject(intersect.object);
             my.createConnection(
               outerObject.userData.id, 
-              intersect.object.userData.id, 
-              outerObject.clone().position.add(intersect.object.position));
+              intersect.object.userData.id);
+          }
+          break;
+
           }
           break;
       }
