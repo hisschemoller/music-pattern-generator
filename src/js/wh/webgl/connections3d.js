@@ -160,19 +160,21 @@ export default function addConnections3d(specs, my) {
       cable.userData.type = 'cable';
       cablesGroup.add(cable);
 
-      const deleteBtn = createCircleOutline(lineMaterial, deleteButtonRadius);
+      const deleteBtn = createCircleFilled(lineMaterial.color, deleteButtonRadius, 0);
       deleteBtn.name = 'delete';
       deleteBtn.visible = false;
       cable.add(deleteBtn);
 
-      const deleteBtnFill = createCircleFilled(lineMaterial.color, deleteButtonRadius, 0);
-      deleteBtn.add(deleteBtnFill);
+      const deleteBtnBorder = createCircleOutline(lineMaterial, deleteButtonRadius);
+      deleteBtnBorder.name = 'deleteBorder';
+      deleteBtn.add(deleteBtnBorder);
 
       let line = new Line(new BufferGeometry(), lineMaterial);
       line.geometry.addAttribute('position', new BufferAttribute( new Float32Array([
         -deleteCrossRadius, -deleteCrossRadius, 0.0,
          deleteCrossRadius,  deleteCrossRadius, 0.0
       ]), 3));
+      line.name = 'deleteCross1';
       deleteBtn.add(line);
 
       line = new Line(new BufferGeometry(), lineMaterial);
@@ -180,6 +182,7 @@ export default function addConnections3d(specs, my) {
         -deleteCrossRadius,  deleteCrossRadius, 0.0,
          deleteCrossRadius, -deleteCrossRadius, 0.0
       ]), 3));
+      line.name = 'deleteCross2';
       deleteBtn.add(line);
 
       return cable;

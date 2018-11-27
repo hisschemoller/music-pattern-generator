@@ -302,7 +302,11 @@ export default function createCanvas3d(specs, my) {
       const cableIntersects = raycaster.intersectObjects(my.cablesGroup.children, true);
       const cableIntersect = cableIntersects.find(intersect => intersect.object.userData.type === 'cable');
       if (cableIntersect) {
-        store.dispatch(store.getActions().disconnectProcessors(cableIntersect.object.name));
+        const cableChildrenIntersect = raycaster.intersectObjects(cableIntersect.object.children, true);
+        const deleteIntersect = cableChildrenIntersect.find(intersect => intersect.object.name === 'delete');
+        if (deleteIntersect) {
+          store.dispatch(store.getActions().disconnectProcessors(cableIntersect.object.name));
+        }
       }
     },
 
