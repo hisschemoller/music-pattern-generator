@@ -158,6 +158,7 @@ export function createObject3dController(specs, my) {
       vertices = [...vertices,
         -statusWidth, sides, 0,
         0, necklacePos, 0,
+        statusWidth, sides, 0,
         0, locatorRadius, 0,
       ];
 
