@@ -3,12 +3,9 @@ import {
   BufferGeometry,
   Color,
   CubicBezierCurve,
-  Geometry,
   Group,
   Line,
   LineBasicMaterial,
-  Object3D,
-  Shape,
   Vector2,
   Vector3,
 } from '../../lib/three.module.js';
@@ -103,7 +100,6 @@ export default function addConnections3d(specs, my) {
      */
     dragEndConnection = function() {
       currentCable.geometry.dispose();
-      currentCable.geometry = new Geometry();
       cablesGroup.remove(currentCable);
       cablesGroup.remove(currentCableDragHandle);
     },

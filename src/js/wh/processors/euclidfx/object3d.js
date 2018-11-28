@@ -1,6 +1,6 @@
 import {
   CircleGeometry,
-  Geometry,
+  BufferGeometry,
   Line,
   LineBasicMaterial,
   LineLoop,
@@ -57,10 +57,10 @@ export function createObject3d(id, inputs, outputs) {
       centreDot.name = 'centreDot';
       centreDot.visible = false;
       
-      const pointer = new Line(new Geometry(), lineMaterial);
+      const pointer = new Line(new BufferGeometry(), lineMaterial);
       pointer.name = 'pointer';
       
-      const necklace = new LineLoop(new Geometry(), lineMaterial);
+      const necklace = new LineLoop(new BufferGeometry(), lineMaterial);
       necklace.name = 'necklace';
 
       const zeroMarker = createCircleOutline(lineMaterial, 0.5);

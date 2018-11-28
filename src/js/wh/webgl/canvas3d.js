@@ -413,6 +413,10 @@ export default function createCanvas3d(specs, my) {
       });
     },
 
+    /** 
+     * Remove all processor objects from the scene
+     * and delete all their controllers.
+     */
     clearProcessorViews = function() {
       // remove all processor 3D objects
       allObjects = allObjects.reduce((accumulator, object3D) => {

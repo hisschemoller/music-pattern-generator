@@ -1,6 +1,7 @@
 import {
+  BufferAttribute,
+  BufferGeometry,
   CircleGeometry,
-  Geometry,
   Line,
   LineBasicMaterial,
   Mesh,
@@ -49,16 +50,16 @@ export function createObject3d(id, inputs, outputs) {
       selectCircle.name = 'select';
       selectCircle.visible = false;
 
-      const geometry = new Geometry();
-      geometry.vertices.push(
-          new Vector3(-radius, -radius, 0.0),
-          new Vector3(radius, -radius, 0.0),
-          new Vector3(radius, radius, 0.0),
-          new Vector3(-radius, radius, 0.0),
-          new Vector3(-radius, -radius, 0.0),
-          new Vector3(0, -radius * 1.8, 0.0),
-          new Vector3(radius, -radius, 0.0)
-      );
+      const geometry = new BufferGeometry();
+      geometry.addAttribute( 'position', new BufferAttribute( new Float32Array([
+        -radius, -radius, 0,
+        radius, -radius, 0,
+        radius, radius, 0,
+        -radius, radius, 0,
+        -radius, -radius, 0,
+        0, -radius * 1.8, 0,
+        radius, -radius, 0,
+      ]), 3));
       const graphic = new Line(geometry, lineMaterial);
 
       const group = new Group();

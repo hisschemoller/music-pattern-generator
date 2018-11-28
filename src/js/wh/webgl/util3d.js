@@ -1,6 +1,5 @@
 import {
   CircleGeometry,
-  Geometry,
   Line,
   Mesh,
   MeshBasicMaterial,

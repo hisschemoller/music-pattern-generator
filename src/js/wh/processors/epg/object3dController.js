@@ -1,5 +1,6 @@
 import {
-  Geometry,
+  BufferAttribute,
+  BufferGeometry,
   LineBasicMaterial,
   Shape,
   ShapeGeometry,
@@ -204,9 +205,7 @@ export function createObject3dController(specs, my) {
         
         line = polygon3d.getObjectByName('polygonLine');
         line.geometry.dispose();
-        line.geometry = new Geometry();
-        line.geometry.vertices = points;
-        line.geometry.verticesNeedUpdate = true;
+        line.geometry.setFromPoints(points);
     },
             
     /**
@@ -237,31 +236,30 @@ export function createObject3dController(specs, my) {
      * @param {Number} radius Pointer radius.
      * @param {Boolean} isSolo Pointer shows solo state.
      * @param {Boolean} isNoteInControlled Pointer shows external control state.
-     * @return {Object} Three.js Geometry object.
+     * @return {Object} Three.js BufferGeometry object.
      */
     createPointerGeometry = function(radius, isSolo, isNoteInControlled) {
-      var geometry = new Geometry();
+      var geometry = new BufferGeometry();
       if (isNoteInControlled) {
         var halfRadius = centreRadius + ((radius - centreRadius) / 2);
-        geometry.vertices.push(
-          new Vector3(0.0, centreRadius, 0.0),
-          new Vector3(-0.9, halfRadius, 0.0),
-          new Vector3(0.0, radius, 0.0),
-          new Vector3(0.9, halfRadius, 0.0),
-          new Vector3(0.0, centreRadius, 0.0)
-        );
+        geometry.addAttribute( 'position', new BufferAttribute( new Float32Array([
+          0.0, centreRadius, 0.0,
+          -0.9, halfRadius, 0.0,
+          0.0, radius, 0.0,
+          0.9, halfRadius, 0.0,
+          0.0, centreRadius, 0.0,
+        ]), 3));
       } else {
-        geometry.vertices.push(
-          new Vector3(-2.9, 0.7, 0.0),
-          new Vector3(0.0, radius, 0.0),
-          new Vector3(2.9, 0.7, 0.0)
-        );
-        
+        geometry.addAttribute( 'position', new BufferAttribute( new Float32Array([
+          -2.9, 0.7, 0.0,
+          0.0, radius, 0.0,
+          2.9, 0.7, 0.0,
+        ]), 3));
         if (isSolo) {
-          geometry.vertices.push(
-            new Vector3(0.0, radius, 0.0),
-            new Vector3(0.0, 1.0, 0.0)
-          );
+          geometry.addAttribute( 'position', new BufferAttribute( new Float32Array([
+            0.0, radius, 0.0,
+            0.0, 1.0, 0.0,
+          ]), 3));
         }
       }
       

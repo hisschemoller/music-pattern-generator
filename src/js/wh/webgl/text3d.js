@@ -2,14 +2,11 @@ import text3dFontData from './text3dFontData.js';
 import { 
   BufferGeometry,
   Color,
-  Geometry,
   Group,
   Line,
   LineBasicMaterial,
-  Object3D,
   Path,
   Vector2,
-  Vector3,
 } from '../../lib/three.module.js';
 
 const lineMaterial = new LineBasicMaterial({

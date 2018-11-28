@@ -1,6 +1,8 @@
 import {
+  BufferAttribute,
+  BufferGeometry,
   CircleGeometry,
-  Geometry,
+  Group,
   Line,
   LineBasicMaterial,
   Mesh,
@@ -9,7 +11,6 @@ import {
   Shape,
   ShapeGeometry,
   Vector3,
-  Group,
 } from '../../../lib/three.module.js';
 import {
   createCircleOutline,
@@ -44,13 +45,7 @@ export function createObject3d(id, inputs, outputs) {
      * @return {object} Line 3D object.
      */
     createPointer = function(lineMaterial) {
-      const geometry = new Geometry();
-      geometry.vertices.push(
-          new Vector3(0.0, 0.0, 0.0),
-          new Vector3(0.0, 1.0, 0.0)
-      );
-      const line = new Line(geometry, lineMaterial);
-      return line;
+      return new Line(new BufferGeometry(), lineMaterial);
     },
     
     /**
@@ -73,7 +68,7 @@ export function createObject3d(id, inputs, outputs) {
       const fillMesh = new Mesh(fillGeom, fillMaterial);
       fillMesh.name = 'polygonFill';
       
-      const lineGeom = new Geometry();
+      const lineGeom = new BufferGeometry();
       const line = new Line(lineGeom, lineMaterial);
       line.name = 'polygonLine';
       
@@ -90,13 +85,13 @@ export function createObject3d(id, inputs, outputs) {
      * @return {object} Object3D of rotated icon.
      */
     createRotatedMarker = function(lineMaterial) {
-      var geometry = new Geometry();
-      geometry.vertices.push(
-        new Vector3(0, -1, 0),
-        new Vector3(0, 1, 0),
-        new Vector3(1, 0.5, 0),
-        new Vector3(0, 0, 0)
-      );
+      var geometry = new BufferGeometry();
+      geometry.addAttribute( 'position', new BufferAttribute( new Float32Array([
+        0, -1, 0,
+        0, 1, 0,
+        1, 0.5, 0,
+        0, 0, 0,
+      ]), 3));
       var line = new Line(geometry, lineMaterial);
       return line;
     },

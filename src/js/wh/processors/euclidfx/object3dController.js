@@ -1,7 +1,7 @@
 import {
-  EllipseCurve,
+  BufferAttribute,
   BufferGeometry,
-  Geometry,
+  EllipseCurve,
   LineBasicMaterial,
   Shape,
   ShapeGeometry,
@@ -127,8 +127,8 @@ export function createObject3dController(specs, my) {
         );
         points = [...points, ...curve.getPoints(5)];
       }
-      const geometry = new BufferGeometry().setFromPoints(points);
-      necklace3d.geometry = geometry;
+      
+      necklace3d.geometry.setFromPoints(points);
     },
 
     updateRotation = function(numRotation) {
@@ -146,36 +146,22 @@ export function createObject3dController(specs, my) {
       const sides = status ? locatorRadius : halfWayPos;
 
       pointer3d.geometry.dispose();
-      pointer3d.geometry = new Geometry();
+      pointer3d.geometry = new BufferGeometry();
 
       // position locator
-      pointer3d.geometry.vertices.push(
-        new Vector3(0, centerRadius),
-        new Vector3(0, locatorRadius),
-      );
+      let vertices = [
+        0, centerRadius, 0,
+        0, locatorRadius, 0,
+      ];
 
       // status indicator
-      pointer3d.geometry.vertices.push(
-        new Vector3(-statusWidth, sides),
-        new Vector3(0, necklacePos),
-        new Vector3(statusWidth, sides),
-        new Vector3(0, locatorRadius),
-      );
+      vertices = [...vertices,
+        -statusWidth, sides, 0,
+        0, necklacePos, 0,
+        0, locatorRadius, 0,
+      ];
 
-      // pointerCtx.clearRect(0, 0, pointerCtx.canvas.width, pointerCtx.canvas.height);
-      // pointerCtx.beginPath();
-
-      // // position locator
-      // pointerCtx.moveTo(pointerCanvasCenter, radius - pointerCanvasCenter);
-      // pointerCtx.lineTo(pointerCanvasCenter, locatorTop);
-
-      // // status indicator
-      // pointerCtx.lineTo(pointerCanvasCenter - statusWidth, sides);
-      // pointerCtx.lineTo(pointerCanvasCenter, necklacePos);
-      // pointerCtx.lineTo(pointerCanvasCenter + statusWidth, sides);
-      // pointerCtx.lineTo(pointerCanvasCenter, locatorTop);
-
-      // pointerCtx.stroke();
+      pointer3d.geometry.addAttribute( 'position', new BufferAttribute(new Float32Array(vertices), 3));
     },
 
     /** 
