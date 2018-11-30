@@ -4,6 +4,7 @@ node_modules/
 
 # Compiled output
 /build
+/release-builds
 
 # Logs
 npm-debug.log*
