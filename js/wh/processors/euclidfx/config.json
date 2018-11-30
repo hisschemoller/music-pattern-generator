@@ -2,11 +2,13 @@
     "name": "Euclid FX",
     "positionX": 0,
     "positionY": 0,
+    "positionZ": 0,
     "inputs": {
         "byId": {
             "in": {
                 "x": 0,
-                "y": -50
+                "y": 9.5,
+                "z": 0
             }
         },
         "allIds": ["in"]
@@ -15,7 +17,8 @@
         "byId": {
             "out": {
                 "x": 0,
-                "y": 50
+                "y": -11,
+                "z": 0
             }
         },
         "allIds": ["out"]
@@ -55,6 +58,8 @@
                 "default": 0.25,
                 "value": 0.25,
                 "model": [
+                    {"label": "4", "value": 16},
+                    {"label": "2", "value": 8},
                     {"label": "1", "value": 4},
                     {"label": "1/2", "value": 2},
                     {"label": "1/4", "value": 1},
