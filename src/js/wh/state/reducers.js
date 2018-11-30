@@ -23,6 +23,11 @@ export default function createReducers() {
                 byId: {},
                 allIds: []
             },
+            camera: {
+                x: 0,
+                y: 0,
+                z: 0,
+            },
             bpm: 120,
             selectedID: null,
             theme: 'light', // 'light|dark' 
@@ -128,7 +133,7 @@ export default function createReducers() {
                             allIds: [ ...state.processors.allIds ],
                             byId: Object.values(state.processors.byId).reduce((accumulator, processor) => {
                                 if (processor.id === state.selectedID) {
-                                    accumulator[processor.id] = { ...processor, positionX: action.x, positionY: action.y };
+                                    accumulator[processor.id] = { ...processor, positionX: action.x, positionY: action.y, positionZ: action.z };
                                 } else {
                                     accumulator[processor.id] = { ...processor };
                                 }
@@ -438,6 +443,17 @@ export default function createReducers() {
                         types: {
                             allIds: Object.keys(action.types),
                             byId: action.types
+                        }
+                    };
+                
+                case actions.SET_CAMERA_POSITION:
+                    const { x, y, z, isRelative } = action;
+                    return {
+                        ...state,
+                        camera: {
+                            x: isRelative ? state.camera.x + x : x,
+                            y: isRelative ? state.camera.y + y : y,
+                            z: isRelative ? state.camera.z + z : z,
                         }
                     };
 

@@ -30,7 +30,8 @@ export default function createActions(specs = {}, my = {}) {
         TOGGLE_PANEL = 'TOGGLE_PANEL',
         TOGGLE_CONNECT_MODE = 'TOGGLE_CONNECT_MODE',
         CONNECT_PROCESSORS = 'CONNECT_PROCESSORS',
-        DISCONNECT_PROCESSORS = 'DISCONNECT_PROCESSORS';
+        DISCONNECT_PROCESSORS = 'DISCONNECT_PROCESSORS',
+        SET_CAMERA_POSITION = 'SET_CAMERA_POSITION';
 
     return {
 
@@ -217,8 +218,8 @@ export default function createActions(specs = {}, my = {}) {
         },
 
         DRAG_SELECTED_PROCESSOR,
-        dragSelectedProcessor: (x, y) => {
-            return { type: DRAG_SELECTED_PROCESSOR, x, y };
+        dragSelectedProcessor: (x, y, z) => {
+            return { type: DRAG_SELECTED_PROCESSOR, x, y, z };
         },
 
         DRAG_ALL_PROCESSORS,
@@ -362,7 +363,12 @@ export default function createActions(specs = {}, my = {}) {
         RESCAN_TYPES,
         rescanTypes: () => {
             return { type: RESCAN_TYPES, types: processorTypes };
-        }
+        },
+
+        SET_CAMERA_POSITION,
+        setCameraPosition: (x, y, z, isRelative = false) => {
+            return { type: SET_CAMERA_POSITION, x, y, z, isRelative, };
+        },
     };
 }
 

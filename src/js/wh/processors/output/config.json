@@ -2,11 +2,13 @@
     "name": "Output",
     "positionX": 0,
     "positionY": 0,
+    "positionZ": 0,
     "inputs": {
         "byId": {
             "in": {
                 "x": 0,
-                "y": -50
+                "y": 5,
+                "z": 0
             }
         },
         "allIds": ["in"]

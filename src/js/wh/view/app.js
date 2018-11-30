@@ -160,6 +160,8 @@ export default function createAppView(specs, my) {
                         break;
                     
                     case e.detail.actions.SELECT_PROCESSOR:
+                        selectSettingsView(e.detail.action.id);
+                        // fall through intentional
                     case e.detail.actions.TOGGLE_MIDI_LEARN_MODE:
                     case e.detail.actions.TOGGLE_PANEL:
                         showPanels(e.detail.state);
@@ -200,35 +202,34 @@ export default function createAppView(specs, my) {
                                 store: store,
                                 parentEl: editContentEl,
                                 template: html,
-                                isSelected: state.selectedID === processorData.id
+                                isSelected: store.getState().selectedID === processorData.id
                             }));
                         });
-                    // const template = require(`html-loader!../processors/${processorData.type}/settings.html`);
-                    // settingsViews.splice(i, 0, createSettingsPanel({
-                    //     data: processorData,
-                    //     store: store,
-                    //     parentEl: editContentEl,
-                    //     template: template,
-                    //     isSelected: state.selectedID === processorData.id
-                    // }));
                 }
             });
         },
         
-        /**
-         * Delete settings controls view for a processor.
-         * @param  {String} id MIDI processor ID.
-         */
-        deleteSettingsView = function(id) {
-            var n = settingsViews.length;
-            while (--n >= 0) {
-                if (settingsViews[n].getID() === id) {
-                    settingsViews[n].terminate();
-                    settingsViews.splice(n, 1);
-                    return false;
-                }
-            }
-        },
+  /**
+   * Delete settings controls view for a processor.
+   * @param  {String} id MIDI processor ID.
+   */
+  deleteSettingsView = function(id) {
+    settingsViews = settingsViews.reduce((accumulator, view) => {
+      if (view.getID() === id) {
+        view.terminate();
+        return accumulator;
+      }
+      return [...accumulator, view];
+    }, []);
+  },
+        
+  /**
+   * Show the settings controls view for a processor.
+   * @param  {String} id MIDI processor ID.
+   */
+  selectSettingsView = function(id) {
+    settingsViews.forEach(view => view.select(id));
+  },
 
         setProject = function(state) {
             var n = settingsViews.length;

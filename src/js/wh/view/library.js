@@ -5,10 +5,8 @@ export default function createLibraryView(specs, my) {
     var that,
         store = specs.store,
         listEl = document.querySelector('.library__list'),
-        draggedType,
 
         init = function() {
-            document.addEventListener('drop', onDrop);
             document.addEventListener('dragenter', onDragEnter);
             document.addEventListener('dragover', onDragOver);
 
@@ -46,31 +44,7 @@ export default function createLibraryView(specs, my) {
          * Store type of processor when drag starts.
          */
         onDragStart = function(e) {
-            draggedType = e.target.dataset.type;
-        },
-        
-        /**
-         * Create a new processor when the type is dropped on the canvas.
-         */
-        onDrop = function(e) {
-            e.preventDefault();
-            
-            const dynamicCanvas = document.querySelector('.canvas-dynamic');
-            const connectorsCanvas = document.querySelector('.canvas-connect');
-            const canvas = connectorsCanvas.offsetWidth > 0 ? connectorsCanvas : dynamicCanvas;
-
-            if (e.target === canvas) {
-                const canvasRect = canvas.getBoundingClientRect();
-                
-                // create a new processor
-                store.dispatch(store.getActions().createProcessor({
-                    type: draggedType,
-                    positionX: e.clientX - canvasRect.left + window.scrollX,
-                    positionY: e.clientY - canvasRect.top + window.scrollY
-                }));
-            }
-            
-            draggedType = null;
+            e.dataTransfer.setData('text/plain', e.target.dataset.type);
         },
         
         onDragEnter = function(e) {
