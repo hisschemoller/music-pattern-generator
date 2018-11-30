@@ -13,29 +13,27 @@ export default function createMIDINetwork(specs, my) {
                     case e.detail.actions.CREATE_PROJECT:
                         disconnectProcessors(e.detail.state.connections);
                         deleteProcessors(e.detail.state.processors);
-                        createProcessors(e.detail.state.processors);
-                        connectProcessors(e.detail.state.connections);
-                        orderProcessors(e.detail.state.processors);
+                        createProcessors(e.detail.state.processors, e.detail.state.connections);
                         break;
 
                     case e.detail.actions.ADD_PROCESSOR:
-                        createProcessors(e.detail.state.processors);
+                        createProcessors(e.detail.state.processors, e.detail.state.connections);
                         break;
                     
                     case e.detail.actions.DELETE_PROCESSOR:
                         disconnectProcessors(e.detail.state.connections);
                         deleteProcessors(e.detail.state.processors);
-                        orderProcessors(e.detail.state.processors);
+                        reorderProcessors(e.detail.state.processors);
                         break;
                     
                     case e.detail.actions.CONNECT_PROCESSORS:
                         connectProcessors(e.detail.state.connections);
-                        orderProcessors(e.detail.state.processors);
+                        reorderProcessors(e.detail.state.processors);
                         break;
                     
                     case e.detail.actions.DISCONNECT_PROCESSORS:
                         disconnectProcessors(e.detail.state.connections);
-                        orderProcessors(e.detail.state.processors);
+                        reorderProcessors(e.detail.state.processors);
                         break;
                 }
             });
@@ -56,9 +54,11 @@ export default function createMIDINetwork(specs, my) {
          * Create a new processor in the network.
          * @param {Object} state State processors table.
          */
-        createProcessors = function(procsState) {
-            procsState.allIds.forEach((id, i) => {
-                const processorData = procsState.byId[id];
+        createProcessors = function(processorsState, connectionsState) {
+            let uglyTempCounter = 0;
+
+            processorsState.allIds.forEach((id, i) => {
+                const processorData = processorsState.byId[id];
                 let exists = false;
                 processors.forEach(processor => {
                     if (processor.getID() === id) {
@@ -66,6 +66,7 @@ export default function createMIDINetwork(specs, my) {
                     }
                 });
                 if (!exists) {
+                    uglyTempCounter++;
                     import(`../processors/${processorData.type}/processor.js`)
                         .then((module) => {
                             const processor = module.createProcessor({
@@ -75,6 +76,12 @@ export default function createMIDINetwork(specs, my) {
                             });
                             processors.splice(i, 0, processor);
                             numProcessors = processors.length;
+                            uglyTempCounter--;
+                            console.log('uglyTempCounter', uglyTempCounter);
+                            if (uglyTempCounter === 0) {
+                                connectProcessors(connectionsState);
+                                reorderProcessors(processorsState);
+                            }
                         });
                 }
             });
@@ -84,11 +91,11 @@ export default function createMIDINetwork(specs, my) {
          * Delete a processor.
          * @param {Object} state State processors table.
          */
-        deleteProcessors = function(procsState) {
+        deleteProcessors = function(processorsState) {
             for (let i = processors.length - 1, n = 0; i >= n; i--) {
                 // search for the processor in the state
                 let exists = false;
-                procsState.allIds.forEach(processorID => {
+                processorsState.allIds.forEach(processorID => {
                     if (processorID === processors[i].getID()) {
                         exists = true;
                     }
@@ -164,7 +171,7 @@ export default function createMIDINetwork(specs, my) {
          * Reorder the processors according to their order in the state.
          * @param {Object} State processor table.
          */
-        orderProcessors = function(processorsState) {
+        reorderProcessors = function(processorsState) {
             const orderedProcessors = [];
             processorsState.allIds.forEach(processorID => {
                 processors.forEach(processor => {

@@ -121,6 +121,10 @@ export default function createReducers() {
                         }
                         newState.selectedID = newState.processors.allIds[newIndex];
                     }
+                    
+                    // reorder the processors
+                    orderProcessors(newState);
+
                     return newState;
                 
                 case actions.SELECT_PROCESSOR:
@@ -178,35 +182,6 @@ export default function createReducers() {
                             break;
                     }
                     return newState;
-
-                    // return {
-                    //     ...state,
-                    //     processors: {
-                    //         allIds: [ ...state.processors.allIds ],
-                    //         byId: Object.values(state.processors.byId).reduce((accumulator, processor) => {
-                    //             if (processor.id === state.selectedID) {
-                    //                 accumulator[processor.id] = { 
-                    //                     ...processor, 
-                    //                     params: {
-                    //                         allIds: [ ...processor.params.allIds ],
-                    //                         byId: Object.values(processor.params.byId).reduce((acc, param) => {
-                    //                             if (action.paramKey === param.id) {
-                    //                                 acc[param.id] = { 
-                    //                                     ...param,
-                    //                                     value
-                    //                                 }
-                    //                             } else {
-                    //                                 acc[param.id] = { ...param };
-                    //                             }
-                    //                         })
-                    //                     } };
-                    //             } else {
-                    //                 accumulator[processor.id] = { ...processor };
-                    //             }
-                    //             return accumulator;
-                    //         })
-                    //     }
-                    // };
                 
                 case actions.RECREATE_PARAMETER:
                     // clone state
@@ -331,43 +306,6 @@ export default function createReducers() {
                             }, {})
                         }
                     };
-
-                // case actions.ASSIGN_EXTERNAL_CONTROL:
-                // case actions.UNASSIGN_EXTERNAL_CONTROL:
-                //     return {
-                //         ...state,
-                //         processors: {
-                //             allIds: [...state.processors.allIds],
-                //             byId: state.processors.allIds.reduce((accumulator, processorID) => {
-                //                 const processor = state.processors.byId[processorID];
-                //                 if (action.processorID === processorID) {
-                //                     accumulator[processorID] = {
-                //                         ...processor,
-                //                         params: {
-                //                             allIds: [...processor.params.allIds],
-                //                             byId: processor.params.allIds.reduce((pAccumulator, paramKey) => {
-                //                                 const param = processor.params.byId[paramKey];
-                //                                 if (action.paramKey === paramKey) {
-                //                                     const isAssign = action.type === actions.ASSIGN_EXTERNAL_CONTROL;
-                //                                     pAccumulator[paramKey] = {
-                //                                         ...param,
-                //                                         remoteChannel: isAssign ? action.remoteChannel : null,
-                //                                         remoteCC: isAssign ? action.remoteCC : null
-                //                                     }
-                //                                 } else {
-                //                                     pAccumulator[paramKey] = {...param}
-                //                                 }
-                //                                 return pAccumulator;
-                //                             }, {})
-                //                         }
-                //                     }
-                //                 } else {
-                //                     accumulator[processorID] = {...processor}
-                //                 }
-                //                 return accumulator;
-                //             }, {})
-                //         }
-                //     };
                 
                 case actions.TOGGLE_PANEL:
                     return {
