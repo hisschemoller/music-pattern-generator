@@ -95,10 +95,12 @@ export default function createCanvas3d(specs, my) {
      * Window resize event handler.
      */
     onWindowResize = function() {
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      camera.aspect = window.innerWidth / window.innerHeight;
+      canvasRect = renderer.domElement.getBoundingClientRect();
+      renderer.setSize(window.innerWidth, window.innerHeight - canvasRect.top);
+      camera.aspect = window.innerWidth / (window.innerHeight - canvasRect.top);
       camera.updateProjectionMatrix();
       canvasRect = renderer.domElement.getBoundingClientRect();
+      console.log(canvasRect);
 
       // move camera further back when viewport height increases so objects stay the same size 
       let scale = 0.15;

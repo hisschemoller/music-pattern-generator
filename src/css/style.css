@@ -154,6 +154,7 @@ body {
     color: var(--text-color);
     font-family: var(--default-font-family);
     font-size: var(--font-size);
+    overflow: hidden;
 }
 input[type='number'],
 input[type='text'] {
@@ -191,7 +192,7 @@ div[data-theme] {
     left: 0;
     min-height: 600px;
     min-width: 800px;
-    overflow: scroll;
+    overflow: hidden;
     position: absolute;
     right: 0;
     top: 0;
