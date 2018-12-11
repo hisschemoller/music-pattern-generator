@@ -13,11 +13,15 @@ export default function createMIDINetwork(specs, my) {
                     case e.detail.actions.CREATE_PROJECT:
                         disconnectProcessors(e.detail.state.connections);
                         deleteProcessors(e.detail.state.processors);
-                        createProcessors(e.detail.state.processors, e.detail.state.connections);
+                        createProcessors(e.detail.state.processors);
+                        connectProcessors(e.detail.state.connections);
+                        reorderProcessors(e.detail.state.processors);
                         break;
 
                     case e.detail.actions.ADD_PROCESSOR:
-                        createProcessors(e.detail.state.processors, e.detail.state.connections);
+                        createProcessors(e.detail.state.processors);
+                        connectProcessors(e.detail.state.connections);
+                        reorderProcessors(e.detail.state.processors);
                         break;
                     
                     case e.detail.actions.DELETE_PROCESSOR:
@@ -54,37 +58,21 @@ export default function createMIDINetwork(specs, my) {
          * Create a new processor in the network.
          * @param {Object} state State processors table.
          */
-        createProcessors = function(processorsState, connectionsState) {
-            let uglyTempCounter = 0;
-
-            processorsState.allIds.forEach((id, i) => {
-                const processorData = processorsState.byId[id];
-                let exists = false;
-                processors.forEach(processor => {
-                    if (processor.getID() === id) {
-                        exists = true;
-                    }
-                });
-                if (!exists) {
-                    uglyTempCounter++;
-                    import(`../processors/${processorData.type}/processor.js`)
-                        .then((module) => {
-                            const processor = module.createProcessor({
-                                that: {},
-                                data: processorData,
-                                store: store
-                            });
-                            processors.splice(i, 0, processor);
-                            numProcessors = processors.length;
-                            uglyTempCounter--;
-                            console.log('uglyTempCounter', uglyTempCounter);
-                            if (uglyTempCounter === 0) {
-                                connectProcessors(connectionsState);
-                                reorderProcessors(processorsState);
-                            }
-                        });
-                }
-            });
+        createProcessors = async function(processorsState) {
+          for (let id of processorsState.allIds) {
+            const processorData = processorsState.byId[id];
+            const isExists = processors.find(processor => processor.getID() === id);
+            if (!isExists) {
+              const module = await import(`../processors/${processorData.type}/processor.js`);
+              const processor = module.createProcessor({
+                that: {},
+                data: processorData,
+                store,
+              });
+              processors.push(processor);
+              numProcessors = processors.length;
+            }
+          };
         },
 
         /**

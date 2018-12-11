@@ -378,31 +378,29 @@ export default function createCanvas3d(specs, my) {
      * Create canvas 2D object if it exists for the type.
      * @param  {Array} data Array of current processors' state.
      */
-    createProcessorViews = function(state) {
+    createProcessorViews = async (state) => {
       const isConnectMode = state.connectModeActive;
-      state.processors.allIds.forEach((id, i) => {
+      // state.processors.allIds.forEach((id, i) => {
+      for (let id of state.processors.allIds) {
         const processorData = state.processors.byId[id];
         const { inputs, outputs, positionX, positionY, positionZ, type } = processorData;
         const isExists = allObjects.find(obj3d => obj3d.userData.id === id);
         if (!isExists) {
-          import(`../processors/${type}/object3d.js`)
-            .then(module => {
-              // create the processor 3d object
-              const object3d = module.createObject3d(id, inputs, outputs);
-              object3d.position.set(positionX, positionY, positionZ);
-              allObjects.push(object3d);
-              my.scene.add(object3d);
 
-              // create controller for the object
-              import(`../processors/${type}/object3dController.js`)
-                .then(module => {
-                  const controller = module.createObject3dController({ object3d, processorData, store, isConnectMode, });
-                  controller.updateSelectCircle(store.getState().selectedID);
-                  controllers.push(controller);
-                });
-            });
+          // create the processor 3d object
+          const object3dModule = await import(`../processors/${type}/object3d.js`);
+          const object3d = object3dModule.createObject3d(id, inputs, outputs);
+          object3d.position.set(positionX, positionY, positionZ);
+          allObjects.push(object3d);
+          my.scene.add(object3d);
+
+          // create controller for the object
+          const controllerModule = await import(`../processors/${type}/object3dController.js`);
+          const controller = controllerModule.createObject3dController({ object3d, processorData, store, isConnectMode, });
+          controller.updateSelectCircle(store.getState().selectedID);
+          controllers.push(controller);
         }
-      });
+      };
     },
 
     /** 
