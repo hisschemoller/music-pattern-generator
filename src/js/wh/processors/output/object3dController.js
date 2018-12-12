@@ -23,13 +23,14 @@ export function createObject3dController(specs, my) {
     },
 
     handleStateChanges = function(e) {
-      const processor = e.detail.state.processors.byId[my.id];
-      switch (e.detail.action.type) {
+      const { action, actions, state, } = e.detail;
+      const processor = state.processors.byId[my.id];
+      switch (action.type) {
         
-        case e.detail.actions.CHANGE_PARAMETER:
-          if (e.detail.action.processorID === my.id) {
-            const params = e.detail.state.processors.byId[my.id].params.byId;
-            switch (e.detail.action.paramKey) {
+        case actions.CHANGE_PARAMETER:
+          if (action.processorID === my.id) {
+            const params = state.processors.byId[my.id].params.byId;
+            switch (action.paramKey) {
               case 'name':
                 my.updateLabel(params.name.value);
                 break;
@@ -37,15 +38,15 @@ export function createObject3dController(specs, my) {
           }
           break;
 
-        case e.detail.actions.DRAG_SELECTED_PROCESSOR:
-          my.updatePosition(e.detail.state);
+        case actions.DRAG_SELECTED_PROCESSOR:
+          my.updatePosition(state);
           break;
 
-        case e.detail.actions.TOGGLE_CONNECT_MODE:
-          my.updateConnectMode(e.detail.state.connectModeActive);
+        case actions.TOGGLE_CONNECT_MODE:
+          my.updateConnectMode(state.connectModeActive);
           break;
 
-        case e.detail.actions.SET_THEME:
+        case actions.SET_THEME:
           updateTheme();
           break;
       }
