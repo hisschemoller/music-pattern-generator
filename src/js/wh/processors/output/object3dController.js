@@ -25,20 +25,13 @@ export function createObject3dController(specs, my) {
     handleStateChanges = function(e) {
       const processor = e.detail.state.processors.byId[my.id];
       switch (e.detail.action.type) {
-
-        case e.detail.actions.UPDATE_MIDI_PORT:
-          redrawStaticCanvas();
-          break;
         
         case e.detail.actions.CHANGE_PARAMETER:
           if (e.detail.action.processorID === my.id) {
-            my.params = e.detail.state.processors.byId[my.id].params.byId;
+            const params = e.detail.state.processors.byId[my.id].params.byId;
             switch (e.detail.action.paramKey) {
-              case 'port':
-                redrawStaticCanvas();
-                break;
               case 'name':
-                my.updateLabel();
+                my.updateLabel(params.name.value);
                 break;
             }
           }
