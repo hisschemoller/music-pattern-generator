@@ -9,35 +9,32 @@ export default function createMIDINetwork(specs, my) {
 
         init = function() {
             document.addEventListener(store.STATE_CHANGE, (e) => {
-                switch (e.detail.action.type) {
-                    case e.detail.actions.CREATE_PROJECT:
-                        disconnectProcessors(e.detail.state.connections);
-                        deleteProcessors(e.detail.state.processors);
-                        createProcessors(e.detail.state.processors);
-                        connectProcessors(e.detail.state.connections);
-                        reorderProcessors(e.detail.state.processors);
+                const { action, actions, state } = e.detail;
+                switch (action.type) {
+                    case actions.CREATE_PROJECT:
+                        disconnectProcessors(state.connections);
+                        deleteProcessors(state.processors);
+                        createProcessors(state);
                         break;
 
-                    case e.detail.actions.ADD_PROCESSOR:
-                        createProcessors(e.detail.state.processors);
-                        connectProcessors(e.detail.state.connections);
-                        reorderProcessors(e.detail.state.processors);
+                    case actions.ADD_PROCESSOR:
+                        createProcessors(state);
                         break;
                     
-                    case e.detail.actions.DELETE_PROCESSOR:
-                        disconnectProcessors(e.detail.state.connections);
-                        deleteProcessors(e.detail.state.processors);
-                        reorderProcessors(e.detail.state.processors);
+                    case actions.DELETE_PROCESSOR:
+                        disconnectProcessors(state.connections);
+                        deleteProcessors(state.processors);
+                        reorderProcessors(state.processors);
                         break;
                     
-                    case e.detail.actions.CONNECT_PROCESSORS:
-                        connectProcessors(e.detail.state.connections);
-                        reorderProcessors(e.detail.state.processors);
+                    case actions.CONNECT_PROCESSORS:
+                        connectProcessors(state.connections);
+                        reorderProcessors(state.processors);
                         break;
                     
-                    case e.detail.actions.DISCONNECT_PROCESSORS:
-                        disconnectProcessors(e.detail.state.connections);
-                        reorderProcessors(e.detail.state.processors);
+                    case actions.DISCONNECT_PROCESSORS:
+                        disconnectProcessors(state.connections);
+                        reorderProcessors(state.processors);
                         break;
                 }
             });
@@ -58,9 +55,10 @@ export default function createMIDINetwork(specs, my) {
          * Create a new processor in the network.
          * @param {Object} state State processors table.
          */
-        createProcessors = async function(processorsState) {
-          for (let id of processorsState.allIds) {
-            const processorData = processorsState.byId[id];
+        createProcessors = async state => {
+          let loaded = 0;
+          for (let id of state.processors.allIds) {
+            const processorData = state.processors.byId[id];
             const isExists = processors.find(processor => processor.getID() === id);
             if (!isExists) {
               const module = await import(`../processors/${processorData.type}/processor.js`);
@@ -71,6 +69,12 @@ export default function createMIDINetwork(specs, my) {
               });
               processors.push(processor);
               numProcessors = processors.length;
+
+              loaded += 1;
+              if (loaded === state.processors.allIds.length) {
+                connectProcessors(state.connections);
+                reorderProcessors(state.processors);
+              }
             }
           };
         },
