@@ -140,7 +140,7 @@ export function createObject3dController(specs, my) {
         dots3d.remove(dots3d.children[0]);
       }
 
-      // 
+      // the points of the polygon shape
       const polygonPoints = [];
 
       // add new dots
@@ -165,8 +165,11 @@ export function createObject3dController(specs, my) {
         }
       }
       
-      polygonPoints.push(polygonPoints[0].clone());
-
+      // polygon is only drawn if there are at least 2 points
+      if (polygonPoints.length > 1) {
+        polygonPoints.push(polygonPoints[0].clone());
+      }
+      
       updatePolygon(polygonPoints);
       updateHitarea();
       updatePointer(isMute);
