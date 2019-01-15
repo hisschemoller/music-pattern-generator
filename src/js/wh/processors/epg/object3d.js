@@ -112,7 +112,7 @@ export function createObject3d(id, inputs, outputs) {
       selectCircle.name = 'select';
       selectCircle.visible = false;
       
-      const centreDot = createCircleOutlineFilled(lineMaterial, defaultColor, 1);
+      const centreDot = createCircleOutlineFilled(lineMaterial, defaultColor, 1.5);
       centreDot.name = 'centreDot';
       centreDot.visible = false;
       

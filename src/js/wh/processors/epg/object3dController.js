@@ -34,6 +34,8 @@ export function createObject3dController(specs, my) {
     pointerRotationPrevious = 0,
     dotAnimations = {},
     defaultColor,
+    centerRadius = 3,
+    centerScale = 0,
 
     initialize = function() {
       centreCircle3d = my.object3d.getObjectByName('centreCircle'),
@@ -355,9 +357,15 @@ export function createObject3dController(specs, my) {
 
       // delay start of animation
       setTimeout(() => {
-          let tweeningDot = dotAnimations[stepIndex];
-          tweeningDot.scale = 2;
-          tweeningDot.isActive = true;
+
+        // necklace dot
+        let tweeningDot = dotAnimations[stepIndex];
+        tweeningDot.scale = 2;
+        tweeningDot.isActive = true;
+
+        // center dot
+        centreDot3d.visible = true;
+        centerScale = 1;
       }, noteStartDelay);
     },
 
@@ -379,11 +387,13 @@ export function createObject3dController(specs, my) {
           delete dotAnimations[key];
         }
       });
-            
+ 
       // center dot
-      centreDot3d.visible = isNoteActive;
-      if (isNoteActive) {
-        centreDot3d.scale.set(largestScale, largestScale, 1);
+      centreDot3d.scale.set(centerScale, centerScale, 1);
+      centerScale *= 0.90;
+      if (centerScale <= 0.05) {
+        centreDot3d.visible = false;
+        centerScale = 0;
       }
     };
   
