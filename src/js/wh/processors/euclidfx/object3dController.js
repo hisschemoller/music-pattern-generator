@@ -87,6 +87,10 @@ export function createObject3dController(specs, my) {
               case 'rotation':
                 updateRotation(params.rotation.value);  
                 break;
+              case 'is_triplets':
+              case 'rate':
+                updateDuration(params.steps.value, params.rate.value);
+                break;
               default:
             }
           }
