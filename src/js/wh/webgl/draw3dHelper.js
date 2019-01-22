@@ -21,6 +21,19 @@ const lineMaterial = new LineMaterial({
   dashed: false,
 });
 
+export function createShape(points, color) {
+  const col = new Color(color);
+
+  const positions = points.reduce((acc, p) => [ ...acc, p.x, p.y, 0 ], []);
+  const colors = points.reduce((acc, p) => [ ...acc, col.r, col.g, col.b ], []);
+  const geometry = new LineGeometry();
+  geometry.setPositions(positions);
+  geometry.setColors(colors);
+  const line = new Line2(geometry, lineMaterial);
+  line.computeLineDistances();
+  return line;
+}
+
 /** 
  * Draw a circle outline.
  * @param {Number} radius Circle radius.

@@ -1,21 +1,13 @@
 import {
-  BufferAttribute,
-  BufferGeometry,
-  CircleGeometry,
-  Line,
-  LineBasicMaterial,
-  Mesh,
-  MeshBasicMaterial,
-  Object3D,
-  Shape,
-  ShapeGeometry,
-  Vector3,
   Group,
+  LineBasicMaterial,
+  Vector2,
 } from '../../../lib/three.module.js';
 import {
   createCircleFilled,
   createCircleOutline,
   drawConnectors,
+  createShape,
 } from '../../webgl/draw3dHelper.js';
 import { getThemeColors } from '../../state/selectors.js';
 
@@ -49,17 +41,16 @@ export function createObject3d(id, inputs, outputs) {
       selectCircle.name = 'select';
       selectCircle.visible = false;
 
-      const geometry = new BufferGeometry();
-      geometry.addAttribute( 'position', new BufferAttribute( new Float32Array([
-        -radius, -radius, 0,
-        radius, -radius, 0,
-        radius, radius, 0,
-        -radius, radius, 0,
-        -radius, -radius, 0,
-        0, -radius * 1.8, 0,
-        radius, -radius, 0,
-      ]), 3));
-      const graphic = new Line(geometry, lineMaterial);
+      const points = [
+        new Vector2(-radius, -radius),
+        new Vector2(radius, -radius),
+        new Vector2(radius, radius),
+        new Vector2(-radius, radius),
+        new Vector2(-radius, -radius),
+        new Vector2(0, -radius * 1.8),
+        new Vector2(radius, -radius),
+      ];
+      const graphic = createShape(points, defaultColor);
 
       const group = new Group();
       group.name = 'output';
