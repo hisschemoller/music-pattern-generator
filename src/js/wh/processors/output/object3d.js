@@ -13,11 +13,9 @@ import {
   Group,
 } from '../../../lib/three.module.js';
 import {
-  drawConnectors,
-} from '../../webgl/util3d.js';
-import {
   createCircleFilled,
   createCircleOutline,
+  drawConnectors,
 } from '../../webgl/draw3dHelper.js';
 import { getThemeColors } from '../../state/selectors.js';
 
@@ -73,7 +71,7 @@ export function createObject3d(id, inputs, outputs) {
       group.add(label);
 
       // add inputs and outputs 
-      drawConnectors(group, inputs, outputs, lineMaterial);
+      drawConnectors(group, inputs, outputs);
 
       return group;
     };

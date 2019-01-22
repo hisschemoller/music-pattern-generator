@@ -1,10 +1,8 @@
 import {
-  drawConnectors,
-} from '../../webgl/util3d.js';
-import {
   createCircleFilled,
   createCircleOutline,
   createCircleOutlineFilled,
+  drawConnectors,
 } from '../../webgl/draw3dHelper.js';
 import { getThemeColors } from '../../state/selectors.js';
 
@@ -154,7 +152,7 @@ export function createObject3d(id, inputs, outputs) {
       wheel.add(label);
 
       // add inputs and outputs
-      drawConnectors(wheel, inputs, outputs, lineMaterial);
+      drawConnectors(wheel, inputs, outputs);
       
       return wheel;
     };

@@ -35,7 +35,7 @@ export function createCircleOutline(radius, color) {
 
   // remove first point which is the center of the circle
   vertices.shift();
-console.log(radius);
+
   // copy the first to the end so the cirle is closed
   vertices.push(vertices[0].clone());
 
@@ -74,3 +74,35 @@ export function createCircleOutlineFilled(radius, color) {
   circle.add(createCircleOutline(radius, color));
   return circle;
 }
+
+/**
+ * Add input and/or output connectors to a processor  .
+ * @return {rootObj} Outer object3D.
+ */
+export function drawConnectors(rootObj, inputs, outputs) {
+
+  // inputs
+  inputs.allIds.forEach(id => {
+    drawConnector(inputs.byId[id], id, 'input', rootObj);
+  });
+
+  // outputs
+  outputs.allIds.forEach(id => {
+    drawConnector(outputs.byId[id], id, 'output', rootObj);
+  });
+}
+
+function drawConnector(data, id, name, rootObj) {
+  const connector = createCircleOutline(0.6);
+  connector.name = name;
+  connector.userData.id = id;
+  connector.translateX(data.x);
+  connector.translateY(data.y);
+  rootObj.add(connector);
+
+  const active = createCircleOutline(1.2);
+  active.name = 'active';
+  active.visible = false;
+  connector.add(active);
+}
+
