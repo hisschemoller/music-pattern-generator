@@ -2,19 +2,17 @@ const {
   CircleGeometry,
   Color,
   Group,
-  Line,
-  LineBasicMaterial,
+  Line2,
   LineGeometry,
   LineMaterial,
   Mesh,
   MeshBasicMaterial,
-  Object3D,
   VertexColors,
 } = THREE;
 
 const defaultSegments = 64;
-const defaultLineWidth = 0.003; // in pixels ???
-const defaultLineColor = new Color(0xcccccc);
+const defaultLineWidth = 0.003;
+const defaultLineColor = new Color(0xdddddd);
 
 const lineMaterial = new LineMaterial({
   color: defaultLineColor,
@@ -24,7 +22,10 @@ const lineMaterial = new LineMaterial({
 });
 
 /** 
- * 
+ * Draw a circle outline.
+ * @param {Number} radius Circle radius.
+ * @param {Number} color Circle color.
+ * @return {Object} Line2 3D object.
  */
 export function createCircleOutline(radius, color) {
   const col = new Color(color);
@@ -45,14 +46,20 @@ export function createCircleOutline(radius, color) {
   const geometry = new LineGeometry();
   geometry.setPositions(positions);
   geometry.setColors(colors);
-  const line = new THREE.Line2(geometry, lineMaterial);
+  const line = new Line2(geometry, lineMaterial);
   line.computeLineDistances();
   return line;
 }
-    
-/**
- * Create a circle fill.
- * @param {number} color Fill color.
+
+function drawLine(points, color) {
+
+}
+
+/** 
+ * Draw a circle fill.
+ * @param {Number} radius Circle radius.
+ * @param {Number} color Circle color.
+ * @return {Object} Mesh 3D object.
  */
 export function createCircleFilled(radius, color, alpha = 1) {
   const numSegments = 8;
@@ -76,8 +83,10 @@ export function createCircleOutlineFilled(radius, color) {
 }
 
 /**
- * Add input and/or output connectors to a processor  .
- * @return {rootObj} Outer object3D.
+ * Add input and/or output connectors to a processor.
+ * @param {Object} rootObj Outer object3D.
+ * @param {Array} inputs Inputs to draw a connector for.
+ * @param {Array} outputs Outputs to draw a connector for.
  */
 export function drawConnectors(rootObj, inputs, outputs) {
 
@@ -92,6 +101,13 @@ export function drawConnectors(rootObj, inputs, outputs) {
   });
 }
 
+/**
+ * Add input and/or output connector to a processor.
+ * @param {Object} data Input or output data.
+ * @param {String} id Connector ID.
+ * @param {String} name Connector name.
+ * @param {Object} rootObj Outer object3D.
+ */
 function drawConnector(data, id, name, rootObj) {
   const connector = createCircleOutline(0.6);
   connector.name = name;
@@ -105,4 +121,3 @@ function drawConnector(data, id, name, rootObj) {
   active.visible = false;
   connector.add(active);
 }
-
