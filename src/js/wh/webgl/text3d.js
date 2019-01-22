@@ -1,5 +1,6 @@
 import text3dFontData from './text3dFontData.js';
-import { 
+
+const { 
   BufferGeometry,
   Color,
   Group,
@@ -7,7 +8,7 @@ import {
   LineBasicMaterial,
   Path,
   Vector2,
-} from '../../lib/three.module.js';
+} = THREE;
 
 const lineMaterial = new LineBasicMaterial({
   color: new Color(0x000000),

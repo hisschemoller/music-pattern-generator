@@ -1,10 +1,10 @@
-import {
+const {
   CircleGeometry,
   Line,
   Mesh,
   MeshBasicMaterial,
   Object3D,
-} from '../../lib/three.module.js';
+} = THREE;
 
 /**
  * Create a circle outline.

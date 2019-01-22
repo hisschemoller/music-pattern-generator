@@ -1,4 +1,7 @@
-import {
+import { getThemeColors } from '../state/selectors.js';
+import { createCircleFilled, createCircleOutline } from './util3d.js';
+
+const {
   BufferAttribute,
   BufferGeometry,
   Color,
@@ -8,9 +11,7 @@ import {
   LineBasicMaterial,
   Vector2,
   Vector3,
-} from '../../lib/three.module.js';
-import { getThemeColors } from '../state/selectors.js';
-import { createCircleFilled, createCircleOutline } from './util3d.js';
+} = THREE;
 
 export default function addConnections3d(specs, my) {
   let that,
