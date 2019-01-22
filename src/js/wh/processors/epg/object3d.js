@@ -1,10 +1,10 @@
 import {
-  createCircleFilled,
-  createCircleOutlineFilled,
   drawConnectors,
 } from '../../webgl/util3d.js';
 import {
+  createCircleFilled,
   createCircleOutline,
+  createCircleOutlineFilled,
 } from '../../webgl/draw3dHelper.js';
 import { getThemeColors } from '../../state/selectors.js';
 
@@ -104,7 +104,7 @@ export function createObject3d(id, inputs, outputs) {
      * @return {object} Object3D of drag plane.
      */
     createWheel = function() {
-      const hitarea = createCircleFilled(defaultColor, 3);
+      const hitarea = createCircleFilled(3, defaultColor);
       hitarea.name = 'hitarea';
       hitarea.material.opacity = 0.0;
       
@@ -115,7 +115,7 @@ export function createObject3d(id, inputs, outputs) {
       selectCircle.name = 'select';
       selectCircle.visible = false;
       
-      const centreDot = createCircleOutlineFilled(lineMaterial, defaultColor, 1.5);
+      const centreDot = createCircleOutlineFilled(1.5, defaultColor);
       centreDot.name = 'centreDot';
       centreDot.visible = false;
       

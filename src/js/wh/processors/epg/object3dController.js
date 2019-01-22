@@ -13,7 +13,7 @@ import { PPQN } from '../../core/config.js';
 import {
   createCircleOutline,
   createCircleOutlineFilled,
-} from '../../webgl/util3d.js';
+} from '../../webgl/draw3dHelper.js';
 
 const TWO_PI = Math.PI * 2;
 
@@ -149,9 +149,9 @@ export function createObject3dController(specs, my) {
         let dot;
         const rad = TWO_PI * (i / steps);
         if (euclid[i]) {
-          dot = createCircleOutlineFilled(lineMaterial, defaultColor, 1);
+          dot = createCircleOutlineFilled(1, defaultColor);
         } else {
-          dot = createCircleOutline(lineMaterial, 1);
+          dot = createCircleOutline(1);
         }
         dot.name = 'dot';
         dot.translateX(Math.sin(rad) * radius3d);

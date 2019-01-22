@@ -13,11 +13,12 @@ import {
   Group,
 } from '../../../lib/three.module.js';
 import {
-  createCircleOutline,
-  createCircleFilled,
-  createCircleOutlineFilled,
   drawConnectors,
 } from '../../webgl/util3d.js';
+import {
+  createCircleFilled,
+  createCircleOutline,
+} from '../../webgl/draw3dHelper.js';
 import { getThemeColors } from '../../state/selectors.js';
 
 export function createObject3d(id, inputs, outputs) {
@@ -34,7 +35,7 @@ export function createObject3d(id, inputs, outputs) {
     },
     
     createGraphic = function() {
-      const hitarea = createCircleFilled(defaultColor, 3);
+      const hitarea = createCircleFilled(3, defaultColor);
       hitarea.name = 'hitarea';
       hitarea.material.opacity = 0.0;
 
@@ -43,10 +44,10 @@ export function createObject3d(id, inputs, outputs) {
       label.scale.set(0.1, 0.1, 1);
       label.translateY(-7);
       
-      const centreCircle = createCircleOutline(lineMaterial, radius);
+      const centreCircle = createCircleOutline(radius);
       centreCircle.name = 'centreCircle';
       
-      const selectCircle = createCircleOutline(lineMaterial, 2);
+      const selectCircle = createCircleOutline(2);
       selectCircle.name = 'select';
       selectCircle.visible = false;
 

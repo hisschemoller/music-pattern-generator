@@ -1,5 +1,8 @@
 import { getThemeColors } from '../state/selectors.js';
-import { createCircleFilled, createCircleOutline } from './util3d.js';
+import {
+  createCircleFilled,
+  createCircleOutline,
+} from './draw3dHelper.js';
 
 const {
   BufferAttribute,
@@ -31,7 +34,7 @@ export default function addConnections3d(specs, my) {
     dragHandleRadius = 1.5,
     
     init = function() {
-      currentCableDragHandle = createCircleOutline(lineMaterial, dragHandleRadius);
+      currentCableDragHandle = createCircleOutline(dragHandleRadius);
       currentCableDragHandle.name = 'dragHandle';
 
       document.addEventListener(store.STATE_CHANGE, (e) => {
@@ -163,12 +166,12 @@ export default function addConnections3d(specs, my) {
       deleteBtn.visible = my.isConnectMode;
       cable.add(deleteBtn);
 
-      const deleteBtnBorder = createCircleOutline(lineMaterial, deleteButtonRadius);
+      const deleteBtnBorder = createCircleOutline(deleteButtonRadius);
       deleteBtnBorder.name = 'deleteBorder';
       deleteBtn.add(deleteBtnBorder);
 
       let line = new Line(new BufferGeometry(), lineMaterial);
-      line.geometry.addAttribute('position', new BufferAttribute( new Float32Array([
+      line.geometry.addAttribute('position', new BufferAttribute(new Float32Array([
         -deleteCrossRadius, -deleteCrossRadius, 0.0,
          deleteCrossRadius,  deleteCrossRadius, 0.0
       ]), 3));

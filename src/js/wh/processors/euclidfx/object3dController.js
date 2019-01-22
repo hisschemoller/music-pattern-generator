@@ -11,10 +11,6 @@ import { getThemeColors } from '../../state/selectors.js';
 import createObject3dControllerBase from '../../webgl/object3dControllerBase.js';
 import { getEuclidPattern, rotateEuclidPattern } from './euclid.js';
 import { PPQN } from '../../core/config.js';
-import {
-  createCircleOutline,
-  createCircleOutlineFilled,
-} from '../../webgl/util3d.js';
 
 const TWO_PI = Math.PI * 2;
 

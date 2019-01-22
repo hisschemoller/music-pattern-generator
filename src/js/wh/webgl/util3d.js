@@ -18,35 +18,6 @@ export function createCircleOutline(lineMaterial, radius) {
   geometry.vertices.shift();
   return new Line(geometry, lineMaterial);
 }
-    
-/**
- * Create a circle fill.
- * @param {number} color Fill color.
- */
-export function createCircleFilled(color, radius, alpha = 1) {
-  let numSegments = 8,
-    material = new MeshBasicMaterial({
-      color,
-      transparent: true,
-    }),
-    geometry = new CircleGeometry(radius, numSegments);              
-
-  material.opacity = alpha;
-  return new Mesh(geometry, material);
-}
-
-/**
- * Create circle with outline and fill.
- * @param {object} circleOutline Circle outline 3D object.
- * @param {object} circleFill Circle fill 3D object.
- * @return {object} Line 3D object.
- */
-export function createCircleOutlineFilled(lineMaterial, color, radius) {
-  var circle = new Object3D();
-  circle.add(createCircleFilled(color, radius));
-  circle.add(createCircleOutline(lineMaterial, radius));
-  return circle;
-}
 
 /**
  * Add input and/or output connectors to a processor  .

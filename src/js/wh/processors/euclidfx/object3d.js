@@ -13,11 +13,13 @@ import {
   Group,
 } from '../../../lib/three.module.js';
 import {
-  createCircleOutline,
-  createCircleFilled,
-  createCircleOutlineFilled,
   drawConnectors,
 } from '../../webgl/util3d.js';
+import {
+  createCircleFilled,
+  createCircleOutline,
+  createCircleOutlineFilled,
+} from '../../webgl/draw3dHelper.js';
 import { getThemeColors } from '../../state/selectors.js';
 
 export function createObject3d(id, inputs, outputs) {
@@ -42,18 +44,18 @@ export function createObject3d(id, inputs, outputs) {
      * @return {object} Object3D of drag plane.
      */
     create = function() {
-      const hitarea = createCircleFilled(defaultColor, 3);
+      const hitarea = createCircleFilled(3, defaultColor);
       hitarea.name = 'hitarea';
       hitarea.material.opacity = 0.0;
       
-      const centreCircle = createCircleOutline(lineMaterial, 3);
+      const centreCircle = createCircleOutline(3, lineMaterial);
       centreCircle.name = 'centreCircle';
       
-      const selectCircle = createCircleOutline(lineMaterial, 2);
+      const selectCircle = createCircleOutline(2, lineMaterial);
       selectCircle.name = 'select';
       selectCircle.visible = false;
       
-      const centreDot = createCircleOutlineFilled(lineMaterial, defaultColor, 1.5);
+      const centreDot = createCircleOutlineFilled(1.5, defaultColor);
       centreDot.name = 'centreDot';
       centreDot.visible = false;
       
@@ -63,7 +65,7 @@ export function createObject3d(id, inputs, outputs) {
       const necklace = new LineLoop(new BufferGeometry(), lineMaterial);
       necklace.name = 'necklace';
 
-      const zeroMarker = createCircleOutline(lineMaterial, 0.5);
+      const zeroMarker = createCircleOutline(0.5, lineMaterial);
       zeroMarker.name = 'zeroMarker';
       zeroMarker.translateY(2.5);
       necklace.add(zeroMarker);
