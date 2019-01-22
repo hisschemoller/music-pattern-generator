@@ -1,4 +1,14 @@
 import {
+  createCircleFilled,
+  createCircleOutlineFilled,
+  drawConnectors,
+} from '../../webgl/util3d.js';
+import {
+  createCircleOutline,
+} from '../../webgl/draw3dHelper.js';
+import { getThemeColors } from '../../state/selectors.js';
+
+const {
   BufferAttribute,
   BufferGeometry,
   CircleGeometry,
@@ -11,14 +21,7 @@ import {
   Shape,
   ShapeGeometry,
   Vector3,
-} from '../../../lib/three.module.js';
-import {
-  createCircleOutline,
-  createCircleFilled,
-  createCircleOutlineFilled,
-  drawConnectors,
-} from '../../webgl/util3d.js';
-import { getThemeColors } from '../../state/selectors.js';
+} = THREE;
 
 export function createObject3d(id, inputs, outputs) {
     
@@ -105,10 +108,10 @@ export function createObject3d(id, inputs, outputs) {
       hitarea.name = 'hitarea';
       hitarea.material.opacity = 0.0;
       
-      const centreCircle = createCircleOutline(lineMaterial, 3);
+      const centreCircle = createCircleOutline(3, defaultColor);
       centreCircle.name = 'centreCircle';
       
-      const selectCircle = createCircleOutline(lineMaterial, 2);
+      const selectCircle = createCircleOutline(2, defaultColor);
       selectCircle.name = 'select';
       selectCircle.visible = false;
       
@@ -125,7 +128,7 @@ export function createObject3d(id, inputs, outputs) {
       const dots = new Object3D();
       dots.name = 'dots';
 
-      const zeroMarker = createCircleOutline(lineMaterial, 0.5);
+      const zeroMarker = createCircleOutline(0.5, defaultColor);
       zeroMarker.name = 'zeroMarker';
       
       const rotatedMarker = createRotatedMarker(lineMaterial);
