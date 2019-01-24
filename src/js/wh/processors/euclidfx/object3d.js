@@ -1,30 +1,18 @@
 import {
-  CircleGeometry,
-  BufferGeometry,
-  Line,
-  LineBasicMaterial,
-  LineLoop,
-  Mesh,
-  MeshBasicMaterial,
-  Object3D,
-  Shape,
-  ShapeGeometry,
-  Vector3,
   Group,
+  LineBasicMaterial,
 } from '../../../lib/three.module.js';
 import {
   createCircleFilled,
   createCircleOutline,
   createCircleOutlineFilled,
+  createShape,
   drawConnectors,
 } from '../../webgl/draw3dHelper.js';
 import { getThemeColors } from '../../state/selectors.js';
 
 export function createObject3d(id, inputs, outputs) {
-  let polygon,
-    TWO_PI = Math.PI * 2,
-    centreRadius = 3,
-    defaultColor,
+  let defaultColor,
     lineMaterial,
     
     /**
@@ -39,7 +27,7 @@ export function createObject3d(id, inputs, outputs) {
     
     /**
      * Create combined Object3D of wheel.
-     * @return {object} Object3D of drag plane.
+     * @return {object} Group object3D of drag plane.
      */
     create = function() {
       const hitarea = createCircleFilled(3, defaultColor);
@@ -57,10 +45,10 @@ export function createObject3d(id, inputs, outputs) {
       centreDot.name = 'centreDot';
       centreDot.visible = false;
       
-      const pointer = new Line(new BufferGeometry(), lineMaterial);
+      const pointer = createShape();
       pointer.name = 'pointer';
       
-      const necklace = new LineLoop(new BufferGeometry(), lineMaterial);
+      const necklace = createShape();
       necklace.name = 'necklace';
 
       const zeroMarker = createCircleOutline(0.5, lineMaterial);
@@ -73,7 +61,7 @@ export function createObject3d(id, inputs, outputs) {
       label.scale.set(0.1, 0.1, 1);
       label.translateY(-8);
       
-      const root = new Object3D();
+      const root = new Group();
       root.name = 'root';
       root.userData.id = id;
       root.add(hitarea);

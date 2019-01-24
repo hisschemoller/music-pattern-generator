@@ -12,26 +12,51 @@ const {
 
 const defaultSegments = 64;
 const defaultLineWidth = 0.003;
-const defaultLineColor = new Color(0xdddddd);
+const defaultLineColor = 0xdddddd;
 
 const lineMaterial = new LineMaterial({
-  color: defaultLineColor,
+  color: new Color(defaultLineColor),
   linewidth: defaultLineWidth,
   vertexColors: VertexColors,
   dashed: false,
 });
 
-export function createShape(points, color) {
-  const col = new Color(color);
-
-  const positions = points.reduce((acc, p) => [ ...acc, p.x, p.y, 0 ], []);
-  const colors = points.reduce((acc, p) => [ ...acc, col.r, col.g, col.b ], []);
+/** 
+ * Create a line along a path of coordinates.
+ * @param {Array} points An array of point objects.
+ * @param {Number} points.x
+ * @param {Number} points.y
+ * @param {Number} color Color of the line.
+ * @returns {Object} Line2 three.js object.
+ */
+export function createShape(points = [], color = defaultLineColor) {
   const geometry = new LineGeometry();
-  geometry.setPositions(positions);
-  geometry.setColors(colors);
-  const line = new Line2(geometry, lineMaterial);
-  line.computeLineDistances();
-  return line;
+  const line2 = new Line2(geometry, lineMaterial);
+  redrawShape(line2, points, color);
+  
+  return line2;
+}
+
+/** 
+ * Draw a line along a path of coordinates on an existing Line2.
+ * @param {Object} line2 Line2 mesh line.
+ * @param {Array} points An array of point objects.
+ * @param {Number} points.x
+ * @param {Number} points.y
+ * @param {Number} color Color of the line.
+ * @returns {Object} Line2 three.js object.
+ */
+export function redrawShape(line2, points = [], color = defaultLineColor) {
+  if (points.length) {
+    const col = new Color(color);
+    const positions = points.reduce((acc, p) => [ ...acc, p.x, p.y, 0 ], []);
+    const colors = points.reduce((acc, p) => [ ...acc, col.r, col.g, col.b ], []);
+    line2.geometry.setPositions(positions);
+    line2.geometry.setColors(colors);
+    line2.computeLineDistances();
+  }
+
+  return line2;
 }
 
 /** 

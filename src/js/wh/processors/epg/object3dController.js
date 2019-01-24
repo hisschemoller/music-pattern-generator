@@ -4,6 +4,7 @@ import {
   LineBasicMaterial,
   Shape,
   ShapeGeometry,
+  Vector2,
   Vector3,
 } from '../../../lib/three.module.js';
 import { getThemeColors } from '../../state/selectors.js';
@@ -13,6 +14,7 @@ import { PPQN } from '../../core/config.js';
 import {
   createCircleOutline,
   createCircleOutlineFilled,
+  redrawShape,
 } from '../../webgl/draw3dHelper.js';
 
 const TWO_PI = Math.PI * 2;
@@ -210,8 +212,7 @@ export function createObject3dController(specs, my) {
         }
         
         line = polygon3d.getObjectByName('polygonLine');
-        line.geometry.dispose();
-        line.geometry.setFromPoints(points);
+        redrawShape(line, points, defaultColor);
     },
             
     /**
@@ -226,50 +227,38 @@ export function createObject3dController(specs, my) {
      * Update the pointer that connects the dots.
      */
     updatePointer = function(isMute) {
-      let isSolo = false,
-        isNotSolo = false,
-        isNoteInControlled = false,
-        isMutedByNoteInControl = false,
-        mutedRadius = 4.5,
-        radius = (isMute || isNotSolo || isMutedByNoteInControl) ? mutedRadius : radius3d;
-      pointer3d.geometry.dispose();
-      pointer3d.geometry = createPointerGeometry(radius, isSolo, isNoteInControlled);
-    },
-            
-    /**
-     * Create geometry for the pointer.
-     * Also used by the pointer update function.
-     * @param {Number} radius Pointer radius.
-     * @param {Boolean} isSolo Pointer shows solo state.
-     * @param {Boolean} isNoteInControlled Pointer shows external control state.
-     * @return {Object} Three.js BufferGeometry object.
-     */
-    createPointerGeometry = function(radius, isSolo, isNoteInControlled) {
-      var geometry = new BufferGeometry();
+      const isSolo = false;
+      const isNotSolo = false;
+      const isNoteInControlled = false;
+      const isMutedByNoteInControl = false;
+      const mutedRadius = 4.5;
+      const radius = (isMute || isNotSolo || isMutedByNoteInControl) ? mutedRadius : radius3d;
+      
+      const points = [];
       if (isNoteInControlled) {
-        var halfRadius = centreRadius + ((radius - centreRadius) / 2);
-        geometry.addAttribute( 'position', new BufferAttribute( new Float32Array([
-          0.0, centreRadius, 0.0,
-          -0.9, halfRadius, 0.0,
-          0.0, radius, 0.0,
-          0.9, halfRadius, 0.0,
-          0.0, centreRadius, 0.0,
-        ]), 3));
+        const halfRadius = centreRadius + ((radius - centreRadius) / 2);
+        points.push(
+          new Vector2(0, centreRadius),
+          new Vector2(-0.9, halfRadius),
+          new Vector2(0, radius),
+          new Vector2(0.9, halfRadius),
+          new Vector2(0, centreRadius),
+        );
       } else {
-        geometry.addAttribute( 'position', new BufferAttribute( new Float32Array([
-          -2.9, 0.7, 0.0,
-          0.0, radius, 0.0,
-          2.9, 0.7, 0.0,
-        ]), 3));
+        points.push(
+          new Vector2(-2.9, 0.7),
+          new Vector2(0, radius),
+          new Vector2(2.9, 0.7),
+        );
         if (isSolo) {
-          geometry.addAttribute( 'position', new BufferAttribute( new Float32Array([
-            0.0, radius, 0.0,
-            0.0, 1.0, 0.0,
-          ]), 3));
+          points.push(
+            new Vector2(0, radius),
+            new Vector2(0, 1),
+          );
         }
       }
       
-      return geometry;
+      redrawShape(pointer3d, points, defaultColor);
     },
             
     /**
