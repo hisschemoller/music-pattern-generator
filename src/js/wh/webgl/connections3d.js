@@ -2,6 +2,8 @@ import { getThemeColors } from '../state/selectors.js';
 import {
   createCircleFilled,
   createCircleOutline,
+  createShape,
+  redrawShape,
 } from './draw3dHelper.js';
 
 const {
@@ -79,7 +81,7 @@ export default function addConnections3d(specs, my) {
      */
     dragStartConnection = function(sourceProcessorID, sourceConnectorID, sourceConnectorPosition) {
       state = { ...state, sourceProcessorID, sourceConnectorID, sourceConnectorPosition, };
-      currentCable = new Line(new BufferGeometry(), lineMaterial);
+      currentCable = createShape();
       currentCable.name = 'currentCable';
       cablesGroup.add(currentCable);
 
@@ -156,7 +158,7 @@ export default function addConnections3d(specs, my) {
      * @return {Object} Cable object3d.
      */
     createCable = function(connectionID) {
-      const cable = new Line(new BufferGeometry(), lineMaterial);
+      const cable = createShape();
       cable.name = connectionID;
       cable.userData.type = 'cable';
       cablesGroup.add(cable);
@@ -233,8 +235,8 @@ export default function addConnections3d(specs, my) {
           destinationPosition.clone()
         );
         const points = curve.getPoints(50);
-        cable.geometry.dispose();
-        cable.geometry.setFromPoints(points);
+        
+        redrawShape(cable, points, defaultColor);
 
         if (my.isConnectMode) {
           const deleteBtn = cable.getObjectByName('delete');
