@@ -132,11 +132,13 @@ export default function addConnections3d(specs, my) {
       }
 
       // delete all removed cables
-      cablesGroup.children.forEach(cable => {
+      let count = cablesGroup.children.length;
+      while (--count >= 0) {
+        const cable = cablesGroup.children[count];
         if (state.connections.allIds.indexOf(cable.name) === -1) {
           cablesGroup.remove(cable);
         }
-      });
+      }
 
       // create all new cables
       state.connections.allIds.forEach(connectionId => {
