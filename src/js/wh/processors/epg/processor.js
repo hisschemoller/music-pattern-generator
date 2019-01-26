@@ -91,7 +91,7 @@ export function createProcessor(specs, my) {
                     isOn = (localScanStart <= pulseStartTime) && (pulseStartTime < localScanEnd);
                     
                 // if pattern looped back to the start
-                if (localScanStart2 !== false) {
+                if (localScanStart2 !== false && isOn === false) {
                     scanStartToNoteStart = pulseStartTime - localScanStart + duration;
                     isOn = isOn || (localScanStart2 <= pulseStartTime) && (pulseStartTime < localScanEnd2);
                 } 
