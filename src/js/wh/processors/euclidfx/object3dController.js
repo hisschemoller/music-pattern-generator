@@ -80,6 +80,9 @@ export function createObject3dController(specs, my) {
               case 'rate':
                 updateDuration(params.steps.value, params.rate.value);
                 break;
+              case 'name':
+                my.updateLabel(params.name.value);
+                break;
               default:
             }
           }
