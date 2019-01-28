@@ -172,21 +172,21 @@ export default function addConnections3d(specs, my) {
       deleteBtnBorder.name = 'deleteBorder';
       deleteBtn.add(deleteBtnBorder);
 
-      let line = new Line(new BufferGeometry(), lineMaterial);
-      line.geometry.addAttribute('position', new BufferAttribute(new Float32Array([
-        -deleteCrossRadius, -deleteCrossRadius, 0.0,
-         deleteCrossRadius,  deleteCrossRadius, 0.0
-      ]), 3));
-      line.name = 'deleteCross1';
-      deleteBtn.add(line);
+      const points1 = [
+        new Vector2(-deleteCrossRadius, -deleteCrossRadius),
+        new Vector2(deleteCrossRadius,  deleteCrossRadius),
+      ];
+      const line1 = createShape(points1, defaultColor);
+      line1.name = 'deleteCross1';
+      deleteBtn.add(line1);
 
-      line = new Line(new BufferGeometry(), lineMaterial);
-      line.geometry.addAttribute('position', new BufferAttribute( new Float32Array([
-        -deleteCrossRadius,  deleteCrossRadius, 0.0,
-         deleteCrossRadius, -deleteCrossRadius, 0.0
-      ]), 3));
-      line.name = 'deleteCross2';
-      deleteBtn.add(line);
+      const points2 = [
+        new Vector2(-deleteCrossRadius,  deleteCrossRadius),
+        new Vector2(deleteCrossRadius, -deleteCrossRadius),
+      ];
+      const line2 = createShape(points2, defaultColor);
+      line2.name = 'deleteCross2';
+      deleteBtn.add(line2);
 
       return cable;
     },
@@ -238,25 +238,14 @@ export default function addConnections3d(specs, my) {
         
         redrawShape(cable, points, defaultColor);
 
-        if (my.isConnectMode) {
-          const deleteBtn = cable.getObjectByName('delete');
-          if (deleteBtn) {
-            setDeletePosition(cable, deleteBtn);
-          }
+        const deleteBtn = cable.getObjectByName('delete');
+        if (deleteBtn) {
+          
+          // get mid point on cable
+          const position = points[Math.floor(points.length / 2)];
+          deleteBtn.position.set(position.x, position.y, 0);
         }
       }
-    },
-
-    /**
-     * Position the delete button halfway the cable.
-     * @param {Object} cable Cable object3d.
-     * @param {Object} deleteBtn Delete button object3d.
-     */
-    setDeletePosition = function(cable, deleteBtn) {
-      const position = cable.geometry.getAttribute('position');
-      const index = Math.floor(position.count / 2) * position.itemSize;
-      deleteBtn.position.x = position.array[index];
-      deleteBtn.position.y = position.array[index + 1];
     },
 
     /**
@@ -270,11 +259,6 @@ export default function addConnections3d(specs, my) {
         cablesGroup.children.forEach(cable => {
           const deleteBtn = cable.getObjectByName('delete');
           deleteBtn.visible = my.isConnectMode;
-          
-          // position the delete buttons halfway the cable
-          if (my.isConnectMode) {
-            setDeletePosition(cable, deleteBtn);
-          }
         });
     },
 
