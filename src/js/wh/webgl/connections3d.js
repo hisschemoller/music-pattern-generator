@@ -154,17 +154,17 @@ export default function addConnections3d(specs, my) {
 
     /**
      * Draw all cables acctording to the state.
-     * @param {String} connectionID Connection ID.
+     * @param {String} connectionId Connection ID.
      * @return {Object} Cable object3d.
      */
-    createCable = function(connectionID) {
+    createCable = function(connectionId) {
       const cable = createShape();
-      cable.name = connectionID;
-      cable.userData.type = 'cable';
+      cable.name = connectionId;
       cablesGroup.add(cable);
 
-      const deleteBtn = createCircleFilled(lineMaterial.color, deleteButtonRadius, 0);
+      const deleteBtn = createCircleFilled(deleteButtonRadius, lineMaterial.color, 0);
       deleteBtn.name = 'delete';
+      deleteBtn.userData.connectionId = connectionId;
       deleteBtn.visible = my.isConnectMode;
       cable.add(deleteBtn);
 
