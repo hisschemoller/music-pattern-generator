@@ -303,7 +303,7 @@ export default function createCanvas3d(specs, my) {
       // look for click on connection cable delete button
       const cableIntersects = raycaster.intersectObjects(my.cablesGroup.children, true);
       const deleteIntersect = cableIntersects.find(intersect => intersect.object.name === 'delete');
-      if (deleteIntersect, deleteIntersect.object.userData.connectionId) {
+      if (deleteIntersect) {
         store.dispatch(store.getActions().disconnectProcessors(deleteIntersect.object.userData.connectionId));
       }
     },
