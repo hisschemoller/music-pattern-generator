@@ -25,6 +25,12 @@ const textLineMaterial = lineMaterial.clone();
 textLineMaterial.linewidth = 0.0015;
 
 /** 
+ * Cache of circle outlines, so they can be cloned once created.
+ * They are identified by a string made out of the radius and color.
+ */
+const circleCache = {};
+
+/** 
  * Create a line along a path of coordinates.
  * @param {Array} points An array of point objects.
  * @param {Number} points.x
@@ -83,7 +89,14 @@ export function redrawShape(line2, points = [], color = defaultLineColor) {
  * @param {Number} color Circle color.
  * @return {Object} Line2 3D object.
  */
-export function createCircleOutline(radius, color) {
+export function createCircleOutline(radius, color = defaultLineColor) {
+
+  // check if the circle already exists in cache
+  const cacheId = `c${radius}_${color}`;
+  if (circleCache[cacheId]) {
+    return circleCache[cacheId].clone();
+  }
+
   const col = new Color(color);
   
   // create a circle, just for it's vertice points
@@ -104,6 +117,10 @@ export function createCircleOutline(radius, color) {
   geometry.setColors(colors);
   const line = new Line2(geometry, lineMaterial);
   line.computeLineDistances();
+
+  // add the circle to the cache
+  circleCache[cacheId] = line;
+
   return line;
 }
 
