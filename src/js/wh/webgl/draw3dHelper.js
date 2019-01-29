@@ -11,7 +11,7 @@ const {
 } = THREE;
 
 const defaultSegments = 64;
-const defaultLineWidth = 0.003;
+const defaultLineWidth = 0.0025;
 const defaultLineColor = 0xdddddd;
 
 const lineMaterial = new LineMaterial({
@@ -20,6 +20,9 @@ const lineMaterial = new LineMaterial({
   vertexColors: VertexColors,
   dashed: false,
 });
+
+const textLineMaterial = lineMaterial.clone();
+textLineMaterial.linewidth = 0.0015;
 
 /** 
  * Create a line along a path of coordinates.
@@ -33,7 +36,21 @@ export function createShape(points = [], color = defaultLineColor) {
   const geometry = new LineGeometry();
   const line2 = new Line2(geometry, lineMaterial);
   redrawShape(line2, points, color);
-  
+  return line2;
+}
+
+/**
+ *Create text with a thinner line.
+ * @param {Array} points An array of point objects.
+ * @param {Number} points.x
+ * @param {Number} points.y
+ * @param {Number} color Color of the line.
+ * @returns {Object} Line2 three.js object.
+ */
+export function createText(points, color = defaultLineColor) {
+  const geometry = new LineGeometry();
+  const line2 = new Line2(geometry, textLineMaterial);
+  redrawShape(line2, points, color);
   return line2;
 }
 
