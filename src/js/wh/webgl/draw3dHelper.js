@@ -161,16 +161,16 @@ export function createCircleOutlineFilled(radius, color) {
  * @param {Array} inputs Inputs to draw a connector for.
  * @param {Array} outputs Outputs to draw a connector for.
  */
-export function drawConnectors(rootObj, inputs, outputs) {
+export function drawConnectors(rootObj, inputs, outputs, color) {
 
   // inputs
   inputs.allIds.forEach(id => {
-    drawConnector(inputs.byId[id], id, 'input', rootObj);
+    drawConnector(inputs.byId[id], id, 'input', rootObj, color);
   });
 
   // outputs
   outputs.allIds.forEach(id => {
-    drawConnector(outputs.byId[id], id, 'output', rootObj);
+    drawConnector(outputs.byId[id], id, 'output', rootObj, color);
   });
 }
 
@@ -181,15 +181,15 @@ export function drawConnectors(rootObj, inputs, outputs) {
  * @param {String} name Connector name.
  * @param {Object} rootObj Outer object3D.
  */
-function drawConnector(data, id, name, rootObj) {
-  const connector = createCircleOutline(0.6);
+function drawConnector(data, id, name, rootObj, color) {
+  const connector = createCircleOutline(0.6, color);
   connector.name = name;
   connector.userData.id = id;
   connector.translateX(data.x);
   connector.translateY(data.y);
   rootObj.add(connector);
 
-  const active = createCircleOutline(1.2);
+  const active = createCircleOutline(1.2, color);
   active.name = 'active';
   active.visible = false;
   connector.add(active);

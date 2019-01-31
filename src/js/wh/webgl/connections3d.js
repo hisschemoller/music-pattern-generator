@@ -36,7 +36,8 @@ export default function addConnections3d(specs, my) {
     dragHandleRadius = 1.5,
     
     init = function() {
-      currentCableDragHandle = createCircleOutline(dragHandleRadius);
+      defaultColor = getThemeColors().colorHigh;
+      currentCableDragHandle = createCircleOutline(dragHandleRadius, defaultColor);
       currentCableDragHandle.name = 'dragHandle';
 
       document.addEventListener(store.STATE_CHANGE, (e) => {
@@ -168,7 +169,7 @@ export default function addConnections3d(specs, my) {
       deleteBtn.visible = my.isConnectMode;
       cable.add(deleteBtn);
 
-      const deleteBtnBorder = createCircleOutline(deleteButtonRadius);
+      const deleteBtnBorder = createCircleOutline(deleteButtonRadius, defaultColor);
       deleteBtnBorder.name = 'deleteBorder';
       deleteBtn.add(deleteBtnBorder);
 

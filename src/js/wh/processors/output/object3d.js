@@ -34,10 +34,10 @@ export function createObject3d(id, inputs, outputs) {
       label.scale.set(0.1, 0.1, 1);
       label.translateY(-7);
       
-      const centreCircle = createCircleOutline(radius);
+      const centreCircle = createCircleOutline(radius, defaultColor);
       centreCircle.name = 'centreCircle';
       
-      const selectCircle = createCircleOutline(2);
+      const selectCircle = createCircleOutline(2, defaultColor);
       selectCircle.name = 'select';
       selectCircle.visible = false;
 
@@ -62,7 +62,7 @@ export function createObject3d(id, inputs, outputs) {
       group.add(label);
 
       // add inputs and outputs 
-      drawConnectors(group, inputs, outputs);
+      drawConnectors(group, inputs, outputs, defaultColor);
 
       return group;
     };

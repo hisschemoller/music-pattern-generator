@@ -34,10 +34,10 @@ export function createObject3d(id, inputs, outputs) {
       hitarea.name = 'hitarea';
       hitarea.material.opacity = 0.0;
       
-      const centreCircle = createCircleOutline(3, lineMaterial);
+      const centreCircle = createCircleOutline(3, defaultColor);
       centreCircle.name = 'centreCircle';
       
-      const selectCircle = createCircleOutline(2, lineMaterial);
+      const selectCircle = createCircleOutline(2, defaultColor);
       selectCircle.name = 'select';
       selectCircle.visible = false;
       
@@ -51,7 +51,7 @@ export function createObject3d(id, inputs, outputs) {
       const necklace = createShape();
       necklace.name = 'necklace';
 
-      const zeroMarker = createCircleOutline(0.5, lineMaterial);
+      const zeroMarker = createCircleOutline(0.5, defaultColor);
       zeroMarker.name = 'zeroMarker';
       zeroMarker.translateY(2.5);
       necklace.add(zeroMarker);
@@ -73,7 +73,7 @@ export function createObject3d(id, inputs, outputs) {
       root.add(label);
 
       // add inputs and outputs
-      drawConnectors(root, inputs, outputs);
+      drawConnectors(root, inputs, outputs, defaultColor);
       
       return root;
     };

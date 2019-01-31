@@ -153,7 +153,7 @@ export function createObject3dController(specs, my) {
         if (euclid[i]) {
           dot = createCircleOutlineFilled(1, defaultColor);
         } else {
-          dot = createCircleOutline(1);
+          dot = createCircleOutline(1, defaultColor);
         }
         dot.name = 'dot';
         dot.translateX(Math.sin(rad) * radius3d);

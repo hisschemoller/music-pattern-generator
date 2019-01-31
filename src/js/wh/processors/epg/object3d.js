@@ -122,7 +122,7 @@ export function createObject3d(id, inputs, outputs) {
       wheel.add(label);
 
       // add inputs and outputs
-      drawConnectors(wheel, inputs, outputs);
+      drawConnectors(wheel, inputs, outputs, defaultColor);
       
       return wheel;
     };
