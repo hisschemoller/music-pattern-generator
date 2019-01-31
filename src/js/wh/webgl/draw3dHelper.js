@@ -11,7 +11,7 @@ const {
 } = THREE;
 
 const defaultSegments = 64;
-const defaultLineWidth = 0.0025;
+const defaultLineWidth = 0.0015;
 const defaultLineColor = 0xdddddd;
 
 const lineMaterial = new LineMaterial({
@@ -22,7 +22,7 @@ const lineMaterial = new LineMaterial({
 });
 
 const textLineMaterial = lineMaterial.clone();
-textLineMaterial.linewidth = 0.0015;
+textLineMaterial.linewidth = 0.001;
 
 /** 
  * Cache of circle outlines, so they can be cloned once created.
