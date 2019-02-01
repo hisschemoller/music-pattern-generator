@@ -1,0 +1,102 @@
+/************************
+ * settings
+ ************************/
+
+.settings {
+    background-color: var(--panel-bg-color);
+    padding-bottom: 10px;
+    position: relative;
+    width: 100%;
+}
+.settings .btn {
+    height: var(--input-height);
+    font-size: var(--font-size);
+    line-height: var(--input-height);
+    padding: 0 5px;
+}
+.settings button.btn {
+    background-color: var(--btn-color);
+    color: var(--input-bg-color);
+    font-size: 14px;
+    margin-top: 10px;
+    padding: 0 16px;
+    width: auto;
+}
+.settings__row {
+    position: relative;
+}
+.settings__fieldset {
+    border: none;
+    padding: 10px 0;
+}
+.settings__legend {
+    line-height: var(--input-height);
+    padding-left: 8px;
+}
+.settings__paragraph {
+    padding: 0 8px;
+}
+
+.setting {
+    display: flex;
+}
+.setting__label {
+    flex: 0 0 30%;
+    line-height: var(--input-height);
+    padding-left: 8px;
+}
+.setting__value {
+    flex: 0 1 70%;
+}
+.setting__integer {
+    display: flex;
+}
+input[type=range].setting__range {
+    display: inline-block;
+    flex: 0 1 100%;
+}
+input[type='number'].setting__number {
+    background-color: var(--panel-bg-color);
+    border: none;
+    display: inline-block;
+    font-size: var(--font-size);
+    line-height: var(--input-height);
+    padding: 0 8px;
+    text-align: right;
+    flex: 0 0 50px;
+}
+.setting__radio {
+    position: absolute;
+    margin-left: -9999px;
+    visibility: hidden;
+}
+.setting__radio + .setting__label-radio-text {
+    padding: 0 5px;
+}
+.setting__radio:checked + .setting__label-radio-text {
+    background-color: var(--btn-bg-color);
+    color: var(--btn-active-color);
+}
+.setting__text {
+    border: none;
+    font-size: var(--font-size);
+    height: var(--input-height);
+    padding: 0 6px;
+    width: 80%;
+}
+.setting__learnmode {
+    border: 3px dashed var(--assign-border-color);
+    bottom: 0;
+    left: 0;
+    margin: 1px;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.setting__learnmode[data-selected='true'] {
+    background-color: var(--assign-bg-color);
+}
+.setting__learnmode[data-assigned='true'] {
+    border-color: var(--assign-border-assigned-color);
+    border-style: solid;
+}

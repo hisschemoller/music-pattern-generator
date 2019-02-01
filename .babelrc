@@ -1,0 +1,3 @@
+{
+    "plugins": ["dynamic-import-webpack", "transform-object-rest-spread"]
+}

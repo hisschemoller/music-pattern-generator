@@ -1,2 +1,15 @@
-node_modules
-release-builds
+
+# Dependencies
+node_modules/
+
+# Compiled output
+/build
+/release-builds
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Misc
+.DS_Store

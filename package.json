@@ -1,29 +1,46 @@
 {
-    "name": "euclidean-pattern-generator",
-    "version": "2.0.1",
-    "description": "MIDI rhythm pattern generator",
+    "name": "music-pattern-generator",
+    "version": "2.1.0-beta",
+    "description": "MIDI rhythm and music pattern generator",
     "keywords": [
         "MIDI",
         "euclidean rhythm",
         "music",
         "percussion"
     ],
-    "homepage": "http://github.com/wouterhisschemoller/js-epg",
+    "homepage": "http://github.com/hisschemoller/music-pattern-generator",
     "license": "LGPL-3.0",
     "main": "electron.js",
     "scripts": {
-        "start": "electron .",
+        "build": "webpack",
+        "start": "node server.js",
+        "start-build": "node server.js build",
+        "start-electron": "electron .",
         "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
         "package-win": "electron-packager . --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/win/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Electron Tutorial App\"",
         "package-linux": "electron-packager . --overwrite --platform=linux --arch=x64 --icon=assets/icons/png/128x128.png --prune=true --out=release-builds"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/wouterhisschemoller/js-epg"
+        "url": "http://github.com/hisschemoller/music-pattern-generator"
     },
     "author": "Wouter Hisschemoller",
+    "dependencies": {
+        "three": "^0.97.0"
+    },
     "devDependencies": {
-        "electron": "^1.7.10",
-        "electron-packager": "^10.1.1"
+        "babel-core": "^6.26.0",
+        "babel-loader": "^7.1.2",
+        "babel-plugin-dynamic-import-webpack": "^1.1.0",
+        "babel-plugin-transform-object-rest-spread": "^6.26.0",
+        "babel-preset-es2015": "^6.24.1",
+        "copy-webpack-plugin": "^4.5.4",
+        "electron": "^2.0.0",
+        "electron-packager": "^10.1.1",
+        "express": "^4.16.4",
+        "gh-pages": "^1.1.0",
+        "gh-pages-webpack-plugin": "^1.0.2",
+        "html-loader": "^0.5.4",
+        "webpack": "^3.10.0"
     }
 }
