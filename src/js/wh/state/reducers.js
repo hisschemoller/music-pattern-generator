@@ -30,7 +30,7 @@ export default function createReducers() {
             },
             bpm: 120,
             selectedID: null,
-            theme: 'light', // 'light|dark' 
+            theme: 'dev', // 'light|dark' 
             transport: 'stop', // 'play|pause|stop'
             connectModeActive: false,
             learnModeActive: false,

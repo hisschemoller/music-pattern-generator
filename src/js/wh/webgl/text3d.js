@@ -1,18 +1,11 @@
 import text3dFontData from './text3dFontData.js';
-import { 
-  BufferGeometry,
-  Color,
+import { createText } from './draw3dHelper.js';
+
+const {
   Group,
-  Line,
-  LineBasicMaterial,
   Path,
   Vector2,
-} from '../../lib/three.module.js';
-
-const lineMaterial = new LineBasicMaterial({
-  color: new Color(0x000000),
-  linewidth: 3,
-});
+} = THREE;
 
 /**
  * Create a single line text object.
@@ -24,7 +17,6 @@ const lineMaterial = new LineBasicMaterial({
  * @return Group object containing all the text meshes.
  */
 export default function setText3d(group, str, color) {
-  lineMaterial.color.set( color );
 
   // clear old text
   while (group.children.length) {
@@ -35,6 +27,7 @@ export default function setText3d(group, str, color) {
 
   let numRenderedChars = 0;
 
+  // loop through the characters in the string
   for (let i = 0, n = str.length; i < n; i++) {
     const char = str.charAt(i);
     const svgPath = text3dFontData.chars[char];
@@ -45,16 +38,13 @@ export default function setText3d(group, str, color) {
       const svgSubPaths = svgPath.split('M');
       svgSubPaths.shift();
       
+      // loop through the paths of the character
       svgSubPaths.forEach(svgSubPath => {
-        const path = parsePathNode('M' + svgSubPath);
-        const points = path.getPoints();
-
-        const geometry = new BufferGeometry().setFromPoints( points );
-        const line = new Line(geometry, lineMaterial);
-        line.translateX((text3dFontData.viewBox.width + text3dFontData.spacing) * numRenderedChars);
-        line.rotateX(-Math.PI);
-
-        lineGroup.add(line);
+        const points = parsePathNode('M' + svgSubPath);
+        const line2 = createText(points, color);
+        line2.translateX((text3dFontData.viewBox.width + text3dFontData.spacing) * numRenderedChars);
+        line2.rotateX(-Math.PI);
+        lineGroup.add(line2);
       });
     }
   }
@@ -69,12 +59,11 @@ export default function setText3d(group, str, color) {
  * From here the code is taken from threeJS's SVGLoader.
  */
 
-function parsePathNode(pathString, style) {
-  const path = new Path();
+function parsePathNode(pathString) {
   const point = new Vector2();
-  const control = new Vector2();
   const firstPoint = new Vector2();
   const commands = pathString.match( /[a-df-z][^a-df-z]*/ig );
+  const points = [];
 
   let isFirstPoint = true;
   let doSetFirstPoint = false;
@@ -89,46 +78,37 @@ function parsePathNode(pathString, style) {
 
     switch ( type ) {
 
+      // 'M' = Move
       case 'M':
         numbers = parseFloats( data );
         for ( let j = 0, jl = numbers.length; j < jl; j += 2 ) {
           point.x = numbers[ j + 0 ];
           point.y = numbers[ j + 1 ];
-          control.x = point.x;
-          control.y = point.y;
-          if ( j === 0 ) {
-            path.moveTo( point.x, point.y );
-          } else {
-            path.lineTo( point.x, point.y );
-          }
+          points.push(point.clone());
         }
         break;
 
+      // 'L' = Line
       case 'L':
         numbers = parseFloats( data );
         for ( let j = 0, jl = numbers.length; j < jl; j += 2 ) {
           point.x = numbers[ j + 0 ];
           point.y = numbers[ j + 1 ];
-          control.x = point.x;
-          control.y = point.y;
-          path.lineTo( point.x, point.y );
+          points.push(point.clone());
         }
         break;
 
+      // 'Z' = straight line back to start point (close the shape)
       case 'Z':
       case 'z':
-        path.currentPath.autoClose = true;
-        if ( path.currentPath.curves.length > 0 ) {
-          // Reset point to beginning of Path
-          point.copy( firstPoint );
-          path.currentPath.currentPoint.copy( point );
+        if (points.length > 0) {
+          points.push(firstPoint.clone());
           isFirstPoint = true;
         }
         break;
 
       default:
         console.warn( command );
-
     }
 
     if ( doSetFirstPoint ) {
@@ -137,7 +117,7 @@ function parsePathNode(pathString, style) {
     }
   });
 
-  return path;
+  return points;
 }
 
 function parseFloats( string ) {

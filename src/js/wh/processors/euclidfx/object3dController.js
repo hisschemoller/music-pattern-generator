@@ -1,20 +1,12 @@
 import {
-  BufferAttribute,
-  BufferGeometry,
   EllipseCurve,
-  LineBasicMaterial,
-  Shape,
-  ShapeGeometry,
-  Vector3,
+  Vector2,
 } from '../../../lib/three.module.js';
 import { getThemeColors } from '../../state/selectors.js';
 import createObject3dControllerBase from '../../webgl/object3dControllerBase.js';
 import { getEuclidPattern, rotateEuclidPattern } from './euclid.js';
 import { PPQN } from '../../core/config.js';
-import {
-  createCircleOutline,
-  createCircleOutlineFilled,
-} from '../../webgl/util3d.js';
+import { redrawShape } from '../../webgl/draw3dHelper.js';
 
 const TWO_PI = Math.PI * 2;
 
@@ -55,9 +47,6 @@ export function createObject3dController(specs, my) {
       document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
     
       defaultColor = getThemeColors().colorHigh;
-      lineMaterial = new LineBasicMaterial({
-        color: defaultColor,
-      });
 
       const params = specs.processorData.params.byId;
       my.updateLabel(params.name.value);
@@ -91,6 +80,9 @@ export function createObject3dController(specs, my) {
               case 'rate':
                 updateDuration(params.steps.value, params.rate.value);
                 break;
+              case 'name':
+                my.updateLabel(params.name.value);
+                break;
               default:
             }
           }
@@ -116,24 +108,25 @@ export function createObject3dController(specs, my) {
       euclid = getEuclidPattern(steps, pulses);
       euclid = rotateEuclidPattern(euclid, rotation);
       
-      necklace3d.geometry.dispose();
       let points = [];
 
       for (let i = 0, n = euclid.length; i < n; i++) {
         const stepRadius = euclid[i] ? outerRadius : innerRadius;
 
+        // ax, aY, xRadius, yRadius, aStartAngle, aEndAngle, aClockwise, aRotation
         const curve = new EllipseCurve(
-          0, 0, // ax, aY
-          stepRadius, stepRadius, // xRadius, yRadius
-          ((i / n) * doublePI) - (Math.PI / 2), // aStartAngle
-          (((i + 1) / n) * doublePI) - (Math.PI / 2), // aEndAngle
-          false, // aClockwise,
-          0, // aRotation
+          0, 0, 
+          stepRadius, stepRadius,
+          ((i / n) * doublePI) - (Math.PI / 2),
+          (((i + 1) / n) * doublePI) - (Math.PI / 2),
+          false,
+          0,
         );
         points = [...points, ...curve.getPoints(5)];
       }
+      points = [...points, points[0].clone()];
       
-      necklace3d.geometry.setFromPoints(points);
+      redrawShape(necklace3d, points, defaultColor);
     },
 
     updateRotation = function(numRotation) {
@@ -150,24 +143,20 @@ export function createObject3dController(specs, my) {
       const statusWidth = status ? 2.5 : 1;
       const sides = status ? locatorRadius : halfWayPos;
 
-      pointer3d.geometry.dispose();
-      pointer3d.geometry = new BufferGeometry();
+      const points = [
 
-      // position locator
-      let vertices = [
-        0, centerRadius, 0,
-        0, locatorRadius, 0,
+        // position locator
+        new Vector2(0, centerRadius),
+        new Vector2(0, locatorRadius),
+
+        // status indicator
+        new Vector2(-statusWidth, sides),
+        new Vector2(0, necklacePos),
+        new Vector2(statusWidth, sides),
+        new Vector2(0, locatorRadius),
       ];
 
-      // status indicator
-      vertices = [...vertices,
-        -statusWidth, sides, 0,
-        0, necklacePos, 0,
-        statusWidth, sides, 0,
-        0, locatorRadius, 0,
-      ];
-
-      pointer3d.geometry.addAttribute( 'position', new BufferAttribute(new Float32Array(vertices), 3));
+      redrawShape(pointer3d, points, defaultColor);
     },
 
     /** 

@@ -1,30 +1,18 @@
 import {
-  CircleGeometry,
-  BufferGeometry,
-  Line,
-  LineBasicMaterial,
-  LineLoop,
-  Mesh,
-  MeshBasicMaterial,
-  Object3D,
-  Shape,
-  ShapeGeometry,
-  Vector3,
   Group,
+  LineBasicMaterial,
 } from '../../../lib/three.module.js';
 import {
-  createCircleOutline,
   createCircleFilled,
+  createCircleOutline,
   createCircleOutlineFilled,
+  createShape,
   drawConnectors,
-} from '../../webgl/util3d.js';
+} from '../../webgl/draw3dHelper.js';
 import { getThemeColors } from '../../state/selectors.js';
 
 export function createObject3d(id, inputs, outputs) {
-  let polygon,
-    TWO_PI = Math.PI * 2,
-    centreRadius = 3,
-    defaultColor,
+  let defaultColor,
     lineMaterial,
     
     /**
@@ -39,31 +27,31 @@ export function createObject3d(id, inputs, outputs) {
     
     /**
      * Create combined Object3D of wheel.
-     * @return {object} Object3D of drag plane.
+     * @return {object} Group object3D of drag plane.
      */
     create = function() {
-      const hitarea = createCircleFilled(defaultColor, 3);
+      const hitarea = createCircleFilled(3, defaultColor);
       hitarea.name = 'hitarea';
       hitarea.material.opacity = 0.0;
       
-      const centreCircle = createCircleOutline(lineMaterial, 3);
+      const centreCircle = createCircleOutline(3, defaultColor);
       centreCircle.name = 'centreCircle';
       
-      const selectCircle = createCircleOutline(lineMaterial, 2);
+      const selectCircle = createCircleOutline(2, defaultColor);
       selectCircle.name = 'select';
       selectCircle.visible = false;
       
-      const centreDot = createCircleOutlineFilled(lineMaterial, defaultColor, 1.5);
+      const centreDot = createCircleOutlineFilled(1.5, defaultColor);
       centreDot.name = 'centreDot';
       centreDot.visible = false;
       
-      const pointer = new Line(new BufferGeometry(), lineMaterial);
+      const pointer = createShape();
       pointer.name = 'pointer';
       
-      const necklace = new LineLoop(new BufferGeometry(), lineMaterial);
+      const necklace = createShape();
       necklace.name = 'necklace';
 
-      const zeroMarker = createCircleOutline(lineMaterial, 0.5);
+      const zeroMarker = createCircleOutline(0.5, defaultColor);
       zeroMarker.name = 'zeroMarker';
       zeroMarker.translateY(2.5);
       necklace.add(zeroMarker);
@@ -73,7 +61,7 @@ export function createObject3d(id, inputs, outputs) {
       label.scale.set(0.1, 0.1, 1);
       label.translateY(-8);
       
-      const root = new Object3D();
+      const root = new Group();
       root.name = 'root';
       root.userData.id = id;
       root.add(hitarea);
@@ -85,7 +73,7 @@ export function createObject3d(id, inputs, outputs) {
       root.add(label);
 
       // add inputs and outputs
-      drawConnectors(root, inputs, outputs, lineMaterial);
+      drawConnectors(root, inputs, outputs, defaultColor);
       
       return root;
     };

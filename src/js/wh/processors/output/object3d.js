@@ -1,23 +1,14 @@
 import {
-  BufferAttribute,
-  BufferGeometry,
-  CircleGeometry,
-  Line,
-  LineBasicMaterial,
-  Mesh,
-  MeshBasicMaterial,
-  Object3D,
-  Shape,
-  ShapeGeometry,
-  Vector3,
   Group,
+  LineBasicMaterial,
+  Vector2,
 } from '../../../lib/three.module.js';
 import {
-  createCircleOutline,
   createCircleFilled,
-  createCircleOutlineFilled,
+  createCircleOutline,
   drawConnectors,
-} from '../../webgl/util3d.js';
+  createShape,
+} from '../../webgl/draw3dHelper.js';
 import { getThemeColors } from '../../state/selectors.js';
 
 export function createObject3d(id, inputs, outputs) {
@@ -34,7 +25,7 @@ export function createObject3d(id, inputs, outputs) {
     },
     
     createGraphic = function() {
-      const hitarea = createCircleFilled(defaultColor, 3);
+      const hitarea = createCircleFilled(3, defaultColor);
       hitarea.name = 'hitarea';
       hitarea.material.opacity = 0.0;
 
@@ -43,24 +34,23 @@ export function createObject3d(id, inputs, outputs) {
       label.scale.set(0.1, 0.1, 1);
       label.translateY(-7);
       
-      const centreCircle = createCircleOutline(lineMaterial, radius);
+      const centreCircle = createCircleOutline(radius, defaultColor);
       centreCircle.name = 'centreCircle';
       
-      const selectCircle = createCircleOutline(lineMaterial, 2);
+      const selectCircle = createCircleOutline(2, defaultColor);
       selectCircle.name = 'select';
       selectCircle.visible = false;
 
-      const geometry = new BufferGeometry();
-      geometry.addAttribute( 'position', new BufferAttribute( new Float32Array([
-        -radius, -radius, 0,
-        radius, -radius, 0,
-        radius, radius, 0,
-        -radius, radius, 0,
-        -radius, -radius, 0,
-        0, -radius * 1.8, 0,
-        radius, -radius, 0,
-      ]), 3));
-      const graphic = new Line(geometry, lineMaterial);
+      const points = [
+        new Vector2(-radius, -radius),
+        new Vector2(radius, -radius),
+        new Vector2(radius, radius),
+        new Vector2(-radius, radius),
+        new Vector2(-radius, -radius),
+        new Vector2(0, -radius * 1.8),
+        new Vector2(radius, -radius),
+      ];
+      const graphic = createShape(points, defaultColor);
 
       const group = new Group();
       group.name = 'output';
@@ -72,7 +62,7 @@ export function createObject3d(id, inputs, outputs) {
       group.add(label);
 
       // add inputs and outputs 
-      drawConnectors(group, inputs, outputs, lineMaterial);
+      drawConnectors(group, inputs, outputs, defaultColor);
 
       return group;
     };
