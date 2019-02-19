@@ -1,18 +1,6 @@
 # Music Pattern Generator
 An application to generate musical rhythmic patterns in MIDI.
 
-## Note
-
-Current development in branches:
-- feature/mpg-007_webgl_graphics
-- feature/mpg-008_bug_fixes
-
-## Note
-
-Current development in branches:
-- feature/mpg-007_webgl_graphics
-- feature/mpg-008_bug_fixes
-
 ## Introduction
 This is an application to create rhythm patterns that can be used in music. It doesn't produce any sounds by itself, but sends MIDI messages to other applications that can generate sound. These applications typically are music programs like Ableton Live, Cubase or FL Studio. MIDI messages can also be sent to external hardware instruments like drum machines, samplers or synthesizers.
 
@@ -56,7 +44,7 @@ The app can be used online or as a desktop application. Downloads are available 
 
 Please find the the online version here:
 
-https://hisschemoller.github.io/music-pattern-generator/
+https://www.hisschemoller.com/mpg/
 
 ## Application concepts
 
