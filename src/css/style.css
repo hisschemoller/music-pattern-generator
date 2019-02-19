@@ -178,6 +178,11 @@ input:focus,
 select:focus {
     outline: none;
 }
+a,
+a:active,
+a:visited {
+    color: var(--text-color);
+}
 
 div[data-theme] {
     color: var(--text-color);

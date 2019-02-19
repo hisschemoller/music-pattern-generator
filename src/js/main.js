@@ -102,7 +102,7 @@ function init() {
             transport.run();
         })
         .catch(errorMsg => {
-            showDialog('MIDI access failure', `The app can't initialise because it failed to access the computer's MIDI ports. If you view the app in a browser, please check if it supports the Web MIDI API.<br>Error message: ${errorMsg}`);
+            showDialog('No MIDI available', `The app was unable to find any MIDI ports. This is usually because the browser doesn't support Web MIDI. Check current browser support at <a href="https://caniuse.com/#search=midi" target="_blank">Can I Use</a>.<br><br>Error message:<br>${errorMsg}`);
         });
 }
 
