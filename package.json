@@ -38,8 +38,6 @@
         "electron": "^2.0.0",
         "electron-packager": "^10.1.1",
         "express": "^4.16.4",
-        "gh-pages": "^1.1.0",
-        "gh-pages-webpack-plugin": "^1.0.2",
         "html-loader": "^0.5.4",
         "webpack": "^3.10.0"
     }

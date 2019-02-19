@@ -1,6 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-const GhPagesWebpackPlugin = require('gh-pages-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
@@ -23,17 +22,6 @@ module.exports = {
     },
     devtool: 'eval-source-map',
     plugins: [
-        new GhPagesWebpackPlugin({
-            path: './build',
-            options: {
-                message: 'Update GitHub Pages',
-                user: {
-                    name: 'Wouter Hisschemöller',
-                    email: 'wouter.hisschemoller@gmail.com'
-                }
-            }
-        })
-        ,
         new CopyWebpackPlugin([{
             from: 'src/js/wh/processors/epg/config.json',
             to: 'js/wh/processors/epg/config.json'
