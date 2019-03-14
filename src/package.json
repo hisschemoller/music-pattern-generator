@@ -1,0 +1,11 @@
+{
+  "name": "Music Pattern Generator",
+  "main":"index.html",
+  "chromium-args": "--disable-raf-throttling",
+  "window": {
+    "icon": "../assets/icons/png/128x128.png",
+    "min_height": 600,
+    "min_width": 800,
+    "title": "Music Pattern Generator"
+  }
+}
