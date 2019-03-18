@@ -6,9 +6,7 @@ A script in package.json starts Node.js and runs a simple Express app to serve t
 
 ```json
 "scripts": {
-  ...
   "start": "node server.js",
-  ...
 }
 ```
 
@@ -22,24 +20,18 @@ NW can be installed as a development dependency. A script in package.json can ru
 
 ```json
 {
-  ...
   "scripts": {
-    ...
     "start-nw": "nw --disable-raf-throttling",
-    ...
   },
   "devDependencies": {
-    ...
     "nw": "0.36.4-sdk"
-    ...
   }
-  ...
 }
 ```
 
 ## Package as Mac app
 
-1. Download the Mac OS X 64-bit release from https://nwjs.io/downloads/
+1. Download the Mac OS X 64-bit release from https://nwjs.io/downloads/ and unzip the download.
 2. Package all the files in the `/src` directory into a zip file and rename it `app.nw`.
 3. Put `app.nw` inside the downloaded Mac release, in `nwjs.app/Contents/Resources/`. (right click on `nwjs.app` and choose 'Show Package Contents' to open it)
 4. To add the app icons, copy `/assets/icons/mac/icons.icns` and paste it into `nwjs.app/Contents/Resources/` as well. Rename the file to `app.icns` so it will replace the existing default icons.
@@ -47,13 +39,42 @@ NW can be installed as a development dependency. A script in package.json can ru
 
 The file `nwjs.app` is now an executable that runs the app. Copy and rename it to `MusicPatternGenerator.app`. Doubleclick the app to run it.
 
+## Package for Linux
+
+1. Download a Linix 32 or 64 bit release from https://nwjs.io/downloads/ and unzip the download.
+2. Copy all files in the `/src` directory of the project into the root directory on the downloaded package. In my case it's called `nwjs-sdk-v0.37.0-linux-x64`. So your source files and `package.json` manifest file will be in the same directory as the downloaded `nw` file.
+3. Copy the `/music-pattern-generator.desktop` file to the root of the downloaded linux package.
+4. Copy the `/assets/icons/icon.png` icon to the root of the downloaded linux package.
+5. To create a self-extractable installer script, you can use scripts like `shar` or `makeself`.
+6. To distribute your app through the package management system, like `apt`, `yum`, `pacman` etc, please follow their official documents to create the packages.
+
+
+### Linux .desktop file
+
+In GNOME and other freedesktop.org-compliant desktops, an application gets registered into the desktop's menus through a desktop entry, which is a text file with .desktop extension. This desktop file contains a listing of the configurations for your application.
+
+- The file should have a unique descriptive filename without spaces. I use `music-pattern-generator.desktop`.
+- The location should be:
+  - `/usr/share/applications directory` to be accessible by everyone or
+  - `/.local/share/applications` to be accessible to a single user.
+
+Desktop file resources:
+
+- https://wiki.archlinux.org/index.php/Desktop_entries
+- https://developer.gnome.org/integration-guide/stable/desktop-files.html.en
+- https://specifications.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html
 
 ## Resources
 
-- https://nwjs.io/
-- https://www.npmjs.com/package/nw
-- http://docs.nwjs.io/en/latest/For%20Users/Package%20and%20Distribute/
-- https://www.sitepoint.com/cross-platform-desktop-app-nw-js/
-- https://strongloop.com/strongblog/creating-desktop-applications-with-node-webkit/
-- https://github.com/nwjs/nw.js/wiki/how-to-package-and-distribute-your-apps
+- NW.js
+  - https://nwjs.io/
+  - https://www.npmjs.com/package/nw
+  - http://docs.nwjs.io/en/latest/For%20Users/Package%20and%20Distribute/
+  - https://www.sitepoint.com/cross-platform-desktop-app-nw-js/
+  - https://strongloop.com/strongblog/creating-desktop-applications-with-node-webkit/
+  - https://github.com/nwjs/nw.js/wiki/how-to-package-and-distribute-your-apps
+- Linux
+  - https://askubuntu.com/questions/27213/what-is-the-linux-equivalent-to-windows-program-files
+  - https://stackoverflow.com/questions/40477785/nwjs-how-to-distribute-app-on-linux
+
 
