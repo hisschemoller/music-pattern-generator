@@ -1,7 +1,7 @@
 import addWindowResize from '../view/windowresize.js';
 import addConnections3d from './connections3d.js';
 import { getThemeColors } from '../state/selectors.js';
-import { util } from '../core/util.js';
+import { eventType } from '../core/util.js';
 
 const {
   Color,
@@ -82,10 +82,10 @@ export default function createCanvas3d(specs, my) {
      * Initialise DOM events for click, drag etcetera.
      */
     initDOMEvents = function() {
-      renderer.domElement.addEventListener(util.eventType.click, onClick);
-      renderer.domElement.addEventListener(util.eventType.start, onTouchStart);
-      renderer.domElement.addEventListener(util.eventType.move, dragMove);
-      renderer.domElement.addEventListener(util.eventType.end, dragEnd);
+      renderer.domElement.addEventListener(eventType.click, onClick);
+      renderer.domElement.addEventListener(eventType.start, onTouchStart);
+      renderer.domElement.addEventListener(eventType.move, dragMove);
+      renderer.domElement.addEventListener(eventType.end, dragEnd);
       renderer.domElement.addEventListener('drop', onDrop);
 
       // prevent system doubleclick to interfere with the custom doubleclick
