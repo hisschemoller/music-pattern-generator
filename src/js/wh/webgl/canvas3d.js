@@ -118,7 +118,6 @@ export default function createCanvas3d(specs, my) {
      * Create a new processor.
      */
     onDrop = function(state) {
-      console.log(state.libraryDropPosition);
       const { type, x, y, } = state.libraryDropPosition;
       updateMouseRay({ clientX: x, clientY: y, });
       if (raycaster.ray.intersectPlane(plane, intersection)) {
@@ -350,10 +349,14 @@ export default function createCanvas3d(specs, my) {
      * Set a raycaster's ray to point from the camera to the mouse postion.
      * @param {event} mouseEvent Event rom which to get the mouse coordinates.
      */
-    updateMouseRay = function(mouseEvent) {
+    updateMouseRay = function(e) {
+
+      const x = e.clientX ? e.clientX : e.changedTouches[0].clientX;
+      const y = e.clientY ? e.clientY : e.changedTouches[0].clientY;
+        
         // update mouse vector with mouse coordinated translated to viewport
-        mousePoint.x = ((mouseEvent.clientX - canvasRect.left) / canvasRect.width ) * 2 - 1;
-        mousePoint.y = - ((mouseEvent.clientY - canvasRect.top) / canvasRect.height ) * 2 + 1;
+        mousePoint.x = ((x - canvasRect.left) / canvasRect.width ) * 2 - 1;
+        mousePoint.y = - ((y - canvasRect.top) / canvasRect.height ) * 2 + 1;
 
         // update the picking ray with the camera and mouse position
         raycaster.setFromCamera(mousePoint, camera);

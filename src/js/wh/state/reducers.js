@@ -401,7 +401,6 @@ export default function createReducers() {
                     };
                 
                 case actions.LIBRARY_DROP:
-                    console.log(action);
                     return {
                         ...state,
                         libraryDropPosition: {
