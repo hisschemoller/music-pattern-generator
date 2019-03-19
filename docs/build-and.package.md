@@ -41,12 +41,12 @@ The file `nwjs.app` is now an executable that runs the app. Copy and rename it t
 
 ## Package for Linux
 
-1. Download a Linix 32 or 64 bit release from https://nwjs.io/downloads/ and unzip the download.
+1. Download a Linux 32 or 64 bit release from https://nwjs.io/downloads/ and unzip the download.
 2. Copy all files in the `/src` directory of the project into the root directory on the downloaded package. In my case it's called `nwjs-sdk-v0.37.0-linux-x64`. So your source files and `package.json` manifest file will be in the same directory as the downloaded `nw` file.
 3. Copy the `/music-pattern-generator.desktop` file to the root of the downloaded linux package.
 4. Copy the `/assets/icons/icon.png` icon to the root of the downloaded linux package.
-5. To create a self-extractable installer script, you can use scripts like `shar` or `makeself`.
-6. To distribute your app through the package management system, like `apt`, `yum`, `pacman` etc, please follow their official documents to create the packages.
+5. (To create a self-extractable installer script, you can use scripts like `shar` or `makeself`.)
+6. (To distribute your app through the package management system, like `apt`, `yum`, `pacman` etc, please follow their official documents to create the packages.)
 
 
 ### Linux .desktop file
@@ -63,6 +63,21 @@ Desktop file resources:
 - https://wiki.archlinux.org/index.php/Desktop_entries
 - https://developer.gnome.org/integration-guide/stable/desktop-files.html.en
 - https://specifications.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html
+
+## Package as Windows distribution
+
+1. Download a Windows 32 or 64 bit release from https://nwjs.io/downloads/ and unzip the download.
+2. Copy all files in the `/src` directory of the project into the root directory on the downloaded package. Your source files and `package.json` manifest file should be in the same directory as the `nw.exe` file.
+3. (Icon for nw.exe can be replaced with tools like Resource Hacker, nw-builder and node-winresourcer.)
+4. (You can create a installer to deploy all necessary files onto end user’s system. You can use Windows Installer, NSIS or Inno Setup.)
+
+### Windows installers
+
+INNO Setup is voted best at https://www.slant.co/topics/4794/versus/~inno-setup_vs_setup-factory_vs_advanced-installer.
+
+INNO Setup resources:
+
+- http://www.jrsoftware.org/isinfo.php
 
 ## Resources
 
