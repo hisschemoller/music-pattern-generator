@@ -68,6 +68,10 @@ export default function createCanvas3d(specs, my) {
           case e.detail.actions.SET_CAMERA_POSITION:
             updateCamera(e.detail.state);
             break;
+          
+          case e.detail.actions.LIBRARY_DROP:
+            onDrop(e.detail.state);
+            break;
         }
       });
       
@@ -86,7 +90,6 @@ export default function createCanvas3d(specs, my) {
       renderer.domElement.addEventListener(eventType.start, onTouchStart);
       renderer.domElement.addEventListener(eventType.move, dragMove);
       renderer.domElement.addEventListener(eventType.end, dragEnd);
-      renderer.domElement.addEventListener('drop', onDrop);
 
       // prevent system doubleclick to interfere with the custom doubleclick
       renderer.domElement.addEventListener('dblclick', function(e) {e.preventDefault();});
@@ -114,12 +117,13 @@ export default function createCanvas3d(specs, my) {
      * Drop of object dragged from library.
      * Create a new processor.
      */
-    onDrop = function(e) {
-      e.preventDefault();
-      updateMouseRay(e);
+    onDrop = function(state) {
+      console.log(state.libraryDropPosition);
+      const { type, x, y, } = state.libraryDropPosition;
+      updateMouseRay({ clientX: x, clientY: y, });
       if (raycaster.ray.intersectPlane(plane, intersection)) {
         store.dispatch(store.getActions().createProcessor({
-          type: e.dataTransfer.getData('text/plain'),
+          type,
           positionX: intersection.x,
           positionY: intersection.y,
           positionZ: intersection.z,

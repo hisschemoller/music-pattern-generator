@@ -28,6 +28,11 @@ export default function createReducers() {
                 y: 0,
                 z: 0,
             },
+            libraryDropPosition: {
+                type: null,
+                x: 0,
+                y: 0,
+            },
             bpm: 120,
             selectedID: null,
             theme: 'light', // 'light|dark' 
@@ -392,6 +397,17 @@ export default function createReducers() {
                             x: isRelative ? state.camera.x + x : x,
                             y: isRelative ? state.camera.y + y : y,
                             z: isRelative ? state.camera.z + z : z,
+                        }
+                    };
+                
+                case actions.LIBRARY_DROP:
+                    console.log(action);
+                    return {
+                        ...state,
+                        libraryDropPosition: {
+                            type: action.processorType,
+                            x: action.x,
+                            y: action.y,
                         }
                     };
 
