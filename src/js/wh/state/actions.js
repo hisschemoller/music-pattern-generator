@@ -30,7 +30,8 @@ export default function createActions(specs = {}, my = {}) {
         TOGGLE_CONNECT_MODE = 'TOGGLE_CONNECT_MODE',
         CONNECT_PROCESSORS = 'CONNECT_PROCESSORS',
         DISCONNECT_PROCESSORS = 'DISCONNECT_PROCESSORS',
-        SET_CAMERA_POSITION = 'SET_CAMERA_POSITION';
+        SET_CAMERA_POSITION = 'SET_CAMERA_POSITION',
+        LIBRARY_DROP = 'LIBRARY_DROP';
 
     return {
 
@@ -369,6 +370,11 @@ export default function createActions(specs = {}, my = {}) {
         SET_CAMERA_POSITION,
         setCameraPosition: (x, y, z, isRelative = false) => {
             return { type: SET_CAMERA_POSITION, x, y, z, isRelative, };
+        },
+
+        LIBRARY_DROP,
+        libraryDrop: (processorType, x, y) => {
+            return { type: LIBRARY_DROP, processorType, x, y, };
         },
     };
 }

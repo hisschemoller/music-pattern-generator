@@ -3,6 +3,7 @@
 <head>
     <title>mpg</title>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/style.css">
@@ -251,10 +252,15 @@
         </li>
     </template><!-- /template-midi-port -->
     <template id="template-library-item">
-        <li class="library__item" draggable="true">
+        <li class="library__item">
             <span class="library__item-label"></span>
-        </li><!-- /template-library-item -->
-    </template>
+        </li>
+    </template><!-- /template-library-item -->
+    <template id="template-library-dragger">
+        <div class="library__dragger">
+            <span class="library__dragger-label"></span>
+        </div>
+    </template><!-- /template-library-dragger -->
     <script src="js/lib/three.js"></script>
     <!-- LineSegmentsGeometry must be loaded before LineGeometry -->
     <script src="js/lib/lines/LineSegmentsGeometry.js"></script>
