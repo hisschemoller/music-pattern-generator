@@ -27,7 +27,7 @@
     },
     "author": "Wouter Hisschemoller",
     "dependencies": {
-        "three": "^0.97.0"
+        "three": "^0.102.1"
     },
     "devDependencies": {
         "babel-core": "^6.26.0",
