@@ -250,10 +250,15 @@
         </li>
     </template><!-- /template-midi-port -->
     <template id="template-library-item">
-        <li class="library__item" draggable="true">
+        <li class="library__item">
             <span class="library__item-label"></span>
-        </li><!-- /template-library-item -->
-    </template>
+        </li>
+    </template><!-- /template-library-item -->
+    <template id="template-library-dragger">
+        <div class="library__dragger">
+            <span class="library__dragger-label"></span>
+        </div>
+    </template><!-- /template-library-dragger -->
     <script src="js/lib/three.js"></script>
     <!-- LineSegmentsGeometry must be loaded before LineGeometry -->
     <script src="js/lib/lines/LineSegmentsGeometry.js"></script>

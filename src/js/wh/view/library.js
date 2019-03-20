@@ -8,6 +8,7 @@ export default function createLibraryView(specs, my) {
         store = specs.store,
         listEl = document.querySelector('.library__list'),
         dragType = null,
+        dragEl = null,
 
         init = function() {
             document.addEventListener(store.STATE_CHANGE, (e) => {
@@ -38,31 +39,43 @@ export default function createLibraryView(specs, my) {
                 el.dataset.type = id;
                 el.addEventListener(eventType.start, onTouchStart);
             });
+
+            const draggerTemplate = document.querySelector('#template-library-dragger');
+            dragEl = draggerTemplate.content.cloneNode(true).firstElementChild;
         },
 
         onTouchStart = e => {
             e.preventDefault();
             const el = e.currentTarget;
-            dragType = el.dataset.type
+            dragType = el.dataset.type;
             document.addEventListener(eventType.move, onTouchMove);
             document.addEventListener(eventType.end, onTouchEnd);
+
+            dragEl.querySelector('.library__dragger-label').textContent = el.textContent;
+            document.body.appendChild(dragEl);
+            setDragElPosition(e);
         },
 
         onTouchMove = e => {
-            const x = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
-            const y = e.type === 'mousemove' ? e.clientY : e.touches[0].clientY;
-            // console.log(eventType.move, x, y);
+            setDragElPosition(e);
         },
 
         onTouchEnd = e => {
             e.preventDefault();
             document.removeEventListener(eventType.move, onTouchMove);
             document.removeEventListener(eventType.end, onTouchEnd);
+            document.body.removeChild(dragEl);
+            const el = e.type === 'mouseup' ? e.currentTarget : e.changedTouches[0].target.parentNode;
             const x = e.type === 'mouseup' ? e.clientX : e.changedTouches[0].clientX;
             const y = e.type === 'mouseup' ? e.clientY : e.changedTouches[0].clientY;
-            const el = e.type === 'mouseup' ? e.currentTarget : e.changedTouches[0].target.parentNode;
             store.dispatch(store.getActions().libraryDrop(dragType, x, y));
             dragType = null;
+        },
+        
+        setDragElPosition = e => {
+            const x = e.type.indexOf('mouse') !== -1 ? e.clientX : e.touches[0].clientX;
+            const y = e.type.indexOf('mouse') !== -1 ? e.clientY : e.touches[0].clientY;
+            dragEl.setAttribute('style', `left: ${x - (dragEl.offsetWidth * 0.5)}px; top: ${y - (dragEl.offsetHeight * 0.9)}px;`);
         };
     
     that = specs.that || {};
