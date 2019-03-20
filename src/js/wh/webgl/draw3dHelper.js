@@ -7,11 +7,12 @@ const {
   LineMaterial,
   Mesh,
   MeshBasicMaterial,
+  Vector2,
   VertexColors,
 } = THREE;
 
 const defaultSegments = 64;
-const defaultLineWidth = 0.0012;
+const defaultLineWidth = 2;
 const defaultLineColor = 0xdddddd;
 
 const lineMaterial = new LineMaterial({
@@ -19,10 +20,11 @@ const lineMaterial = new LineMaterial({
   linewidth: defaultLineWidth,
   vertexColors: VertexColors,
   dashed: false,
+  resolution: new Vector2(window.innerWidth, window.innerHeight),
 });
 
 const textLineMaterial = lineMaterial.clone();
-textLineMaterial.linewidth = 0.0008;
+textLineMaterial.linewidth = 1;
 
 /** 
  * Cache of circle outlines, so they can be cloned once created.
@@ -32,7 +34,7 @@ const circleCache = {};
 
 /** 
  * Create a line along a path of coordinates.
- * @param {Array} points An array of point objects.
+ * @param {Array} points An array of Vector2 points.
  * @param {Number} points.x
  * @param {Number} points.y
  * @param {Number} color Color of the line.
@@ -78,6 +80,7 @@ export function redrawShape(line2, points = [], color = defaultLineColor) {
     line2.geometry.setPositions(positions);
     line2.geometry.setColors(colors);
     line2.computeLineDistances();
+    line2.scale.set(1, 1, 1);
   }
 
   return line2;
