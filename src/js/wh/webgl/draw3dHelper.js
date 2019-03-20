@@ -32,6 +32,15 @@ textLineMaterial.linewidth = 1;
  */
 const circleCache = {};
 
+/**
+ * Recalculate material so the line thickness remains the same for vertical 
+ * and horizontal lines.
+ */
+export function setLineMaterialResolution() {
+  lineMaterial.resolution.set(window.innerWidth, window.innerHeight);
+  textLineMaterial.resolution.set(window.innerWidth, window.innerHeight);
+}
+
 /** 
  * Create a line along a path of coordinates.
  * @param {Array} points An array of Vector2 points.

@@ -1,5 +1,6 @@
 import addWindowResize from '../view/windowresize.js';
 import addConnections3d from './connections3d.js';
+import { setLineMaterialResolution } from './draw3dHelper.js';
 import { getThemeColors } from '../state/selectors.js';
 import { eventType } from '../core/util.js';
 
@@ -109,6 +110,8 @@ export default function createCanvas3d(specs, my) {
       let scale = 0.15;
       let fieldOfView = camera.fov * (Math.PI / 180); // convert fov to radians
       let targetZ = canvasRect.height / (2 * Math.tan(fieldOfView / 2));
+
+      setLineMaterialResolution();
 
       store.dispatch(store.getActions().setCameraPosition(camera.position.x, camera.position.y, targetZ * scale));
     },
