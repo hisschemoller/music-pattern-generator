@@ -4,7 +4,7 @@
 Name=Music Pattern Generator
 
 # The executable of the application, possibly with arguments.
-Exec=nw
+Exec=/opt/music-pattern-generator/nw
 
 # The version of the desktop entry specification to which this file complies
 Version=1.0

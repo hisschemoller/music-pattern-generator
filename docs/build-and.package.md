@@ -58,6 +58,14 @@ In GNOME and other freedesktop.org-compliant desktops, an application gets regis
   - `/usr/share/applications directory` to be accessible by everyone or
   - `/.local/share/applications` to be accessible to a single user.
 
+### Manually install on Linux
+
+Download a Linux package and copy the source files and manifest file as in steps 1 and 2 of 'Package for Linux' above.
+
+1. Rename the package to music-pattern-generator.
+2. Copy the package to the `/opt` directory.
+3. Copy the `music-pattern-generator.desktop` file to `/usr/share/applications`.
+
 Desktop file resources:
 
 - https://wiki.archlinux.org/index.php/Desktop_entries
