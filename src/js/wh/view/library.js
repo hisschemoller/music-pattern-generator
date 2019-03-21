@@ -1,5 +1,3 @@
-import { eventType } from '../core/util.js';
-
 /**
  * Library for all processor types.
  */
@@ -37,7 +35,8 @@ export default function createLibraryView(specs, my) {
 
                 el.querySelector('.library__item-label').innerHTML = type.name;
                 el.dataset.type = id;
-                el.addEventListener(eventType.start, onTouchStart);
+                el.addEventListener('touchstart', onTouchStart);
+                el.addEventListener('mousedown', onTouchStart);
             });
 
             const draggerTemplate = document.querySelector('#template-library-dragger');
@@ -48,8 +47,10 @@ export default function createLibraryView(specs, my) {
             e.preventDefault();
             const el = e.currentTarget;
             dragType = el.dataset.type;
-            document.addEventListener(eventType.move, onTouchMove);
-            document.addEventListener(eventType.end, onTouchEnd);
+            document.addEventListener('touchmove', onTouchMove);
+            document.addEventListener('mousemove', onTouchMove);
+            document.addEventListener('touchend', onTouchEnd);
+            document.addEventListener('mouseup', onTouchEnd);
 
             dragEl.querySelector('.library__dragger-label').textContent = el.textContent;
             document.body.appendChild(dragEl);
@@ -62,8 +63,10 @@ export default function createLibraryView(specs, my) {
 
         onTouchEnd = e => {
             e.preventDefault();
-            document.removeEventListener(eventType.move, onTouchMove);
-            document.removeEventListener(eventType.end, onTouchEnd);
+            document.removeEventListener('touchmove', onTouchMove);
+            document.removeEventListener('mousemove', onTouchMove);
+            document.removeEventListener('touchend', onTouchEnd);
+            document.removeEventListener('mouseup', onTouchEnd);
             document.body.removeChild(dragEl);
             const el = e.type === 'mouseup' ? e.currentTarget : e.changedTouches[0].target.parentNode;
             const x = e.type === 'mouseup' ? e.clientX : e.changedTouches[0].clientX;

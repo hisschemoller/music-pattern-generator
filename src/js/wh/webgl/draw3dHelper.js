@@ -194,15 +194,21 @@ export function drawConnectors(rootObj, inputs, outputs, color) {
  * @param {Object} rootObj Outer object3D.
  */
 function drawConnector(data, id, name, rootObj, color) {
+
+  const hitarea = createCircleFilled(2, color, 0);
+  hitarea.name = name;
+  hitarea.userData.id = id;
+  hitarea.translateX(data.x);
+  hitarea.translateY(data.y);
+  rootObj.add(hitarea);
+
   const connector = createCircleOutline(0.6, color);
-  connector.name = name;
-  connector.userData.id = id;
-  connector.translateX(data.x);
-  connector.translateY(data.y);
-  rootObj.add(connector);
+  connector.name = 'connector';
+  hitarea.add(connector);
 
   const active = createCircleOutline(1.2, color);
   active.name = 'active';
   active.visible = false;
-  connector.add(active);
+  hitarea.add(active);
 }
+

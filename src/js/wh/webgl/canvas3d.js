@@ -87,10 +87,14 @@ export default function createCanvas3d(specs, my) {
      * Initialise DOM events for click, drag etcetera.
      */
     initDOMEvents = function() {
-      renderer.domElement.addEventListener(eventType.click, onClick);
-      renderer.domElement.addEventListener(eventType.start, onTouchStart);
-      renderer.domElement.addEventListener(eventType.move, dragMove);
-      renderer.domElement.addEventListener(eventType.end, dragEnd);
+      renderer.domElement.addEventListener('touchend', onClick);
+      renderer.domElement.addEventListener('click', onClick);
+      renderer.domElement.addEventListener('touchstart', onTouchStart);
+      renderer.domElement.addEventListener('mousedown', onTouchStart);
+      renderer.domElement.addEventListener('touchmove', dragMove);
+      renderer.domElement.addEventListener('mousemove', dragMove);
+      renderer.domElement.addEventListener('touchend', dragEnd);
+      renderer.domElement.addEventListener('mouseup', dragEnd);
 
       // prevent system doubleclick to interfere with the custom doubleclick
       renderer.domElement.addEventListener('dblclick', function(e) {e.preventDefault();});
