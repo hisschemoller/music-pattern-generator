@@ -58,6 +58,12 @@ In GNOME and other freedesktop.org-compliant desktops, an application gets regis
   - `/usr/share/applications directory` to be accessible by everyone or
   - `/.local/share/applications` to be accessible to a single user.
 
+Desktop file resources:
+
+- https://wiki.archlinux.org/index.php/Desktop_entries
+- https://developer.gnome.org/integration-guide/stable/desktop-files.html.en
+- https://specifications.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html
+
 ### Manually install on Linux
 
 Download a Linux package and copy the source files and manifest file as in steps 1 and 2 of 'Package for Linux' above.
@@ -66,11 +72,9 @@ Download a Linux package and copy the source files and manifest file as in steps
 2. Copy the package to the `/opt` directory.
 3. Copy the `music-pattern-generator.desktop` file to `/usr/share/applications`.
 
-Desktop file resources:
+### Create a .deb package for Debian and Ubuntu
 
-- https://wiki.archlinux.org/index.php/Desktop_entries
-- https://developer.gnome.org/integration-guide/stable/desktop-files.html.en
-- https://specifications.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html
+- http://www.king-foo.com/2011/11/creating-debianubuntu-deb-packages/
 
 ## Package as Windows distribution
 
