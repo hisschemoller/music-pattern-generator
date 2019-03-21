@@ -163,11 +163,6 @@ export default function createActions(specs = {}, my = {}) {
                     }
                 });
 
-                console.log('Processor order:');
-                data.processors.allIds.forEach(id => {
-                    console.log(':', data.processors.byId[id].params.byId['name'].value);
-                });
-
                 // create the project with the merged ports
                 dispatch(getActions().createProject(data));
             }

@@ -11,10 +11,7 @@ export default function orderProcessors(state) {
       followDownStream(node, nodes, ordered);
     }
   });
-  console.log('Processor order:');
-  ordered.forEach(id => {
-    console.log(':', state.processors.byId[id].params.byId['name'].value);
-  });
+  
   state.processors.allIds = [ ...ordered ];
 }
 
