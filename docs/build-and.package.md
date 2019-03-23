@@ -72,6 +72,15 @@ Download a Linux package and copy the source files and manifest file as in steps
 2. Copy the package to the `/opt` directory.
 3. Copy the `music-pattern-generator.desktop` file to `/usr/share/applications`.
 
+To copy to the source files directory and the desktop file use the `cp` command with administrator rights in a terminal:
+
+```bash
+$ sudo cp -r /path/to/music-pattern-generator /opt
+$ sudo cp /path/to/music-pattern-generator.desktop /usr/share/applications
+```
+
+You will now be able to find and run the app just like any program you've installed. No restart or anything needed.
+
 ### Create a .deb package for Debian and Ubuntu
 
 - http://www.king-foo.com/2011/11/creating-debianubuntu-deb-packages/
