@@ -10,7 +10,7 @@ Exec=/opt/music-pattern-generator/nw
 Version=1.0
 
 # The name of the icon that will be used to display this entry
-Icon=icon.png
+Icon=/opt/music-pattern-generator/icon.png
 
 # The type of the what this desktop item points to
 Type=Application
