@@ -90,15 +90,50 @@ You will now be able to find and run the app just like any program you've instal
 1. Download a Windows 32 or 64 bit release from https://nwjs.io/downloads/ and unzip the download.
 2. Copy all files in the `/src` directory of the project into the root directory on the downloaded package. Your source files and `package.json` manifest file should be in the same directory as the `nw.exe` file.
 3. (Icon for nw.exe can be replaced with tools like Resource Hacker, nw-builder and node-winresourcer.)
-4. (You can create a installer to deploy all necessary files onto end user’s system. You can use Windows Installer, NSIS or Inno Setup.)
+4. (You can create an installer to deploy all necessary files onto end user’s system. You can use Windows Installer, NSIS or Inno Setup.)
+
+Resource hacker resources:
+
+- http://www.angusj.com/resourcehacker/
+- https://www.howtogeek.com/75983/stupid-geek-tricks-how-to-modify-the-icon-of-an-.exe-file/
 
 ### Windows installers
 
 INNO Setup is voted best at https://www.slant.co/topics/4794/versus/~inno-setup_vs_setup-factory_vs_advanced-installer.
 
+- Download Inno Setup from http://www.jrsoftware.org/isdl.php (The current version is innosetup-5.6.1.exe)
+- Install Inno Setup as usual for Windows applications.
+- Launch Inno Setup.
+- In the Welcome window select to "Create a new script file using the Script Wizard".
+- The wizard opens with the Application Information screen:
+  - The name of the application (Application name), 
+  - its version (Application version), 
+  - the company (or person) owner (Application publisher) 
+  - the website of the application (Application website). 
+  - Then click on next.
+- Next is the Application Folder screen;
+  - keep the destination base folder at "Program Files folder".
+  - application folder name "Music Pattern Generator"
+- Application Files
+  - For "Application main executable file" browse to `nw.exe`.
+  - For "Other application files" add the whole downloaded packge with the source files and manifest file.
+- Application Icons
+  - "Start Menu folder name application": "Music Pattern Generator"
+- Application Documentation
+  - For "License file" choose the project's `/LICENSE` file.
+- Setup Languages
+  - Choose English, probably?
+- Compiler Settings
+  - For "Custom compiler output folder" choose some directory where to save the installer to create.
+  - For "Compiler output base file name" use "music-pattern-generator_${version}".
+- Click 'Finish'.
+- Click 'Compile' to create the installer in the selected directory.
+
+
 INNO Setup resources:
 
 - http://www.jrsoftware.org/isinfo.php
+- https://www.supinfo.com/articles/single/7176-create-installer-with-inno-setup
 
 ## Resources
 
