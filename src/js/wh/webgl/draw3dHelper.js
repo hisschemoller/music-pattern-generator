@@ -211,4 +211,3 @@ function drawConnector(data, id, name, rootObj, color) {
   active.visible = false;
   hitarea.add(active);
 }
-

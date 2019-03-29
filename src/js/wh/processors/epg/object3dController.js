@@ -35,6 +35,7 @@ export function createObject3dController(specs, my) {
     pointerRotation,
     pointerRotationPrevious = 0,
     dotAnimations = {},
+    dotMaxRadius = 1,
     defaultColor,
     centerRadius = 3,
     centerScale = 0,
@@ -146,14 +147,16 @@ export function createObject3dController(specs, my) {
       const polygonPoints = [];
 
       // add new dots
-      radius3d = 8 + (steps > 16 ? (steps - 16) * 0.5 : 0);
+      const dotRadius = dotMaxRadius - 0 - (Math.max(0, steps - 16) * 0.009);
+      const dotRadiusRounded = Math.round(dotRadius * 10) / 10;
+      radius3d = 8 + (steps > 16 ? (steps - 16) * 0.1 : 0);
       for (let i = 0; i < steps; i++) {
         let dot;
         const rad = TWO_PI * (i / steps);
         if (euclid[i]) {
-          dot = createCircleOutlineFilled(1, defaultColor);
+          dot = createCircleOutlineFilled(dotRadiusRounded, defaultColor);
         } else {
-          dot = createCircleOutline(1, defaultColor);
+          dot = createCircleOutline(dotRadiusRounded, defaultColor);
         }
         dot.name = 'dot';
         dot.translateX(Math.sin(rad) * radius3d);
@@ -400,3 +403,4 @@ export function createObject3dController(specs, my) {
   that.draw = draw;
   return that;
 }
+
