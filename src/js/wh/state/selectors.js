@@ -8,9 +8,9 @@ export function memoize(state, action = {}, actions) {
       document.querySelector('#app').dataset.theme = state.theme;
       const themeStyles = window.getComputedStyle(document.querySelector('[data-theme]'));
       themeColors.colorBackground = themeStyles.getPropertyValue('--bg-color').trim();
-      themeColors.colorHigh = themeStyles.getPropertyValue('--text-color').trim();
-      themeColors.colorMid = themeStyles.getPropertyValue('--border-color').trim();
-      themeColors.colorLow = themeStyles.getPropertyValue('--panel-bg-color').trim();
+      themeColors.colorHigh = themeStyles.getPropertyValue('--webgl-high-color').trim();
+      themeColors.colorMid = themeStyles.getPropertyValue('--webgl-mid-color').trim();
+      themeColors.colorLow = themeStyles.getPropertyValue('--webgl-low-color').trim();
       break;
   }
 }
