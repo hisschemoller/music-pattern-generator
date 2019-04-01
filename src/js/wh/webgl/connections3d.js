@@ -7,15 +7,10 @@ import {
 } from './draw3dHelper.js';
 
 const {
-  BufferAttribute,
-  BufferGeometry,
-  Color,
   CubicBezierCurve,
   Group,
-  Line,
   LineBasicMaterial,
   Vector2,
-  Vector3,
 } = THREE;
 
 export default function addConnections3d(specs, my) {
@@ -269,7 +264,7 @@ export default function addConnections3d(specs, my) {
      * Update theme colors.
      */
     setTheme = function() {
-      defaultColor = getThemeColors().colorHigh;
+      defaultColor = getThemeColors().colorLow;
       lineMaterial = new LineBasicMaterial({
         color: defaultColor,
       });

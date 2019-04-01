@@ -62,7 +62,7 @@ export function createObject3d(id, inputs, outputs) {
       group.add(label);
 
       // add inputs and outputs 
-      drawConnectors(group, inputs, outputs, defaultColor);
+      drawConnectors(group, inputs, outputs, getThemeColors().colorLow);
 
       return group;
     };

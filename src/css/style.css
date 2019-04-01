@@ -108,6 +108,7 @@
     --slider-track-height: 2px;
     --subheader-bg-color: #999;
     --text-color: #333;
+    --webgl-low-color: #ddd;
 }
 div[data-theme='dev'] {
     --assign-bg-color: rgba(0, 0, 0, 0.1);
@@ -125,6 +126,7 @@ div[data-theme='dev'] {
     --panel-bg-color: #eee;
     --subheader-bg-color: #ddd;
     --text-color: #bbb;
+    --webgl-low-color: #eee;
 }
 div[data-theme='dark'] {
     --assign-bg-color: rgba(255, 255, 255, 0.2);
@@ -142,6 +144,7 @@ div[data-theme='dark'] {
     --panel-bg-color: #333;
     --subheader-bg-color: #666;
     --text-color: #ccc;
+    --webgl-low-color: #333;
 }
 
 * {
