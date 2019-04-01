@@ -92,6 +92,8 @@ You will now be able to find and run the app just like any program you've instal
 3. (Icon for nw.exe can be replaced with tools like Resource Hacker, nw-builder and node-winresourcer.)
 4. (You can create an installer to deploy all necessary files onto end user’s system. You can use Windows Installer, NSIS or Inno Setup.)
 
+After step 2 nw.exe will run the app.
+
 Resource hacker resources:
 
 - http://www.angusj.com/resourcehacker/
@@ -116,7 +118,7 @@ INNO Setup is voted best at https://www.slant.co/topics/4794/versus/~inno-setup_
   - application folder name "Music Pattern Generator"
 - Application Files
   - For "Application main executable file" browse to `nw.exe`.
-  - For "Other application files" add the whole downloaded packge with the source files and manifest file.
+  - For "Other application files" add the whole downloaded package with the source files and manifest file.
 - Application Icons
   - "Start Menu folder name application": "Music Pattern Generator"
 - Application Documentation
