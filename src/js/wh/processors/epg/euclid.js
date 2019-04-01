@@ -17,7 +17,7 @@ export function getEuclidPattern(steps, pulses) {
 }
 
 export function rotateEuclidPattern(pattern, rotation) {
-    const elementsToShift = pattern.splice(rotation);
+    const elementsToShift = pattern.splice(pattern.length - rotation);
     return elementsToShift.concat(pattern);
 }
 

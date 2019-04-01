@@ -270,7 +270,7 @@ export function createObject3dController(specs, my) {
      * @param {Number} rotation Euclidean necklace rotation.
      */
     updateZeroMarker = function(steps, rotation) {
-        var rad = TWO_PI * (-rotation / steps),
+        var rad = TWO_PI * (rotation / steps),
             radius = radius3d + 3;
         zeroMarker3d.position.x = Math.sin(rad) * radius;
         zeroMarker3d.position.y = Math.cos(rad) * radius;
