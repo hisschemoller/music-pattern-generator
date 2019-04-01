@@ -9,7 +9,6 @@ import { getThemeColors } from '../../state/selectors.js';
 
 const {
   Group,
-  LineBasicMaterial,
   Mesh,
   MeshBasicMaterial,
   Shape,
@@ -19,28 +18,17 @@ const {
 
 export function createObject3d(id, inputs, outputs) {
     
-  let polygon,
-    TWO_PI = Math.PI * 2,
-    centreRadius = 3,
-    defaultColor,
-    lineMaterial,
-    
     /**
      * Initialization.
      */
-    init = function() {
-      defaultColor = getThemeColors().colorHigh;
-      lineMaterial = new LineBasicMaterial({
-        color: defaultColor,
-      });
+  let init = function() {
     },
     
     /**
-     * Create polygon 3D object, the shape that connects the dots. 
-     * @param {object} lineMaterial Default line drawing material.
+     * Create polygon 3D object, the shape that connects the dots.
      * @param {number} color Fill color.
      */
-    createPolygon = function(lineMaterial, color) {
+    createPolygon = function(color) {
       const fillShape = new Shape();
       const fillGeometry = new ShapeGeometry(fillShape);
       const fillMaterial = new MeshBasicMaterial({
@@ -66,6 +54,8 @@ export function createObject3d(id, inputs, outputs) {
      * @return {object} Group of drag plane.
      */
     createWheel = function() {
+      const defaultColor = getThemeColors().colorHigh;
+
       const hitarea = createCircleFilled(3, defaultColor);
       hitarea.name = 'hitarea';
       hitarea.material.opacity = 0.0;
@@ -84,7 +74,7 @@ export function createObject3d(id, inputs, outputs) {
       const pointer = createShape();
       pointer.name = 'pointer';
       
-      const polygon = createPolygon(lineMaterial, defaultColor);
+      const polygon = createPolygon(defaultColor);
       polygon.name = 'polygon';
       
       const dots = new Group();
