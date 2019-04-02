@@ -35,7 +35,7 @@ export function createObject3d(id, inputs, outputs) {
           color: color,
           transparent: true
       });
-      fillMaterial.opacity = 0.2;
+      fillMaterial.opacity = 0.15;
       const fillMesh = new Mesh(fillGeometry, fillMaterial);
       fillMesh.name = 'polygonFill';
       

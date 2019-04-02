@@ -215,7 +215,7 @@ export function createObject3dController(specs, my) {
         }
         
         line = polygon3d.getObjectByName('polygonLine');
-        redrawShape(line, points, defaultColor);
+        redrawShape(line, points, getThemeColors().colorLow);
     },
             
     /**
