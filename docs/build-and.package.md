@@ -29,7 +29,7 @@ NW can be installed as a development dependency. A script in package.json can ru
 }
 ```
 
-## Package as Mac app
+## Package as app for Mac
 
 1. Download the Mac OS X 64-bit release from https://nwjs.io/downloads/ and unzip the download.
 2. Package all the files in the `/src` directory into a zip file and rename it `app.nw`.
@@ -38,6 +38,58 @@ NW can be installed as a development dependency. A script in package.json can ru
 5. Also overwrite `nwjs.app/Contents/Resources/documents.icns` with the `icons.icns` file.
 
 The file `nwjs.app` is now an executable that runs the app. Copy and rename it to `MusicPatternGenerator.app`. Doubleclick the app to run it.
+
+## Create an installer dmg file for Mac
+
+1. On a Mac, create a new folder named `mpg-installer`.
+2. Copy the app into the folder.
+3. Start Disk Utility.
+4. Go to File > New Image > Image from Folder... and choose the new folder.
+5. Set the name to `music-pattern-generator_${version}.dmg`
+6. Choose a destination folder where to save the installer.
+7. Click the "Save" button.
+
+### Create the template
+
+1. Start Disk Utility.
+2. Go to File > New Image > Blank Image...
+3. Set the file name of the the image to `InstallerTemplate.dmg`.
+4. Choose a destination folder where to save the installer.
+5. Name the image 'InstallerTemplate'.
+6. Select a size that's enough for the size of the app, 320MB.
+7. Lease the other fields as they are.
+8. Click 'Save' to create the dmg file.
+9. Doubleclick `InstallerTemplate.dmg` to open it. It will show up in finder as a device.
+10. In the Finder menu choose View > Show View Options.
+11. Customize the look of the folder. Set it to Icon View, larger icons etc.
+12. Drag the `music-pattern-generator.app` file into the folder.
+13. Organize the icons within the folder.
+14. Eject the disk image.
+
+### Build the final DMG
+
+1. Start Disk Utility.
+3. Choose Images > Convert... from the menu.
+2. Select `InstallerTemplate.dmg` just created.
+4. Enter the name of the final image, `music-pattern-generator_${version}.dmg`.
+5. Select Compressed as the Image Format.
+6. Click 'Save' to create the dmg file.
+
+
+
+
+
+
+
+
+
+
+
+
+DMG creation resources:
+
+- https://kb.parallels.com/en/123895
+- https://www.renedohmen.nl/blog/2012/04/building-fancy-dmg-images-on-mac-os-x/
 
 ## Package for Linux
 
