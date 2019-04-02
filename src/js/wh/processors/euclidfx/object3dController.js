@@ -117,8 +117,8 @@ export function createObject3dController(specs, my) {
         const curve = new EllipseCurve(
           0, 0, 
           stepRadius, stepRadius,
-          ((i / n) * doublePI) - (Math.PI / 2),
-          (((i + 1) / n) * doublePI) - (Math.PI / 2),
+          ((i / n) * doublePI) + (Math.PI * 0.5),
+          (((i + 1) / n) * doublePI) + (Math.PI * 0.5),
           false,
           0,
         );
@@ -131,7 +131,7 @@ export function createObject3dController(specs, my) {
 
     updateRotation = function(numRotation) {
       rotation = numRotation;
-      pointer3d.rotation.z = (rotation / steps) * -doublePI;
+      pointer3d.rotation.z = (rotation / steps) * doublePI;
     },
 
     /**
