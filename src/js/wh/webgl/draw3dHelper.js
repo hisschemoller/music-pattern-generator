@@ -1,4 +1,5 @@
 const {
+  CircleBufferGeometry,
   CircleGeometry,
   Color,
   Group,
@@ -149,7 +150,7 @@ function drawLine(points, color) {
 export function createCircleFilled(radius, color, alpha = 1) {
   const numSegments = 8;
   const material = new MeshBasicMaterial({ color, transparent: true, });
-  const geometry = new CircleGeometry(radius, numSegments);              
+  const geometry = new CircleBufferGeometry(radius, numSegments);              
   material.opacity = alpha;
   return new Mesh(geometry, material);
 }

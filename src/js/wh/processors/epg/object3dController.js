@@ -1,11 +1,8 @@
 import {
-  BufferAttribute,
-  BufferGeometry,
   LineBasicMaterial,
   Shape,
-  ShapeGeometry,
+  ShapeBufferGeometry,
   Vector2,
-  Vector3,
 } from '../../../lib/three.module.js';
 import { getThemeColors } from '../../state/selectors.js';
 import createObject3dControllerBase from '../../webgl/object3dControllerBase.js';
@@ -188,8 +185,8 @@ export function createObject3dController(specs, my) {
      * @param {array} points Coordinates of the shape points.
      */
     updatePolygon = function(points) {
-        let i, n, line, lineGeom, fillShape, fillGeom;
-        
+        let i, n;
+
         if (points.length > 2) {
             polygon3d.visible = true;
         } else {
@@ -198,23 +195,23 @@ export function createObject3dController(specs, my) {
         }
         
         const fill = polygon3d.getObjectByName('polygonFill');
-
+        
         if (points.length > 3) {
-            fillShape = new Shape();
+            const fillShape = new Shape();
             fillShape.moveTo(points[0].x, points[0].y);
             n = points.length;
             for (i = 1; i < n; i++) {
                 fillShape.lineTo(points[i].x, points[i].y);
             }
             fillShape.lineTo(points[0].x, points[0].y);
-            fillGeom = new  ShapeGeometry(fillShape);
+            const fillGeom = new  ShapeBufferGeometry(fillShape);
             fill.geometry = fillGeom;
             fill.visible = true;
         } else {
             fill.visible = false;
         }
         
-        line = polygon3d.getObjectByName('polygonLine');
+        const line = polygon3d.getObjectByName('polygonLine');
         redrawShape(line, points, getThemeColors().colorLow);
     },
             

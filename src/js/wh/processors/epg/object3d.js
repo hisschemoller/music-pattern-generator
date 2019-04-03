@@ -12,7 +12,7 @@ const {
   Mesh,
   MeshBasicMaterial,
   Shape,
-  ShapeGeometry,
+  ShapeBufferGeometry,
   Vector2,
 } = THREE;
 
@@ -30,7 +30,7 @@ export function createObject3d(id, inputs, outputs) {
      */
     createPolygon = function(color) {
       const fillShape = new Shape();
-      const fillGeometry = new ShapeGeometry(fillShape);
+      const fillGeometry = new ShapeBufferGeometry(fillShape);
       const fillMaterial = new MeshBasicMaterial({
           color: color,
           transparent: true
