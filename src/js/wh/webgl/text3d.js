@@ -41,7 +41,7 @@ export default function setText3d(group, str, color) {
       // loop through the paths of the character
       svgSubPaths.forEach(svgSubPath => {
         const points = parsePathNode('M' + svgSubPath);
-        const line2 = createText(points, color);
+        const line2 = createText(points, char, color);
         line2.translateX((text3dFontData.viewBox.width + text3dFontData.spacing) * numRenderedChars);
         line2.rotateX(-Math.PI);
         lineGroup.add(line2);

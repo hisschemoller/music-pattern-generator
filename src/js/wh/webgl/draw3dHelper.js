@@ -52,7 +52,8 @@ export function setLineMaterialResolution() {
  */
 export function createShape(points = [], color = defaultLineColor) {
   const geometry = new LineGeometry();
-  const line2 = new Line2(geometry, lineMaterial);
+  const line2 = new Line2(geometry, lineMaterial.clone());
+  line2.name = 'shape';
   redrawShape(line2, points, color);
   return line2;
 }
@@ -62,12 +63,14 @@ export function createShape(points = [], color = defaultLineColor) {
  * @param {Array} points An array of point objects.
  * @param {Number} points.x
  * @param {Number} points.y
+ * @param {String} Character
  * @param {Number} color Color of the line.
  * @returns {Object} Line2 three.js object.
  */
-export function createText(points, color = defaultLineColor) {
+export function createText(points, character, color = defaultLineColor) {
   const geometry = new LineGeometry();
   const line2 = new Line2(geometry, textLineMaterial);
+  line2.name = `text_${character}`;
   redrawShape(line2, points, color);
   return line2;
 }
@@ -128,17 +131,14 @@ export function createCircleOutline(radius, color = defaultLineColor) {
   const geometry = new LineGeometry();
   geometry.setPositions(positions);
   geometry.setColors(colors);
-  const line = new Line2(geometry, lineMaterial);
+  const line = new Line2(geometry, lineMaterial.clone());
+  line.name = 'circle_outline';
   line.computeLineDistances();
 
   // add the circle to the cache
   circleCache[cacheId] = line;
 
   return line;
-}
-
-function drawLine(points, color) {
-
 }
 
 /** 
@@ -152,7 +152,9 @@ export function createCircleFilled(radius, color, alpha = 1) {
   const material = new MeshBasicMaterial({ color, transparent: true, });
   const geometry = new CircleBufferGeometry(radius, numSegments);              
   material.opacity = alpha;
-  return new Mesh(geometry, material);
+  const fill = new Mesh(geometry, material);
+  fill.name = 'circle_fill';
+  return fill;
 }
 
 /**
@@ -165,6 +167,7 @@ export function createCircleOutlineFilled(radius, color) {
   var circle = new Group();
   circle.add(createCircleFilled(radius, color));
   circle.add(createCircleOutline(radius, color));
+  circle.name = 'circle_outline_and_fill';
   return circle;
 }
 

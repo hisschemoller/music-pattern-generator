@@ -18,7 +18,6 @@ const TWO_PI = Math.PI * 2;
 
 export function createObject3dController(specs, my) {
   let that,
-    centreCircle3d,
     centreDot3d,
     dots3d,
     pointer3d,
@@ -27,18 +26,14 @@ export function createObject3dController(specs, my) {
     select3d,
     zeroMarker3d,
     radius3d,
-    lineMaterial,
     duration,
     pointerRotation,
-    pointerRotationPrevious = 0,
     dotAnimations = {},
     dotMaxRadius = 1,
     defaultColor,
-    centerRadius = 3,
     centerScale = 0,
 
     initialize = function() {
-      centreCircle3d = my.object3d.getObjectByName('centreCircle'),
       centreDot3d = my.object3d.getObjectByName('centreDot'),
       dots3d = my.object3d.getObjectByName('dots'),
       pointer3d = my.object3d.getObjectByName('pointer'),
@@ -50,9 +45,6 @@ export function createObject3dController(specs, my) {
       document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
     
       defaultColor = getThemeColors().colorHigh;
-      lineMaterial = new LineBasicMaterial({
-        color: defaultColor,
-      });
 
       const params = specs.processorData.params.byId;
       my.updateLabel(params.name.value);
@@ -112,21 +104,28 @@ export function createObject3dController(specs, my) {
      * Set theme colors on the 3D pattern.
      */
     updateTheme = function() {
-      const themeColors = getThemeColors();
-      setThemeColorRecursively(my.object3d, themeColors.colorHigh);
+      const { colorLow, colorHigh } = getThemeColors();
+      setThemeColorRecursively(my.object3d, colorLow, colorHigh);
     },
 
     /** 
      * Loop through all the object3d's children to set the color.
-     * @param {Object3d} An Object3d of which to change the color.
-     * @param {String} HEx color string of the new color.
+     * @param {Object3d} object3d An Object3d of which to change the color.
+     * @param {String} colorLow Hex color string of the low contrast color.
+     * @param {String} colorHigh Hex color string of the high contrast color.
      */
-    setThemeColorRecursively = function(object3d, color) {
+    setThemeColorRecursively = function(object3d, colorLow, colorHigh) {
       if (object3d.material && object3d.material.color) {
-        object3d.material.color.set( color );
+        switch (object3d.name) {
+          case 'polygonLine':
+            object3d.material.color.set(colorLow);
+            break;
+          default:
+            object3d.material.color.set(colorHigh);
+        }
       }
       object3d.children.forEach(childObject3d => {
-        setThemeColorRecursively(childObject3d, color);
+        setThemeColorRecursively(childObject3d, colorLow, colorHigh);
       });
     },
 
@@ -326,7 +325,6 @@ export function createObject3dController(specs, my) {
      * @param  {Number} position Position within pattern in ticks.
      */
     showPlaybackPosition = function(position) {
-        pointerRotationPrevious = pointerRotation;
         pointerRotation = TWO_PI * (-position % duration / duration);
         pointer3d.rotation.z = pointerRotation;
     },
