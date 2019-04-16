@@ -9,7 +9,6 @@ import {
 const {
   CubicBezierCurve,
   Group,
-  LineBasicMaterial,
   Vector2,
 } = THREE;
 
@@ -21,7 +20,6 @@ export default function addConnections3d(specs, my) {
       sourceConnectorID: null,
       sourceConnectorPosition: null,
     },
-    defaultColor,
     lineMaterial,
     currentCable,
     currentCableDragHandle,
@@ -31,8 +29,7 @@ export default function addConnections3d(specs, my) {
     dragHandleRadius = 1.5,
     
     init = function() {
-      defaultColor = getThemeColors().colorHigh;
-      currentCableDragHandle = createCircleOutline(dragHandleRadius, defaultColor);
+      currentCableDragHandle = createCircleOutline(dragHandleRadius, getThemeColors().colorHigh);
       currentCableDragHandle.name = 'dragHandle';
 
       document.addEventListener(store.STATE_CHANGE, (e) => {
@@ -55,14 +52,14 @@ export default function addConnections3d(specs, my) {
             break;
           
           case e.detail.actions.CREATE_PROJECT:
-            setTheme();
+            updateTheme();
             updateCables(e.detail.state);
             drawCables(e.detail.state);
             toggleConnectMode(e.detail.state.connectModeActive);
             break;
 
           case e.detail.actions.SET_THEME:
-            setTheme();
+            updateTheme();
             toggleConnectMode(e.detail.state.connectModeActive);
             break;
         }
@@ -156,17 +153,19 @@ export default function addConnections3d(specs, my) {
      * @return {Object} Cable object3d.
      */
     createCable = function(connectionId) {
+      const { colorLow } = getThemeColors();
+
       const cable = createShape();
       cable.name = connectionId;
       cablesGroup.add(cable);
 
-      const deleteBtn = createCircleFilled(deleteButtonRadius, lineMaterial.color, 0);
+      const deleteBtn = createCircleFilled(deleteButtonRadius, colorLow, 0);
       deleteBtn.name = 'delete';
       deleteBtn.userData.connectionId = connectionId;
       deleteBtn.visible = my.isConnectMode;
       cable.add(deleteBtn);
 
-      const deleteBtnBorder = createCircleOutline(deleteButtonRadius, defaultColor);
+      const deleteBtnBorder = createCircleOutline(deleteButtonRadius, colorLow);
       deleteBtnBorder.name = 'deleteBorder';
       deleteBtn.add(deleteBtnBorder);
 
@@ -174,7 +173,7 @@ export default function addConnections3d(specs, my) {
         new Vector2(-deleteCrossRadius, -deleteCrossRadius),
         new Vector2(deleteCrossRadius,  deleteCrossRadius),
       ];
-      const line1 = createShape(points1, defaultColor);
+      const line1 = createShape(points1, colorLow);
       line1.name = 'deleteCross1';
       deleteBtn.add(line1);
 
@@ -182,7 +181,7 @@ export default function addConnections3d(specs, my) {
         new Vector2(-deleteCrossRadius,  deleteCrossRadius),
         new Vector2(deleteCrossRadius, -deleteCrossRadius),
       ];
-      const line2 = createShape(points2, defaultColor);
+      const line2 = createShape(points2, colorLow);
       line2.name = 'deleteCross2';
       deleteBtn.add(line2);
 
@@ -234,7 +233,7 @@ export default function addConnections3d(specs, my) {
         );
         const points = curve.getPoints(50);
         
-        redrawShape(cable, points, defaultColor);
+        redrawShape(cable, points, getThemeColors().colorLow);
 
         const deleteBtn = cable.getObjectByName('delete');
         if (deleteBtn) {
@@ -263,12 +262,26 @@ export default function addConnections3d(specs, my) {
     /**
      * Update theme colors.
      */
-    setTheme = function() {
-      defaultColor = getThemeColors().colorLow;
-      lineMaterial = new LineBasicMaterial({
-        color: defaultColor,
+    updateTheme = function() {
+      if (cablesGroup) {
+        const { colorLow, colorHigh } = getThemeColors();
+        setThemeColorRecursively(cablesGroup, colorLow, colorHigh);
+      }
+    },
+
+    /** 
+     * Loop through all the object3d's children to set the color.
+     * @param {Object3d} object3d An Object3d of which to change the color.
+     * @param {String} colorLow Hex color string of the low contrast color.
+     * @param {String} colorHigh Hex color string of the high contrast color.
+     */
+    setThemeColorRecursively = function(object3d, colorLow, colorHigh) {
+      if (object3d.material && object3d.material.color) {
+        object3d.material.color.set(colorLow);
+      }
+      object3d.children.forEach(childObject3d => {
+        setThemeColorRecursively(childObject3d, colorLow, colorHigh);
       });
-      currentCableDragHandle.material.color.set( defaultColor );
     };
   
   my = my || {};
