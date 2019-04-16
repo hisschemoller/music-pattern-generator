@@ -41,12 +41,8 @@ export default function createMIDI(specs) {
                 navigator.requestMIDIAccess({
                     sysex: !!sysex
                 }).then(function(_midiAccess) {
-                    if (!_midiAccess.inputs.size && !_midiAccess.outputs.size) {
-                        onAccessFailure('No MIDI devices found on this system.');
-                    } else {
-                        onAccessSuccess(_midiAccess);
-                        successCallback();
-                    }
+                    onAccessSuccess(_midiAccess);
+                    successCallback();
                 }, function() {
                     failureCallback('Request for MIDI access failed.');
                 });
