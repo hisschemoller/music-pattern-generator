@@ -100,36 +100,36 @@ export default function createAppView(specs, my) {
         store.dispatch(store.getActions().togglePanel('help'));
       });
             
-            document.addEventListener('keyup', function(e) {
-                switch (e.keyCode) {
-                    case 32:
-                        // don't toggle play while typing space key in a text field.
-                        if (!(e.target.tagName.toLowerCase() == 'input' && e.target.getAttribute('type') == 'text')) {
-                            store.dispatch(store.getActions().setTransport('toggle'));
-                        }
-                        break;
-                    
-                    case 83: // s
-                        console.log('state', store.getState());
-                        break;
-                }
-                resetKeyCombo = [];
-            });
+      document.addEventListener('keyup', function(e) {
+        // don't perform shortcuts while typing in a text input.
+        if (!(e.target.tagName.toLowerCase() == 'input' && e.target.getAttribute('type') == 'text')) {
+          switch (e.keyCode) {
+            case 32: // space
+              store.dispatch(store.getActions().setTransport('toggle'));
+              break;
+            
+            case 83: // s
+              console.log('state', store.getState());
+              break;
+          }
+          resetKeyCombo = [];
+        }
+      });
 
-            document.addEventListener('keydown', e => {
-                switch (e.keyCode) {
-                    case 82:
-                    case 83:
-                    case 84:
-                        // clear all data on key combination 'rst' (reset)
-                        resetKeyCombo.push(e.keyCode);
-                        if (resetKeyCombo.indexOf(82) > -1 && resetKeyCombo.indexOf(83) > -1 && resetKeyCombo.indexOf(84) > -1) {
-                            localStorage.clear();
-                            store.dispatch(store.getActions().newProject());
-                        }
-                        break;
-                }
-            });
+      document.addEventListener('keydown', e => {
+        switch (e.keyCode) {
+          case 82:
+          case 83:
+          case 84:
+            // clear all data on key combination 'rst' (reset)
+            resetKeyCombo.push(e.keyCode);
+            if (resetKeyCombo.indexOf(82) > -1 && resetKeyCombo.indexOf(83) > -1 && resetKeyCombo.indexOf(84) > -1) {
+              localStorage.clear();
+              store.dispatch(store.getActions().newProject());
+            }
+            break;
+        }
+      });
 
           document.addEventListener(store.STATE_CHANGE, e => {
             const { action, actions, state } = e.detail;
