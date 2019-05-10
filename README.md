@@ -10,6 +10,8 @@ Music Pattern Generator is an app to create musical rhythms. It sends MIDI data,
 
 Music Pattern Generator has a modular setup. Modules are called processors and are connected to form a network. Modules can produce MIDI notes, transform incoming data or send notes to MIDI output ports.
 
+![Processor types](assets/img/processor-types.jpg 'Processor types')
+
 Three types of processors are available at the moment:
 
 - ‘Euclidean’ generates euclidean rhythms
@@ -18,9 +20,9 @@ Three types of processors are available at the moment:
 
 Processors are created by dragging them out of the Library into the main area of the app.
 
-![Processor types](assets/img/processor-types.jpg 'Processor types')
-
 ### Connections
+
+![Connecting processors](assets/img/processor-connecting.jpg 'Connecting processors')
 
 Processors have their input at the top and output at the bottom. Connections are made by dragging a cable from the output of one processor to the input of another. The app must be in 'Connection mode', which is enabled by clicking the Connections button in the top Control Bar.
 
@@ -28,13 +30,11 @@ A single output can connect to multiple other processors' inputs. Just drag as m
 
 Connection cables can be deleted by clicking the Delete button that shows halfway each cable when in 'Connection mode'.
 
-![Connecting processors](assets/img/processor-connecting.jpg 'Connecting processors')
-
 ### The Euclidean processor
 
-The Euclidean processor generates rhythm patterns using the [Euclidean algorithm](https://en.wikipedia.org/wiki/Euclidean_rhythm).
-
 ![The Euclidean processor](assets/img/processor-euclidean.jpg 'The Euclidean processor')
+
+The Euclidean processor generates rhythm patterns using the [Euclidean algorithm](https://en.wikipedia.org/wiki/Euclidean_rhythm).
 
 Each processor has it's own editor panel to change it's settings. Click the 'Editor' button in the Control Bar if the panel isn't visible. The editor always shows the settings of the selected processor. Select a processor by clicking it's center circle. The processor will show a double ring to indicate it's selected.
 
