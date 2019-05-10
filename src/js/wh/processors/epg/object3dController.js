@@ -232,6 +232,8 @@ export function createObject3dController(specs, my) {
       const isMutedByNoteInControl = false;
       const mutedRadius = 4.5;
       const radius = (isMute || isNotSolo || isMutedByNoteInControl) ? mutedRadius : radius3d;
+      const x = (isMute || isNotSolo || isMutedByNoteInControl) ? 1.5 : 2.9;
+      const y = (isMute || isNotSolo || isMutedByNoteInControl) ? 2.5 : 0.7;
       
       const points = [];
       if (isNoteInControlled) {
@@ -245,9 +247,9 @@ export function createObject3dController(specs, my) {
         );
       } else {
         points.push(
-          new Vector2(-2.9, 0.7),
+          new Vector2(-x, y),
           new Vector2(0, radius),
-          new Vector2(2.9, 0.7),
+          new Vector2(x, y),
         );
         if (isSolo) {
           points.push(
