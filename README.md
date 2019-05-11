@@ -36,7 +36,7 @@ Connection cables can be deleted by clicking the Delete button that shows halfwa
 
 The Euclidean processor generates rhythm patterns using the [Euclidean algorithm](https://en.wikipedia.org/wiki/Euclidean_rhythm).
 
-Each processor has it's own editor panel to change it's settings. Click the 'Editor' button in the Control Bar if the panel isn't visible. The editor always shows the settings of the selected processor. Select a processor by clicking it's center circle. The processor will show a double ring to indicate it's selected.
+Each processor has it's own editor panel to change its settings. Click the 'Editor' button in the Control Bar if the panel isn't visible. The editor always shows the settings of the selected processor. Select a processor by clicking its center circle. The processor will show a double ring to indicate it's selected.
 
 ![The Euclidean settings editor](assets/img/processor-euclidean-editor.jpg 'The Euclidean settings editor')
 
@@ -79,7 +79,7 @@ This is the case in the image above. The target is Velocity and mode is Absolute
 
 ![The Euclid FX example 2](assets/img/processor-euclidfx-example2.jpg 'The Euclid FX example 2')
 
-The target is Pitch and mode is Relative. Depending on the state of the pattern at the moment the note arrives, a value of two is distracted from the pitch or five is added. Lets say the incoming MIDI notes have a pitch of 60, then they will be changed to 60 - 2 = 58 or 60 + 5 = 65. Or in musical terms, notes arrive in C, and are turned into either Bb or F.
+The target here is Pitch and the mode is Relative. Depending on the state of the pattern at the moment a note arrives, a value of 2 is distracted from the pitch or 5 is added. Lets say incoming MIDI notes have a pitch of 60, then they will be changed to 58 (60 - 2) or 65 (60 + 5). Or in musical terms, notes arrive in C, and are turned into either Bb or F.
 
 ## The Output processor
 
