@@ -13,6 +13,8 @@ export default function createMIDIInputView(specs, my) {
         init = function() {
             my.networkEl.dataset.disabled = 'true';
             my.networkEl.querySelector('input').setAttribute('disabled', 'disabled');
+            my.syncEl.dataset.disabled = 'true';
+            my.syncEl.querySelector('input').setAttribute('disabled', 'disabled');
         };
         
     my = my || {};
