@@ -6,7 +6,7 @@ An application to create musical rhythms in MIDI.
 
 Music Pattern Generator is an app to create musical rhythms. It sends MIDI data, so it won’t make any sounds by itself. For that you need to connect it to MIDI soft- or hardware that can handle MIDI data to produce sound.
 
-### Processors
+## Processors
 
 Music Pattern Generator has a modular setup. Modules are called processors and are connected to form a network. Modules can produce MIDI notes, transform incoming data or send notes to MIDI output ports.
 
@@ -20,7 +20,7 @@ Three types of processors are available at the moment:
 
 Processors are created by dragging them out of the Library into the main area of the app.
 
-### Connections
+## Connections
 
 ![Connecting processors](assets/img/processor-connecting.jpg 'Connecting processors')
 
@@ -30,7 +30,7 @@ A single output can connect to multiple other processors' inputs. Just drag as m
 
 Connection cables can be deleted by clicking the Delete button that shows halfway each cable when in 'Connection mode'.
 
-### The Euclidean processor
+## The Euclidean processor
 
 ![The Euclidean processor](assets/img/processor-euclidean.jpg 'The Euclidean processor')
 
@@ -50,7 +50,7 @@ Note Length uses the same timing as rate. It's generally best to not set it high
 
 The other settings are self explanatory.
 
-### The Euclid FX processor
+## The Euclid FX processor
 
 ![The Euclid FX processor](assets/img/processor-euclidfx.jpg 'The Euclid FX processor')
 
@@ -71,17 +71,17 @@ Most settings are exactly the same as in the Euclidean processor editor. The onl
   - Absolute mode overwrites the incoming data,
   - Relative mode adds to the incoming data.
 
-An Example
+### An Example
 
 This is the case in the image above. The target is Velocity and mode is Absolute. Now the velocity of the incoming MIDI notes will be changed to 50 or 100, depending on the state of the pattern at the moment the note arrives. It's previous velocity value is lost.
 
-Another example
+### Another example
 
 ![The Euclid FX example 2](assets/img/processor-euclidfx-example2.jpg 'The Euclid FX example 2')
 
 The target is Pitch and mode is Relative. Depending on the state of the pattern at the moment the note arrives, a value of two is distracted from the pitch or five is added. Lets say the incoming MIDI notes have a pitch of 60, then they will be changed to 60 - 2 = 58 or 60 + 5 = 65. Or in musical terms, notes arrive in C, and are turned into either Bb or F.
 
-### The Output processor
+## The Output processor
 
 ![The Output processor](assets/img/processor-output.jpg 'The Output processor')
 
@@ -94,6 +94,26 @@ Only MIDI ports that are enabled in the Preferences panel can be used as an outp
 Select an output in the MIDI ports list of the editor. 
 
 Multiple Output processors can be added in a single project to send MIDI to multiple ports.
+
+## The Preferences panel
+
+![The Preferences panel](assets/img/preferences.jpg 'The Preferences panel')
+
+The preference settings are saved separately from a project, so they will persist when switching between projects or creating new ones.
+
+### MIDI Inputs
+
+Only the Remote column is active for the MIDI inputs. When MIDI controllers are used for automation, the app only listens to MIDI Continuous Control data on inputs that have Remote enabled. The section about MIDI learn and MIDI automation follows below.
+
+### MIDI Outputs
+
+Only the Network column is active for the MIDI inputs. The outputs that have Network enabled can be used by the Output processors to send MIDI data to. See the section about the Output Processor above.
+
+### Interface
+
+The dark theme might be easier on the eye in low light environments.
+
+
 
 
 
