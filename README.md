@@ -49,3 +49,43 @@ Rate sets the musical timing of the pattern. At '1/16' each step will take a qua
 Note Length uses the same timing as rate. It's generally best to not set it higher than the rate or notes will overlap and produce usually unwanted results.
 
 The other settings are self explanatory.
+
+### The Euclid FX processor
+
+![The Euclid FX processor](assets/img/processor-euclidfx.jpg 'The Euclid FX processor')
+
+The Euclid FX processor transforms incoming MIDI notes and sends them out of the output. 
+
+It changes a MIDI note in one of two possible ways. A Euclidean pattern decides which of the two ways.
+
+![The Euclid FX settings editor](assets/img/processor-euclidfx-editor.jpg 'The Euclid FX settings editor')
+
+This editor panel shows the settings for the rightmost processor in the image above. 
+
+Most settings are exactly the same as in the Euclidean processor editor. The only real difference here is the Effects section.
+
+- The Target sets which property of the MIDI notes will be changed.
+- Low value sets the value when the pattern is between pulses.
+- High value sets the value when the pattern on a pulse.
+- Mode sets the way the new values are applied:
+  - Absolute mode overwrites the incoming data,
+  - Relative mode adds to the incoming data.
+
+An Example
+
+This is the case in the image above. The target is Velocity and mode is Absolute. Now the velocity of the incoming MIDI notes will be changed to 50 or 100, depending on the state of the pattern at the moment the note arrives. It's previous velocity value is lost.
+
+Another example
+
+![The Euclid FX example 2](assets/img/processor-euclidfx-example2.jpg 'The Euclid FX example 2')
+
+The target is Pitch and mode is Relative. Depending on the state of the pattern at the moment the note arrives, a value of two is distracted from the pitch or five is added. Lets say the incoming MIDI notes have a pitch of 60, then they will be changed to 60 - 2 = 58 or 60 + 5 = 65. Or in musical terms, notes arrive in C, and are turned into either Bb or F.
+
+
+
+
+
+
+
+
+
