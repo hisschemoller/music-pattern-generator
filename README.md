@@ -8,7 +8,7 @@ Music Pattern Generator is an app to create musical rhythms. It sends MIDI data,
 
 ## Processors
 
-Music Pattern Generator has a modular setup. Modules are called processors and are connected to form a network. Modules can produce MIDI notes, transform incoming data or send notes to MIDI output ports.
+Music Pattern Generator has a modular setup. Modules are called processors and are connected to form a network. Processors can produce MIDI notes, transform incoming data or send notes to MIDI output ports.
 
 ![Processor types](assets/img/processor-types.jpg 'Processor types')
 
@@ -87,11 +87,11 @@ The target is Pitch and mode is Relative. Depending on the state of the pattern 
 
 The output processor sends incoming MIDI out of the app to a MIDI port.
 
-Only MIDI ports that are enabled in the Preferences panel can be used as an output. Click the 'Preferences' button in the Control Bar to open the Preferences panel. Then enable all MIDI outputs you want to use in the Network column. As shown in the image above.
+Only MIDI ports that are enabled in the Preferences panel can be used as an output. Click the 'Preferences' button in the Control Bar to open the Preferences panel. Then in the Network column enable all MIDI outputs you want to use. As shown in the image above.
 
 ![The Output settings editor](assets/img/processor-output-editor.jpg 'The Output settings editor')
 
-Select an output in the MIDI ports list of the editor. 
+In the processor's editor panel select an output in the list of MIDI ports. Or No Output to stop the port from sending data.
 
 Multiple Output processors can be added in a single project to send MIDI to multiple ports.
 
@@ -99,7 +99,7 @@ Multiple Output processors can be added in a single project to send MIDI to mult
 
 ![The Preferences panel](assets/img/preferences.jpg 'The Preferences panel')
 
-The preference settings are saved separately from a project, so they will persist when switching between projects or creating new ones.
+The preference settings are saved separately from a project, so they will persist when switching between projects or when creating a new one.
 
 ### MIDI Inputs
 
@@ -107,7 +107,7 @@ Only the Remote column is active for the MIDI inputs. When MIDI controllers are 
 
 ### MIDI Outputs
 
-Only the Network column is active for the MIDI inputs. The outputs that have Network enabled can be used by the Output processors to send MIDI data to. See the section about the Output Processor above.
+Only the Network column is active for the MIDI outputs. The outputs that have Network enabled can be used by the Output processors to send MIDI data to. See the section about the Output Processor above.
 
 ### Interface
 
