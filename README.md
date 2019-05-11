@@ -62,7 +62,7 @@ It changes a MIDI note in one of two possible ways. A Euclidean pattern decides 
 
 This editor panel shows the settings for the rightmost processor in the image above. 
 
-Most settings are exactly the same as in the Euclidean processor editor. The only real difference here is the Effects section.
+Most settings are exactly the same as in the Euclidean processor editor. The only real difference here is the Effect section.
 
 - The Target sets which property of the MIDI notes will be changed.
 - Low value sets the value when the pattern is between pulses.
@@ -80,6 +80,20 @@ Another example
 ![The Euclid FX example 2](assets/img/processor-euclidfx-example2.jpg 'The Euclid FX example 2')
 
 The target is Pitch and mode is Relative. Depending on the state of the pattern at the moment the note arrives, a value of two is distracted from the pitch or five is added. Lets say the incoming MIDI notes have a pitch of 60, then they will be changed to 60 - 2 = 58 or 60 + 5 = 65. Or in musical terms, notes arrive in C, and are turned into either Bb or F.
+
+### The Output processor
+
+![The Output processor](assets/img/processor-output.jpg 'The Output processor')
+
+The output processor sends incoming MIDI out of the app to a MIDI port.
+
+Only MIDI ports that are enabled in the Preferences panel can be used as an output. Click the 'Preferences' button in the Control Bar to open the Preferences panel. Then enable all MIDI outputs you want to use in the Network column. As shown in the image above.
+
+![The Output settings editor](assets/img/processor-output-editor.jpg 'The Output settings editor')
+
+Select an output in the MIDI ports list of the editor. 
+
+Multiple Output processors can be added in a single project to send MIDI to multiple ports.
 
 
 
