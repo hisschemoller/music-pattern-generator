@@ -113,6 +113,43 @@ Only the Network column is active for the MIDI outputs. The outputs that have Ne
 
 The dark theme might be easier on the eye in low light environments.
 
+## MIDI Remote Control
+
+Several processor settings can be remote-controlled with an external MIDI controller that sends Continuous Control (CC) messages.
+
+To use a MIDI input port for remote control, the input must have its Remote option enabled in the Preferences panel. See above for an overview of the Preferences panel.
+
+### MIDI learn mode
+
+![The MIDI Assignments panel](assets/img/midi-assignments.jpg 'The MIDI Assignments panel')
+
+To set up remote control, MIDI controllers must first be assigned to processor settings. This is done in 'MIDI Learn' mode.
+
+MIDI Learn is enabled by clicking the 'MIDI Learn' button in the top Control Bar. The Assignments panel appears, which initially is empty and only shows its title bar.
+
+![Editor panel learn mode](assets/img/midi-learn.jpg 'Editor panel learn mode')
+
+At the same time the editor panel shows a dashed border around each setting that can be remote controlled.
+
+### Assigning MIDI Controllers to processor settings
+
+![Editor setting armed](assets/img/midi-learn2.jpg 'Editor setting armed')
+
+To create an assignment first click on the setting that you’d like to control via MIDI. The setting will show a darkened background to indicate it's ready to receive MIDI data.
+
+![Editor setting assigned](assets/img/midi-learn3.jpg 'Editor setting assigned')
+
+Now turn a knob on your hardware controller that sends MIDI CC data. Once the data is received the asignment is immediately made. The settings border turns from dashed into a solid line to indicate that the setting is assigned for remote control.
+
+![The MIDI Assignments panel](assets/img/midi-assignments2.jpg 'The MIDI Assignments panel')
+
+At the same time the assigment appears in the Assignments panel. 
+
+To remove an assignment click the delete (x) button at the right of the assignment in the list.
+
+To actually use the remote control, exit MIDI Learn mode by clicking the 'MIDI Learn' button again. Now the assigned controller will control the processor setting. You'll see and the processor graphic and editor setting follow the incoming controller data.
+
+
 
 
 
