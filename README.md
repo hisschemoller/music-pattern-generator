@@ -139,7 +139,7 @@ To create an assignment first click on the setting that you’d like to control 
 
 ![Editor setting assigned](assets/img/midi-learn3.jpg 'Editor setting assigned')
 
-Now turn a knob on your hardware controller that sends MIDI CC data. Once the data is received the asignment is immediately made. The settings border turns from dashed into a solid line to indicate that the setting is assigned for remote control.
+Now turn a knob on your hardware controller that sends MIDI CC data. When the data is received the asignment is immediately made. The settings border turns from dashed into a solid line to indicate that the setting is assigned for remote control.
 
 ![The MIDI Assignments panel](assets/img/midi-assignments2.jpg 'The MIDI Assignments panel')
 
@@ -147,16 +147,24 @@ At the same time the assigment appears in the Assignments panel.
 
 To remove an assignment click the delete (x) button at the right of the assignment in the list.
 
-To actually use the remote control, exit MIDI Learn mode by clicking the 'MIDI Learn' button again. Now the assigned controller will control the processor setting. You'll see and the processor graphic and editor setting follow the incoming controller data.
+To actually use the remote control, exit MIDI Learn mode by clicking the 'MIDI Learn' button again. Now the assigned controller will control the processor setting. You'll see and the processor graphic and editor setting follow the incoming MIDI data.
 
+## The Control Bar
 
+![The Control Bar](assets/img/controlbar.jpg 'The Control Bar')
 
+The controls, from left to right
 
+- New project
+- Open a project JSON file
+- Export a project to JSON file
+- Play / Pause toggle
 
+The tempo number input, to set the tempo in Beats Per Minute (BPM)
 
-
-
-
-
-
-
+- Library
+- Preferences
+- Assignments
+- Connections
+- Settings Editor
+- About
