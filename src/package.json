@@ -1,6 +1,6 @@
 {
   "name": "Music Pattern Generator",
-  "main":"index.html",
+  "main": "index.html",
   "chromium-args": "--disable-raf-throttling",
   "window": {
     "icon": "../assets/icons/png/128x128.png",
