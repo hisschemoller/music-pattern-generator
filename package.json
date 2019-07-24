@@ -12,35 +12,17 @@
     "license": "LGPL-3.0",
     "main": "src/index.html",
     "scripts": {
-        "build": "webpack",
         "start": "node server.js",
-        "start-build": "node server.js build",
-        "start-electron": "electron .",
-        "start-nw": "nw --disable-raf-throttling",
-        "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
-        "package-win": "electron-packager . --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/win/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Electron Tutorial App\"",
-        "package-linux": "electron-packager . --overwrite --platform=linux --arch=x64 --icon=assets/icons/png/128x128.png --prune=true --out=release-builds"
+        "start-nw": "nw --disable-raf-throttling"
     },
     "repository": {
         "type": "git",
         "url": "http://github.com/hisschemoller/music-pattern-generator"
     },
     "author": "Wouter Hisschemoller",
-    "dependencies": {
-        "three": "^0.102.1"
-    },
+    "dependencies": {},
     "devDependencies": {
-        "babel-core": "^6.26.0",
-        "babel-loader": "^7.1.2",
-        "babel-plugin-dynamic-import-webpack": "^1.1.0",
-        "babel-plugin-transform-object-rest-spread": "^6.26.0",
-        "babel-preset-es2015": "^6.24.1",
-        "copy-webpack-plugin": "^4.5.4",
-        "electron": "^2.0.0",
-        "electron-packager": "^10.1.1",
         "express": "^4.16.4",
-        "html-loader": "^0.5.4",
-        "nw": "0.36.4-sdk",
-        "webpack": "^3.10.0"
+        "nw": "0.36.4-sdk"
     }
 }
