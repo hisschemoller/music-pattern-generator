@@ -1,4 +1,5 @@
 import { memoize } from './selectors.js';
+import { setConfig } from '../core/config.js';
 
 export default function createStore(specs = {}, my = {}) {
     const STATE_CHANGE = 'STATE_CHANGE';

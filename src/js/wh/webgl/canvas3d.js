@@ -308,13 +308,15 @@ export default function createCanvas3d(specs, my) {
      * Handle single mouse click.
      */
     handleClick = function(e) {
-      updateMouseRay(e);
+      if (my.cablesGroup) {
+        updateMouseRay(e);
 
-      // look for click on connection cable delete button
-      const cableIntersects = raycaster.intersectObjects(my.cablesGroup.children, true);
-      const deleteIntersect = cableIntersects.find(intersect => intersect.object.name === 'delete');
-      if (deleteIntersect) {
-        store.dispatch(store.getActions().disconnectProcessors(deleteIntersect.object.userData.connectionId));
+        // look for click on connection cable delete button
+        const cableIntersects = raycaster.intersectObjects(my.cablesGroup.children, true);
+        const deleteIntersect = cableIntersects.find(intersect => intersect.object.name === 'delete');
+        if (deleteIntersect) {
+          store.dispatch(store.getActions().disconnectProcessors(deleteIntersect.object.userData.connectionId));
+        }
       }
     },
 
@@ -357,9 +359,8 @@ export default function createCanvas3d(specs, my) {
      * @param {event} mouseEvent Event rom which to get the mouse coordinates.
      */
     updateMouseRay = function(e) {
-
-      const x = e.clientX ? e.clientX : e.changedTouches[0].clientX;
-      const y = e.clientY ? e.clientY : e.changedTouches[0].clientY;
+      const x = isNaN(e.clientX) ? e.changedTouches[0].clientX : e.clientX;
+      const y = isNaN(e.clientY) ? e.changedTouches[0].clientY : e.clientY;
         
         // update mouse vector with mouse coordinated translated to viewport
         mousePoint.x = ((x - canvasRect.left) / canvasRect.width ) * 2 - 1;

@@ -1,7 +1,7 @@
 /**
  * Unchangeable application configuration settings.
  * 
- * Config saves the ports settings off all ports 
+ * Config saves the ports settings of all ports 
  * that have ever been connected.
  */
 export const PPQN = 480;

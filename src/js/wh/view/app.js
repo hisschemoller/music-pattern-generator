@@ -224,7 +224,7 @@ export default function createAppView(specs, my) {
       return [...accumulator, view];
     }, []);
   },
-        
+
   /**
    * Show the settings controls view for a processor.
    * @param  {String} id MIDI processor ID.
@@ -233,6 +233,10 @@ export default function createAppView(specs, my) {
     settingsViews.forEach(view => view.select(id));
   },
 
+  /**
+   * Set up a new project, create th esetting views.
+   * @param  {Object} state App state object.
+   */
   setProject = function(state) {
     var n = settingsViews.length;
     while (--n >= 0) {
@@ -240,7 +244,12 @@ export default function createAppView(specs, my) {
     }
     createSettingsViews(state);
   },
-  
+
+  /**
+   * Render the panels layout.
+   * @param  {Boolean} leftColumn Render the left panel column.
+   * @param  {Boolean} rightColumn Render the right panel column.
+   */
   renderLayout = function(leftColumn = true, rightColumn = true) {
     if (leftColumn) {
       renderColumnLayout(prefsEl, remoteEl, false);
@@ -249,73 +258,83 @@ export default function createAppView(specs, my) {
       renderColumnLayout(helpEl, editEl, true);
     }
   },
+
+  /**
+   * Render a column of the panels layout.
+   * @param  {Object} topEl Bottom panel in the column.
+   * @param  {Object} topEl Top panel in the column.
+   * @param  {Boolean} isRightColumn True if the right column is being rendered.
+   */  
+  renderColumnLayout = function(topEl, btmEl, isRightColumn) {
+    const totalHeight = panelsEl.clientHeight,
+      columnWidth = document.querySelector('.panels__right').clientWidth,
+      topWidth = topEl.clientWidth,
+      btmWidth = btmEl.clientWidth,
+      isTopVisible = topEl.dataset.show == 'true',
+      isBtmVisible = btmEl.dataset.show == 'true',
+      topViewportEl = topEl.querySelector('.panel__viewport'),
+      btmViewportEl = btmEl.querySelector('.panel__viewport');
+      
+      let topHeight, btmHeight, topContentHeight, btmContentHeight;
         
-        renderColumnLayout = function(topEl, btmEl, isRightColumn) {
-            const totalHeight = panelsEl.clientHeight,
-                columnWidth = document.querySelector('.panels__right').clientWidth,
-                topWidth = topEl.clientWidth,
-                btmWidth = btmEl.clientWidth,
-                isTopVisible = topEl.dataset.show == 'true',
-                isBtmVisible = btmEl.dataset.show == 'true',
-                topViewportEl = topEl.querySelector('.panel__viewport'),
-                btmViewportEl = btmEl.querySelector('.panel__viewport');
-            
-            let topHeight, btmHeight, topContentHeight, btmContentHeight;
-            
-            // reset heights before measuring them
-            topViewportEl.style.height = 'auto';
-            btmViewportEl.style.height = 'auto';
-            
-            topHeight = topEl.clientHeight,
-            btmHeight = btmEl.clientHeight,
-            topContentHeight = topEl.querySelector('.panel__content').clientHeight,
-            btmContentHeight = btmEl.querySelector('.panel__content').clientHeight;
-            
-            if (isRightColumn && (topWidth + btmWidth < columnWidth)) {
+        // reset heights before measuring them
+        topViewportEl.style.height = 'auto';
+        btmViewportEl.style.height = 'auto';
+        
+        topHeight = topEl.clientHeight,
+        btmHeight = btmEl.clientHeight,
+        topContentHeight = topEl.querySelector('.panel__content').clientHeight,
+        btmContentHeight = btmEl.querySelector('.panel__content').clientHeight;
+        
+        if (isRightColumn && (topWidth + btmWidth < columnWidth)) {
+            if (topContentHeight + panelHeaderHeight > totalHeight) {
+                topViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
+            } else {
+                topViewportEl.style.height = 'auto';
+            }
+            if (btmContentHeight + panelHeaderHeight > totalHeight) {
+                btmViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
+            } else {
+                btmViewportEl.style.height = 'auto';
+            }
+        } else {
+            if (isTopVisible && isBtmVisible) {
+                let combinedHeight = topContentHeight + btmContentHeight + (panelHeaderHeight * 2);
+                if (combinedHeight > totalHeight) {
+                    if (topContentHeight + panelHeaderHeight < totalHeight / 2) {
+                        topViewportEl.style.height = prefsEl.topContentHeight + 'px';
+                        btmViewportEl.style.height = (totalHeight - topContentHeight - (panelHeaderHeight * 2)) + 'px';
+                    } else if (btmContentHeight + panelHeaderHeight < totalHeight / 2) {
+                        topViewportEl.style.height = (totalHeight - btmContentHeight - (panelHeaderHeight * 2)) + 'px';
+                        btmViewportEl.style.height = remoteEl.topContentHeight + 'px';
+                    } else {
+                        topViewportEl.style.height = ((totalHeight / 2) - panelHeaderHeight) + 'px';
+                        btmViewportEl.style.height = ((totalHeight / 2) - panelHeaderHeight) + 'px';
+                    }
+                } else {
+                    topViewportEl.style.height = 'auto';
+                    btmViewportEl.style.height = 'auto';
+                }
+            } else if (isTopVisible) {
                 if (topContentHeight + panelHeaderHeight > totalHeight) {
                     topViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
                 } else {
                     topViewportEl.style.height = 'auto';
                 }
+            } else if (isBtmVisible) {
                 if (btmContentHeight + panelHeaderHeight > totalHeight) {
                     btmViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
                 } else {
                     btmViewportEl.style.height = 'auto';
                 }
-            } else {
-                if (isTopVisible && isBtmVisible) {
-                    let combinedHeight = topContentHeight + btmContentHeight + (panelHeaderHeight * 2);
-                    if (combinedHeight > totalHeight) {
-                        if (topContentHeight + panelHeaderHeight < totalHeight / 2) {
-                            topViewportEl.style.height = prefsEl.topContentHeight + 'px';
-                            btmViewportEl.style.height = (totalHeight - topContentHeight - (panelHeaderHeight * 2)) + 'px';
-                        } else if (btmContentHeight + panelHeaderHeight < totalHeight / 2) {
-                            topViewportEl.style.height = (totalHeight - btmContentHeight - (panelHeaderHeight * 2)) + 'px';
-                            btmViewportEl.style.height = remoteEl.topContentHeight + 'px';
-                        } else {
-                            topViewportEl.style.height = ((totalHeight / 2) - panelHeaderHeight) + 'px';
-                            btmViewportEl.style.height = ((totalHeight / 2) - panelHeaderHeight) + 'px';
-                        }
-                    } else {
-                        topViewportEl.style.height = 'auto';
-                        btmViewportEl.style.height = 'auto';
-                    }
-                } else if (isTopVisible) {
-                    if (topContentHeight + panelHeaderHeight > totalHeight) {
-                        topViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
-                    } else {
-                        topViewportEl.style.height = 'auto';
-                    }
-                } else if (isBtmVisible) {
-                    if (btmContentHeight + panelHeaderHeight > totalHeight) {
-                        btmViewportEl.style.height = totalHeight - panelHeaderHeight + 'px';
-                    } else {
-                        btmViewportEl.style.height = 'auto';
-                    }
-                }
             }
-        },
-        
+        }
+    },
+
+    /**
+     * Set panels visibility.
+     * @param  {Object} state App state.
+     */ 
     showPanels = function(state) {
       helpEl.dataset.show = state.showHelpPanel;
       controls.help.input.checked = state.showHelpPanel;

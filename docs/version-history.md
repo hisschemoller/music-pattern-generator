@@ -32,3 +32,7 @@ Complete rewrite in JavaScript. But too buggy and there were too many things tha
 ### 1.0
 
 The first version was a Java application called 'Euclidean Pattern Sequencer'. All Euclidean rhythms were sent to a single selected MIDI output.
+
+### 0.0
+
+Proof of concept versions written in ActionScript using Adobe Flash and FDT (an Eclipse based development environment)
