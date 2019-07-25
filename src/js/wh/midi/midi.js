@@ -148,6 +148,7 @@ export default function createMIDI(specs) {
             if (syncListeners.indexOf(e.target.id) > -1) {
                 switch (e.data[0]) {
                     case 248: // clock
+                        // not implemented
                         break;
                     case 250: // start
                         store.dispatch(store.getActions().setTransport('play'));
