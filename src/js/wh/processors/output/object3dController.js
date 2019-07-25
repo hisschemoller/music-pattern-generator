@@ -56,21 +56,21 @@ export function createObject3dController(specs, my) {
      * Set theme colors on the 3D pattern.
      */
     updateTheme = function() {
-      const themeColors = getThemeColors();
-      setThemeColorRecursively(my.object3d, themeColors.colorHigh);
+      const { colorLow, colorHigh } = getThemeColors();
+      setThemeColorRecursively(my.object3d, colorLow, colorHigh);
     },
 
     /** 
      * Loop through all the object3d's children to set the color.
      * @param {Object3d} An Object3d of which to change the color.
-     * @param {String} HEx color string of the new color.
+     * @param {String} colorLow Hex color string of the new color.
      */
-    setThemeColorRecursively = function(object3d, color) {
+    setThemeColorRecursively = function(object3d, colorLow, colorHigh) {
       if (object3d.material && object3d.material.color) {
-        object3d.material.color.set( color );
+        object3d.material.color.set(colorHigh);
       }
       object3d.children.forEach(childObject3d => {
-        setThemeColorRecursively(childObject3d, color);
+        setThemeColorRecursively(childObject3d, colorLow, colorHigh);
       });
     },
               
