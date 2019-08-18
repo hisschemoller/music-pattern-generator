@@ -89,6 +89,7 @@ export function redrawShape(line2, points = [], color = defaultLineColor) {
     const col = new Color(color);
     const positions = points.reduce((acc, p) => [ ...acc, p.x, p.y, 0 ], []);
     const colors = points.reduce((acc, p) => [ ...acc, col.r, col.g, col.b ], []);
+    line2.geometry.dispose();
     line2.geometry = new LineGeometry();
     line2.geometry.setPositions(positions);
     line2.geometry.setColors(colors);
