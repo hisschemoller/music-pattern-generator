@@ -101,6 +101,7 @@ export default function createAppView(specs, my) {
       });
             
       document.addEventListener('keyup', function(e) {
+
         // don't perform shortcuts while typing in a text input.
         if (!(e.target.tagName.toLowerCase() == 'input' && e.target.getAttribute('type') == 'text')) {
           switch (e.keyCode) {
@@ -112,22 +113,26 @@ export default function createAppView(specs, my) {
               console.log('state', store.getState());
               break;
           }
-          resetKeyCombo = [];
         }
+        resetKeyCombo.length = 0;
       });
 
       document.addEventListener('keydown', e => {
-        switch (e.keyCode) {
-          case 82:
-          case 83:
-          case 84:
-            // clear all data on key combination 'rst' (reset)
-            resetKeyCombo.push(e.keyCode);
-            if (resetKeyCombo.indexOf(82) > -1 && resetKeyCombo.indexOf(83) > -1 && resetKeyCombo.indexOf(84) > -1) {
-              localStorage.clear();
-              store.dispatch(store.getActions().newProject());
-            }
-            break;
+
+        // don't perform shortcuts while typing in a text input.
+        if (!(e.target.tagName.toLowerCase() == 'input' && e.target.getAttribute('type') == 'text')) {
+          switch (e.keyCode) {
+            case 82:
+            case 83:
+            case 84:
+              // clear all data on key combination 'rst' (reset)
+              resetKeyCombo.push(e.keyCode);
+              if (resetKeyCombo.indexOf(82) > -1 && resetKeyCombo.indexOf(83) > -1 && resetKeyCombo.indexOf(84) > -1) {
+                localStorage.clear();
+                store.dispatch(store.getActions().newProject());
+              }
+              break;
+          }
         }
       });
 
