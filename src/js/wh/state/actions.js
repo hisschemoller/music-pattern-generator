@@ -226,7 +226,13 @@ export default function createActions(specs = {}, my = {}) {
 
         CHANGE_PARAMETER,
         changeParameter: (processorID, paramKey, paramValue) => {
-            return { type: CHANGE_PARAMETER, processorID, paramKey, paramValue };
+            return (dispatch, getState, getActions) => {
+                const { processors } = getState();
+                const param = processors.byId[processorID].params.byId[paramKey];
+                if (paramValue !== param.value) {
+                    return { type: CHANGE_PARAMETER, processorID, paramKey, paramValue };
+                }
+            };
         },
 
         RECREATE_PARAMETER,
