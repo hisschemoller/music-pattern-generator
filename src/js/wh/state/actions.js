@@ -299,7 +299,15 @@ export default function createActions(specs = {}, my = {}) {
         toggleMIDILearnMode: () => ({ type: TOGGLE_MIDI_LEARN_MODE }),
 
         TOGGLE_MIDI_LEARN_TARGET,
-        toggleMIDILearnTarget: (processorID, parameterKey) => ({ type: TOGGLE_MIDI_LEARN_TARGET, processorID, parameterKey }),
+        toggleMIDILearnTarget: (processorID, parameterKey) => {
+            return (dispatch, getState, getActions) => {
+                const { learnTargetProcessorID, learnTargetParameterKey } = getState();
+                if (processorID === learnTargetProcessorID && parameterKey === learnTargetParameterKey) {
+                    return { type: TOGGLE_MIDI_LEARN_TARGET, processorID: null, parameterKey: null };
+                }
+                return { type: TOGGLE_MIDI_LEARN_TARGET, processorID, parameterKey };
+            }
+        },
 
         SET_TRANSPORT,
         setTransport: command => ({ type: SET_TRANSPORT, command }),
