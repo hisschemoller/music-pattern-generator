@@ -16,7 +16,10 @@ export default function createStore(specs = {}, my = {}) {
         dispatch = (action) => {
             // thunk or not
             if (typeof action === 'function') {
-                action(dispatch, getState, getActions);
+                const resultActionObject = action(dispatch, getState, getActions);
+                if (resultActionObject) {
+                    dispatch(resultActionObject);
+                }
             } else {
                 currentState = reducers.reduce(currentState, action, actions);
                 memoize(currentState, action, actions);
