@@ -1,7 +1,7 @@
 import {
-  LineBasicMaterial,
+  BufferGeometry,
   Shape,
-  ShapeBufferGeometry,
+  ShapeGeometry,
   Vector2,
 } from '../../../lib/three.module.js';
 import { getThemeColors } from '../../state/selectors.js';
@@ -130,6 +130,7 @@ export function createObject3dController(specs, my) {
     },
 
     updateNecklace = function(steps, pulses, rotation, isMute) {
+
       // create the pattern
       let euclid = getEuclidPattern(steps, pulses);
       euclid = rotateEuclidPattern(euclid, rotation);
@@ -203,9 +204,11 @@ export function createObject3dController(specs, my) {
                 fillShape.lineTo(points[i].x, points[i].y);
             }
             fillShape.lineTo(points[0].x, points[0].y);
-            const fillGeom = new  ShapeBufferGeometry(fillShape);
+            const fillGeom = new ShapeGeometry(fillShape);
+            const fillBufferGeom = new BufferGeometry();
+            fillBufferGeom.fromGeometry(fillGeom);
             fill.geometry.dispose();
-            fill.geometry = fillGeom;
+            fill.geometry = fillBufferGeom;
             fill.visible = true;
         } else {
             fill.visible = false;
