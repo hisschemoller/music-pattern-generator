@@ -204,6 +204,7 @@ export function createObject3dController(specs, my) {
             }
             fillShape.lineTo(points[0].x, points[0].y);
             const fillGeom = new  ShapeBufferGeometry(fillShape);
+            fill.geometry.dispose();
             fill.geometry = fillGeom;
             fill.visible = true;
         } else {
