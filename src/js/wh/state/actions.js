@@ -37,15 +37,13 @@ export default function createActions(specs = {}, my = {}) {
 
         importProject: (file) => {
             return (dispatch, getState, getActions) => {
-                let fileReader = new FileReader();
 
-                // closure to capture the file information
-                fileReader.onload = (function(f) {
-                    return function(e) {
+                file.text()
+                    .then(text => {
                         let isJSON = true,
                             isXML = false;
                         try {
-                            const data = JSON.parse(e.target.result);
+                            const data = JSON.parse(text);
                             if (data) {
                                 dispatch(getActions().setProject(data));
                             }
@@ -55,7 +53,7 @@ export default function createActions(specs = {}, my = {}) {
                         if (!isJSON) {
 
                             // try if it's a legacy xml file
-                            const legacyData = convertLegacyFile(e.target.result);
+                            const legacyData = convertLegacyFile(text);
                             if (legacyData) {
                                 dispatch(getActions().setProject(legacyData));
                                 isXML = true;
@@ -67,9 +65,13 @@ export default function createActions(specs = {}, my = {}) {
                                 `The file to import wasn't recognised as a valid type for this application.`,
                                 'Ok');
                         }
-                    };
-                })(file);
-                fileReader.readAsText(file);
+                    })
+                    .catch(() =>{
+                        showDialog(
+                            'Import failed', 
+                            `The file could not be opened.`,
+                            'Ok');
+                    });
             }
         },
 
