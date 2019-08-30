@@ -17,6 +17,7 @@ export default function createRemoteView(specs, my) {
                 switch (e.detail.action.type) {
 
                     case e.detail.actions.CREATE_PROJECT:
+                        deleteRemoteGroups();
                         createRemoteGroups(e.detail.state);
                         break;
 
@@ -99,7 +100,7 @@ export default function createRemoteView(specs, my) {
             let n = groupViews.allIds.length;
             for (let i = groupViews.allIds.length - 1; i >= 0; i--) {
                 const id = groupViews.allIds[i];
-                if (!processors.byId[id]) {
+                if (!processors || !processors.byId || !processors.byId[id]) {
                     groupViews.allIds.splice(i, 1);
                     groupViews.byId[id].terminate();
                     delete groupViews.byId[id];
