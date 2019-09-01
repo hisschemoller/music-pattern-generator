@@ -205,10 +205,11 @@ export function createObject3dController(specs, my) {
             }
             fillShape.lineTo(points[0].x, points[0].y);
             const fillGeom = new ShapeGeometry(fillShape);
-            const fillBufferGeom = new BufferGeometry();
-            fillBufferGeom.fromGeometry(fillGeom);
+            // TODO: only update vertices: https://threejs.org/docs/#manual/en/introduction/How-to-update-things
+            // const fillBufferGeom = new BufferGeometry();
+            // fillBufferGeom.fromGeometry(fillGeom);
             fill.geometry.dispose();
-            fill.geometry = fillBufferGeom;
+            fill.geometry = fillGeom;
             fill.visible = true;
         } else {
             fill.visible = false;
