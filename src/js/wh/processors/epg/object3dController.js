@@ -375,8 +375,9 @@ export function createObject3dController(specs, my) {
 
       Object.keys(dotAnimations).forEach(key => {
         const obj = dotAnimations[key];
-        obj.scale /= 1.07;
+        obj.scale -= 0.1;
         obj.dot.scale.set(obj.scale, obj.scale, 1);
+        // TODO: find out reason for largestScale
         largestScale = Math.max(largestScale, obj.scale);
         isNoteActive = true;
         if (obj.isActive && obj.scale <= 1) {
@@ -387,7 +388,7 @@ export function createObject3dController(specs, my) {
  
       // center dot
       centreDot3d.scale.set(centerScale, centerScale, 1);
-      centerScale *= 0.90;
+      centerScale -= 0.06;
       if (centerScale <= 0.05) {
         centreDot3d.visible = false;
         centerScale = 0;
