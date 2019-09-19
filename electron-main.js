@@ -53,6 +53,7 @@ const scheme = 'app';
       browserWindow = null;
     });
   
+    browserWindow.setBackgroundThrottling(false);
     browserWindow.webContents.openDevTools();
 
     browserWindow.loadFile('src/index.html');
