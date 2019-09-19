@@ -10,9 +10,10 @@
     ],
     "homepage": "http://github.com/hisschemoller/music-pattern-generator",
     "license": "LGPL-3.0",
-    "main": "src/index.html",
+    "main": "electron-main.js",
     "scripts": {
         "start": "node server.js",
+        "start-electron": "electron .",
         "start-nw": "nw --disable-raf-throttling"
     },
     "repository": {
@@ -23,6 +24,6 @@
     "dependencies": {},
     "devDependencies": {
         "express": "^4.16.4",
-        "nw": "0.36.4-sdk"
+        "electron": "^6.0.10"
     }
 }
