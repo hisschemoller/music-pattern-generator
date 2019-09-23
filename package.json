@@ -22,7 +22,7 @@
     "author": "Wouter Hisschemoller",
     "dependencies": {},
     "devDependencies": {
-        "express": "^4.16.4",
-        "nw": "0.36.4-sdk"
+        "express": "^4.17.1",
+        "nw": "0.41.2"
     }
 }
