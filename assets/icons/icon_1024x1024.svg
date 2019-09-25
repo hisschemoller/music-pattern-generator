@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <clipPath id="clip-custom_1">
+      <rect width="1024" height="1024"/>
+    </clipPath>
+  </defs>
+  <g id="custom_1" data-name="custom – 1" clip-path="url(#clip-custom_1)">
+    <rect width="1024" height="1024" fill="#2b4960"/>
+    <g id="inner" transform="translate(372 372)" fill="none" stroke="#ffffff" stroke-width="14">
+      <circle cx="140" cy="140" r="140" stroke="none"/>
+      <circle cx="140" cy="140" r="133" fill="none"/>
+    </g>
+    <g id="select" transform="translate(415 415)" fill="none" stroke="#ffffff" stroke-width="14">
+      <circle cx="97" cy="97" r="97" stroke="none"/>
+      <circle cx="97" cy="97" r="90" fill="none"/>
+    </g>
+    <g id="dot0" transform="translate(463 159)" fill="#ffffff" stroke="#ffffff" stroke-width="14">
+      <circle cx="49" cy="49" r="49" stroke="none"/>
+      <circle cx="49" cy="49" r="42" fill="none"/>
+    </g>
+    <g id="dot1" transform="translate(598.804 166.348) rotate(22)" fill="none" stroke="#ffffff" stroke-width="14">
+      <circle cx="49" cy="49" r="49" stroke="none"/>
+      <circle cx="49" cy="49" r="42" fill="none"/>
+    </g>
+    <g id="dot2" transform="translate(726.96 227.743) rotate(45)" fill="none" stroke="#ffffff" stroke-width="14">
+      <circle cx="49" cy="49" r="49" stroke="none"/>
+      <circle cx="49" cy="49" r="42" fill="none"/>
+    </g>
+    <g id="dot3" transform="translate(820.94 334.332) rotate(68)" fill="none" stroke="#ffffff" stroke-width="14">
+      <circle cx="49" cy="49" r="49" stroke="none"/>
+      <circle cx="49" cy="49" r="42" fill="none"/>
+    </g>
+    <g id="dot4" transform="translate(767 463)" fill="#ffffff" stroke="#ffffff" stroke-width="14">
+      <circle cx="49" cy="49" r="49" stroke="none"/>
+      <circle cx="49" cy="49" r="42" fill="none"/>
+    </g>
+    <g id="dot5" transform="translate(766.788 562.093) rotate(22)" fill="none" stroke="#ffffff" stroke-width="14">
+      <circle cx="49" cy="49" r="49" stroke="none"/>
+      <circle cx="49" cy="49" r="42" fill="none"/>
+    </g>
+    <g id="dot6" transform="translate(726.96 657.664) rotate(45)" fill="none" stroke="#ffffff" stroke-width="14">
+      <circle cx="49" cy="49" r="49" stroke="none"/>
+      <circle cx="49" cy="49" r="42" fill="none"/>
+    </g>
+    <g id="dot7" transform="translate(652.957 730.076) rotate(68)" fill="none" stroke="#ffffff" stroke-width="14">
+      <circle cx="49" cy="49" r="49" stroke="none"/>
+      <circle cx="49" cy="49" r="42" fill="none"/>
+    </g>
+    <g id="dot8" transform="translate(463 767)" fill="#ffffff" stroke="#ffffff" stroke-width="14">
+      <circle cx="49" cy="49" r="49" stroke="none"/>
+      <circle cx="49" cy="49" r="42" fill="none"/>
+    </g>
+    <g id="dot9" transform="translate(371.043 730.076) rotate(22)" fill="none" stroke="#ffffff" stroke-width="14">
+      <circle cx="49" cy="49" r="49" stroke="none"/>
+      <circle cx="49" cy="49" r="42" fill="none"/>
+    </g>
+    <g id="dot10" transform="translate(297.04 657.664) rotate(45)" fill="none" stroke="#ffffff" stroke-width="14">
+      <circle cx="49" cy="49" r="49" stroke="none"/>
+      <circle cx="49" cy="49" r="42" fill="none"/>
+    </g>
+    <g id="dot11" transform="translate(257.212 562.093) rotate(68)" fill="none" stroke="#ffffff" stroke-width="14">
+      <circle cx="49" cy="49" r="49" stroke="none"/>
+      <circle cx="49" cy="49" r="42" fill="none"/>
+    </g>
+    <g id="dot12" transform="translate(159 463)" fill="#ffffff" stroke="#ffffff" stroke-width="14">
+      <circle cx="49" cy="49" r="49" stroke="none"/>
+      <circle cx="49" cy="49" r="42" fill="none"/>
+    </g>
+    <g id="dot13" transform="translate(203.06 334.332) rotate(22)" fill="none" stroke="#ffffff" stroke-width="14">
+      <circle cx="49" cy="49" r="49" stroke="none"/>
+      <circle cx="49" cy="49" r="42" fill="none"/>
+    </g>
+    <g id="dot14" transform="translate(297.04 227.743) rotate(45)" fill="none" stroke="#ffffff" stroke-width="14">
+      <circle cx="49" cy="49" r="49" stroke="none"/>
+      <circle cx="49" cy="49" r="42" fill="none"/>
+    </g>
+    <g id="dot15" transform="translate(425.196 166.348) rotate(68)" fill="none" stroke="#ffffff" stroke-width="14">
+      <circle cx="49" cy="49" r="49" stroke="none"/>
+      <circle cx="49" cy="49" r="42" fill="none"/>
+    </g>
+    <line id="pointerL" x1="50" y2="170" transform="translate(461.5 217.5)" fill="none" stroke="#ffffff" stroke-width="14"/>
+    <line id="pointerR" x1="51" y1="170" transform="translate(511.5 217.5)" fill="none" stroke="#ffffff" stroke-width="14"/>
+  </g>
+</svg>
