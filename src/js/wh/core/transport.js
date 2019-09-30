@@ -222,6 +222,7 @@ export default function createTransport(specs, my) {
         lookAhead = 200,
         loopStart = 0,
         loopEnd = 0,
+        wasRunning = false,
         isRunning = false,
         isLooping = false,
         needsScan = false,
@@ -252,6 +253,20 @@ export default function createTransport(specs, my) {
                     case e.detail.actions.SET_TEMPO:
                         my.setBPM(e.detail.state.bpm);
                         break;
+                }
+            });
+
+            // stop playback if the page is hidden, continue when visible
+            document.addEventListener('visibilitychange', function() {
+                if (document.visibilityState === 'visible') {
+                    if (wasRunning) {
+                        start();
+                    }
+                } else {
+                    wasRunning = isRunning;
+                    if (wasRunning) {
+                        pause();
+                    }
                 }
             });
 
