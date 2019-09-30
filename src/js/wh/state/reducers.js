@@ -45,6 +45,7 @@ export default function createReducers() {
             showLibraryPanel: true,
             showPreferencesPanel: false,
             showSettingsPanel: false,
+            version: '2.1.0-beta.2',
         },
         
         reduce = function(state = initialState, action = {}, actions = {}) {
