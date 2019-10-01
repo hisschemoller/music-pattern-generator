@@ -62,6 +62,7 @@ export default function createCanvas3d(specs, my) {
             onWindowResize();
             break;
 
+          case e.detail.actions.RESCAN_TYPES:
           case e.detail.actions.SET_THEME:
             setThemeOnWorld();
             break;

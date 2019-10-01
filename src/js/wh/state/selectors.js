@@ -4,6 +4,7 @@ export function memoize(state, action = {}, actions) {
   switch (action.type) {
 
     case actions.CREATE_PROJECT:
+    case actions.RESCAN_TYPES:
     case actions.SET_THEME:
       document.querySelector('#app').dataset.theme = state.theme;
       const themeStyles = window.getComputedStyle(document.querySelector('[data-theme]'));
