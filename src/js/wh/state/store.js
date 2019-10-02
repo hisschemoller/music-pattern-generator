@@ -1,63 +1,47 @@
-import { memoize } from './selectors.js';
-import { setConfig } from '../core/config.js';
+import actions from './actions.js';
+import memoize from './selectors.js';
+import reduce from './reducers.js';
 
-export default function createStore(specs = {}, my = {}) {
-    const STATE_CHANGE = 'STATE_CHANGE';
+export const STATE_CHANGE = 'STATE_CHANGE';
 
-    let that = {},
-        actions = specs.actions,
-        reducers = specs.reducers,
-        currentState,
+let currentState = null;
 
-        init = () => {
-            currentState = reducers.reduce();
-        },
-        
-        dispatch = (action) => {
-            // thunk or not
-            if (typeof action === 'function') {
-                const resultActionObject = action(dispatch, getState, getActions);
-                if (resultActionObject) {
-                    dispatch(resultActionObject);
-                }
-            } else {
-                currentState = reducers.reduce(currentState, action, actions);
-                memoize(currentState, action, actions);
-                document.dispatchEvent(new CustomEvent(STATE_CHANGE, { detail: {
-                    state: currentState,
-                    action: action,
-                    actions: actions
-                }}));
-            }
-        }, 
-        
-        getActions = () => {
-            return actions;
-        },
-        
-        getState = () => {
-            return currentState;
-        },
-        
-        persist = () => {
-            const name = 'persist';
-            window.addEventListener('beforeunload', e => {
-                localStorage.setItem(name, JSON.stringify(currentState));
-            });
-            let data = localStorage.getItem(name);
-            if (data) {
-                dispatch(getActions().setProject(JSON.parse(data)));
-            }
-        };
-        
-    that = specs.that || {};
+export function dispatch(action) {
+  // thunk or not
+  if (typeof action === 'function') {
+    const resultActionObject = action(dispatch, getState, getActions);
+    if (resultActionObject) {
+      dispatch(resultActionObject);
+    }
+  } else {
+    const state = reduce(currentState, action, actions);
+    memoize(state, action, actions);
+    currentState = state;
+    document.dispatchEvent(new CustomEvent(STATE_CHANGE, { detail: {
+      state, action, actions,
+    }}));
+  }
+}
 
-    init();
-    
-    that.STATE_CHANGE = STATE_CHANGE;
-    that.dispatch = dispatch;
-    that.getActions = getActions;
-    that.getState = getState;
-    that.persist = persist;
-    return that;
+export function getActions() {
+  return actions;
+}
+
+export function getState() {
+  return currentState;
+}
+
+export function persist() {
+  const name = 'persist';
+  window.addEventListener('beforeunload', e => {
+    localStorage.setItem(name, JSON.stringify(currentState));
+  });
+  let data = localStorage.getItem(name);
+  if (data && data !== 'undefined') {
+    currentState = JSON.parse(data);
+  } else {
+
+    // start with the initial state
+    dispatch({ type: null, });
+  }
 }

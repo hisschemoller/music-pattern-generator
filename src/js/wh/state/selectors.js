@@ -1,6 +1,6 @@
 const themeColors = {};
 
-export function memoize(state, action = {}, actions) {
+export default function memoize(state, action = {}, actions) {
   switch (action.type) {
 
     case actions.CREATE_PROJECT:
