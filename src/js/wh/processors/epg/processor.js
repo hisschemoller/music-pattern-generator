@@ -104,9 +104,10 @@ export function createProcessor(specs, my) {
                         pulseStartTimestamp = scanStart + scanStartToNoteStart;
                     
                     // send the Note On message
+                    // subtract 1 from duration to avoid overlaps
                     my.setOutputData({
                         timestampTicks: pulseStartTimestamp,
-                        durationTicks: noteDuration,
+                        durationTicks: noteDuration - 1,
                         channel: channel,
                         type: 'note',
                         pitch: pitch,
