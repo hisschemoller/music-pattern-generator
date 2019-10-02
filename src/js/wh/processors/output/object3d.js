@@ -9,7 +9,7 @@ import {
   drawConnectors,
   createShape,
 } from '../../webgl/draw3dHelper.js';
-import { getThemeColors } from '../../state/selectors.js';
+import { getTheme } from '../../state/selectors.js';
 
 export function createObject3d(id, inputs, outputs) {
     
@@ -18,7 +18,7 @@ export function createObject3d(id, inputs, outputs) {
     radius = 3,
 
     init = function() {
-      defaultColor = getThemeColors().colorHigh;
+      defaultColor = getTheme().colorHigh;
       lineMaterial = new LineBasicMaterial({
         color: defaultColor,
       });
@@ -62,7 +62,7 @@ export function createObject3d(id, inputs, outputs) {
       group.add(label);
 
       // add inputs and outputs 
-      drawConnectors(group, inputs, outputs, getThemeColors().colorLow);
+      drawConnectors(group, inputs, outputs, getTheme().colorLow);
 
       return group;
     };

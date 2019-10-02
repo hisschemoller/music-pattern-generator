@@ -1,7 +1,7 @@
 import addWindowResize from '../view/windowresize.js';
 import addConnections3d from './connections3d.js';
 import { setLineMaterialResolution } from './draw3dHelper.js';
-import { getThemeColors } from '../state/selectors.js';
+import { getTheme } from '../state/selectors.js';
 import { eventType } from '../core/util.js';
 
 const {
@@ -327,7 +327,7 @@ export default function createCanvas3d(specs, my) {
     initWorld = function() {
 
       renderer = new WebGLRenderer({antialias: true});
-      renderer.setClearColor(new Color( getThemeColors().colorBackground || '#cccccc' ));
+      renderer.setClearColor(new Color( getTheme().colorBackground || '#cccccc' ));
 
       rootEl = document.querySelector('#canvas-container');
       rootEl.appendChild(renderer.domElement);
@@ -352,7 +352,7 @@ export default function createCanvas3d(specs, my) {
     },
 
     setThemeOnWorld = function() {
-      renderer.setClearColor(new Color( getThemeColors().colorBackground ));
+      renderer.setClearColor(new Color( getTheme().colorBackground ));
     },
             
     /**

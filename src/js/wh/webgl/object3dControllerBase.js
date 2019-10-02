@@ -1,5 +1,5 @@
 import setText3d from './text3d.js';
-import { getThemeColors } from '../state/selectors.js';
+import { getTheme } from '../state/selectors.js';
 
 /**
  * Base object for all processor WebGL object controllers.
@@ -15,7 +15,7 @@ export default function createObject3dControllerBase(specs, my) {
      * Update the pattern's name.
      */
     updateLabel = function(labelString) {
-      setText3d(my.label3d, labelString.toUpperCase(), getThemeColors().colorHigh);
+      setText3d(my.label3d, labelString.toUpperCase(), getTheme().colorHigh);
     },
 
     /** 

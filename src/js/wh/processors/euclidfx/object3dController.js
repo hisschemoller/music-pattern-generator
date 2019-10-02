@@ -2,7 +2,7 @@ import {
   EllipseCurve,
   Vector2,
 } from '../../../lib/three.module.js';
-import { getThemeColors } from '../../state/selectors.js';
+import { getTheme } from '../../state/selectors.js';
 import createObject3dControllerBase from '../../webgl/object3dControllerBase.js';
 import { getEuclidPattern, rotateEuclidPattern } from './euclid.js';
 import { PPQN } from '../../core/config.js';
@@ -46,7 +46,7 @@ export function createObject3dController(specs, my) {
 
       document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
     
-      defaultColor = getThemeColors().colorHigh;
+      defaultColor = getTheme().colorHigh;
 
       const params = specs.processorData.params.byId;
       my.updateLabel(params.name.value);
@@ -163,7 +163,7 @@ export function createObject3dController(specs, my) {
      * Set theme colors on the 3D pattern.
      */
     updateTheme = function() {
-      const { colorLow, colorHigh } = getThemeColors();
+      const { colorLow, colorHigh } = getTheme();
       setThemeColorRecursively(my.object3d, colorLow, colorHigh);
     },
 

@@ -5,7 +5,7 @@ import {
   createShape,
   drawConnectors,
 } from '../../webgl/draw3dHelper.js';
-import { getThemeColors } from '../../state/selectors.js';
+import { getTheme } from '../../state/selectors.js';
 
 const {
   Group,
@@ -54,7 +54,7 @@ export function createObject3d(id, inputs, outputs) {
      * @return {object} Group of drag plane.
      */
     createWheel = function() {
-      const defaultColor = getThemeColors().colorHigh;
+      const defaultColor = getTheme().colorHigh;
 
       const hitarea = createCircleFilled(3, defaultColor);
       hitarea.name = 'hitarea';
@@ -112,7 +112,7 @@ export function createObject3d(id, inputs, outputs) {
       wheel.add(label);
 
       // add inputs and outputs
-      drawConnectors(wheel, inputs, outputs, getThemeColors().colorLow);
+      drawConnectors(wheel, inputs, outputs, getTheme().colorLow);
       
       return wheel;
     };

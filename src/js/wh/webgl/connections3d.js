@@ -1,4 +1,4 @@
-import { getThemeColors } from '../state/selectors.js';
+import { getTheme } from '../state/selectors.js';
 import {
   createCircleFilled,
   createCircleOutline,
@@ -29,7 +29,7 @@ export default function addConnections3d(specs, my) {
     dragHandleRadius = 1.5,
     
     init = function() {
-      currentCableDragHandle = createCircleOutline(dragHandleRadius, getThemeColors().colorHigh);
+      currentCableDragHandle = createCircleOutline(dragHandleRadius, getTheme().colorHigh);
       currentCableDragHandle.name = 'dragHandle';
 
       document.addEventListener(store.STATE_CHANGE, (e) => {
@@ -153,7 +153,7 @@ export default function addConnections3d(specs, my) {
      * @return {Object} Cable object3d.
      */
     createCable = function(connectionId) {
-      const { colorLow } = getThemeColors();
+      const { colorLow } = getTheme();
 
       const cable = createShape();
       cable.name = connectionId;
@@ -233,7 +233,7 @@ export default function addConnections3d(specs, my) {
         );
         const points = curve.getPoints(50);
         
-        redrawShape(cable, points, getThemeColors().colorLow);
+        redrawShape(cable, points, getTheme().colorLow);
 
         const deleteBtn = cable.getObjectByName('delete');
         if (deleteBtn) {
@@ -264,7 +264,7 @@ export default function addConnections3d(specs, my) {
      */
     updateTheme = function() {
       if (cablesGroup) {
-        const { colorLow, colorHigh } = getThemeColors();
+        const { colorLow, colorHigh } = getTheme();
         setThemeColorRecursively(cablesGroup, colorLow, colorHigh);
       }
     },
