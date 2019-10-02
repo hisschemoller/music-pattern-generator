@@ -2,7 +2,7 @@ import {
   Group,
   LineBasicMaterial,
   Vector2,
-} from '../../../lib/three.module.js';
+} from '../../lib/three.module.js';
 import {
   createCircleFilled,
   createCircleOutline,

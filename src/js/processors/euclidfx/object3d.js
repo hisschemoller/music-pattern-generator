@@ -1,7 +1,7 @@
 import {
   Group,
   LineBasicMaterial,
-} from '../../../lib/three.module.js';
+} from '../../lib/three.module.js';
 import {
   createCircleFilled,
   createCircleOutline,

@@ -3,10 +3,10 @@ import {
   Shape,
   ShapeGeometry,
   Vector2,
-} from '../../../lib/three.module.js';
+} from '../../lib/three.module.js';
 import { getTheme } from '../../state/selectors.js';
 import createObject3dControllerBase from '../../webgl/object3dControllerBase.js';
-import { getEuclidPattern, rotateEuclidPattern } from './euclid.js';
+import { getEuclidPattern, rotateEuclidPattern } from './utils.js';
 import { PPQN } from '../../core/config.js';
 import {
   createCircleOutline,

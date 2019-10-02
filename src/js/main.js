@@ -21,12 +21,12 @@ import createReducers from './state/reducers.js';
 import { dispatch, getActions, getState, persist } from './state/store.js';
 
 import createAppView from './view/app.js';
-// import createCanvasView from './view/canvas.js';
 import createCanvas3d from './webgl/canvas3d.js';
 import createDialog from './view/dialog.js';
 import createLibraryView from './view/library.js';
 import { accessMidi } from './midi/midi.js';
 import createMIDINetwork from './midi/network.js';
+import { preloadProcessors } from './core/processor-loader.js';
 import createPreferencesView from './view/preferences.js';
 import createRemoteView from './view/remote.js';
 import createTransport from './core/transport.js';
@@ -35,7 +35,8 @@ import { showDialog } from './view/dialog.js';
 
 async function main() {
   await accessMidi();
-  
+  await preloadProcessors();
+
   persist();
 }
 
