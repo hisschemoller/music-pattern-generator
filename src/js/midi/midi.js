@@ -1,4 +1,27 @@
-let midiAccess;
+
+let midiAccess = null;
+
+export function accessMidi() { 
+  return new Promise((resolve, reject) => {
+    if (navigator.requestMIDIAccess) {
+      navigator.requestMIDIAccess({ sysex: false })
+        .then(
+          access => {
+            console.log('MIDI enabled.');
+            midiAccess = access;
+            resolve();
+          },
+          () => {
+            reject(`MIDI access failed`);
+          }
+        );
+    } else {
+      reject(`No MIDI access in this browser`);
+    }
+  });
+}
+
+
 
 export default function createMIDI(specs) {
     var that,

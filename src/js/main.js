@@ -25,7 +25,7 @@ import createAppView from './view/app.js';
 import createCanvas3d from './webgl/canvas3d.js';
 import createDialog from './view/dialog.js';
 import createLibraryView from './view/library.js';
-import createMIDI from './midi/midi.js';
+import { accessMidi } from './midi/midi.js';
 import createMIDINetwork from './midi/network.js';
 import createPreferencesView from './view/preferences.js';
 import createRemoteView from './view/remote.js';
@@ -34,6 +34,8 @@ import createTransport from './core/transport.js';
 import { showDialog } from './view/dialog.js';
 
 async function main() {
+  await accessMidi();
+  
   persist();
 }
 
