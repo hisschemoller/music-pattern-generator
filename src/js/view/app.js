@@ -122,9 +122,9 @@ export default function createAppView(specs, my) {
         // don't perform shortcuts while typing in a text input.
         if (!(e.target.tagName.toLowerCase() == 'input' && e.target.getAttribute('type') == 'text')) {
           switch (e.keyCode) {
-            case 82:
-            case 83:
-            case 84:
+            case 82: // r
+            case 83: // s
+            case 84: // t
               // clear all data on key combination 'rst' (reset)
               resetKeyCombo.push(e.keyCode);
               if (resetKeyCombo.indexOf(82) > -1 && resetKeyCombo.indexOf(83) > -1 && resetKeyCombo.indexOf(84) > -1) {
