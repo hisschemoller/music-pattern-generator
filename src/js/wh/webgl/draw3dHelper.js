@@ -52,7 +52,7 @@ export function setLineMaterialResolution() {
  */
 export function createShape(points = [], color = defaultLineColor) {
   const geometry = new LineGeometry();
-  const line2 = new Line2(geometry, lineMaterial.clone());
+  const line2 = new Line2(geometry, lineMaterial);
   line2.name = 'shape';
   redrawShape(line2, points, color);
   return line2;
@@ -132,7 +132,7 @@ export function createCircleOutline(radius, color = defaultLineColor) {
   const geometry = new LineGeometry();
   geometry.setPositions(positions);
   geometry.setColors(colors);
-  const line = new Line2(geometry, lineMaterial.clone());
+  const line = new Line2(geometry, lineMaterial);
   line.name = 'circle_outline';
   line.computeLineDistances();
 
