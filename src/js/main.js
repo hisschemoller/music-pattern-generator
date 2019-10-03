@@ -16,8 +16,6 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import createActions from './state/actions.js';
-import createReducers from './state/reducers.js';
 import { dispatch, getActions, getState, persist } from './state/store.js';
 
 import createAppView from './view/app.js';
@@ -26,16 +24,18 @@ import createDialog from './view/dialog.js';
 import createLibraryView from './view/library.js';
 import { accessMidi } from './midi/midi.js';
 import createMIDINetwork from './midi/network.js';
+import { setup as setupControls } from './view/controls.js';
 import { preloadProcessors } from './core/processor-loader.js';
 import createPreferencesView from './view/preferences.js';
 import createRemoteView from './view/remote.js';
 import createTransport from './core/transport.js';
-
 import { showDialog } from './view/dialog.js';
 
 async function main() {
   await accessMidi();
   await preloadProcessors();
+
+  setupControls();
 
   persist();
 }
