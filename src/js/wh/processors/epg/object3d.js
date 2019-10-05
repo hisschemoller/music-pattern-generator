@@ -54,9 +54,9 @@ export function createObject3d(id, inputs, outputs) {
      * @return {object} Group of drag plane.
      */
     createWheel = function() {
-      const defaultColor = getThemeColors().colorHigh;
+      const { colorLow, colorHigh, } = getThemeColors();
 
-      const hitarea = createCircleFilled(3, defaultColor);
+      const hitarea = createCircleFilled(3, colorHigh);
       hitarea.name = 'hitarea';
       hitarea.material.opacity = 0.0;
       hitarea.renderOrder = 0;
@@ -65,20 +65,20 @@ export function createObject3d(id, inputs, outputs) {
       dots.name = 'dots';
       dots.renderOrder = 1;
       
-      const polygon = createPolygon(defaultColor);
+      const polygon = createPolygon(colorHigh);
       polygon.name = 'polygon';
       polygon.renderOrder = 2;
       
-      const centreCircle = createCircleOutline(3, defaultColor);
+      const centreCircle = createCircleOutline(3, colorHigh);
       centreCircle.name = 'centreCircle';
       centreCircle.renderOrder = 4;
       
-      const selectCircle = createCircleOutline(2, defaultColor);
+      const selectCircle = createCircleOutline(2, colorHigh);
       selectCircle.name = 'select';
       selectCircle.renderOrder = 5;
       selectCircle.visible = false;
       
-      const centreDot = createCircleOutlineFilled(1.5, defaultColor);
+      const centreDot = createCircleOutlineFilled(1.5, colorHigh);
       centreDot.name = 'centreDot';
       centreDot.renderOrder = 6;
       centreDot.visible = false;
@@ -87,7 +87,7 @@ export function createObject3d(id, inputs, outputs) {
       pointer.name = 'pointer';
       pointer.renderOrder = 7;
 
-      const zeroMarker = createCircleOutline(0.5, defaultColor);
+      const zeroMarker = createCircleOutline(0.5, colorHigh);
       zeroMarker.name = 'zeroMarker';
       zeroMarker.renderOrder = 8;
 
@@ -97,7 +97,7 @@ export function createObject3d(id, inputs, outputs) {
         new Vector2(1, 0.5),
         new Vector2(0, 0),
       ];
-      const rotatedMarker = createShape(points, defaultColor);
+      const rotatedMarker = createShape(points, colorHigh);
       rotatedMarker.name = 'rotatedMarker';
       rotatedMarker.renderOrder = 8;
 
@@ -122,7 +122,7 @@ export function createObject3d(id, inputs, outputs) {
       wheel.add(label);
 
       // add inputs and outputs
-      drawConnectors(wheel, inputs, outputs, getThemeColors().colorLow);
+      drawConnectors(wheel, inputs, outputs, colorLow);
       
       return wheel;
     };
