@@ -10,6 +10,7 @@
     ],
     "homepage": "http://github.com/hisschemoller/music-pattern-generator",
     "license": "LGPL-3.0",
+    "private": true,
     "main": "src/index.html",
     "scripts": {
         "start": "node server.js",

@@ -52,7 +52,7 @@ export function setLineMaterialResolution() {
  */
 export function createShape(points = [], color = defaultLineColor) {
   const geometry = new LineGeometry();
-  const line2 = new Line2(geometry, lineMaterial.clone());
+  const line2 = new Line2(geometry, lineMaterial);
   line2.name = 'shape';
   redrawShape(line2, points, color);
   return line2;
@@ -95,6 +95,7 @@ export function redrawShape(line2, points = [], color = defaultLineColor) {
     line2.geometry.setColors(colors);
     line2.computeLineDistances();
     line2.scale.set(1, 1, 1);
+    line2.userData.points = points;
   }
 
   return line2;
@@ -111,10 +112,10 @@ export function createCircleOutline(radius, color = defaultLineColor) {
   // check if the circle already exists in cache
   const cacheId = `c${radius}_${color}`;
   if (circleCache[cacheId]) {
-    return circleCache[cacheId].clone();
+    const clone = circleCache[cacheId].clone();
+    clone.userData = { ...circleCache[cacheId].userData };
+    return clone;
   }
-
-  const col = new Color(color);
   
   // create a circle, just for it's vertice points
   const circle = new CircleGeometry(radius, defaultSegments);
@@ -127,19 +128,15 @@ export function createCircleOutline(radius, color = defaultLineColor) {
   vertices.push(vertices[0].clone());
 
   // create the geometry and line
-  const positions = vertices.reduce((acc, v) => [ ...acc, v.x, v.y, v.z ], []);
-  const colors = vertices.reduce((acc, v) => [ ...acc, col.r, col.g, col.b ], []);
   const geometry = new LineGeometry();
-  geometry.setPositions(positions);
-  geometry.setColors(colors);
-  const line = new Line2(geometry, lineMaterial.clone());
-  line.name = 'circle_outline';
-  line.computeLineDistances();
+  const line2 = new Line2(geometry, lineMaterial);
+  line2.name = 'circle_outline';
+  redrawShape(line2, vertices, color);
 
   // add the circle to the cache
-  circleCache[cacheId] = line;
+  circleCache[cacheId] = line2;
 
-  return line;
+  return line2;
 }
 
 /** 

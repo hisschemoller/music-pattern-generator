@@ -115,15 +115,18 @@ export function createObject3dController(specs, my) {
      * @param {String} colorHigh Hex color string of the high contrast color.
      */
     setThemeColorRecursively = function(object3d, colorLow, colorHigh) {
-      if (object3d.material && object3d.material.color) {
-        switch (object3d.name) {
-          case 'polygonLine':
-            object3d.material.color.set(colorLow);
-            break;
-          default:
+      switch (object3d.name) {
+        case 'polygonLine':
+          redrawShape(object3d, object3d.userData.points, colorLow);
+          break;
+        default:
+          if (object3d.type === 'Line2') {
+            redrawShape(object3d, object3d.userData.points, colorHigh);
+          } else if (object3d.material) {
             object3d.material.color.set(colorHigh);
-        }
+          }
       }
+
       object3d.children.forEach(childObject3d => {
         setThemeColorRecursively(childObject3d, colorLow, colorHigh);
       });
