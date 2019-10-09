@@ -1,4 +1,4 @@
-import { dispatch, getActions, STATE_CHANGE, } from '../state/store.js';
+import { dispatch, getActions, getState, STATE_CHANGE, } from '../state/store.js';
 
 const resetKeyCombo = [];
 const newEl = document.querySelector('#file-new');
@@ -66,7 +66,7 @@ function addEventListeners() {
           break;
         
         case 83: // s
-          console.log('state', store.getState());
+          console.log('state', getState());
           break;
       }
     }
@@ -98,7 +98,9 @@ function addEventListeners() {
  * @param {Object} e 
  */
 function handleStateChanges(e) {
-  const { state, action, actions, } = e.detail;
+  const { state, action, } = e.detail;
+  const actions = getActions();
+  
   switch (action.type) {
     case actions.CREATE_PROJECT:
     case actions.DELETE_PROCESSOR:

@@ -16,7 +16,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { dispatch, getActions, getState, persist } from './state/store.js';
+import { dispatch, getActions, getState, persist, } from './state/store.js';
 
 import createAppView from './view/app.js';
 import createCanvas3d from './webgl/canvas3d.js';
@@ -25,6 +25,7 @@ import createLibraryView from './view/library.js';
 import { accessMidi } from './midi/midi.js';
 import createMIDINetwork from './midi/network.js';
 import { setup as setupControls } from './view/controls.js';
+import { setup as setupPanels } from './view/panels.js';
 import { preloadProcessors } from './core/processor-loader.js';
 import createPreferencesView from './view/preferences.js';
 import createRemoteView from './view/remote.js';
@@ -36,6 +37,7 @@ async function main() {
   await preloadProcessors();
 
   setupControls();
+  setupPanels();
 
   persist();
 }

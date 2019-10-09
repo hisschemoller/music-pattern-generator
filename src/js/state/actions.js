@@ -4,76 +4,74 @@ import { getConfig, setConfig, processorTypes } from '../core/config.js';
 import { getAllMIDIPorts } from '../midi/midi.js';
 import { showDialog } from '../view/dialog.js';
 
-export default function createActions(specs = {}, my = {}) {
-    const RESCAN_TYPES = 'RESCAN_TYPES',
-        CREATE_PROJECT = 'CREATE_PROJECT',
-        SET_THEME = 'SET_THEME',
-        CREATE_PROCESSOR = 'CREATE_PROCESSOR',
-        ADD_PROCESSOR = 'ADD_PROCESSOR',
-        DELETE_PROCESSOR = 'DELETE_PROCESSOR',
-        SELECT_PROCESSOR = 'SELECT_PROCESSOR',
-        DRAG_SELECTED_PROCESSOR = 'DRAG_SELECTED_PROCESSOR',
-        DRAG_ALL_PROCESSORS = 'DRAG_ALL_PROCESSORS',
-        CHANGE_PARAMETER = 'CHANGE_PARAMETER',
-        RECREATE_PARAMETER = 'RECREATE_PARAMETER',
-        SET_TEMPO = 'SET_TEMPO',
-        CREATE_MIDI_PORT = 'CREATE_MIDI_PORT',
-        UPDATE_MIDI_PORT = 'UPDATE_MIDI_PORT',
-        TOGGLE_MIDI_PREFERENCE = 'TOGGLE_MIDI_PREFERENCE',
-        TOGGLE_MIDI_LEARN_MODE = 'TOGGLE_MIDI_LEARN_MODE',
-        TOGGLE_MIDI_LEARN_TARGET = 'TOGGLE_MIDI_LEARN_TARGET',
-        SET_TRANSPORT = 'SET_TRANSPORT',
-        RECEIVE_MIDI_CC = 'RECEIVE_MIDI_CC',
-        ASSIGN_EXTERNAL_CONTROL = 'ASSIGN_EXTERNAL_CONTROL',
-        UNASSIGN_EXTERNAL_CONTROL = 'UNASSIGN_EXTERNAL_CONTROL',
-        TOGGLE_PANEL = 'TOGGLE_PANEL',
-        TOGGLE_CONNECT_MODE = 'TOGGLE_CONNECT_MODE',
-        CONNECT_PROCESSORS = 'CONNECT_PROCESSORS',
-        DISCONNECT_PROCESSORS = 'DISCONNECT_PROCESSORS',
-        SET_CAMERA_POSITION = 'SET_CAMERA_POSITION',
-        LIBRARY_DROP = 'LIBRARY_DROP';
+const RESCAN_TYPES = 'RESCAN_TYPES',
+  CREATE_PROJECT = 'CREATE_PROJECT',
+  SET_THEME = 'SET_THEME',
+  CREATE_PROCESSOR = 'CREATE_PROCESSOR',
+  ADD_PROCESSOR = 'ADD_PROCESSOR',
+  DELETE_PROCESSOR = 'DELETE_PROCESSOR',
+  SELECT_PROCESSOR = 'SELECT_PROCESSOR',  
+  DRAG_SELECTED_PROCESSOR = 'DRAG_SELECTED_PROCESSOR',
+  DRAG_ALL_PROCESSORS = 'DRAG_ALL_PROCESSORS',
+  CHANGE_PARAMETER = 'CHANGE_PARAMETER',
+  RECREATE_PARAMETER = 'RECREATE_PARAMETER',
+  SET_TEMPO = 'SET_TEMPO',
+  CREATE_MIDI_PORT = 'CREATE_MIDI_PORT',
+  UPDATE_MIDI_PORT = 'UPDATE_MIDI_PORT',
+  TOGGLE_MIDI_PREFERENCE = 'TOGGLE_MIDI_PREFERENCE',
+  TOGGLE_MIDI_LEARN_MODE = 'TOGGLE_MIDI_LEARN_MODE',
+  TOGGLE_MIDI_LEARN_TARGET = 'TOGGLE_MIDI_LEARN_TARGET',
+  SET_TRANSPORT = 'SET_TRANSPORT',
+  RECEIVE_MIDI_CC = 'RECEIVE_MIDI_CC',
+  ASSIGN_EXTERNAL_CONTROL = 'ASSIGN_EXTERNAL_CONTROL',
+  UNASSIGN_EXTERNAL_CONTROL = 'UNASSIGN_EXTERNAL_CONTROL',
+  TOGGLE_PANEL = 'TOGGLE_PANEL',
+  TOGGLE_CONNECT_MODE = 'TOGGLE_CONNECT_MODE',
+  CONNECT_PROCESSORS = 'CONNECT_PROCESSORS',
+  DISCONNECT_PROCESSORS = 'DISCONNECT_PROCESSORS',
+  SET_CAMERA_POSITION = 'SET_CAMERA_POSITION',
+  LIBRARY_DROP = 'LIBRARY_DROP';
 
-    return {
+// actions
+export default {
 
-        importProject: (file) => {
-            return (dispatch, getState, getActions) => {
-
-                file.text()
-                    .then(text => {
-                        let isJSON = true,
-                            isXML = false;
-                        try {
-                            const data = JSON.parse(text);
-                            if (data) {
-                                dispatch(getActions().setProject(data));
-                            }
-                        } catch(errorMessage) {
-                            isJSON = false;
-                        }
-                        if (!isJSON) {
-
-                            // try if it's a legacy xml file
-                            const legacyData = convertLegacyFile(text);
-                            if (legacyData) {
-                                dispatch(getActions().setProject(legacyData));
-                                isXML = true;
-                            }
-                        }
-                        if (!isJSON && !isXML) {
-                            showDialog(
-                                'Import failed', 
-                                `The file to import wasn't recognised as a valid type for this application.`,
-                                'Ok');
-                        }
-                    })
-                    .catch(() =>{
-                        showDialog(
-                            'Import failed', 
-                            `The file could not be opened.`,
-                            'Ok');
-                    });
+  importProject: file => {
+    return (dispatch, getState, getActions) => {
+      file.text()
+        .then(text => {
+          let isJSON = true, isXML = false;
+          try {
+            const data = JSON.parse(text);
+            if (data) {
+              dispatch(getActions().setProject(data));
             }
-        },
+          } catch(errorMessage) {
+            isJSON = false;
+          }
+          if (!isJSON) {
+
+            // try if it's a legacy xml file
+            const legacyData = convertLegacyFile(text);
+            if (legacyData) {
+              dispatch(getActions().setProject(legacyData));
+              isXML = true;
+            }
+          }
+          if (!isJSON && !isXML) {
+            showDialog(
+              'Import failed', 
+              `The file to import wasn't recognised as a valid type for this application.`,
+              'Ok');
+          }
+        })
+        .catch(() =>{
+          showDialog(
+            'Import failed', 
+            `The file could not be opened.`,
+            'Ok');
+      });
+    }
+  },
 
         exportProject: () => {
             return (dispatch, getState, getActions) => {
@@ -387,8 +385,7 @@ export default function createActions(specs = {}, my = {}) {
         libraryDrop: (processorType, x, y) => {
             return { type: LIBRARY_DROP, processorType, x, y, };
         },
-    };
-}
+    }
 
 /**
  * Convert a MIDI control value to a parameter value, depending on the parameter type.
