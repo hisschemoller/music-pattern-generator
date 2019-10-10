@@ -20,12 +20,12 @@ import { dispatch, getActions, getState, persist, } from './state/store.js';
 
 import createAppView from './view/app.js';
 import createDialog from './view/dialog.js';
-import createLibraryView from './view/library.js';
 import { accessMidi } from './midi/midi.js';
 import createMIDINetwork from './midi/network.js';
 import { setup as setupCanvas3d } from './webgl/canvas3d.js';
 import { setup as setupConnections3d } from './webgl/connections3d.js';
 import { setup as setupControls } from './view/controls.js';
+import { setup as setupLibrary } from './view/library.js';
 import { setup as setupPanels } from './view/panels.js';
 import { preloadProcessors } from './core/processor-loader.js';
 import createPreferencesView from './view/preferences.js';
@@ -41,6 +41,7 @@ async function main() {
   setupPanels();
   setupCanvas3d();
   setupConnections3d();
+  setupLibrary();
 
   persist();
 }

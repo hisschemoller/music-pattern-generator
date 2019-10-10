@@ -1,89 +1,82 @@
+import { dispatch, getActions, STATE_CHANGE, } from '../state/store.js';
+import { getProcessorData, getProcessorTypes, } from '../core/processor-loader.js';
+
+const listEl = document.querySelector('.library__list');
+
+let dragEl, dragType;
+
+export function setup() {
+  populateLibrary();
+
+  const draggerTemplate = document.querySelector('#template-library-dragger');
+  dragEl = draggerTemplate.content.cloneNode(true).firstElementChild;
+}
+
+function onTouchEnd(e) {
+  e.preventDefault();
+  document.removeEventListener('touchmove', onTouchMove);
+  document.removeEventListener('mousemove', onTouchMove);
+  document.removeEventListener('touchend', onTouchEnd);
+  document.removeEventListener('mouseup', onTouchEnd);
+  document.body.removeChild(dragEl);
+  const x = e.type === 'mouseup' ? e.clientX : e.changedTouches[0].clientX;
+  const y = e.type === 'mouseup' ? e.clientY : e.changedTouches[0].clientY;
+  dispatch(getActions().libraryDrop(dragType, x, y));
+  dragType = null;
+}
+
+function onTouchMove(e) {
+  setDragElPosition(e);
+}
+
+function onTouchStart(e) {
+  e.preventDefault();
+  const el = e.currentTarget;
+  dragType = el.dataset.type;
+  document.addEventListener('touchmove', onTouchMove);
+  document.addEventListener('mousemove', onTouchMove);
+  document.addEventListener('touchend', onTouchEnd);
+  document.addEventListener('mouseup', onTouchEnd);
+
+  dragEl.querySelector('.library__dragger-label').textContent = el.textContent;
+  document.body.appendChild(dragEl);
+  setDragElPosition(e);
+}
+
+setDragElPosition = e => {
+  const x = e.type.indexOf('mouse') !== -1 ? e.clientX : e.touches[0].clientX;
+  const y = e.type.indexOf('mouse') !== -1 ? e.clientY : e.touches[0].clientY;
+  dragEl.setAttribute('style', `left: ${x - (dragEl.offsetWidth * 0.5)}px; top: ${y - (dragEl.offsetHeight * 0.9)}px;`);
+}
+        
 /**
- * Library for all processor types.
+ * Populate the library with all available processor types.
+ * Processor types are not shown in the libray 
+ * if they have the flag excludedFromLibrary = true
+ * in their config.json file.
  */
-export default function createLibraryView(specs, my) {
-    var that,
-        store = specs.store,
-        listEl = document.querySelector('.library__list'),
-        dragType = null,
-        dragEl = null,
+function populateLibrary() {
+  const template = document.querySelector('#template-library-item');
 
-        init = function() {
-            document.addEventListener(store.STATE_CHANGE, (e) => {
-                switch (e.detail.action.type) {
-                    case e.detail.actions.RESCAN_TYPES:
-                        populateLibrary(e.detail.state.types);
-                        break;
-                }
-            });
-        },
-        
-        /**
-         * Populate the library with all available processor types.
-         * Processor types are not shown in the libray 
-         * if they have the flag excludedFromLibrary = true
-         * in their config.json file.
-         */
-        populateLibrary = function(typesTable) {
-            const template = document.querySelector('#template-library-item');
+  getProcessorTypes().forEach(type => {
+    const clone = template.content.cloneNode(true);
+    const el = clone.firstElementChild;
+    listEl.appendChild(el);
 
-            typesTable.allIds.forEach(id => {
-                const type = typesTable.byId[id];
-                const clone = template.content.cloneNode(true);
-                const el = clone.firstElementChild;
-                listEl.appendChild(el);
+    const config = getProcessorData(type, 'config');
 
-                el.querySelector('.library__item-label').innerHTML = type.name;
-                el.dataset.type = id;
-                el.addEventListener('touchstart', onTouchStart);
-                el.addEventListener('mousedown', onTouchStart);
-            });
+    el.querySelector('.library__item-label').innerHTML = config.name;
+    el.addEventListener('touchstart', onTouchStart);
+    el.addEventListener('mousedown', onTouchStart);
+  });
+}
 
-            const draggerTemplate = document.querySelector('#template-library-dragger');
-            dragEl = draggerTemplate.content.cloneNode(true).firstElementChild;
-        },
-
-        onTouchStart = e => {
-            e.preventDefault();
-            const el = e.currentTarget;
-            dragType = el.dataset.type;
-            document.addEventListener('touchmove', onTouchMove);
-            document.addEventListener('mousemove', onTouchMove);
-            document.addEventListener('touchend', onTouchEnd);
-            document.addEventListener('mouseup', onTouchEnd);
-
-            dragEl.querySelector('.library__dragger-label').textContent = el.textContent;
-            document.body.appendChild(dragEl);
-            setDragElPosition(e);
-        },
-
-        onTouchMove = e => {
-            setDragElPosition(e);
-        },
-
-        onTouchEnd = e => {
-            e.preventDefault();
-            document.removeEventListener('touchmove', onTouchMove);
-            document.removeEventListener('mousemove', onTouchMove);
-            document.removeEventListener('touchend', onTouchEnd);
-            document.removeEventListener('mouseup', onTouchEnd);
-            document.body.removeChild(dragEl);
-            const el = e.type === 'mouseup' ? e.currentTarget : e.changedTouches[0].target.parentNode;
-            const x = e.type === 'mouseup' ? e.clientX : e.changedTouches[0].clientX;
-            const y = e.type === 'mouseup' ? e.clientY : e.changedTouches[0].clientY;
-            store.dispatch(store.getActions().libraryDrop(dragType, x, y));
-            dragType = null;
-        },
-        
-        setDragElPosition = e => {
-            const x = e.type.indexOf('mouse') !== -1 ? e.clientX : e.touches[0].clientX;
-            const y = e.type.indexOf('mouse') !== -1 ? e.clientY : e.touches[0].clientY;
-            dragEl.setAttribute('style', `left: ${x - (dragEl.offsetWidth * 0.5)}px; top: ${y - (dragEl.offsetHeight * 0.9)}px;`);
-        };
-    
-    that = specs.that || {};
-
-    init();
-    
-    return that;
+/**
+ * set the dragged element position.
+ * @param {Object} e 
+ */
+function setDragElPosition(e) {
+    const x = e.type.indexOf('mouse') !== -1 ? e.clientX : e.touches[0].clientX;
+    const y = e.type.indexOf('mouse') !== -1 ? e.clientY : e.touches[0].clientY;
+    dragEl.setAttribute('style', `left: ${x - (dragEl.offsetWidth * 0.5)}px; top: ${y - (dragEl.offsetHeight * 0.9)}px;`);
 }
