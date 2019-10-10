@@ -1,3 +1,4 @@
+import { dispatch, getActions, STATE_CHANGE, } from '../state/store.js';
 import createBooleanSettingView from './setting/boolean.js';
 import createIntegerSettingView from './setting/integer.js';
 import createItemizedSettingView from './setting/itemized.js';
@@ -54,7 +55,7 @@ export default function createSettingsPanel(specs, my) {
       if (el && el.querySelector('.settings__delete')) {
         el.querySelector('.settings__delete').addEventListener('click', function(e) {
           e.preventDefault();
-          store.dispatch(store.getActions().deleteProcessor(id));
+          dispatch(getActions().deleteProcessor(id));
         });
       }
 

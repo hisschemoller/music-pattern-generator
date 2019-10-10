@@ -40,6 +40,16 @@ let
   scene;
 
 /**
+ * Update any tween animations that are going on and redraw the canvases if needed.
+ * @param {Number} position Transport playback position in ticks.
+ * @param {Array} processorEvents Array of processor generated events to displayin the view.
+ */
+export function draw(position, processorEvents) {
+  controllers.forEach(controller => controller.draw(position, processorEvents));
+  renderer.render(scene, camera);
+}
+
+/**
  * Provide cables3d with the scene so it can add and remove cables.
  */
 export function getScene() {
@@ -103,7 +113,6 @@ function createProcessorViews(state) {
     if (!isExists) {
 
       // create the processor 3d object
-      console.log(type, 'object3d');
       const object3dModule = getProcessorData(type, 'object3d');
       const object3d = object3dModule.createObject3d(id, inputs, outputs);
       object3d.position.set(positionX, positionY, positionZ);
@@ -269,16 +278,6 @@ function dragStart(object3d, mousePoint) {
     }
     rootEl.style.cursor = 'move';
   }
-}
-
-/**
- * Update any tween animations that are going on and redraw the canvases if needed.
- * @param {Number} position Transport playback position in ticks.
- * @param {Array} processorEvents Array of processor generated events to displayin the view.
- */
-function draw(position, processorEvents) {
-  controllers.forEach(controller => controller.draw(position, processorEvents));
-  renderer.render(scene, camera);
 }
             
 /**
