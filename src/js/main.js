@@ -18,8 +18,8 @@
 
 import { dispatch, getActions, getState, persist, } from './state/store.js';
 
-import createAppView from './view/app.js';
-import createDialog from './view/dialog.js';
+// import createAppView from './view/app.js';
+// import createDialog from './view/dialog.js';
 import { accessMidi } from './midi/midi.js';
 import createMIDINetwork from './midi/network.js';
 import { setup as setupCanvas3d } from './webgl/canvas3d.js';
