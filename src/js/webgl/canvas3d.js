@@ -94,24 +94,26 @@ function clearProcessorViews() {
  * @param  {Array} data Array of current processors' state.
  */
 function createProcessorViews(state) {
-  const isConnectMode = state.connectModeActive;
-  for (let id of state.processors.allIds) {
-    const processorData = state.processors.byId[id];
+  const { connectModeActive, processors, selectedID, } = state;
+  const isConnectMode = connectModeActive;
+  for (let id of processors.allIds) {
+    const processorData = processors.byId[id];
     const { inputs, outputs, positionX, positionY, positionZ, type } = processorData;
     const isExists = allObjects.find(obj3d => obj3d.userData.id === id);
     if (!isExists) {
 
       // create the processor 3d object
-      const object3dModule = getProcessorData('object3d', type);
+      console.log(type, 'object3d');
+      const object3dModule = getProcessorData(type, 'object3d');
       const object3d = object3dModule.createObject3d(id, inputs, outputs);
       object3d.position.set(positionX, positionY, positionZ);
       allObjects.push(object3d);
       scene.add(object3d);
 
       // create controller for the object
-      const controllerModule = getProcessorData('object3dController', type);
-      const controller = controllerModule.createObject3dController({ object3d, processorData, store, isConnectMode, });
-      controller.updateSelectCircle(store.getState().selectedID);
+      const controllerModule = getProcessorData(type, 'object3dController');
+      const controller = controllerModule.createObject3dController({ object3d, processorData, isConnectMode, });
+      controller.updateSelectCircle(selectedID);
       controllers.push(controller);
     }
   };

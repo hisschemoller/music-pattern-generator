@@ -1,3 +1,4 @@
+import { dispatch, getActions, STATE_CHANGE, } from '../../state/store.js';
 import {
   EllipseCurve,
   Vector2,
@@ -12,29 +13,23 @@ const TWO_PI = Math.PI * 2;
 
 export function createObject3dController(specs, my) {
   let that,
-    centreCircle3d,
     centreDot3d,
     select3d,
     pointer3d,
     necklace3d,
     defaultColor,
-    lineMaterial,
     duration,
     pointerRotation,
-    pointerRotationPrevious = 0,
     status = true,
     euclid,
     steps,
     rotation,
     centerRadius = 3,
     centerScale = 0,
-    selectRadius = 2,
     innerRadius = 4,
     outerRadius = 6,
-    dotRadius = 1,
     locatorRadius = 8,
     zeroMarkerRadius = 0.5,
-    zeroMarkerY = outerRadius + zeroMarkerRadius + 1,
     doublePI = Math.PI * 2,
 
     initialize = function() {
@@ -44,7 +39,7 @@ export function createObject3dController(specs, my) {
       pointer3d = my.object3d.getObjectByName('pointer'),
       necklace3d = my.object3d.getObjectByName('necklace'),
 
-      document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
+      document.addEventListener(STATE_CHANGE, handleStateChanges);
     
       defaultColor = getTheme().colorHigh;
 
@@ -58,7 +53,7 @@ export function createObject3dController(specs, my) {
     },
 
     terminate = function() {
-      document.removeEventListener(my.store.STATE_CHANGE, handleStateChanges);
+      document.removeEventListener(STATE_CHANGE, handleStateChanges);
     },
 
     handleStateChanges = function(e) {

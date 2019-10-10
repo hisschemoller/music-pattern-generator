@@ -40,11 +40,10 @@ export default function createObject3dControllerBase(specs, my) {
       return my.id;
     };
   
-  my.store = specs.store,
   my.id = specs.object3d.userData.id;
   my.object3d = specs.object3d;
-  my.hitarea3d = my.object3d.getObjectByName('hitarea'),
-  my.label3d = my.object3d.getObjectByName('label'),
+  my.hitarea3d = my.object3d.getObjectByName('hitarea');
+  my.label3d = my.object3d.getObjectByName('label');
   my.updateLabel = updateLabel;
   my.updatePosition = updatePosition;
   my.updateConnectMode = updateConnectMode;

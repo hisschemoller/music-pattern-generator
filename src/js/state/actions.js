@@ -3,6 +3,7 @@ import { createUUID } from '../core/util.js';
 import { getConfig, setConfig, processorTypes } from '../core/config.js';
 import { getAllMIDIPorts } from '../midi/midi.js';
 import { showDialog } from '../view/dialog.js';
+import { getProcessorData, } from '../core/processor-loader.js';
 
 const RESCAN_TYPES = 'RESCAN_TYPES',
   CREATE_PROJECT = 'CREATE_PROJECT',
@@ -178,26 +179,20 @@ export default {
             return { type: SET_THEME, themeName };
         },
 
-        CREATE_PROCESSOR,
-        createProcessor: (data) => {
-            return (dispatch, getState, getActions) => {
-                fetch(`js/wh/processors/${data.type}/config.json`)
-                    .then(
-                        response => response.json(),
-                        error => console.log('An error occurred.', error)
-                    )
-                    .then(json => {
-                        const id = data.id || `${data.type}_${createUUID()}`;
-                        const fullData = {...json, ...data};
-                        fullData.id = id;
-                        fullData.positionX = data.positionX;
-                        fullData.positionY = data.positionY;
-                        fullData.params.byId.name.value = data.name || getProcessorDefaultName(getState().processors);
-                        dispatch(getActions().addProcessor(fullData));
-                        dispatch(getActions().selectProcessor(id));
-                    });
-            }
-        },
+	CREATE_PROCESSOR,
+	createProcessor: data => {
+			return (dispatch, getState, getActions) => {
+				const configJson = getProcessorData(data.type, 'config');
+				const id = data.id || `${data.type}_${createUUID()}`;
+				const fullData = {...configJson, ...data};
+				fullData.id = id;
+				fullData.positionX = data.positionX;
+				fullData.positionY = data.positionY;
+				fullData.params.byId.name.value = data.name || getProcessorDefaultName(getState().processors);
+				dispatch(getActions().addProcessor(fullData));
+				dispatch(getActions().selectProcessor(id));
+			}
+	},
 
         ADD_PROCESSOR,
         addProcessor: (data) => {

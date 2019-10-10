@@ -1,5 +1,5 @@
+import { dispatch, getActions, STATE_CHANGE, } from '../../state/store.js';
 import {
-  BufferGeometry,
   Shape,
   ShapeGeometry,
   Vector2,
@@ -42,7 +42,7 @@ export function createObject3dController(specs, my) {
       select3d = my.object3d.getObjectByName('select'),
       zeroMarker3d = my.object3d.getObjectByName('zeroMarker'),
 
-      document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
+      document.addEventListener(STATE_CHANGE, handleStateChanges);
     
       defaultColor = getTheme().colorHigh;
 
@@ -54,7 +54,7 @@ export function createObject3dController(specs, my) {
     },
 
     terminate = function() {
-      document.removeEventListener(my.store.STATE_CHANGE, handleStateChanges);
+      document.removeEventListener(STATE_CHANGE, handleStateChanges);
     },
 
     handleStateChanges = function(e) {
@@ -350,9 +350,9 @@ export function createObject3dController(specs, my) {
 
       // retain necklace dot state in object
       dotAnimations[stepIndex] = {
-          dot,
-          scale: 1,
-          isActive: false,
+        dot,
+        scale: 1,
+        isActive: false,
       }
 
       // delay start of animation

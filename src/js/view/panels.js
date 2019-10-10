@@ -41,7 +41,6 @@ function createSettingsViews(state) {
       const settingsHTML = getProcessorData(processorData.type, 'settings');
       settingsViews.splice(i, 0, createSettingsPanel({
         data: processorData,
-        store,
         parentEl: editContentEl,
         template: settingsHTML,
         isSelected: selectedID === processorData.id

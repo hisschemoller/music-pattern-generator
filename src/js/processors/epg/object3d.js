@@ -54,7 +54,7 @@ export function createObject3d(id, inputs, outputs) {
      * @return {object} Group of drag plane.
      */
     createWheel = function() {
-      const { colorLow, colorHigh, } = getThemeColors();
+      const { colorLow, colorHigh, } = getTheme();
 
       const hitarea = createCircleFilled(3, colorHigh);
       hitarea.name = 'hitarea';

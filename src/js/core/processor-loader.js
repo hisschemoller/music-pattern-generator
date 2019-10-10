@@ -54,10 +54,10 @@ export function preloadProcessors() {
           processors[json.ids[index]] = {
             config: results[0],
             settings: results[1],
-            module3d: results[2],
-            module3dController: results[3],
-            moduleProcessor: results[4],
-            moduleUtils: results[5],
+            object3d: results[2],
+            object3dController: results[3],
+            processor: results[4],
+            utils: results[5],
           };
         });
         console.log('Processor data preloaded.', processors);
@@ -71,9 +71,13 @@ export function getProcessorTypes() {
   return data.ids;
 }
 
+/**
+ * Get preloaded processor data.
+ * @param {String} name Processor type.
+ * @param {String} type Data type.
+ */
 export function getProcessorData(name, type) {
   if (processors[name] && processors[name][type]) {
     return processors[name][type];
   }
 } 
-

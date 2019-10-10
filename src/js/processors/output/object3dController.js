@@ -1,17 +1,16 @@
-
+import { dispatch, getActions, STATE_CHANGE, } from '../../state/store.js';
 import { getTheme } from '../../state/selectors.js';
 import createObject3dControllerBase from '../../webgl/object3dControllerBase.js';
 
 export function createObject3dController(specs, my) {
   let that,
-    centreCircle3d,
     select3d,
 
     initialize = function() {
       centreCircle3d = my.object3d.getObjectByName('centreCircle'),
       select3d = my.object3d.getObjectByName('select'),
 
-      document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
+      document.addEventListener(STATE_CHANGE, handleStateChanges);
 
       const params = specs.processorData.params.byId;
       my.updateLabel(params.name.value);
@@ -19,12 +18,11 @@ export function createObject3dController(specs, my) {
     },
 
     terminate = function() {
-      document.removeEventListener(my.store.STATE_CHANGE, handleStateChanges);
+      document.removeEventListener(STATE_CHANGE, handleStateChanges);
     },
 
     handleStateChanges = function(e) {
       const { action, actions, state, } = e.detail;
-      const processor = state.processors.byId[my.id];
       switch (action.type) {
         
         case actions.CHANGE_PARAMETER:
@@ -83,7 +81,6 @@ export function createObject3dController(specs, my) {
     },
       
     draw = function(position, processorEvents) {
-      
     };
   
   my = my || {};
