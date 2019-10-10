@@ -7,31 +7,29 @@ import createStringSettingView from './setting/string.js';
  * Processor settings view.
  */
 export default function createSettingsPanel(specs, my) {
-  let that,
-    store = specs.store,
-    data = specs.data,
-    parentEl = specs.parentEl,
-    settingViews = [],
-    el,
+  const { data, parentEl, } = specs;
+  const { id, params, } = data;
+
+  let el,
       
     initialize = function() {
+      let settingView;
+      
       // const htmlString = require(`html-loader!../processors/${data.type}/settings.html`);
       el = document.createElement('div');
       el.innerHTML = specs.template;
       
       // loop through all processor parameters and add setting view if required
-      data.params.allIds.forEach(id => {
+      params.allIds.forEach(paramId => {
         // only create setting if there's a container el for it in the settings panel
-        var settingContainerEl = el.querySelector('.' + id);
+        var settingContainerEl = el.querySelector('.' + paramId);
         if (settingContainerEl) {
-          let paramData = data.params.byId[id],
-            settingView,
+          let paramData = params.byId[paramId],
             settingViewSpecs = {
-              store: store,
-              key: id,
+              key: paramId,
               data: paramData,
               parentEl: settingContainerEl,
-              processorID: data.id
+              processorID: id
             };
 
           // create the setting view based on the parameter type
@@ -56,7 +54,7 @@ export default function createSettingsPanel(specs, my) {
       if (el && el.querySelector('.settings__delete')) {
         el.querySelector('.settings__delete').addEventListener('click', function(e) {
           e.preventDefault();
-          store.dispatch(store.getActions().deleteProcessor(data.id));
+          store.dispatch(store.getActions().deleteProcessor(id));
         });
       }
 
@@ -88,20 +86,19 @@ export default function createSettingsPanel(specs, my) {
      * Show or hide settings depending on ID.
      * @param {String} id ID of the selected processor.
      */
-    select = function(id) {
-      show(id === data.id);
+    select = function(_id) {
+      show(_id ===   id);
     },
         
     getID = function() {
-      return data.id;
+      return id;
     };
-    
-  that = data.that || {};
-  
+
   initialize();
   
-  that.terminate = terminate;
-  that.select = select;
-  that.getID = getID;
-  return that;
+  return Object.freeze({
+    getID,
+    select,
+    terminate,
+  });
 }
