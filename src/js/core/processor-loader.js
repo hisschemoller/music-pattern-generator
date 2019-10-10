@@ -72,8 +72,8 @@ export function getProcessorTypes() {
 }
 
 export function getProcessorData(name, type) {
-  if (performers[name] && performers[name][type]) {
-    return performers[name][type];
+  if (processors[name] && processors[name][type]) {
+    return processors[name][type];
   }
 } 
 

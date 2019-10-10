@@ -19,11 +19,12 @@
 import { dispatch, getActions, getState, persist, } from './state/store.js';
 
 import createAppView from './view/app.js';
-import createCanvas3d from './webgl/canvas3d.js';
 import createDialog from './view/dialog.js';
 import createLibraryView from './view/library.js';
 import { accessMidi } from './midi/midi.js';
 import createMIDINetwork from './midi/network.js';
+import { setup as setupCanvas3d } from './webgl/canvas3d.js';
+import { setup as setupConnections3d } from './webgl/connections3d.js';
 import { setup as setupControls } from './view/controls.js';
 import { setup as setupPanels } from './view/panels.js';
 import { preloadProcessors } from './core/processor-loader.js';
@@ -38,6 +39,8 @@ async function main() {
 
   setupControls();
   setupPanels();
+  setupCanvas3d();
+  setupConnections3d();
 
   persist();
 }
