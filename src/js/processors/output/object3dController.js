@@ -4,6 +4,7 @@ import createObject3dControllerBase from '../../webgl/object3dControllerBase.js'
 
 export function createObject3dController(specs, my) {
   let that,
+    centreCircle3d,
     select3d,
 
     initialize = function() {
