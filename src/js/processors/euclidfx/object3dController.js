@@ -13,6 +13,7 @@ const TWO_PI = Math.PI * 2;
 
 export function createObject3dController(specs, my) {
   let that,
+    centreCircle3d,
     centreDot3d,
     select3d,
     pointer3d,

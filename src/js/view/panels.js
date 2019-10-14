@@ -3,7 +3,7 @@ import createSettingsPanel from './settings.js';
 import addWindowResizeCallback from '../view/windowresize.js';
 import { getProcessorData } from '../core/processor-loader.js';
 
-const settingsViews = [];
+let settingsViews = [];
 const panelsEl = document.querySelector('.panels');
 const libraryEl = document.querySelector('.library');
 const helpEl = document.querySelector('.help');
