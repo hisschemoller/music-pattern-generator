@@ -30,7 +30,8 @@ import { setup as setupNetwork } from './midi/network.js';
 import { setup as setupPanels } from './view/panels.js';
 import { setup as setupPreferences } from './view/preferences.js';
 import { setup as setupRemote } from './view/remote.js';
-import createTransport from './core/transport.js';
+import { setup as setupTransport } from './core/transport.js';
+import { setup as setupSequencer } from './core/sequencer.js';
 import { showDialog } from './view/dialog.js';
 
 async function main() {
@@ -45,6 +46,8 @@ async function main() {
   setupNetwork();
   setupPreferences();
   setupRemote();
+  setupTransport();
+  setupSequencer();
 
   persist();
 }
