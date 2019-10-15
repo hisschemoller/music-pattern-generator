@@ -211,9 +211,8 @@ export function createObject3dController(data, that = {}, my = {}) {
      * @param  {Number} position Position within pattern in ticks.
      */
     showPlaybackPosition = function(position) {
-        pointerRotationPrevious = pointerRotation;
-        pointerRotation = TWO_PI * (-position % duration / duration);
-        necklace3d.rotation.z = pointerRotation;
+      pointerRotation = TWO_PI * (-position % duration / duration);
+      necklace3d.rotation.z = pointerRotation;
     },
         
     /**

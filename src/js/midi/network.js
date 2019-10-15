@@ -36,7 +36,7 @@ function connectProcessors(state) {
 		const connection = state.connections.byId[connectionID];
 		const sourceProcessor = processors.find(processor => processor.getID() === connection.sourceProcessorID);
 		const destinationProcessor = processors.find(processor => processor.getID() === connection.destinationProcessorID);
-		if (!destinationProcessor) {
+		if (!sourceProcessor.getDestinations().includes(destinationProcessor)) {
 			sourceProcessor.connect(destinationProcessor);
 		}
 	});

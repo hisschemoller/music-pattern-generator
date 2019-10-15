@@ -32,7 +32,7 @@ const initialState = {
 		allIds: [],
 		byId: {},
 	},
-	selectedID: null,
+	selectedId: null,
 	showHelpPanel: false,
 	showLibraryPanel: true,
 	showPreferencesPanel: false,
@@ -138,7 +138,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 			return newState;
 		
 		case actions.SELECT_PROCESSOR:
-			return { ...state, selectedID: action.id };
+			return { ...state, selectedId: action.id };
 		
 		case actions.DRAG_SELECTED_PROCESSOR:
 			return {
