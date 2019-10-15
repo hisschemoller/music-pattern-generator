@@ -11,9 +11,8 @@ import { redrawShape } from '../../webgl/draw3dHelper.js';
 
 const TWO_PI = Math.PI * 2;
 
-export function createObject3dController(specs, my) {
-  let that,
-    centreCircle3d,
+export function createObject3dController(data, that = {}, my = {}) {
+  let centreCircle3d,
     centreDot3d,
     select3d,
     pointer3d,
@@ -44,13 +43,13 @@ export function createObject3dController(specs, my) {
     
       defaultColor = getTheme().colorHigh;
 
-      const params = specs.processorData.params.byId;
+      const params = data.processorData.params.byId;
       my.updateLabel(params.name.value);
       updateNecklace(params.steps.value, params.pulses.value, params.rotation.value);
       updateDuration(params.steps.value, params.rate.value);
       updateRotation(params.rotation.value);  
       updatePointer();
-      my.updateConnectMode(specs.isConnectMode);
+      my.updateConnectMode(data.isConnectMode);
     },
 
     terminate = function() {
@@ -271,10 +270,8 @@ export function createObject3dController(specs, my) {
         updateNoteAnimation();
       }
     };
-  
-  my = my || {};
 
-  that = createObject3dControllerBase(specs, my);
+  that = createObject3dControllerBase(data, that, my);
 
   initialize();
 

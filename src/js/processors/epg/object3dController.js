@@ -16,9 +16,8 @@ import {
 
 const TWO_PI = Math.PI * 2;
 
-export function createObject3dController(specs, my) {
-  let that,
-    centreDot3d,
+export function createObject3dController(data, that = {}, my = {}) {
+  let centreDot3d,
     dots3d,
     pointer3d,
     polygon3d,
@@ -46,11 +45,11 @@ export function createObject3dController(specs, my) {
     
       defaultColor = getTheme().colorHigh;
 
-      const params = specs.processorData.params.byId;
+      const params = data.processorData.params.byId;
       my.updateLabel(params.name.value);
       updateNecklace(params.steps.value, params.pulses.value, params.rotation.value, params.is_mute.value);
       updateDuration(params.steps.value, params.rate.value);
-      my.updateConnectMode(specs.isConnectMode);
+      my.updateConnectMode(data.isConnectMode);
     },
 
     terminate = function() {
@@ -397,10 +396,8 @@ export function createObject3dController(specs, my) {
         centerScale = 0;
       }
     };
-  
-  my = my || {};
 
-  that = createObject3dControllerBase(specs, my);
+  that = createObject3dControllerBase(data, that, my);
 
   initialize();
 

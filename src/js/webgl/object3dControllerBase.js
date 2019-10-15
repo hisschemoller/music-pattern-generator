@@ -5,16 +5,15 @@ import { getTheme } from '../state/selectors.js';
  * Base object for all processor WebGL object controllers.
  *
  * @export
- * @param {Object} specs
+ * @param {Object} data
  * @param {Object} my Shared properties.
  */
-export default function createObject3dControllerBase(specs, my) {
-  let that,
+export default function createObject3dControllerBase(data, that, my) {
         
     /**
      * Update the pattern's name.
      */
-    updateLabel = function(labelString) {
+  const updateLabel = function(labelString) {
       setText3d(my.label3d, labelString.toUpperCase(), getTheme().colorHigh);
     },
 
@@ -40,15 +39,14 @@ export default function createObject3dControllerBase(specs, my) {
       return my.id;
     };
   
-  my.id = specs.object3d.userData.id;
-  my.object3d = specs.object3d;
+  my.id = data.object3d.userData.id;
+  my.object3d = data.object3d;
   my.hitarea3d = my.object3d.getObjectByName('hitarea');
   my.label3d = my.object3d.getObjectByName('label');
   my.updateLabel = updateLabel;
   my.updatePosition = updatePosition;
   my.updateConnectMode = updateConnectMode;
 
-  that = specs.that || {};
   that.getID = getID;
   return that;
 }
