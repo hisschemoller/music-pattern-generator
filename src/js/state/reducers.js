@@ -28,6 +28,10 @@ const initialState = {
 		allIds: [],
 		byId: {},
 	},
+	presets: {
+		allIds: [],
+		byId: {},
+	},
 	processors: {
 		allIds: [],
 		byId: {},
@@ -36,6 +40,7 @@ const initialState = {
 	showHelpPanel: false,
 	showLibraryPanel: true,
 	showPreferencesPanel: false,
+	showPresetsPanel: false,
 	showSettingsPanel: false,
 	theme: 'dev', // 'light|dark' 
 	transport: 'stop', // 'play|pause|stop'
@@ -325,6 +330,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 				showPreferencesPanel: action.panelName === 'preferences' ? !state.showPreferencesPanel : state.showPreferencesPanel,
 				showSettingsPanel: action.panelName === 'settings' ? !state.showSettingsPanel : state.showSettingsPanel,
 				showLibraryPanel: action.panelName === 'library' ? !state.showLibraryPanel : state.showLibraryPanel,
+				showPresetsPanel: action.panelName === 'presets' ? !state.showPresetsPanel : state.showPresetsPanel,
 			};
 		
 		case actions.TOGGLE_CONNECT_MODE:
@@ -404,6 +410,16 @@ export default function reduce(state = initialState, action, actions = {}) {
 					type: action.processorType,
 					x: action.x,
 					y: action.y,
+				},
+			};
+		
+		case actions.STORE_PRESET:
+			console.log(action.index, action.preset);
+			return {
+				...state,
+				presets: {
+					allIds: state.presets.allIds,
+					byId: state.presets.byId,
 				},
 			};
 

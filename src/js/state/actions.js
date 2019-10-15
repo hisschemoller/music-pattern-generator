@@ -24,6 +24,7 @@ const ADD_PROCESSOR = 'ADD_PROCESSOR',
   SET_TEMPO = 'SET_TEMPO',
   SET_THEME = 'SET_THEME',
   SET_TRANSPORT = 'SET_TRANSPORT',
+  STORE_PRESET = 'STORE_PRESET',
   TOGGLE_CONNECT_MODE = 'TOGGLE_CONNECT_MODE',
   TOGGLE_MIDI_LEARN_MODE = 'TOGGLE_MIDI_LEARN_MODE',
   TOGGLE_MIDI_LEARN_TARGET = 'TOGGLE_MIDI_LEARN_TARGET',
@@ -340,10 +341,10 @@ export default {
 
 	disconnectProcessors: id => {
 		return (dispatch, getState, getActions) => {
-			let state = getState();
-			const connection = state.connections.byId[id];
-			const sourceProcessor = state.processors.byId[connection.sourceProcessorID];
-			const destinationProcessor = state.processors.byId[connection.destinationProcessorID];
+			const { connections, processors, } = getState();
+			const connection = connections.byId[id];
+			const sourceProcessor = processors.byId[connection.sourceProcessorID];
+			const destinationProcessor = processors.byId[connection.destinationProcessorID];
 
 			// disconnect the processors
 			dispatch(getActions().disconnectProcessors2(id));
@@ -359,4 +360,24 @@ export default {
 	libraryDrop: (processorType, x, y) => {
 		return { type: LIBRARY_DROP, processorType, x, y, };
 	},
+
+	STORE_PRESET,
+	storePreset: index => {
+		return (dispatch, getState, getActions) => {
+			const { processors, } = getState();
+			const preset = processors.allIds.reduce((accumulator, processorId) => {
+				const params = processors.byId[processorId].params;
+				return {
+					...accumulator,
+					[processorId]: params.allIds.reduce((acc, paramId) => {
+						return {
+							...acc,
+							[paramId]: params.byId[paramId].value,
+						};
+					}, {}),
+				};
+			}, {});
+			return { type: STORE_PRESET, index, preset };
+		}
+	}
 }
