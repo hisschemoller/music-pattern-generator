@@ -35,7 +35,7 @@ function connectProcessors(state) {
 	state.connections.allIds.forEach(connectionID => {
 		const connection = state.connections.byId[connectionID];
 		const sourceProcessor = processors.find(processor => processor.getID() === connection.sourceProcessorID);
-		const destinationProcessor = sourceProcessor.getDestinations().find(processor => processor.getID() === connection.destinationProcessorID);
+		const destinationProcessor = processors.find(processor => processor.getID() === connection.destinationProcessorID);
 		if (!destinationProcessor) {
 			sourceProcessor.connect(destinationProcessor);
 		}

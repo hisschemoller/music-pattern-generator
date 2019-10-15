@@ -340,6 +340,7 @@ function handleStateChanges(e) {
       clearProcessorViews();
       createProcessorViews(state);
       onWindowResize();
+      toggleConnectMode(state);
       break;
     
     case actions.SET_THEME:
@@ -352,6 +353,10 @@ function handleStateChanges(e) {
     
     case actions.LIBRARY_DROP:
       onDrop(state);
+      break;
+
+    case actions.TOGGLE_CONNECT_MODE:
+      toggleConnectMode(state);
       break;
   }
 }
@@ -472,6 +477,14 @@ function selectProcessorView(state) {
  */
 function setThemeOnWorld() {
   renderer.setClearColor(new Color(getTheme().colorBackground));
+}
+
+/**
+ * Enter or leave application connect mode.
+ * @param {Boolean} isEnabled True to enable connect mode.
+ */
+function toggleConnectMode(state) {
+  isConnectMode = state.connectModeActive;
 }
 
 /**

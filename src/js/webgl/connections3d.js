@@ -1,26 +1,26 @@
 import { dispatch, getActions, STATE_CHANGE, } from '../state/store.js';
 import { getTheme } from '../state/selectors.js';
-import { createCircleFilled, createCircleOutline, createShape, } from './draw3dHelper.js';
+import { createCircleFilled, createCircleOutline, createShape, redrawShape, } from './draw3dHelper.js';
 import { getScene } from './canvas3d.js';
 
 const {
+  CubicBezierCurve,
   Group,
   Vector2,
 } = THREE;
 
-const state = {
-    sourceProcessorID: null,
-    sourceConnectorID: null,
-    sourceConnectorPosition: null,
-  },
-  deleteButtonRadius = 2.0,
+const deleteButtonRadius = 2.0,
   deleteCrossRadius = 0.8,
   dragHandleRadius = 1.5;
 
-let lineMaterial,
-  currentCable,
+let currentCable,
   currentCableDragHandle,
-  cablesGroup;
+  cablesGroup,
+  state = {
+    sourceProcessorID: null,
+    sourceConnectorID: null,
+    sourceConnectorPosition: null,
+  };
 
 /**
  * Create connection between two processors.
@@ -135,6 +135,36 @@ function createCable(connectionId, isConnectMode) {
 }
 
 /**
+ * Enter or leave application connect mode.
+ * @param {Vector3} sourcePosition Cable start position.
+ * @param {Vector3} destinationPosition Cable end position.
+ */
+function drawCable(connectionID, sourcePosition, destinationPosition) {
+  const cable = cablesGroup.getObjectByName(connectionID);
+  if (cable) {
+    const distance = sourcePosition.distanceTo(destinationPosition);
+    const curveStrength = Math.min(distance / 2, 30);
+    const curve = new CubicBezierCurve(
+      sourcePosition.clone(),
+      sourcePosition.clone().sub(new Vector2(0, curveStrength)),
+      destinationPosition.clone().add(new Vector2(0, curveStrength)),
+      destinationPosition.clone()
+    );
+    const points = curve.getPoints(50);
+    
+    redrawShape(cable, points, getTheme().colorLow);
+
+    const deleteBtn = cable.getObjectByName('delete');
+    if (deleteBtn) {
+      
+      // get mid point on cable
+      const position = points[Math.floor(points.length / 2)];
+      deleteBtn.position.set(position.x, position.y, 0);
+    }
+  }
+}
+
+/**
  * Draw all cables acctording to the state.
  * @param {Object} state Application state.
  */
@@ -168,7 +198,7 @@ function handleStateChanges(e) {
   const { state, action, actions, } = e.detail;
   switch (action.type) {
     case actions.TOGGLE_CONNECT_MODE:
-      toggleConnectMode(state.connectModeActive);
+      toggleConnectMode(state);
       break;
     
     case actions.DELETE_PROCESSOR:
@@ -187,12 +217,12 @@ function handleStateChanges(e) {
       updateTheme();
       updateCables(state);
       drawCables(state);
-      toggleConnectMode(state.connectModeActive);
+      toggleConnectMode(state);
       break;
 
     case actions.SET_THEME:
       updateTheme();
-      toggleConnectMode(state.connectModeActive);
+      toggleConnectMode(state);
       break;
   }
 }
@@ -201,12 +231,12 @@ function handleStateChanges(e) {
  * Enter or leave application connect mode.
  * @param {Boolean} isEnabled True to enable connect mode.
  */
-function toggleConnectMode(isEnabled) {
+function toggleConnectMode(state) {
 
     // toggle cable delete buttons
     cablesGroup.children.forEach(cable => {
       const deleteBtn = cable.getObjectByName('delete');
-      deleteBtn.visible = isEnabled;
+      deleteBtn.visible = state.connectModeActive;
     });
 }
 
