@@ -3,7 +3,6 @@ import { createText } from './draw3dHelper.js';
 
 const {
   Group,
-  Path,
   Vector2,
 } = THREE;
 
