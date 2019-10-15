@@ -28,7 +28,7 @@ import { setup as setupLibrary } from './view/library.js';
 import { setup as setupNetwork } from './midi/network.js';
 import { setup as setupPanels } from './view/panels.js';
 import { preloadProcessors } from './core/processor-loader.js';
-import createPreferencesView from './view/preferences.js';
+import { setup as setupPreferences } from './view/preferences.js';
 import createRemoteView from './view/remote.js';
 import createTransport from './core/transport.js';
 import { showDialog } from './view/dialog.js';
@@ -43,6 +43,7 @@ async function main() {
   setupConnections3d();
   setupLibrary();
   setupNetwork();
+  setupPreferences();
 
   persist();
 }
