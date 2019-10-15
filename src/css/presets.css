@@ -1,0 +1,29 @@
+/************************
+ * presets
+ ************************/
+
+ .presets {
+  background-color: var(--panel-bg-color);
+  position: relative;
+  width: 340px;
+}
+.presets .panel__viewport {
+  background-color: var(--panel-bg-color);
+}
+.presets__list {
+  display: flex;
+  flex-wrap: wrap-reverse;
+  list-style: none;
+}
+.presets__item {
+  cursor: pointer;
+  flex-basis: 25%;
+  padding: 20px;
+  text-align: center;
+}
+.presets__item:hover {
+  background-color: var(--border-color);
+}
+.presets__item-label {
+  font-size: 1 rem;
+}

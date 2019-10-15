@@ -42,6 +42,10 @@
             <label for="learn-check" class="toggle__label btn" title="MIDI learn">
                 <span class="icon-midi" data-on="&#xe900;" data-off="&#xe900;"></span>
             </label>
+            <input type="checkbox" id="presets-check" class="toggle__check" />
+            <label for="presets-check" class="toggle__label btn" title="Presets">
+                <span class="icon-presets" data-on="&#xe809;" data-off="&#xe809;"></span>
+            </label>
             <input type="checkbox" id="connections-check" class="toggle__check" />
             <label for="connections-check" class="toggle__label btn" title="Edit connections">
                 <span class="icon-connections" data-on="&#xf1e0;" data-off="&#xf1e0;"></span>
@@ -118,6 +122,14 @@
                         </div>
                         <div class="panel__viewport">
                             <ul class="panel__content remote__list"></ul>
+                        </div>
+                    </div>
+                    <div class="panel presets">
+                        <div class="panel__header">
+                            <span class="header__label">Presets</span>
+                        </div>
+                        <div class="panel__viewport">
+                            <ul class="panel__content presets__list"></ul>
                         </div>
                     </div>
                 </div><!-- /panels__left -->
@@ -265,6 +277,11 @@
             <span class="library__dragger-label"></span>
         </div>
     </template><!-- /template-library-dragger -->
+    <template id="template-presets-item">
+        <li class="presets__item">
+            <span class="presets__item-label"></span>
+        </li>
+    </template><!-- /template-presets-item -->
     <script src="js/lib/three.js"></script>
     <!-- LineSegmentsGeometry must be loaded before LineGeometry -->
     <script src="js/lib/lines/LineSegmentsGeometry.js"></script>

@@ -11,6 +11,7 @@ const prefsEl = document.querySelector('.prefs');
 const editEl = document.querySelector('.edit');
 const editContentEl = document.querySelector('.edit .panel__content');
 const remoteEl = document.querySelector('.remote');
+const presetsEl = document.querySelector('.presets');
 let panelHeaderHeight;
 
 export function setup() {
@@ -215,5 +216,6 @@ function showPanels(state) {
   remoteEl.dataset.show = state.learnModeActive;
   editEl.dataset.show = state.showSettingsPanel;
   libraryEl.dataset.show = state.showLibraryPanel;
+  presetsEl.dataset.show = state.showPresetsPanel;
   renderLayout();
 }
