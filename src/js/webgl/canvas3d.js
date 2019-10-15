@@ -341,8 +341,7 @@ function handleStateChanges(e) {
       createProcessorViews(state);
       onWindowResize();
       break;
-
-    case actions.RESCAN_TYPES:
+    
     case actions.SET_THEME:
       setThemeOnWorld();
       break;

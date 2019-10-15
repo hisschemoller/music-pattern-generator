@@ -17,7 +17,6 @@ export default function memoize(state, action = {}, actions) {
   switch (action.type) {
 
     case actions.CREATE_PROJECT:
-    case actions.RESCAN_TYPES:
     case actions.SET_THEME:
       setTheme(state);
       break;

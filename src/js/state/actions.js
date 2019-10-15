@@ -1,12 +1,11 @@
 import convertLegacyFile from '../core/convert_xml.js';
 import { createUUID } from '../core/util.js';
-import { getConfig, setConfig, processorTypes } from '../core/config.js';
+import { getConfig, setConfig, } from '../core/config.js';
 import { getAllMIDIPorts } from '../midi/midi.js';
 import { showDialog } from '../view/dialog.js';
 import { getProcessorData, } from '../core/processor-loader.js';
 
-const RESCAN_TYPES = 'RESCAN_TYPES',
-  CREATE_PROJECT = 'CREATE_PROJECT',
+const CREATE_PROJECT = 'CREATE_PROJECT',
   SET_THEME = 'SET_THEME',
   CREATE_PROCESSOR = 'CREATE_PROCESSOR',
   ADD_PROCESSOR = 'ADD_PROCESSOR',
@@ -364,11 +363,6 @@ export default {
                 // disconnect the processors
                 dispatch(getActions().disconnectProcessors2(id));
             }
-        },
-
-        RESCAN_TYPES,
-        rescanTypes: () => {
-            return { type: RESCAN_TYPES, types: processorTypes };
         },
 
         SET_CAMERA_POSITION,

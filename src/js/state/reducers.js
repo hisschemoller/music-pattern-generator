@@ -39,10 +39,6 @@ const initialState = {
   showSettingsPanel: false,
   theme: 'dev', // 'light|dark' 
   transport: 'stop', // 'play|pause|stop'
-  types: {
-    allIds: [],
-    byId: {},
-  },
   version: '2.1.0-beta.2',
 };
 
@@ -388,15 +384,6 @@ export default function reduce(state = initialState, action, actions = {}) {
           // reorder the processors
           orderProcessors(newState);
           return newState;
-
-      case actions.RESCAN_TYPES:
-          return {
-              ...state,
-              types: {
-                  allIds: Object.keys(action.types),
-                  byId: action.types
-              }
-          };
       
       case actions.SET_CAMERA_POSITION:
           const { x, y, z, isRelative } = action;
