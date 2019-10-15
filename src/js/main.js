@@ -21,15 +21,15 @@ import { dispatch, getActions, getState, persist, } from './state/store.js';
 // import createAppView from './view/app.js';
 // import createDialog from './view/dialog.js';
 import { accessMidi } from './midi/midi.js';
+import { preloadProcessors } from './core/processor-loader.js';
 import { setup as setupCanvas3d } from './webgl/canvas3d.js';
 import { setup as setupConnections3d } from './webgl/connections3d.js';
 import { setup as setupControls } from './view/controls.js';
 import { setup as setupLibrary } from './view/library.js';
 import { setup as setupNetwork } from './midi/network.js';
 import { setup as setupPanels } from './view/panels.js';
-import { preloadProcessors } from './core/processor-loader.js';
 import { setup as setupPreferences } from './view/preferences.js';
-import createRemoteView from './view/remote.js';
+import { setup as setupRemote } from './view/remote.js';
 import createTransport from './core/transport.js';
 import { showDialog } from './view/dialog.js';
 
@@ -44,6 +44,7 @@ async function main() {
   setupLibrary();
   setupNetwork();
   setupPreferences();
+  setupRemote();
 
   persist();
 }
