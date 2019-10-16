@@ -129,7 +129,13 @@
                             <span class="header__label">Presets</span>
                         </div>
                         <div class="panel__viewport">
-                            <ul class="panel__content presets__list"></ul>
+                            <div class="panel__content">
+                                <ul class=" presets__list"></ul>
+                                <label class="presets__edit" title="Edit presets">
+                                    <input type="checkbox" class="presets__edit-check" />
+                                    <span class="presets__edit-label">Edit presets</span>
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div><!-- /panels__left -->
@@ -279,7 +285,12 @@
     </template><!-- /template-library-dragger -->
     <template id="template-presets-item">
         <li class="presets__item">
-            <span class="presets__item-label"></span>
+            <div class="presets__item-load">
+                <span class="presets__item-label"></span>
+            </div>
+            <div class="presets__item-store">
+                <span class="presets__item-label"></span>
+            </div>
         </li>
     </template><!-- /template-presets-item -->
     <script src="js/lib/three.js"></script>

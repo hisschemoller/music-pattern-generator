@@ -29,6 +29,7 @@ const ADD_PROCESSOR = 'ADD_PROCESSOR',
   TOGGLE_MIDI_LEARN_MODE = 'TOGGLE_MIDI_LEARN_MODE',
   TOGGLE_MIDI_LEARN_TARGET = 'TOGGLE_MIDI_LEARN_TARGET',
   TOGGLE_MIDI_PREFERENCE = 'TOGGLE_MIDI_PREFERENCE',
+  TOGGLE_PRESETS_MODE = 'TOGGLE_PRESETS_MODE',
   TOGGLE_PANEL = 'TOGGLE_PANEL',
   UNASSIGN_EXTERNAL_CONTROL = 'UNASSIGN_EXTERNAL_CONTROL',
   UPDATE_MIDI_PORT = 'UPDATE_MIDI_PORT';
@@ -295,6 +296,9 @@ export default {
 		}
 	},
 
+	TOGGLE_PRESETS_MODE,
+	togglePresetsMode: () => ({ type: TOGGLE_PRESETS_MODE }),
+
 	SET_TRANSPORT,
 	setTransport: command => ({ type: SET_TRANSPORT, command }),
 
@@ -352,19 +356,17 @@ export default {
 	},
 
 	SET_CAMERA_POSITION,
-	setCameraPosition: (x, y, z, isRelative = false) => {
-		return { type: SET_CAMERA_POSITION, x, y, z, isRelative, };
-	},
+	setCameraPosition: (x, y, z, isRelative = false) => ({ type: SET_CAMERA_POSITION, x, y, z, isRelative, }),
 
 	LIBRARY_DROP,
-	libraryDrop: (processorType, x, y) => {
-		return { type: LIBRARY_DROP, processorType, x, y, };
-	},
+	libraryDrop: (processorType, x, y) => ({ type: LIBRARY_DROP, processorType, x, y, }),
 
 	STORE_PRESET,
 	storePreset: index => {
 		return (dispatch, getState, getActions) => {
 			const { processors, } = getState();
+
+			// create parameter key value objects for all processors
 			const preset = processors.allIds.reduce((accumulator, processorId) => {
 				const params = processors.byId[processorId].params;
 				return {

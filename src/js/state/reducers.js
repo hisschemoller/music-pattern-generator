@@ -28,10 +28,8 @@ const initialState = {
 		allIds: [],
 		byId: {},
 	},
-	presets: {
-		allIds: [],
-		byId: {},
-	},
+	presets: [],
+	presetsEditModeActive: false,
 	processors: {
 		allIds: [],
 		byId: {},
@@ -275,6 +273,9 @@ export default function reduce(state = initialState, action, actions = {}) {
 				learnTargetProcessorID: action.processorID, 
 				learnTargetParameterKey: action.parameterKey 
 			};
+
+		case actions.TOGGLE_PRESETS_MODE:
+			return { ...state, presetsEditModeActive: !state.presetsEditModeActive };
 		
 		case actions.SET_TRANSPORT:
 			let value = action.command;
@@ -413,15 +414,15 @@ export default function reduce(state = initialState, action, actions = {}) {
 				},
 			};
 		
-		case actions.STORE_PRESET:
-			console.log(action.index, action.preset);
+		case actions.STORE_PRESET: {
+			const { index, preset, } = action;
+			const presets = [ ...state.presets, ];
+			presets[index] = preset;
 			return {
 				...state,
-				presets: {
-					allIds: state.presets.allIds,
-					byId: state.presets.byId,
-				},
+				presets,
 			};
+		}
 
 		default:
 			return state ? state : initialState;

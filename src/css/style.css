@@ -120,6 +120,7 @@ div[data-theme='dev'] {
     --bg-color: #fff;
     --border-color: #ddd;
     --btn-color: #bbb;
+    --btn-hover-color: #aaa;
     --btn-active-color: #999;
     --btn-bg-color: #eee;
     --btn-active-bg-color: #ddd;
