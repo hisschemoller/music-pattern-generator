@@ -1,9 +1,3 @@
-import {
-  BufferGeometry,
-  Shape,
-  ShapeGeometry,
-  Vector2,
-} from '../../../lib/three.module.js';
 import { getThemeColors } from '../../state/selectors.js';
 import createObject3dControllerBase from '../../webgl/object3dControllerBase.js';
 import { getEuclidPattern, rotateEuclidPattern } from './euclid.js';
@@ -13,6 +7,12 @@ import {
   createCircleOutlineFilled,
   redrawShape,
 } from '../../webgl/draw3dHelper.js';
+
+const {
+  Shape,
+  ShapeGeometry,
+  Vector2,
+} = THREE;
 
 const TWO_PI = Math.PI * 2;
 
@@ -115,16 +115,19 @@ export function createObject3dController(specs, my) {
      * @param {String} colorHigh Hex color string of the high contrast color.
      */
     setThemeColorRecursively = function(object3d, colorLow, colorHigh) {
+      let color = colorHigh;
       switch (object3d.name) {
         case 'polygonLine':
-          redrawShape(object3d, object3d.userData.points, colorLow);
+        case 'output_connector':
+        case 'output_active':
+          color = colorLow;
           break;
-        default:
-          if (object3d.type === 'Line2') {
-            redrawShape(object3d, object3d.userData.points, colorHigh);
-          } else if (object3d.material) {
-            object3d.material.color.set(colorHigh);
-          }
+      }
+
+      if (object3d.type === 'Line2') {
+        redrawShape(object3d, object3d.userData.points, color);
+      } else if (object3d.material) {
+        object3d.material.color.set(color);
       }
 
       object3d.children.forEach(childObject3d => {

@@ -1,9 +1,4 @@
 import {
-  Group,
-  LineBasicMaterial,
-  Vector2,
-} from '../../../lib/three.module.js';
-import {
   createCircleFilled,
   createCircleOutline,
   drawConnectors,
@@ -11,21 +6,25 @@ import {
 } from '../../webgl/draw3dHelper.js';
 import { getThemeColors } from '../../state/selectors.js';
 
+const {
+  Group,
+  Vector2,
+} = THREE;
+
 export function createObject3d(id, inputs, outputs) {
     
-  let defaultColor,
-    lineMaterial,
-    radius = 3,
-
+  const radius = 3,
+    
+    /**
+     * Initialization.
+     */
     init = function() {
-      defaultColor = getThemeColors().colorHigh;
-      lineMaterial = new LineBasicMaterial({
-        color: defaultColor,
-      });
     },
     
     createGraphic = function() {
-      const hitarea = createCircleFilled(3, defaultColor);
+      const { colorLow, colorHigh, } = getThemeColors();
+
+      const hitarea = createCircleFilled(3, colorHigh);
       hitarea.name = 'hitarea';
       hitarea.material.opacity = 0.0;
 
@@ -34,10 +33,10 @@ export function createObject3d(id, inputs, outputs) {
       label.scale.set(0.1, 0.1, 1);
       label.translateY(-7);
       
-      const centreCircle = createCircleOutline(radius, defaultColor);
+      const centreCircle = createCircleOutline(radius, colorHigh);
       centreCircle.name = 'centreCircle';
       
-      const selectCircle = createCircleOutline(2, defaultColor);
+      const selectCircle = createCircleOutline(2, colorHigh);
       selectCircle.name = 'select';
       selectCircle.visible = false;
 
@@ -50,7 +49,7 @@ export function createObject3d(id, inputs, outputs) {
         new Vector2(0, -radius * 1.8),
         new Vector2(radius, -radius),
       ];
-      const graphic = createShape(points, defaultColor);
+      const graphic = createShape(points, colorHigh);
 
       const group = new Group();
       group.name = 'output';
@@ -62,7 +61,7 @@ export function createObject3d(id, inputs, outputs) {
       group.add(label);
 
       // add inputs and outputs 
-      drawConnectors(group, inputs, outputs, getThemeColors().colorLow);
+      drawConnectors(group, inputs, outputs, colorLow);
 
       return group;
     };

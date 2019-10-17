@@ -1,6 +1,7 @@
 
 import { getThemeColors } from '../../state/selectors.js';
 import createObject3dControllerBase from '../../webgl/object3dControllerBase.js';
+import { redrawShape, } from '../../webgl/draw3dHelper.js';
 
 export function createObject3dController(specs, my) {
   let that,
@@ -66,9 +67,23 @@ export function createObject3dController(specs, my) {
      * @param {String} colorLow Hex color string of the new color.
      */
     setThemeColorRecursively = function(object3d, colorLow, colorHigh) {
-      if (object3d.material && object3d.material.color) {
-        object3d.material.color.set(colorHigh);
+      let color = colorHigh;
+      switch (object3d.name) {
+        case 'input_connector':
+        case 'input_active':
+        case 'output_connector':
+        case 'output_active':
+          color = colorLow;
+          break;
       }
+      console.log(object3d.name, object3d.type, color);
+
+      if (object3d.type === 'Line2') {
+        redrawShape(object3d, object3d.userData.points, color);
+      } else if (object3d.material) {
+        object3d.material.color.set(color);
+      }
+
       object3d.children.forEach(childObject3d => {
         setThemeColorRecursively(childObject3d, colorLow, colorHigh);
       });

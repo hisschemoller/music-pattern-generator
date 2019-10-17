@@ -1,12 +1,13 @@
-import {
-  EllipseCurve,
-  Vector2,
-} from '../../../lib/three.module.js';
 import { getThemeColors } from '../../state/selectors.js';
 import createObject3dControllerBase from '../../webgl/object3dControllerBase.js';
 import { getEuclidPattern, rotateEuclidPattern } from './euclid.js';
 import { PPQN } from '../../core/config.js';
 import { redrawShape } from '../../webgl/draw3dHelper.js';
+
+const {
+  EllipseCurve,
+  Vector2,
+} = THREE;
 
 const TWO_PI = Math.PI * 2;
 
@@ -18,7 +19,6 @@ export function createObject3dController(specs, my) {
     pointer3d,
     necklace3d,
     defaultColor,
-    lineMaterial,
     duration,
     pointerRotation,
     pointerRotationPrevious = 0,
@@ -28,13 +28,9 @@ export function createObject3dController(specs, my) {
     rotation,
     centerRadius = 3,
     centerScale = 0,
-    selectRadius = 2,
     innerRadius = 4,
     outerRadius = 6,
-    dotRadius = 1,
     locatorRadius = 8,
-    zeroMarkerRadius = 0.5,
-    zeroMarkerY = outerRadius + zeroMarkerRadius + 1,
     doublePI = Math.PI * 2,
 
     initialize = function() {
@@ -173,9 +169,22 @@ export function createObject3dController(specs, my) {
      * @param {String} HEx color string of the new color.
      */
     setThemeColorRecursively = function(object3d, colorLow, colorHigh) {
-      if (object3d.material && object3d.material.color) {
-        object3d.material.color.set(colorHigh);
+      let color = colorHigh;
+      switch (object3d.name) {
+        case 'input_connector':
+        case 'input_active':
+        case 'output_connector':
+        case 'output_active':
+          color = colorLow;
+          break;
       }
+
+      if (object3d.type === 'Line2') {
+        redrawShape(object3d, object3d.userData.points, color);
+      } else if (object3d.material) {
+        object3d.material.color.set(color);
+      }
+
       object3d.children.forEach(childObject3d => {
         setThemeColorRecursively(childObject3d, colorLow, colorHigh);
       });

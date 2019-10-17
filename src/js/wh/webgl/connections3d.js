@@ -276,9 +276,8 @@ export default function addConnections3d(specs, my) {
      * @param {String} colorHigh Hex color string of the high contrast color.
      */
     setThemeColorRecursively = function(object3d, colorLow, colorHigh) {
-      if (object3d.material && object3d.material.color) {
-        object3d.material.color.set(colorLow);
-      }
+      redrawShape(object3d, object3d.userData.points, colorLow);
+
       object3d.children.forEach(childObject3d => {
         setThemeColorRecursively(childObject3d, colorLow, colorHigh);
       });

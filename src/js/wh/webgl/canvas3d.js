@@ -184,7 +184,7 @@ export default function createCanvas3d(specs, my) {
         }
 
         // test for output connectors
-        intersect = intersects.find(intersect => intersect.object.name === 'output');
+        intersect = intersects.find(intersect => intersect.object.name === 'output_hitarea');
         if (intersect && my.isConnectMode) {
           // get outer parent of closest object
           outerObject = getOuterParentObject(intersect.object);
@@ -291,7 +291,7 @@ export default function createCanvas3d(specs, my) {
 
           // test for input connectors
           const intersects = raycaster.intersectObjects(allObjects, true);
-          const intersect = intersects.find(intersect => intersect.object.name === 'input');
+          const intersect = intersects.find(intersect => intersect.object.name === 'input_hitarea');
           if (intersect && my.isConnectMode) {
             const outerObject = getOuterParentObject(intersect.object);
             my.createConnection(

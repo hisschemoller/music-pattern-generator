@@ -12,17 +12,11 @@ import {
 import { getThemeColors } from '../../state/selectors.js';
 
 export function createObject3d(id, inputs, outputs) {
-  let defaultColor,
-    lineMaterial,
     
     /**
      * Initialization.
      */
-    init = function() {
-      defaultColor = getThemeColors().colorHigh;
-      lineMaterial = new LineBasicMaterial({
-        color: defaultColor,
-      });
+    const init = function() {
     },
     
     /**
@@ -30,18 +24,20 @@ export function createObject3d(id, inputs, outputs) {
      * @return {object} Group object3D of drag plane.
      */
     create = function() {
-      const hitarea = createCircleFilled(3, defaultColor);
+      const { colorLow, colorHigh, } = getThemeColors();
+
+      const hitarea = createCircleFilled(3, colorHigh);
       hitarea.name = 'hitarea';
       hitarea.material.opacity = 0.0;
       
-      const centreCircle = createCircleOutline(3, defaultColor);
+      const centreCircle = createCircleOutline(3, colorHigh);
       centreCircle.name = 'centreCircle';
       
-      const selectCircle = createCircleOutline(2, defaultColor);
+      const selectCircle = createCircleOutline(2, colorHigh);
       selectCircle.name = 'select';
       selectCircle.visible = false;
       
-      const centreDot = createCircleOutlineFilled(1.5, defaultColor);
+      const centreDot = createCircleOutlineFilled(1.5, colorHigh);
       centreDot.name = 'centreDot';
       centreDot.visible = false;
       
@@ -51,7 +47,7 @@ export function createObject3d(id, inputs, outputs) {
       const necklace = createShape();
       necklace.name = 'necklace';
 
-      const zeroMarker = createCircleOutline(0.5, defaultColor);
+      const zeroMarker = createCircleOutline(0.5, colorHigh);
       zeroMarker.name = 'zeroMarker';
       zeroMarker.translateY(2.5);
       necklace.add(zeroMarker);
@@ -73,7 +69,7 @@ export function createObject3d(id, inputs, outputs) {
       root.add(label);
 
       // add inputs and outputs
-      drawConnectors(root, inputs, outputs, getThemeColors().colorLow);
+      drawConnectors(root, inputs, outputs, colorLow);
       
       return root;
     };
