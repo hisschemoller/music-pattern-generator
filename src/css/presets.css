@@ -37,23 +37,28 @@
   padding: 20px 10px;
   text-align: center;
 }
+.presets__item-store .presets__item-label {
+  background-color: var(--btn-color);
+  color: var(--input-bg-color);
+  padding: 0 5px 2px;
+}
 .presets__item-load:hover,
 .presets__item-store:hover {
   background-color: var(--btn-active-bg-color);
 }
 .presets__item.is-set .presets__item-load {
-    background: repeating-linear-gradient(
-      -45deg,
-      transparent,
-      transparent 10px,
-      var(--panel-bg-color) 10px,
-      var(--panel-bg-color) 20px
-    ),
-    linear-gradient(
-      to bottom,
-      var(--btn-active-bg-color),
-      var(--btn-active-bg-color)
-    );
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 10px,
+    var(--panel-bg-color) 10px,
+    var(--panel-bg-color) 20px
+  ),
+  linear-gradient(
+    to bottom,
+    var(--btn-active-bg-color),
+    var(--btn-active-bg-color)
+  );
 }
 .presets__item-label {
   font-size: 1 rem;
