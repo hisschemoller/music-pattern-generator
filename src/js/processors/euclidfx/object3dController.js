@@ -85,6 +85,13 @@ export function createObject3dController(data, that = {}, my = {}) {
         case actions.DRAG_SELECTED_PROCESSOR:
           my.updatePosition(state);
           break;
+        
+        case actions.LOAD_PRESET:
+          const params = state.processors.byId[my.id].params.byId;
+          updateDuration(params.steps.value, params.rate.value);
+          updateNecklace(params.steps.value, params.pulses.value, params.rotation.value, params.is_mute.value);
+          updateRotation(params.rotation.value);  
+          break;
 
         case actions.TOGGLE_CONNECT_MODE:
           my.updateConnectMode(state.connectModeActive);

@@ -413,6 +413,45 @@ export default function reduce(state = initialState, action, actions = {}) {
 					y: action.y,
 				},
 			};
+
+		case actions.LOAD_PRESET: {
+			const { index, } = action;
+			const { presets, processors, } = state;
+			const preset = presets[index];
+			return {
+				...state,
+				processors: {
+					allIds: [ ...processors.allIds ],
+					byId: processors.allIds.reduce((procAcc, processorId) => {
+						const processor = processors.byId[processorId];
+						const processorPreset = preset[processorId];
+						return {
+							...procAcc,
+							[processorId]: { 
+								...processor,
+								params: {
+									allIds: [ ...processor.params.allIds ],
+									byId: processor.params.allIds.reduce((paramAcc, paramId) => {
+										const param = processor.params.byId[paramId];
+										let newValue = param.value;
+										if (processorPreset && processorPreset.hasOwnProperty(paramId) && paramId !== 'name') {
+											newValue = processorPreset[paramId];
+										}
+										return {
+											...paramAcc,
+											[paramId]: { 
+												...param,
+												value: newValue,
+											},
+										}
+									}, {}),
+								},
+							},
+						}
+					}, {}),
+				},
+			};
+		}
 		
 		case actions.STORE_PRESET: {
 			const { index, preset, } = action;

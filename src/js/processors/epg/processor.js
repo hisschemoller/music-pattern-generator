@@ -51,6 +51,12 @@ export function createProcessor(data, my = {}) {
 							}
 						}
 						break;
+					
+					case actions.LOAD_PRESET:
+						updateAllParams(state.processors.byId[my.id].params.byId);
+						updatePulsesAndRotation();
+						updatePattern(true);
+						break;
 				}
 		},
 				

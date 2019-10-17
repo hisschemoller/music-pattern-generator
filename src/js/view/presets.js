@@ -14,6 +14,9 @@ function addEventListeners() {
   editEl.addEventListener('change', handleEditClick);
 }
 
+/**
+ * Crete the 16 list items.
+ */
 function build() {
   const template = document.querySelector('#template-presets-item');
   for (let i = 0, n = numPresets; i < n; i++) {
@@ -63,13 +66,29 @@ function handleStateChanges(e) {
   }
 }
 
+/**
+ * Toggle snapshot edit mode.
+ * @param {Object} state App state.
+ */
 function setPresetEditMode(state) {
   editEl.checked = state.presetsEditModeActive;
-  listEl.dataset.mode = state.presetsEditModeActive ? 'edit' : '';
+  if (state.presetsEditModeActive) {
+    listEl.classList.add('edit-mode');
+  } else {
+    listEl.classList.remove('edit-mode');
+  }
 }
 
+/**
+ * 
+ * @param {Object} state App state.
+ */
 function updateList(state) {
   for (let i = 0, n = numPresets; i < n; i++) {
-    listEl.children[i].dataset.state = state.presets[i] ? 'set' : '';
+    if (state.presets[i]) {
+      listEl.children[i].classList.add('is-set');
+    } else {
+      listEl.children[i].classList.remove('is-set');
+    }
   }
 }

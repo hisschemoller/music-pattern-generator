@@ -15,10 +15,10 @@
   flex-wrap: wrap-reverse;
   list-style: none;
 }
-.presets__list[data-mode="edit"] .presets__item-load {
+.presets__list.edit-mode .presets__item-load {
   flex-basis: 50%;
 }
-.presets__list[data-mode="edit"] .presets__item-store {
+.presets__list.edit-mode .presets__item-store {
   display: block;
 }
 .presets__item {
@@ -41,7 +41,7 @@
 .presets__item-store:hover {
   background-color: var(--btn-active-bg-color);
 }
-.presets__item[data-state="set"] .presets__item-load {
+.presets__item.is-set .presets__item-load {
     background: repeating-linear-gradient(
       -45deg,
       transparent,
