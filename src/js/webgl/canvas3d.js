@@ -104,7 +104,7 @@ function clearProcessorViews() {
  * @param  {Array} data Array of current processors' state.
  */
 function createProcessorViews(state) {
-  const { connectModeActive, processors, selectedID, } = state;
+  const { connectModeActive, processors, selectedId, } = state;
   const isConnectMode = connectModeActive;
   for (let id of processors.allIds) {
     const processorData = processors.byId[id];
@@ -122,7 +122,7 @@ function createProcessorViews(state) {
       // create controller for the object
       const controllerModule = getProcessorData(type, 'object3dController');
       const controller = controllerModule.createObject3dController({ object3d, processorData, isConnectMode, });
-      controller.updateSelectCircle(selectedID);
+      controller.updateSelectCircle(selectedId);
       controllers.push(controller);
     }
   };

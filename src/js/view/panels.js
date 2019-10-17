@@ -34,7 +34,7 @@ function addEventListeners() {
  * @param  {Object} processor MIDI processor to control with the settings.
  */
 function createSettingsViews(state) {
-  const { processors, selectedID, } = state;
+  const { processors, selectedId, } = state;
   processors.allIds.forEach((id, i) => {
     const processorData = processors.byId[id];
     let exists = settingsViews.some(view => view.getID() === id);
@@ -44,7 +44,7 @@ function createSettingsViews(state) {
         data: processorData,
         parentEl: editContentEl,
         template: settingsHTML,
-        isSelected: selectedID === processorData.id
+        isSelected: selectedId === processorData.id
       }));
     }
   });
@@ -85,7 +85,7 @@ function handleStateChanges(e) {
     case actions.DELETE_PROCESSOR:
       deleteSettingsView(action.id);
       showPanels(state);
-      selectSettingsView(state.selectedID);
+      selectSettingsView(state.selectedId);
       renderLayout();
       break;
 

@@ -21,7 +21,7 @@ export default function createObject3dControllerBase(data, that, my) {
      * Set the 3D pattern's position in the scene.
      */
     updatePosition = function(state) {
-      if (state.selectedID === my.id) {
+      if (state.selectedId === my.id) {
         const data = state.processors.byId[my.id];
         my.object3d.position.set(data.positionX, data.positionY, data.positionZ);
       }
