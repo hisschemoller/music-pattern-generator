@@ -60,7 +60,7 @@ export function preloadProcessors() {
             utils: results[5],
           };
         });
-        console.log('Processor data preloaded.', processors);
+        console.log('Processor data preloaded.');
         resolve();
       });
     });
