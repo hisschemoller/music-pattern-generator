@@ -26,6 +26,20 @@
   display: flex;
   flex-basis: 25%;
 }
+.presets__item.is-set.is-selected .presets__item-load {
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 10px,
+    var(--panel-bg-color) 10px,
+    var(--panel-bg-color) 20px
+  ),
+  linear-gradient(
+    to bottom,
+    var(--btn-color),
+    var(--btn-color)
+  );
+}
 .presets__item-load {
   flex-basis: 100%;
   padding: 20px 10px;
@@ -58,6 +72,19 @@
     to bottom,
     var(--btn-active-bg-color),
     var(--btn-active-bg-color)
+  );
+}.presets__item.is-set .presets__item-load:hover {
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 10px,
+    var(--panel-bg-color) 10px,
+    var(--panel-bg-color) 20px
+  ),
+  linear-gradient(
+    to bottom,
+    var(--btn-color),
+    var(--btn-color)
   );
 }
 .presets__item-label {

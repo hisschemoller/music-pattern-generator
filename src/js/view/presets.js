@@ -3,6 +3,7 @@ import { dispatch, getActions, STATE_CHANGE, } from '../state/store.js';
 const listEl = document.querySelector('.presets__list');
 const editEl = document.querySelector('.presets__edit');
 const numPresets = 16;
+let selectedListEl = null;
 
 export function setup() {
   addEventListeners();
@@ -35,11 +36,11 @@ function build() {
 }
 
 function handleLoadClick(e) {
-  dispatch(getActions().loadPreset(e.currentTarget.parentNode.dataset.index));
+  dispatch(getActions().loadPreset(parseInt(e.currentTarget.parentNode.dataset.index, 10)));
 }
 
 function handleStoreClick(e) {
-  dispatch(getActions().storePreset(e.currentTarget.parentNode.dataset.index));
+  dispatch(getActions().storePreset(parseInt(e.currentTarget.parentNode.dataset.index)));
 }
 
 function handleEditClick() {
@@ -58,10 +59,18 @@ function handleStateChanges(e) {
     case actions.STORE_PRESET:
       setPresetEditMode(state);
       updateList(state);
+      showSelectedIndex(state);
       break;
 
     case actions.TOGGLE_PRESETS_MODE:
       setPresetEditMode(state);
+      showSelectedIndex(state);
+      break;
+
+    case actions.LOAD_PRESET:
+    case actions.CHANGE_PARAMETER:
+    case actions.TOGGLE_PANEL:
+      showSelectedIndex(state);
       break;
   }
 }
@@ -76,6 +85,21 @@ function setPresetEditMode(state) {
     listEl.classList.add('edit-mode');
   } else {
     listEl.classList.remove('edit-mode');
+  }
+}
+
+function showSelectedIndex(state) {
+  const { presetIndex, showPresetsPanel, } = state;
+  console.log(typeof presetIndex === 'number', presetIndex, showPresetsPanel);
+  if (showPresetsPanel) {
+    if (selectedListEl){
+      selectedListEl.classList.remove('is-selected');
+      selectedListEl = null;
+    }
+    if (typeof presetIndex === 'number') {
+      selectedListEl = listEl.children[presetIndex];
+      selectedListEl.classList.add('is-selected');
+    }
   }
 }
 

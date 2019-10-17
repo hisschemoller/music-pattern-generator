@@ -28,6 +28,7 @@ const initialState = {
 		allIds: [],
 		byId: {},
 	},
+	presetIndex: null,
 	presets: [],
 	presetsEditModeActive: false,
 	processors: {
@@ -177,6 +178,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 		case actions.CHANGE_PARAMETER:
 			newState = { 
 				...state,
+				presetIndex: null,
 				processors: {
 					byId: { ...state.processors.byId },
 					allIds: [ ...state.processors.allIds ]
@@ -418,8 +420,12 @@ export default function reduce(state = initialState, action, actions = {}) {
 			const { index, } = action;
 			const { presets, processors, } = state;
 			const preset = presets[index];
+			if (!preset) {
+				return state;
+			}
 			return {
 				...state,
+				presetIndex: index,
 				processors: {
 					allIds: [ ...processors.allIds ],
 					byId: processors.allIds.reduce((procAcc, processorId) => {
@@ -459,6 +465,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 			presets[index] = preset;
 			return {
 				...state,
+				presetIndex: index,
 				presets,
 			};
 		}
