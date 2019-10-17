@@ -121,7 +121,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 
 			// select the next processor, if any, or a previous one
 			let newIndex;
-			if (newState.selectedID === action.id && newState.processors.allIds.length) {
+			if (newState.selectedId === action.id && newState.processors.allIds.length) {
 				if (newState.processors.allIds[index]) {
 					newIndex = index;
 				} else if (index > 0) {
@@ -129,7 +129,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 				} else {
 					newIndex = 0;
 				}
-				newState.selectedID = newState.processors.allIds[newIndex];
+				newState.selectedId = newState.processors.allIds[newIndex];
 			}
 			
 			// reorder the processors
@@ -146,7 +146,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 				processors: {
 					allIds: [ ...state.processors.allIds ],
 					byId: Object.values(state.processors.byId).reduce((accumulator, processor) => {
-						if (processor.id === state.selectedID) {
+						if (processor.id === state.selectedId) {
 							accumulator[processor.id] = { ...processor, positionX: action.x, positionY: action.y, positionZ: action.z };
 						} else {
 							accumulator[processor.id] = { ...processor };
