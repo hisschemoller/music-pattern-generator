@@ -17,7 +17,7 @@
  */
 
 import { dispatch, getActions, getState, persist, } from './state/store.js';
-import { accessMidi } from './midi/midi.js';
+import { accessMidi, listenToMIDIPorts } from './midi/midi.js';
 import { preloadProcessors } from './core/processor-loader.js';
 import { setup as setupCanvas3d } from './webgl/canvas3d.js';
 import { setup as setupConnections3d } from './webgl/connections3d.js';
@@ -48,6 +48,7 @@ async function main() {
   setupSequencer();
 
   persist();
+  listenToMIDIPorts();
   dispatch(getActions().setProject(getState()));
 }
 
