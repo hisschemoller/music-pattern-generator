@@ -7,7 +7,7 @@ const exportEl = document.querySelector('#file-export');
 const playEl = document.getElementById('play-check');
 const bpmEl = document.getElementById('bpm-number');
 const remoteEl = document.getElementById('learn-check');
-const presetsEl = document.getElementById('presets-check');
+const snapshotsEl = document.getElementById('snapshots-check');
 const libraryEl = document.getElementById('library-check');
 const prefsEl = document.getElementById('prefs-check');
 const editEl = document.getElementById('edit-check');
@@ -41,8 +41,8 @@ function addEventListeners() {
   remoteEl.addEventListener('change', e => {
     dispatch(actions.toggleMIDILearnMode());
   });
-  presetsEl.addEventListener('change', e => {
-    dispatch(actions.togglePanel('presets'));
+  snapshotsEl.addEventListener('change', e => {
+    dispatch(actions.togglePanel('snapshots'));
   });
   libraryEl.addEventListener('change', e => {
     dispatch(actions.togglePanel('library'));
@@ -135,6 +135,6 @@ function updateInputs(state) {
   remoteEl.checked = state.learnModeActive;
   editEl.checked = state.showSettingsPanel;
   libraryEl.checked = state.showLibraryPanel;
-  presetsEl.checked = state.showPresetsPanel;
+  snapshotsEl.checked = state.showSnapshotsPanel;
   connectionsEl.checked = state.connectModeActive;
 }

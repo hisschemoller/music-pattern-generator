@@ -44,7 +44,7 @@ export default function createBaseSettingView(specs, my) {
 					}
 					break;
 
-				case actions.LOAD_PRESET:
+				case actions.LOAD_SNAPSHOT:
 					my.setValue(state.processors.byId[my.processorID].params.byId[my.key].value);
 					break;
 			

@@ -26,7 +26,7 @@ import { setup as setupLibrary } from './view/library.js';
 import { setup as setupNetwork } from './midi/network.js';
 import { setup as setupPanels } from './view/panels.js';
 import { setup as setupPreferences } from './view/preferences.js';
-import { setup as setupPresets } from './view/presets.js';
+import { setup as setupSnapshots } from './view/snapshots.js';
 import { setup as setupRemote } from './view/remote.js';
 import { setup as setupTransport } from './core/transport.js';
 import { setup as setupSequencer } from './core/sequencer.js';
@@ -42,7 +42,7 @@ async function main() {
   setupLibrary();
   setupNetwork();
   setupPreferences();
-  setupPresets();
+  setupSnapshots();
   setupRemote();
   setupTransport();
   setupSequencer();

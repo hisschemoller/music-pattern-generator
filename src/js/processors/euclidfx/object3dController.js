@@ -86,7 +86,7 @@ export function createObject3dController(data, that = {}, my = {}) {
           my.updatePosition(state);
           break;
         
-        case actions.LOAD_PRESET:
+        case actions.LOAD_SNAPSHOT:
           const params = state.processors.byId[my.id].params.byId;
           updateDuration(params.steps.value, params.rate.value);
           updateNecklace(params.steps.value, params.pulses.value, params.rotation.value);

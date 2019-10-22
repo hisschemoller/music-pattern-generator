@@ -42,9 +42,9 @@
             <label for="learn-check" class="toggle__label btn" title="MIDI learn">
                 <span class="icon-midi" data-on="&#xe900;" data-off="&#xe900;"></span>
             </label>
-            <input type="checkbox" id="presets-check" class="toggle__check" />
-            <label for="presets-check" class="toggle__label btn" title="Presets">
-                <span class="icon-presets" data-on="&#xe809;" data-off="&#xe809;"></span>
+            <input type="checkbox" id="snapshots-check" class="toggle__check" />
+            <label for="snapshots-check" class="toggle__label btn" title="Snapshots">
+                <span class="icon-snapshots" data-on="&#xe809;" data-off="&#xe809;"></span>
             </label>
             <input type="checkbox" id="connections-check" class="toggle__check" />
             <label for="connections-check" class="toggle__label btn" title="Edit connections">
@@ -124,16 +124,16 @@
                             <ul class="panel__content remote__list"></ul>
                         </div>
                     </div>
-                    <div class="panel presets">
+                    <div class="panel snapshots">
                         <div class="panel__header">
-                            <span class="header__label">Presets</span>
+                            <span class="header__label">Snapshots</span>
                         </div>
                         <div class="panel__viewport">
                             <div class="panel__content">
-                                <ul class=" presets__list"></ul>
-                                <label class="presets__edit" title="Edit presets">
-                                    <input type="checkbox" class="presets__edit-check" />
-                                    <span class="presets__edit-label">Edit presets</span>
+                                <ul class=" snapshots__list"></ul>
+                                <label class="snapshots__edit" title="Edit snapshots">
+                                    <input type="checkbox" class="snapshots__edit-check" />
+                                    <span class="snapshots__edit-label">Edit Snapshots</span>
                                 </label>
                             </div>
                         </div>
@@ -283,16 +283,16 @@
             <span class="library__dragger-label"></span>
         </div>
     </template><!-- /template-library-dragger -->
-    <template id="template-presets-item">
-        <li class="presets__item">
-            <div class="presets__item-load">
-                <span class="presets__item-label"></span>
+    <template id="template-snapshots-item">
+        <li class="snapshots__item">
+            <div class="snapshots__item-load">
+                <span class="snapshots__item-label"></span>
             </div>
-            <div class="presets__item-store">
-                <span class="presets__item-label"></span>
+            <div class="snapshots__item-store">
+                <span class="snapshots__item-label"></span>
             </div>
         </li>
-    </template><!-- /template-presets-item -->
+    </template><!-- /template-snapshots-item -->
     <script src="js/lib/three.js"></script>
     <!-- LineSegmentsGeometry must be loaded before LineGeometry -->
     <script src="js/lib/lines/LineSegmentsGeometry.js"></script>

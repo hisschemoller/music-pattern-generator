@@ -17,7 +17,7 @@ const ADD_PROCESSOR = 'ADD_PROCESSOR',
   DRAG_ALL_PROCESSORS = 'DRAG_ALL_PROCESSORS',
   DRAG_SELECTED_PROCESSOR = 'DRAG_SELECTED_PROCESSOR',
 	LIBRARY_DROP = 'LIBRARY_DROP',
-	LOAD_PRESET = 'LOAD_PRESET',
+	LOAD_SNAPSHOT = 'LOAD_SNAPSHOT',
   RECEIVE_MIDI_CC = 'RECEIVE_MIDI_CC',
   RECREATE_PARAMETER = 'RECREATE_PARAMETER',
   SELECT_PROCESSOR = 'SELECT_PROCESSOR',
@@ -25,12 +25,12 @@ const ADD_PROCESSOR = 'ADD_PROCESSOR',
   SET_TEMPO = 'SET_TEMPO',
   SET_THEME = 'SET_THEME',
   SET_TRANSPORT = 'SET_TRANSPORT',
-  STORE_PRESET = 'STORE_PRESET',
+  STORE_SNAPSHOT = 'STORE_SNAPSHOT',
   TOGGLE_CONNECT_MODE = 'TOGGLE_CONNECT_MODE',
   TOGGLE_MIDI_LEARN_MODE = 'TOGGLE_MIDI_LEARN_MODE',
   TOGGLE_MIDI_LEARN_TARGET = 'TOGGLE_MIDI_LEARN_TARGET',
   TOGGLE_MIDI_PREFERENCE = 'TOGGLE_MIDI_PREFERENCE',
-  TOGGLE_PRESETS_MODE = 'TOGGLE_PRESETS_MODE',
+  TOGGLE_SNAPSHOTS_MODE = 'TOGGLE_SNAPSHOTS_MODE',
   TOGGLE_PANEL = 'TOGGLE_PANEL',
   UNASSIGN_EXTERNAL_CONTROL = 'UNASSIGN_EXTERNAL_CONTROL',
   UPDATE_MIDI_PORT = 'UPDATE_MIDI_PORT';
@@ -297,8 +297,8 @@ export default {
 		}
 	},
 
-	TOGGLE_PRESETS_MODE,
-	togglePresetsMode: () => ({ type: TOGGLE_PRESETS_MODE }),
+	TOGGLE_SNAPSHOTS_MODE,
+	toggleSnapshotsMode: () => ({ type: TOGGLE_SNAPSHOTS_MODE }),
 
 	SET_TRANSPORT,
 	setTransport: command => ({ type: SET_TRANSPORT, command }),
@@ -362,16 +362,16 @@ export default {
 	LIBRARY_DROP,
 	libraryDrop: (processorType, x, y) => ({ type: LIBRARY_DROP, processorType, x, y, }),
 
-	LOAD_PRESET,
-	loadPreset: index => ({ type: LOAD_PRESET, index, }),
+	LOAD_SNAPSHOT,
+	loadSnapshot: index => ({ type: LOAD_SNAPSHOT, index, }),
 
-	STORE_PRESET,
-	storePreset: index => {
+	STORE_SNAPSHOT,
+	storeSnapshot: index => {
 		return (dispatch, getState, getActions) => {
 			const { processors, } = getState();
 
 			// create parameter key value objects for all processors
-			const preset = processors.allIds.reduce((accumulator, processorId) => {
+			const snapshot = processors.allIds.reduce((accumulator, processorId) => {
 				const params = processors.byId[processorId].params;
 				return {
 					...accumulator,
@@ -383,7 +383,7 @@ export default {
 					}, {}),
 				};
 			}, {});
-			return { type: STORE_PRESET, index, preset };
+			return { type: STORE_SNAPSHOT, index, snapshot };
 		}
 	}
 }

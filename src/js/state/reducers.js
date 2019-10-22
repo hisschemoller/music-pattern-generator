@@ -28,9 +28,9 @@ const initialState = {
 		allIds: [],
 		byId: {},
 	},
-	presetIndex: null,
-	presets: [],
-	presetsEditModeActive: false,
+	snapshotIndex: null,
+	snapshots: [],
+	snapshotsEditModeActive: false,
 	processors: {
 		allIds: [],
 		byId: {},
@@ -39,7 +39,7 @@ const initialState = {
 	showHelpPanel: false,
 	showLibraryPanel: true,
 	showPreferencesPanel: false,
-	showPresetsPanel: false,
+	showSnapshotsPanel: false,
 	showSettingsPanel: false,
 	theme: 'dev', // 'light|dark' 
 	transport: 'stop', // 'play|pause|stop'
@@ -178,7 +178,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 		case actions.CHANGE_PARAMETER:
 			newState = { 
 				...state,
-				presetIndex: null,
+				snapshotIndex: null,
 				processors: {
 					byId: { ...state.processors.byId },
 					allIds: [ ...state.processors.allIds ]
@@ -276,8 +276,8 @@ export default function reduce(state = initialState, action, actions = {}) {
 				learnTargetParameterKey: action.parameterKey 
 			};
 
-		case actions.TOGGLE_PRESETS_MODE:
-			return { ...state, presetsEditModeActive: !state.presetsEditModeActive };
+		case actions.TOGGLE_SNAPSHOTS_MODE:
+			return { ...state, snapshotsEditModeActive: !state.snapshotsEditModeActive };
 		
 		case actions.SET_TRANSPORT:
 			let value = action.command;
@@ -333,7 +333,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 				showPreferencesPanel: action.panelName === 'preferences' ? !state.showPreferencesPanel : state.showPreferencesPanel,
 				showSettingsPanel: action.panelName === 'settings' ? !state.showSettingsPanel : state.showSettingsPanel,
 				showLibraryPanel: action.panelName === 'library' ? !state.showLibraryPanel : state.showLibraryPanel,
-				showPresetsPanel: action.panelName === 'presets' ? !state.showPresetsPanel : state.showPresetsPanel,
+				showSnapshotsPanel: action.panelName === 'snapshots' ? !state.showSnapshotsPanel : state.showSnapshotsPanel,
 			};
 		
 		case actions.TOGGLE_CONNECT_MODE:
@@ -416,21 +416,21 @@ export default function reduce(state = initialState, action, actions = {}) {
 				},
 			};
 
-		case actions.LOAD_PRESET: {
+		case actions.LOAD_SNAPSHOT: {
 			const { index, } = action;
-			const { presets, processors, } = state;
-			const preset = presets[index];
-			if (!preset) {
+			const { snapshots, processors, } = state;
+			const snapshot = snapshots[index];
+			if (!snapshot) {
 				return state;
 			}
 			return {
 				...state,
-				presetIndex: index,
+				snapshotIndex: index,
 				processors: {
 					allIds: [ ...processors.allIds ],
 					byId: processors.allIds.reduce((procAcc, processorId) => {
 						const processor = processors.byId[processorId];
-						const processorPreset = preset[processorId];
+						const processorSnapshot = snapshot[processorId];
 						return {
 							...procAcc,
 							[processorId]: { 
@@ -440,8 +440,8 @@ export default function reduce(state = initialState, action, actions = {}) {
 									byId: processor.params.allIds.reduce((paramAcc, paramId) => {
 										const param = processor.params.byId[paramId];
 										let newValue = param.value;
-										if (processorPreset && processorPreset.hasOwnProperty(paramId) && paramId !== 'name') {
-											newValue = processorPreset[paramId];
+										if (processorSnapshot && processorSnapshot.hasOwnProperty(paramId) && paramId !== 'name') {
+											newValue = processorSnapshot[paramId];
 										}
 										return {
 											...paramAcc,
@@ -459,14 +459,14 @@ export default function reduce(state = initialState, action, actions = {}) {
 			};
 		}
 		
-		case actions.STORE_PRESET: {
-			const { index, preset, } = action;
-			const presets = [ ...state.presets, ];
-			presets[index] = preset;
+		case actions.STORE_SNAPSHOT: {
+			const { index, snapshot, } = action;
+			const snapshots = [ ...state.snapshots, ];
+			snapshots[index] = snapshot;
 			return {
 				...state,
-				presetIndex: index,
-				presets,
+				snapshotIndex: index,
+				snapshots,
 			};
 		}
 

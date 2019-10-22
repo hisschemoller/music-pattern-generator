@@ -1,32 +1,32 @@
 /************************
- * presets
+ * snapshots
  ************************/
 
- .presets {
+ .snapshots {
   background-color: var(--panel-bg-color);
   position: relative;
   width: 340px;
 }
-.presets .panel__viewport {
+.snapshots .panel__viewport {
   background-color: var(--panel-bg-color);
 }
-.presets__list {
+.snapshots__list {
   display: flex;
   flex-wrap: wrap-reverse;
   list-style: none;
 }
-.presets__list.edit-mode .presets__item-load {
+.snapshots__list.edit-mode .snapshots__item-load {
   flex-basis: 50%;
 }
-.presets__list.edit-mode .presets__item-store {
+.snapshots__list.edit-mode .snapshots__item-store {
   display: block;
 }
-.presets__item {
+.snapshots__item {
   cursor: pointer;
   display: flex;
   flex-basis: 25%;
 }
-.presets__item.is-set.is-selected .presets__item-load {
+.snapshots__item.is-set.is-selected .snapshots__item-load {
   background: repeating-linear-gradient(
     -45deg,
     transparent,
@@ -40,27 +40,27 @@
     var(--btn-color)
   );
 }
-.presets__item-load {
+.snapshots__item-load {
   flex-basis: 100%;
   padding: 20px 10px;
   text-align: center;
 }
-.presets__item-store {
+.snapshots__item-store {
   display: none;
   flex-basis: 50%;
   padding: 20px 10px;
   text-align: center;
 }
-.presets__item-store .presets__item-label {
+.snapshots__item-store .snapshots__item-label {
   background-color: var(--btn-color);
   color: var(--input-bg-color);
   padding: 0 5px 2px;
 }
-.presets__item-load:hover,
-.presets__item-store:hover {
+.snapshots__item-load:hover,
+.snapshots__item-store:hover {
   background-color: var(--btn-active-bg-color);
 }
-.presets__item.is-set .presets__item-load {
+.snapshots__item.is-set .snapshots__item-load {
   background: repeating-linear-gradient(
     -45deg,
     transparent,
@@ -73,7 +73,7 @@
     var(--btn-active-bg-color),
     var(--btn-active-bg-color)
   );
-}.presets__item.is-set .presets__item-load:hover {
+}.snapshots__item.is-set .snapshots__item-load:hover {
   background: repeating-linear-gradient(
     -45deg,
     transparent,
@@ -87,27 +87,27 @@
     var(--btn-color)
   );
 }
-.presets__item-label {
+.snapshots__item-label {
   font-size: 1 rem;
 }
-.presets__edit {}
-.presets__edit-check {
+.snapshots__edit {}
+.snapshots__edit-check {
   position: absolute;
   margin-left: -9999px;
   visibility: hidden;
 }
-.presets__edit-label {
+.snapshots__edit-label {
   cursor: pointer;
   display: block;
   padding: 10px;
   text-align: center;
 }
-.presets__edit-label:hover {
+.snapshots__edit-label:hover {
   background-color: var(--btn-active-bg-color);
   color: var(--btn-hover-color);
 }
-.presets__edit-check:checked + .presets__edit-label {
+.snapshots__edit-check:checked + .snapshots__edit-label {
   color: var(--btn-active-color);
 }
-.presets__edit-check:checked + .presets__edit-label:hover {
+.snapshots__edit-check:checked + .snapshots__edit-label:hover {
 }
