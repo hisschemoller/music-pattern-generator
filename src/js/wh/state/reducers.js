@@ -35,7 +35,7 @@ export default function createReducers() {
             },
             bpm: 120,
             selectedID: null,
-            theme: 'light', // 'light|dark' 
+            theme: 'light', // 'light|dark|dev'
             transport: 'stop', // 'play|pause|stop'
             connectModeActive: false,
             learnModeActive: false,
@@ -45,7 +45,7 @@ export default function createReducers() {
             showLibraryPanel: true,
             showPreferencesPanel: false,
             showSettingsPanel: false,
-            version: '2.1.0-beta.2',
+            version: '2.1',
         },
         
         reduce = function(state = initialState, action = {}, actions = {}) {
