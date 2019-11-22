@@ -30,7 +30,6 @@ export default function createRemoteItemView(data, that = {}, my = {}) {
 		terminate = function() {
 			el.querySelector('.remote__item-delete').removeEventListener('click', onUnregisterClick);
 			parentEl.removeChild(el);
-			parentEl = null;
 		},
 		
 		/**
