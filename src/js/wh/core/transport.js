@@ -256,19 +256,24 @@ export default function createTransport(specs, my) {
                 }
             });
 
-            // stop playback if the page is hidden, continue when visible
-            document.addEventListener('visibilitychange', function() {
-                if (document.visibilityState === 'visible') {
-                    if (wasRunning) {
-                        start();
+            // not in NW.js because then rAF doesn't stop (--disable-raf-throttling)
+            // @see https://stackoverflow.com/questions/31968355/detect-if-web-app-is-running-in-nwjs
+            if (!typeof require === 'function') {
+
+                // stop playback if the page is hidden, continue when visible
+                document.addEventListener('visibilitychange', function() {
+                    if (document.visibilityState === 'visible') {
+                        if (wasRunning) {
+                            start();
+                        }
+                    } else {
+                        wasRunning = isRunning;
+                        if (wasRunning) {
+                            pause();
+                        }
                     }
-                } else {
-                    wasRunning = isRunning;
-                    if (wasRunning) {
-                        pause();
-                    }
-                }
-            });
+                });
+            }
 
             my.setBPM();
         },
