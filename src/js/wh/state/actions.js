@@ -38,6 +38,11 @@ export default function createActions(specs = {}, my = {}) {
         importProject: (file) => {
             return (dispatch, getState, getActions) => {
 
+                // if no file was chosen
+                if (!file) {
+                    return;
+                }
+
                 file.text()
                     .then(text => {
                         let isJSON = true,
