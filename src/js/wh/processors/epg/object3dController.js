@@ -30,7 +30,8 @@ export function createObject3dController(specs, my) {
     pointerRotation,
     dotAnimations = {},
     dotMaxRadius = 1,
-    defaultColor,
+    colorLow,
+    colorHigh,
     centerScale = 0,
 
     initialize = function() {
@@ -44,7 +45,7 @@ export function createObject3dController(specs, my) {
 
       document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
     
-      defaultColor = getThemeColors().colorHigh;
+      ({ colorLow, colorHigh, } = getThemeColors());
 
       const params = specs.processorData.params.byId;
       my.updateLabel(params.name.value);
@@ -104,7 +105,7 @@ export function createObject3dController(specs, my) {
      * Set theme colors on the 3D pattern.
      */
     updateTheme = function() {
-      const { colorLow, colorHigh } = getThemeColors();
+      ({ colorLow, colorHigh, } = getThemeColors());
       setThemeColorRecursively(my.object3d, colorLow, colorHigh);
     },
 
@@ -157,9 +158,9 @@ export function createObject3dController(specs, my) {
         let dot;
         const rad = TWO_PI * (i / steps);
         if (euclid[i]) {
-          dot = createCircleOutlineFilled(dotRadiusRounded, defaultColor);
+          dot = createCircleOutlineFilled(dotRadiusRounded, colorHigh);
         } else {
-          dot = createCircleOutline(dotRadiusRounded, defaultColor);
+          dot = createCircleOutline(dotRadiusRounded, colorHigh);
         }
         dot.name = 'dot';
         dot.translateX(Math.sin(rad) * radius3d);
@@ -269,8 +270,8 @@ export function createObject3dController(specs, my) {
           );
         }
       }
-      
-      redrawShape(pointer3d, points, defaultColor);
+
+      redrawShape(pointer3d, points, colorHigh);
     },
             
     /**
