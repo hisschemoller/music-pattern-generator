@@ -742,10 +742,10 @@ number-is-nan@^1.0.0:
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
   integrity sha1-CXtgK1NCKlIsGvuHkDGDNpQaAR0=
 
-nw@0.41.2:
-  version "0.41.2"
-  resolved "https://registry.yarnpkg.com/nw/-/nw-0.41.2.tgz#23db65db96e4eeb9a9f7ad23e0eff69911530745"
-  integrity sha512-jFTX15htAgvhZM9scgiBvjQNAbIA5diaAjA9Qpqmfjkdj4b6L8HLdTXqB5/QofzqgeIIHYLmDHcAlw2EnJPI7Q==
+nw@0.42.5-sdk:
+  version "0.42.5-sdk"
+  resolved "https://registry.yarnpkg.com/nw/-/nw-0.42.5-sdk.tgz#2f947e65d6ffa6718873990a01f76be989166175"
+  integrity sha512-dbAYghcsOY2xIbnJF2MqGVMY8/vBN4k9hBCNqYwmNqWPnSXhuFrobFGKNArK8TgtkIWtjSSWzXb5WDeWOlX3VQ==
   dependencies:
     chalk "~1.1.3"
     decompress "^4.2.0"
