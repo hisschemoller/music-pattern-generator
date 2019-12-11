@@ -5,9 +5,9 @@
   "chromium-args": "--disable-raf-throttling",
   "window": {
     "icon": "../assets/icons/png/128x128.png",
-    "min_height": 768,
-    "min_width": 1024,
-    "height": 768,
+    "min_height": 600,
+    "min_width": 800,
+    "height": 600,
     "title": "Music Pattern Generator",
     "width": 1024
   }
