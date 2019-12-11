@@ -47,6 +47,8 @@ export default function createStore(specs = {}, my = {}) {
             let data = localStorage.getItem(name);
             if (data) {
                 dispatch(getActions().setProject(JSON.parse(data)));
+            } else {
+                dispatch(getActions().createProject());
             }
         };
         
