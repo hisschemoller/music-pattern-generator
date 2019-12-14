@@ -36,6 +36,7 @@ NW can be installed as a development dependency. A script in package.json can ru
 3. Put `app.nw` inside the downloaded Mac release, in `nwjs.app/Contents/Resources/`. (right click on `nwjs.app` and choose 'Show Package Contents' to open it)
 4. To add the app icons, copy `/assets/icons/mac/icons.icns` and paste it into `nwjs.app/Contents/Resources/` as well. Rename the file to `app.icns` so it will replace the existing default icons.
 5. Also overwrite `nwjs.app/Contents/Resources/documents.icns` with the `icons.icns` file.
+6. https://stackoverflow.com/questions/49143875/how-to-rename-an-nwjs-app
 
 The file `nwjs.app` is now an executable that runs the app. Copy and rename it to `MusicPatternGenerator.app`. Doubleclick the app to run it.
 
