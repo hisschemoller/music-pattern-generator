@@ -1,12 +1,3 @@
-import {
-  BufferAttribute,
-  BufferGeometry,
-  LineBasicMaterial,
-  Shape,
-  ShapeGeometry,
-  Vector2,
-  Vector3,
-} from '../../../lib/three.module.js';
 import { getThemeColors } from '../../state/selectors.js';
 import createObject3dControllerBase from '../../webgl/object3dControllerBase.js';
 import { getEuclidPattern, rotateEuclidPattern } from './euclid.js';
@@ -17,11 +8,16 @@ import {
   redrawShape,
 } from '../../webgl/draw3dHelper.js';
 
+const {
+  Shape,
+  ShapeGeometry,
+  Vector2,
+} = THREE;
+
 const TWO_PI = Math.PI * 2;
 
 export function createObject3dController(specs, my) {
   let that,
-    centreCircle3d,
     centreDot3d,
     dots3d,
     pointer3d,
@@ -30,17 +26,15 @@ export function createObject3dController(specs, my) {
     select3d,
     zeroMarker3d,
     radius3d,
-    lineMaterial,
     duration,
     pointerRotation,
-    pointerRotationPrevious = 0,
     dotAnimations = {},
-    defaultColor,
-    centerRadius = 3,
+    dotMaxRadius = 1,
+    colorLow,
+    colorHigh,
     centerScale = 0,
 
     initialize = function() {
-      centreCircle3d = my.object3d.getObjectByName('centreCircle'),
       centreDot3d = my.object3d.getObjectByName('centreDot'),
       dots3d = my.object3d.getObjectByName('dots'),
       pointer3d = my.object3d.getObjectByName('pointer'),
@@ -51,10 +45,7 @@ export function createObject3dController(specs, my) {
 
       document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
     
-      defaultColor = getThemeColors().colorHigh;
-      lineMaterial = new LineBasicMaterial({
-        color: defaultColor,
-      });
+      ({ colorLow, colorHigh, } = getThemeColors());
 
       const params = specs.processorData.params.byId;
       my.updateLabel(params.name.value);
@@ -114,25 +105,39 @@ export function createObject3dController(specs, my) {
      * Set theme colors on the 3D pattern.
      */
     updateTheme = function() {
-      const themeColors = getThemeColors();
-      setThemeColorRecursively(my.object3d, themeColors.colorHigh);
+      ({ colorLow, colorHigh, } = getThemeColors());
+      setThemeColorRecursively(my.object3d, colorLow, colorHigh);
     },
 
     /** 
      * Loop through all the object3d's children to set the color.
-     * @param {Object3d} An Object3d of which to change the color.
-     * @param {String} HEx color string of the new color.
+     * @param {Object3d} object3d An Object3d of which to change the color.
+     * @param {String} colorLow Hex color string of the low contrast color.
+     * @param {String} colorHigh Hex color string of the high contrast color.
      */
-    setThemeColorRecursively = function(object3d, color) {
-      if (object3d.material && object3d.material.color) {
-        object3d.material.color.set( color );
+    setThemeColorRecursively = function(object3d, colorLow, colorHigh) {
+      let color = colorHigh;
+      switch (object3d.name) {
+        case 'polygonLine':
+        case 'output_connector':
+        case 'output_active':
+          color = colorLow;
+          break;
       }
+
+      if (object3d.type === 'Line2') {
+        redrawShape(object3d, object3d.userData.points, color);
+      } else if (object3d.material) {
+        object3d.material.color.set(color);
+      }
+
       object3d.children.forEach(childObject3d => {
-        setThemeColorRecursively(childObject3d, color);
+        setThemeColorRecursively(childObject3d, colorLow, colorHigh);
       });
     },
 
     updateNecklace = function(steps, pulses, rotation, isMute) {
+
       // create the pattern
       let euclid = getEuclidPattern(steps, pulses);
       euclid = rotateEuclidPattern(euclid, rotation);
@@ -146,14 +151,16 @@ export function createObject3dController(specs, my) {
       const polygonPoints = [];
 
       // add new dots
-      radius3d = 8 + (steps > 16 ? (steps - 16) * 0.5 : 0);
+      const dotRadius = dotMaxRadius - 0 - (Math.max(0, steps - 16) * 0.009);
+      const dotRadiusRounded = Math.round(dotRadius * 10) / 10;
+      radius3d = 8 + (steps > 16 ? (steps - 16) * 0.1 : 0);
       for (let i = 0; i < steps; i++) {
         let dot;
         const rad = TWO_PI * (i / steps);
         if (euclid[i]) {
-          dot = createCircleOutlineFilled(1, defaultColor);
+          dot = createCircleOutlineFilled(dotRadiusRounded, colorHigh);
         } else {
-          dot = createCircleOutline(1, defaultColor);
+          dot = createCircleOutline(dotRadiusRounded, colorHigh);
         }
         dot.name = 'dot';
         dot.translateX(Math.sin(rad) * radius3d);
@@ -185,8 +192,8 @@ export function createObject3dController(specs, my) {
      * @param {array} points Coordinates of the shape points.
      */
     updatePolygon = function(points) {
-        let i, n, line, lineGeom, fillShape, fillGeom;
-        
+        let i, n;
+
         if (points.length > 2) {
             polygon3d.visible = true;
         } else {
@@ -195,24 +202,28 @@ export function createObject3dController(specs, my) {
         }
         
         const fill = polygon3d.getObjectByName('polygonFill');
-
+        
         if (points.length > 3) {
-            fillShape = new Shape();
+            const fillShape = new Shape();
             fillShape.moveTo(points[0].x, points[0].y);
             n = points.length;
             for (i = 1; i < n; i++) {
                 fillShape.lineTo(points[i].x, points[i].y);
             }
             fillShape.lineTo(points[0].x, points[0].y);
-            fillGeom = new  ShapeGeometry(fillShape);
+            const fillGeom = new ShapeGeometry(fillShape);
+            // TODO: only update vertices: https://threejs.org/docs/#manual/en/introduction/How-to-update-things
+            // const fillBufferGeom = new BufferGeometry();
+            // fillBufferGeom.fromGeometry(fillGeom);
+            fill.geometry.dispose();
             fill.geometry = fillGeom;
             fill.visible = true;
         } else {
             fill.visible = false;
         }
         
-        line = polygon3d.getObjectByName('polygonLine');
-        redrawShape(line, points, defaultColor);
+        const line = polygon3d.getObjectByName('polygonLine');
+        redrawShape(line, points, getThemeColors().colorLow);
     },
             
     /**
@@ -233,6 +244,8 @@ export function createObject3dController(specs, my) {
       const isMutedByNoteInControl = false;
       const mutedRadius = 4.5;
       const radius = (isMute || isNotSolo || isMutedByNoteInControl) ? mutedRadius : radius3d;
+      const x = (isMute || isNotSolo || isMutedByNoteInControl) ? 1.5 : 2.9;
+      const y = (isMute || isNotSolo || isMutedByNoteInControl) ? 2.5 : 0.7;
       
       const points = [];
       if (isNoteInControlled) {
@@ -246,9 +259,9 @@ export function createObject3dController(specs, my) {
         );
       } else {
         points.push(
-          new Vector2(-2.9, 0.7),
+          new Vector2(-x, y),
           new Vector2(0, radius),
-          new Vector2(2.9, 0.7),
+          new Vector2(x, y),
         );
         if (isSolo) {
           points.push(
@@ -257,8 +270,8 @@ export function createObject3dController(specs, my) {
           );
         }
       }
-      
-      redrawShape(pointer3d, points, defaultColor);
+
+      redrawShape(pointer3d, points, colorHigh);
     },
             
     /**
@@ -267,7 +280,7 @@ export function createObject3dController(specs, my) {
      * @param {Number} rotation Euclidean necklace rotation.
      */
     updateZeroMarker = function(steps, rotation) {
-        var rad = TWO_PI * (-rotation / steps),
+        var rad = TWO_PI * (rotation / steps),
             radius = radius3d + 3;
         zeroMarker3d.position.x = Math.sin(rad) * radius;
         zeroMarker3d.position.y = Math.cos(rad) * radius;
@@ -326,7 +339,6 @@ export function createObject3dController(specs, my) {
      * @param  {Number} position Position within pattern in ticks.
      */
     showPlaybackPosition = function(position) {
-        pointerRotationPrevious = pointerRotation;
         pointerRotation = TWO_PI * (-position % duration / duration);
         pointer3d.rotation.z = pointerRotation;
     },
@@ -370,8 +382,9 @@ export function createObject3dController(specs, my) {
 
       Object.keys(dotAnimations).forEach(key => {
         const obj = dotAnimations[key];
-        obj.scale /= 1.07;
+        obj.scale -= 0.1;
         obj.dot.scale.set(obj.scale, obj.scale, 1);
+        // TODO: find out reason for largestScale
         largestScale = Math.max(largestScale, obj.scale);
         isNoteActive = true;
         if (obj.isActive && obj.scale <= 1) {
@@ -382,7 +395,7 @@ export function createObject3dController(specs, my) {
  
       // center dot
       centreDot3d.scale.set(centerScale, centerScale, 1);
-      centerScale *= 0.90;
+      centerScale -= 0.06;
       if (centerScale <= 0.05) {
         centreDot3d.visible = false;
         centerScale = 0;
@@ -400,3 +413,4 @@ export function createObject3dController(specs, my) {
   that.draw = draw;
   return that;
 }
+

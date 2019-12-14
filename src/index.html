@@ -1,8 +1,15 @@
 <!doctype html>
 <html>
 <head>
-    <title>mpg</title>
+    <title>Music Pattern Generator</title>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta property="og:title" content="Music Pattern Generator" />
+    <meta property="og:type" content="website" />
+    <meta property="og:description" content="Music Pattern Generator is an online app to create Euclidean and other rhythms in MIDI. It can be controlled by MIDI as well." />
+    <meta property="og:image" content="https://www.hisschemoller.com/images/mpg/preview-mpg-app.jpg" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -44,12 +51,12 @@
                 <span class="icon-help" data-on="&#xe808;" data-off="&#xe808;"></span>
             </label>
             <input type="checkbox" id="help-check" class="toggle__check" />
-            <label for="help-check" class="toggle__label btn" title="Help">
+            <label for="help-check" class="toggle__label btn" title="About">
                 <span class="icon-help" data-on="&#xf128;" data-off="&#xf128;"></span>
             </label>
             <div class="controlbar__info">
-                <span class="controlbar__name">EPG</span>
-                <span class="controlbar__version">2.1.0-beta</span>
+                <span class="controlbar__name">MPG</span>
+                <span class="controlbar__version">v2.1</span>
             </div>
         </header>
         <main class="main">
@@ -117,16 +124,25 @@
                 <div class="panels__right">
                     <div class="panel help">
                         <div class="panel__header">
-                            <span class="header__label">Help</span>
+                            <span class="header__label">About</span>
                         </div>
                         <div class="panel__viewport">
                             <div class="panel__content help__content">
                                 <div class="help__viewport">
                                     <div class="help__copy">
                                         <h2 id="about">About</h2>
-                                        <p>About.</p>
-                                        <h2 id="references">References</h2>
-                                        <p>References.</p>
+                                        <p>
+                                            Music Pattern Generator creates rhythmic music patterns. The app makes no sound itself but sends MIDI to MIDI outputs.<br>
+                                            <br>
+                                            All patterns can be changed in real time on screen or with a connected MIDI controller.<br>
+                                            <br>
+                                            The app is free and open source. See the link below for the source files on GitHub.
+                                        </p>
+                                        <h2 id="references">More information</h2>
+                                        <p>
+                                            <a href="https://www.hisschemoller.com" target="_blank">www.hisschemoller.com</a><br>
+                                            <a href="https://github.com/hisschemoller/music-pattern-generator" target="_blank">Source files on GitHub</a><br>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -240,10 +256,15 @@
         </li>
     </template><!-- /template-midi-port -->
     <template id="template-library-item">
-        <li class="library__item" draggable="true">
+        <li class="library__item">
             <span class="library__item-label"></span>
-        </li><!-- /template-library-item -->
-    </template>
+        </li>
+    </template><!-- /template-library-item -->
+    <template id="template-library-dragger">
+        <div class="library__dragger">
+            <span class="library__dragger-label"></span>
+        </div>
+    </template><!-- /template-library-dragger -->
     <script src="js/lib/three.js"></script>
     <!-- LineSegmentsGeometry must be loaded before LineGeometry -->
     <script src="js/lib/lines/LineSegmentsGeometry.js"></script>

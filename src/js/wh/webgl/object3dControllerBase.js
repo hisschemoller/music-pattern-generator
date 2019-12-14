@@ -30,8 +30,11 @@ export default function createObject3dControllerBase(specs, my) {
 
     updateConnectMode = function(isConnectMode) {
       my.object3d.children.forEach(child3d => {
-        if (child3d.name === 'input' || child3d.name === 'output') {
-          child3d.getObjectByName('active').visible = isConnectMode;
+        if (child3d.name === 'input_hitarea') {
+          child3d.getObjectByName('input_active').visible = isConnectMode;
+        }
+        if (child3d.name === 'output_hitarea') {
+          child3d.getObjectByName('output_active').visible = isConnectMode;
         }
       });
     },

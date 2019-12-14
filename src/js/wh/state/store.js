@@ -1,4 +1,5 @@
 import { memoize } from './selectors.js';
+import { setConfig } from '../core/config.js';
 
 export default function createStore(specs = {}, my = {}) {
     const STATE_CHANGE = 'STATE_CHANGE';
@@ -15,7 +16,10 @@ export default function createStore(specs = {}, my = {}) {
         dispatch = (action) => {
             // thunk or not
             if (typeof action === 'function') {
-                action(dispatch, getState, getActions);
+                const resultActionObject = action(dispatch, getState, getActions);
+                if (resultActionObject) {
+                    dispatch(resultActionObject);
+                }
             } else {
                 currentState = reducers.reduce(currentState, action, actions);
                 memoize(currentState, action, actions);
@@ -43,6 +47,8 @@ export default function createStore(specs = {}, my = {}) {
             let data = localStorage.getItem(name);
             if (data) {
                 dispatch(getActions().setProject(JSON.parse(data)));
+            } else {
+                dispatch(getActions().createProject());
             }
         };
         

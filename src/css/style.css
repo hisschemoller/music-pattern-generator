@@ -108,6 +108,9 @@
     --slider-track-height: 2px;
     --subheader-bg-color: #999;
     --text-color: #333;
+    --webgl-high-color: #333;
+    --webgl-mid-color: #999;
+    --webgl-low-color: #ddd;
 }
 div[data-theme='dev'] {
     --assign-bg-color: rgba(0, 0, 0, 0.1);
@@ -125,6 +128,9 @@ div[data-theme='dev'] {
     --panel-bg-color: #eee;
     --subheader-bg-color: #ddd;
     --text-color: #bbb;
+    --webgl-high-color: #bbb;
+    --webgl-mid-color: #ddd;
+    --webgl-low-color: #eee;
 }
 div[data-theme='dark'] {
     --assign-bg-color: rgba(255, 255, 255, 0.2);
@@ -142,6 +148,9 @@ div[data-theme='dark'] {
     --panel-bg-color: #333;
     --subheader-bg-color: #666;
     --text-color: #ccc;
+    --webgl-high-color: #fff;
+    --webgl-mid-color: #ccc;
+    --webgl-low-color: #666;
 }
 
 * {
@@ -177,6 +186,11 @@ input[type='file'] + label {
 input:focus,
 select:focus {
     outline: none;
+}
+a,
+a:active,
+a:visited {
+    color: var(--text-color);
 }
 
 div[data-theme] {
@@ -336,11 +350,13 @@ div[data-theme] {
     text-align: right;
 }
 .controlbar__name {
+    color: var(--btn-color);
     font-size: 12px;
     line-height: 12px;
     padding-top: 2px;
 }
 .controlbar__version {
+    color: var(--btn-color);
     font-size: 16px;
     line-height: 16px;
 }

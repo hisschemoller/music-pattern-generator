@@ -13,6 +13,8 @@ export function createProcessor(specs, my) {
     const initialize = function() {
             document.addEventListener(store.STATE_CHANGE, handleStateChange);
             updatePortsParameter(store.getState());
+            updateAllParams(store.getState().processors.byId[my.id].params.byId);
+            updateMIDIPort();
         },
 
         terminate = function() {
@@ -85,7 +87,7 @@ export function createProcessor(specs, my) {
          */
         updateMIDIPort = function() {
             midiOutput = getMIDIPortByID(params.port);
-            
+
             // update the processor's name parameter
             store.dispatch(store.getActions().changeParameter(my.id, 'name', params.portName));
         },

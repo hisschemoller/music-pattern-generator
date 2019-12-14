@@ -1,0 +1,28 @@
+[Desktop Entry]
+
+# The name of the application
+Name=Music Pattern Generator
+
+# The executable of the application, possibly with arguments.
+Exec=/opt/music-pattern-generator/nw
+
+# The version of the desktop entry specification to which this file complies
+Version=1.0
+
+# The name of the icon that will be used to display this entry
+Icon=/opt/music-pattern-generator/icon.png
+
+# The type of the what this desktop item points to
+Type=Application
+
+# Describes the categories in which this entry should be shown
+Categories=GTK;GNOME;Utility;MIDI;Audio;Music;
+
+# Describes the encoding of the entries in this desktop file.
+Encoding=UTF-8
+
+# Describes whether this application needs to be run in a terminal or not
+Terminal=false
+
+# A comment which can/will be used as a tooltip
+Comment=MIDI rhythm pattern generator with modular components. 

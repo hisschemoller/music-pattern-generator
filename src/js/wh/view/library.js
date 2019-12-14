@@ -5,11 +5,10 @@ export default function createLibraryView(specs, my) {
     var that,
         store = specs.store,
         listEl = document.querySelector('.library__list'),
+        dragType = null,
+        dragEl = null,
 
         init = function() {
-            document.addEventListener('dragenter', onDragEnter);
-            document.addEventListener('dragover', onDragOver);
-
             document.addEventListener(store.STATE_CHANGE, (e) => {
                 switch (e.detail.action.type) {
                     case e.detail.actions.RESCAN_TYPES:
@@ -36,23 +35,50 @@ export default function createLibraryView(specs, my) {
 
                 el.querySelector('.library__item-label').innerHTML = type.name;
                 el.dataset.type = id;
-                el.addEventListener('dragstart', onDragStart);
+                el.addEventListener('touchstart', onTouchStart);
+                el.addEventListener('mousedown', onTouchStart);
             });
+
+            const draggerTemplate = document.querySelector('#template-library-dragger');
+            dragEl = draggerTemplate.content.cloneNode(true).firstElementChild;
         },
-        
-        /**
-         * Store type of processor when drag starts.
-         */
-        onDragStart = function(e) {
-            e.dataTransfer.setData('text/plain', e.target.dataset.type);
-        },
-        
-        onDragEnter = function(e) {
+
+        onTouchStart = e => {
             e.preventDefault();
+            const el = e.currentTarget;
+            dragType = el.dataset.type;
+            document.addEventListener('touchmove', onTouchMove);
+            document.addEventListener('mousemove', onTouchMove);
+            document.addEventListener('touchend', onTouchEnd);
+            document.addEventListener('mouseup', onTouchEnd);
+
+            dragEl.querySelector('.library__dragger-label').textContent = el.textContent;
+            document.body.appendChild(dragEl);
+            setDragElPosition(e);
+        },
+
+        onTouchMove = e => {
+            setDragElPosition(e);
+        },
+
+        onTouchEnd = e => {
+            e.preventDefault();
+            document.removeEventListener('touchmove', onTouchMove);
+            document.removeEventListener('mousemove', onTouchMove);
+            document.removeEventListener('touchend', onTouchEnd);
+            document.removeEventListener('mouseup', onTouchEnd);
+            document.body.removeChild(dragEl);
+            const el = e.type === 'mouseup' ? e.currentTarget : e.changedTouches[0].target.parentNode;
+            const x = e.type === 'mouseup' ? e.clientX : e.changedTouches[0].clientX;
+            const y = e.type === 'mouseup' ? e.clientY : e.changedTouches[0].clientY;
+            store.dispatch(store.getActions().libraryDrop(dragType, x, y));
+            dragType = null;
         },
         
-        onDragOver = function(e) {
-            e.preventDefault();
+        setDragElPosition = e => {
+            const x = e.type.indexOf('mouse') !== -1 ? e.clientX : e.touches[0].clientX;
+            const y = e.type.indexOf('mouse') !== -1 ? e.clientY : e.touches[0].clientY;
+            dragEl.setAttribute('style', `left: ${x - (dragEl.offsetWidth * 0.5)}px; top: ${y - (dragEl.offsetHeight * 0.9)}px;`);
         };
     
     that = specs.that || {};

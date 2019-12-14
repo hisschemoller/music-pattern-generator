@@ -1,319 +1,170 @@
 # Music Pattern Generator
-An application to generate musical rhythmic patterns in MIDI.
 
-## Note
+An application to create musical rhythms in MIDI.
 
-Current development in branches:
-- feature/mpg-007_webgl_graphics
-- feature/mpg-008_bug_fixes
+## Overview
 
-## Note
+Music Pattern Generator is an app to create musical rhythms. It sends MIDI data, so it won’t make any sounds by itself. For that you need to connect it to MIDI soft- or hardware that can handle MIDI data to produce sound.
 
-Current development in branches:
-- feature/mpg-007_webgl_graphics
-- feature/mpg-008_bug_fixes
+## Processors
 
-## Introduction
-This is an application to create rhythm patterns that can be used in music. It doesn't produce any sounds by itself, but sends MIDI messages to other applications that can generate sound. These applications typically are music programs like Ableton Live, Cubase or FL Studio. MIDI messages can also be sent to external hardware instruments like drum machines, samplers or synthesizers.
+Music Pattern Generator has a modular setup. Modules are called processors and are connected to form a network. Processors can produce MIDI notes, transform incoming data or send notes to MIDI output ports.
 
-The app can be used online or as a desktop application. Downloads are available for Linux, Mac and Windows. The online version currently only works in Chrome, because that's the only browser that supports MIDI.
+![Processor types](assets/img/processor-types.jpg 'Processor types')
 
-## Quick start
+Three types of processors are available at the moment:
 
-#### 1. Create a pattern.
-  * Drag a Euclidean processor from the Library on the left and drop it in the empty area in the middle of the screen.
-  * A Euclidean pattern wheel appears at the position you dropped it.
-  * You can press play now, and the wheel will spin.
-#### 2. Create a MIDI Output.
-  * Drag an Output processor from the Library and drop it in the empty canvas area.
-  * The Output processor represents a MIDI port to send MIDI out of the application.
-  * The Output processor you just created is not yet assigned to a MIDI port.
-#### 3. Connect the Euclidean pattern to the Output.
-  * Enter connect mode with the Connections button in the ControlBar.
-  * Connector circles will now appear below the Euclidean processor and above the Output processor.
-  * Output connectors appear below the processor and inputs above it.
-  * Click and drag from the Euclidean processor's output to the Output processor's input.
-  * When you drag a line will appear from the Euclidean processor's output.
-  * If you finish the drag above an input, the connection is created and the connecting line remains visible.
-#### 5. Select a MIDI Port.
-  * Click the Output processor to show its Settings panel, if it wasn't visible already.
-  * Open the Preferences panel with the Preferences button in the ControlBar.
-  * The Preferences panel shows a list of all detected MIDI output devices.
-  * Toggle on of the outputs port's Network column from Off to On.
-  * The network of processors can now use the MIDI port.
-  * The Settings panel now shows the MIDI port as a selectable port.
-  * Click the port in the Settings panel to select it.
-  * The Output processor will now send MIDI events to the selected port.
-#### 6. Play
-  * Make sure you have a software or hardware sound generator connected to the MIDI port.
-  * Make sure it listens to MIDI channel 1. That's the Euclidean processor's default channel.
-  * Make sure it plays a sound on MIDI pitch 60. That's the Euclidean processor's default pitch.
-  * Press play and you will hear the pattern produced by the Euclidean processor.
+- ‘Euclidean’ generates euclidean rhythms
+- 'Euclid FX’ transforms incoming MIDI notes
+- ‘Output’ sends notes to MIDI output ports
 
-## Download and online use
+Processors are created by dragging them out of the Library into the main area of the app.
 
-The app can be used online or as a desktop application. Downloads are available for Linux, Mac and Windows. The online version currently only works in Chrome, because that's the only browser that supports MIDI.
+## Connections
 
-Please find the the online version here:
+![Connecting processors](assets/img/processor-connecting.jpg 'Connecting processors')
 
-https://hisschemoller.github.io/music-pattern-generator/
+Processors have their input at the top and output at the bottom. Connections are made by dragging a cable from the output of one processor to the input of another. The app must be in 'Connection mode', which is enabled by clicking the Connections button in the top Control Bar.
 
-## Application concepts
+A single output can connect to multiple other processors' inputs. Just drag as many cables as you want out of the output. Similarly, an input can receive data from multiple outputs.
 
-### Processors
+Connection cables can be deleted by clicking the Delete button that shows halfway each cable when in 'Connection mode'.
 
-Processors are the basic building blocks in the application. Each processor generates or changes MIDI notes depending on the type of the processor. It also has a series of settings to change the way it works.
+## The Euclidean processor
 
-A processor has two views:
+![The Euclidean processor](assets/img/processor-euclidean.jpg 'The Euclidean processor')
 
-* __Canvas graphic__ - A graphic representation of the processor in the canvas area. The graphic animates when the app plays. The animation gives visual feedback of what the processor is doing. It can also change shape according to setting changes.
-* __Settings panel__ - A panel of user changeable settings. 
+The Euclidean processor generates rhythm patterns using the [Euclidean algorithm](https://en.wikipedia.org/wiki/Euclidean_rhythm).
 
-Processors are created by dragging new instances from the library onto the canvas area.
+Each processor has it's own editor panel to change its settings. Click the 'Editor' button in the Control Bar if the panel isn't visible. The editor always shows the settings of the selected processor. Select a processor by clicking its center circle. The processor will show a double ring to indicate it's selected.
 
-### Network
+![The Euclidean settings editor](assets/img/processor-euclidean-editor.jpg 'The Euclidean settings editor')
 
-Processors are connected to form a network. A single processor usually performs just one basic function. Connected in a network they combine to create interesting music and rhythms.
+This editor panel shows the settings for the rightmost processor in the image above. 
 
-Processors have inputs and outputs to connect them to the network. One output can have multiple connections to multiple destinations, and likewise multiple connections from multiple sources can lead to a single input.
+The top three settings - steps, pulses and rotation - produce the actual pattern. Play with them and you will get a feeling for the results and what they do.
 
-Ultimately one or more outputs must be connected to one or more Output processors that send the MIDI messages out of the application to soft- or hardware that can handle MIDI events.
+Rate sets the musical timing of the pattern. At '1/16' each step will take a quarter beat as set in the 'Beats Per Minute' input in the Control Bar. The number must be understood a part of a whole measure where one measure lasts four beats. Just try and you'll understand.
 
-The network of connected processors is comparable to modular software like Pure Data, Max/MSP or Reaktor. Differences are that it only handles MIDI and that it uses animating graphics for user feedback. 
+Note Length uses the same timing as rate. It's generally best to not set it higher than the rate or notes will overlap and produce usually unwanted results.
 
-## Application overview
+The other settings are self explanatory.
 
-The application consists of a controlbar at the top, a main canvas area below, and a set of panels that can be opened and closed to reveal specific functionality.
+## The Euclid FX processor
 
-### Canvas
+![The Euclid FX processor](assets/img/processor-euclidfx.jpg 'The Euclid FX processor')
 
-Canvas is the main area where processors are created and connected. It spans the whole background of the application. 
+The Euclid FX processor transforms incoming MIDI notes and sends them out of the output. 
 
-* __Select processor__ - Processors are selected by clicking their center circle.
-* __Move processor__ - Processors can be moved around the canvas by dragging within their center circle. 
-* __Move all__ - Dragging the canvas background moves all processors. So processors can be dragged out of view and still perform.
+It changes a MIDI note in one of two possible ways. A Euclidean pattern decides which of the two ways.
 
-### Controlbar
+![The Euclid FX settings editor](assets/img/processor-euclidfx-editor.jpg 'The Euclid FX settings editor')
 
-The controlbar is the permanently visible top bar. It shows a row of buttons and other controls.
+This editor panel shows the settings for the rightmost processor in the image above. 
 
-* __New Project__ - Create an empty new project. All previous existing processors are lost.
-* __Open Project__ - Opens a file browser to select and load a project file that was saved earlier.
-* __Save Project__ - Opens a file browser to save the current project to a file.
-* __Play / Stop__ - Starts and stops playback of the patterns.
-* __BPM Tempo__ - A number input to set the tempo in Beats Per Minute.
-* __Library__ - Toggles the Library panel.
-* __Preferences__ - Toggles the Preferences panel.
-* __MIDI Learn__ - Toggles 'MIDI Learn' mode and the associated remote MIDI Assignments panel.
-* __Settings__ - Toggles the settings panel showing the currently selected pattern's settings.
-* __Connect mode__ - Toggles processor connect mode. This has no associated panel.
-* __Help__ - Toggles the Help text panel.
-* __Version__ - The right side of the bar shows the app's version number.
+Most settings are exactly the same as in the Euclidean processor editor. The only real difference here is the Effect section.
 
-### Library
+- The Target sets which property of the MIDI notes will be changed.
+- Low value sets the value when the pattern is between pulses.
+- High value sets the value when the pattern on a pulse.
+- Mode sets the way the new values are applied:
+  - Absolute mode overwrites the incoming data,
+  - Relative mode adds to the incoming data.
 
-The library shows the available processors. Drag a processor from the library to the canvas to create a new instance at the posistion where you dropped it. The settings panel shows the settings for the new processor. Available processors:
+### An Example
 
-* __Euclidean__ - Generates MIDI notes using the Euclidean pattern algorithm.
-* __Euclid FX__ - Changes a property of incoming notes based on the Euclidean pattern algorithm.
-* __Output__ - Sends incoming notes to a MIDI output port on the host computer.
+This is the case in the image above. The target is Velocity and mode is Absolute. Now the velocity of the incoming MIDI notes will be changed to 50 or 100, depending on the state of the pattern at the moment the note arrives. It's previous velocity value is lost.
 
-### Processor settings
+### Another example
 
-The settings panel shows the currently selected processor's settings. These differ per processor type. Common controls are:
+![The Euclid FX example 2](assets/img/processor-euclidfx-example2.jpg 'The Euclid FX example 2')
 
-* __Naming field__ - Each processor is created with a default name that can be changed here.
-* __Delete button__ - Removes the processor from the network and deletes its connections.
+The target here is Pitch and the mode is Relative. Depending on the state of the pattern at the moment a note arrives, a value of 2 is distracted from the pitch or 5 is added. Lets say incoming MIDI notes have a pitch of 60, then they will be changed to 58 (60 - 2) or 65 (60 + 5). Or in musical terms, notes arrive in C, and are turned into either Bb or F.
 
-### Preferences
+## The Output processor
 
-The preferences panel shows the MIDI port settings. The list of MIDI ports automatically updates when MIDI devices are added or removed. MIDI ports have multiple settings:
+![The Output processor](assets/img/processor-output.jpg 'The Output processor')
 
-* __MIDI Input Sync__ - The app responds to MIDI Start, Stop and Continue messages on the port.
-* __MIDI Input Remote__ - The app listens to MIDI Continuous Control messages if remote control assignments are set up.
-* __MIDI Output Network__ - The output port can be selected as target of network Output processors.
+The output processor sends incoming MIDI out of the app to a MIDI port.
 
-The __Theme__ switch switches the app to a dark colour theme, which is easier to look at in dark environments.
+Only MIDI ports that are enabled in the Preferences panel can be used as an output. Click the 'Preferences' button in the Control Bar to open the Preferences panel. Then in the Network column enable all MIDI outputs you want to use. As shown in the image above.
 
-### Remote assignments
+![The Output settings editor](assets/img/processor-output-editor.jpg 'The Output settings editor')
 
-The remote panel shows a list of all processor settings that are assigned to respond to a MIDI Continuous Control. Assignments can be set up with the MIDI Learn system. The assigned settings are grouped by processor. Each setting in the list shows:
+In the processor's editor panel select an output in the list of MIDI ports. Or No Output to stop the port from sending data.
 
-* __Setting name__ - Name of the setting in the Settings panel.
-* __Channel__ - Assigned MIDI channel number.
-* __CC__ - Assigned MIDI Continuous Control number.
-* __Delete button__ - Button to remove the assignment.
+Multiple Output processors can be added in a single project to send MIDI to multiple ports.
 
-### Help
+## The Preferences panel
 
-* Documentation on how to use the app.
+![The Preferences panel](assets/img/preferences.jpg 'The Preferences panel')
 
-## Processor types
+The preference settings are saved separately from a project, so they will persist when switching between projects or when creating a new one.
 
-### Euclidean
+### MIDI Inputs
 
-The Euclidean processor generates Euclidean rhythms. For an explanation please see the section below. 
+Only the Remote column is active for the MIDI inputs. When MIDI controllers are used for automation, the app only listens to MIDI Continuous Control data on inputs that have Remote enabled. The section about MIDI learn and MIDI automation follows below.
 
-It's panel has the following settings:
+### MIDI Outputs
 
-* __Steps, Pulses, Rotation__ - The Euclidean settings that determine the pattern.
-* __Rate__ - The duration of one step in the pattern. Default is 1/16, where one step is a 16th note. If you change that rate to 1/8 the pattern play half speed.
-* __Note length__ - The length of a played note. Default is 1/16, which is a 16th note.
-* __Triplets__ - 
-* __Mute__ - 
-* __MIDI Out Channel, Pitch, Velocity__ - Properties of the MIDI notes that the pattern will output.
-* __Name__ - All patterns get a default name which can be changed here.
-* __Delete__ - Button to delete the current pattern.
+Only the Network column is active for the MIDI outputs. The outputs that have Network enabled can be used by the Output processors to send MIDI data to. See the section about the Output Processor above.
 
-### Euclid FX
+### Interface
 
-### Output
+The dark theme might be easier on the eye in low light environments.
 
-## MIDI learn and remote control
+## MIDI Remote Control
 
+Several processor settings can be remote-controlled with an external MIDI controller that sends Continuous Control (CC) messages.
 
-### External MIDI sync
+To use a MIDI input port for remote control, the input must have its Remote option enabled in the Preferences panel. See above for an overview of the Preferences panel.
 
+### MIDI learn mode
 
+![The MIDI Assignments panel](assets/img/midi-assignments.jpg 'The MIDI Assignments panel')
 
+To set up remote control, MIDI controllers must first be assigned to processor settings. This is done in 'MIDI Learn' mode.
 
+MIDI Learn is enabled by clicking the 'MIDI Learn' button in the top Control Bar. The Assignments panel appears, which initially is empty and only shows its title bar.
 
+![Editor panel learn mode](assets/img/midi-learn.jpg 'Editor panel learn mode')
 
+At the same time the editor panel shows a dashed border around each setting that can be remote controlled.
 
+### Assigning MIDI Controllers to processor settings
 
+![Editor setting armed](assets/img/midi-learn2.jpg 'Editor setting armed')
 
+To create an assignment first click on the setting that you’d like to control via MIDI. The setting will show a darkened background to indicate it's ready to receive MIDI data.
 
+![Editor setting assigned](assets/img/midi-learn3.jpg 'Editor setting assigned')
 
+Now turn a knob on your hardware controller that sends MIDI CC data. When the data is received the asignment is immediately made. The settings border turns from dashed into a solid line to indicate that the setting is assigned for remote control.
 
+![The MIDI Assignments panel](assets/img/midi-assignments2.jpg 'The MIDI Assignments panel')
 
+At the same time the assigment appears in the Assignments panel. 
 
+To remove an assignment click the delete (x) button at the right of the assignment in the list.
 
+To actually use the remote control, exit MIDI Learn mode by clicking the 'MIDI Learn' button again. Now the assigned controller will control the processor setting. You'll see and the processor graphic and editor setting follow the incoming MIDI data.
 
-The application creates a specific type of patterns, known as Euclidean rhythms. These are generated by a mathematical algorithm and often resemble African and South-American traditional drum and percussion patterns. The application makes it easy to create polyrhythms, where patterns of different length play together to create interesting slowly evolving rhythms.
+## The Control Bar
 
-A desktop application can be downloaded for Windows, Mac and Linux, and it can be used as an online app that runs in the browser as well (Chrome and Chromium only at the moment). It is written in Javascript and uses the Electron framework to create the desktop versions.
+![The Control Bar](assets/img/controlbar.jpg 'The Control Bar')
 
-## Euclidean rhythms
-Euclidean rhythms are generated with a simple mathematical formula. It distributes an amount of pulses as evenly as possible over a period of time, where time is divided in equal parts. So, say you have four notes to divide over a sequence of sixteen steps, the result is:
+The controls, from left to right
 
-``x . . . x . . . x . . . x . . .``
+- New project
+- Open a project JSON file
+- Export a project to JSON file
+- Play / Pause toggle
 
-Each note is separated from the next by three rests, a typical house and techno kick drum pattern. 4 steps can be very evenly distributed over 16 steps: 16 / 4 = 4. More uneven divisions create more complex rhythms. 5 notes over 16 steps for example results in this pattern:
+The tempo number input, to set the tempo in Beats Per Minute (BPM)
 
-``x . . . x . . x . . x . . x . .``
-
-Interesting polyrhythms can be created by combining patterns of different length. The patterns in the application go up to 64 steps in length.
-
-Patterns can also be rotated to create more variation, because without rotation they always start with a note on the first step. This is the 4 on 16 pattern from before followed by rotations of 1 and 2:
-
-``x . . . x . . . x . . . x . . .``
-
-``. x . . . x . . . x . . . x . .``
-
-``. . x . . . x . . . x . . . x .``
-
-The generation of Euclidean rhythms in music was discovered by Godfried Toussaint in 2004. His paper on this theory is online as a PDF file: [The Euclidean Algorithm Generates Traditional Musical Rhythms][link_toussaint]
-
-## Download and installation
-
-Desktop applications will be available for Linux, Mac and Windows.
-
-## Quick start
-
-The application opens with just the controlbar visible at the top and the empty pattern area below.
-
-* Create a pattern by double clicking the pattern area. A pattern wheel appears and its Settings panel opens at the right.
-* You can start and stop the pattern with the play button in the controlbar.
-* Open the Preferences panel with the 'cogwheel' button in the controlbar.
-* Choose the MIDI output you want by toggling its button in the Network column. 'Network' is the term for the network of patterns that outputs MIDI notes on this port.
-* The pattern you created will now send notes to your MIDI port on Channel 1 with Pitch 60 and Velocity 100, the default values of a new pattern (as you can see in the Settings panel).
-
-## Application overview
-
-The application window shows a controlbar at the top. The rest of the window is the pattern area. Panels can be opened and closed as necessary.
-
-### Controlbar
-
-The controlbar is permanently visible and shows a row of buttons and other controls.
-
-* __New Project__ - Create an empty new project. All previous existing patterns are lost.
-* __Open Project__ - Opens a file browser to select and load a project file that was saved earlier.
-* __Save Project__ - Opens a file browser to save the current project to a file.
-* __Play / Stop__ - Starts and stops playback of the patterns.
-* __BPM Tempo__ - A number input to set the tempo in Beats Per Minute.
-* __Preferences__ - Toggles the Preferences panel.
-* __MIDI Learn__ - Toggles 'MIDI Learn' mode and the associated Remote MIDI Assignments panel.
-* __Settings__ - Toggles the panel with settings of the currently selected pattern.
-* __Help__ - Toggles the Help text panel.
-
-### Pattern area
-
-* Doubleclick the background to create a pattern.
-* Click a pattern to select or drag it.
-* Drag the background to move all patterns at once.
-
-### Settings panel
-
-The Settings panel shows the settings for the currently selected pattern.
-
-* __Steps, Pulses, Rotation__ - The Euclidean settings that determine the pattern.
-* __Rate__ - The duration of one step in the pattern. Default is 1/16, where one step is a 16th note. If you change that rate to 1/8 the pattern play half speed.
-* __Note length__ - The length of a played note. Default is 1/16, which is a 16th note.
-* __MIDI Out Channel, Pitch, Velocity__ - Properties of the MIDI notes that the pattern will output.
-* __Name__ - All patterns get a default name which can be changed here.
-* __Delete__ - Button to delete the current pattern.
-
-### Preferences panel
-
-Preferences are loaded when the program starts. They are not stored in project files.
-
-* __MIDI Inputs__ - All MIDI input ports are listed here.
-  - __Sync__ - MIDI start and stop messages received on the port will start and stop playback.
-  - __Remote__ - MIDI CC messages received on the port can be assigned to remotely control pattern parameters.
-* __MIDI Outputs__ - All MIDI output ports are listed here.
-  - __Network__ - MIDI notes are sent to the selected output port. 'Network' is the term for the network of patterns that generates MIDI notes.
-
-MIDI devices that are connected or disconnected will automatically appear or disappear in this list. If a device is accidentally diconnected and reconnected, it's settings are attempted to be restored.
-
-* __Dark theme__ - An inverse colour theme with light content on a dark background. To comfortably use the application in dark environments.
-
-### MIDI Assignments panel
-
-A list of all the pattern parameters that have a MIDI CC assigned to them so they can be remotely controlled. The assignments are grouped by pattern. Creating remote assignments is explained elsewhere in this text.
-
-Each assignment in the list shows these fields:
-
-* Name of the parameter.
-* MIDI Channel of he assigned CC.
-* MIDI CC (Continuous Control) number.
-* A 'X' button to remove the assignment.
-
-## MIDI learn mode
-
-Several pattern parameters can be remotely controlled by MIDI CC messages. A CC is associated with a parameter by its MIDI Channel and its Controller number. To set this up 'MIDI learn mode' is used. The following example presumes you use a hardware MIDI controller with knobs or sliders that send MIDI CC messages.
-
-* Connect your MIDI Controller hardware to a MIDI input.
-* In the Preferences panel make sure that the MIDI input port has its Remote option enabled.
-* Click the 'MIDI Learn' button (MIDI connector icon) in the controlbar to enter MIDI learn mode.
-  - The Remote Assignments panel appears, showing all existing assignments.
-  - The selected pattern's Settings panel shows a dashed border around each parameter that is not yet assigned.
-  - Parameters that have already been assigned show a solid unbroken line as their border.
-* Select a pattern and click an assignable parameter in the Settings panel. The parameter will turn slightly darker to indicate it's selected.
-* Turn a knob on the hardware controller that sends MIDI CC messages.
-* The MIDI Channel and CC Number is now assigned to the parameter.
-  - The paremeter's border turns from dashed to a solid line.
-  - The assignent appears in the Assignments panel list.
-* Click the 'MIDI Learn' button in the controlbar to exit MIDI learn mode.
-* Now, if you turn the knob on the hardware, the pattern's parameter will change accordingly.
-
-The assignments are saved in the project file. So save the project to keep the assignments for later use in the project.
-
-
-
-[link_toussaint]: http://cgm.cs.mcgill.ca/~godfried/publications/banff.pdf
-
-## Note
-This app is a project in progress, so all of the above might not yet.
-
-For the moment the app uses older Electron version 1.4.16 because newer vesrions have a bug that stops requestAnimationFrame when the app window is in the background.
-See https://github.com/electron/electron/issues/9567
+- Library
+- Preferences
+- Assignments
+- Connections
+- Settings Editor
+- About

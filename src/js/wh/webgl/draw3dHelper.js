@@ -1,4 +1,5 @@
 const {
+  CircleBufferGeometry,
   CircleGeometry,
   Color,
   Group,
@@ -7,11 +8,12 @@ const {
   LineMaterial,
   Mesh,
   MeshBasicMaterial,
+  Vector2,
   VertexColors,
 } = THREE;
 
 const defaultSegments = 64;
-const defaultLineWidth = 0.0012;
+const defaultLineWidth = 2;
 const defaultLineColor = 0xdddddd;
 
 const lineMaterial = new LineMaterial({
@@ -19,10 +21,11 @@ const lineMaterial = new LineMaterial({
   linewidth: defaultLineWidth,
   vertexColors: VertexColors,
   dashed: false,
+  resolution: new Vector2(window.innerWidth, window.innerHeight),
 });
 
 const textLineMaterial = lineMaterial.clone();
-textLineMaterial.linewidth = 0.0008;
+textLineMaterial.linewidth = 1;
 
 /** 
  * Cache of circle outlines, so they can be cloned once created.
@@ -30,9 +33,18 @@ textLineMaterial.linewidth = 0.0008;
  */
 const circleCache = {};
 
+/**
+ * Recalculate material so the line thickness remains the same for vertical 
+ * and horizontal lines.
+ */
+export function setLineMaterialResolution() {
+  lineMaterial.resolution.set(window.innerWidth, window.innerHeight);
+  textLineMaterial.resolution.set(window.innerWidth, window.innerHeight);
+}
+
 /** 
  * Create a line along a path of coordinates.
- * @param {Array} points An array of point objects.
+ * @param {Array} points An array of Vector2 points.
  * @param {Number} points.x
  * @param {Number} points.y
  * @param {Number} color Color of the line.
@@ -41,6 +53,7 @@ const circleCache = {};
 export function createShape(points = [], color = defaultLineColor) {
   const geometry = new LineGeometry();
   const line2 = new Line2(geometry, lineMaterial);
+  line2.name = 'shape';
   redrawShape(line2, points, color);
   return line2;
 }
@@ -50,12 +63,14 @@ export function createShape(points = [], color = defaultLineColor) {
  * @param {Array} points An array of point objects.
  * @param {Number} points.x
  * @param {Number} points.y
+ * @param {String} Character
  * @param {Number} color Color of the line.
  * @returns {Object} Line2 three.js object.
  */
-export function createText(points, color = defaultLineColor) {
+export function createText(points, character, color = defaultLineColor) {
   const geometry = new LineGeometry();
   const line2 = new Line2(geometry, textLineMaterial);
+  line2.name = `text_${character}`;
   redrawShape(line2, points, color);
   return line2;
 }
@@ -74,10 +89,13 @@ export function redrawShape(line2, points = [], color = defaultLineColor) {
     const col = new Color(color);
     const positions = points.reduce((acc, p) => [ ...acc, p.x, p.y, 0 ], []);
     const colors = points.reduce((acc, p) => [ ...acc, col.r, col.g, col.b ], []);
+    line2.geometry.dispose();
     line2.geometry = new LineGeometry();
     line2.geometry.setPositions(positions);
     line2.geometry.setColors(colors);
     line2.computeLineDistances();
+    line2.scale.set(1, 1, 1);
+    line2.userData.points = points;
   }
 
   return line2;
@@ -94,10 +112,10 @@ export function createCircleOutline(radius, color = defaultLineColor) {
   // check if the circle already exists in cache
   const cacheId = `c${radius}_${color}`;
   if (circleCache[cacheId]) {
-    return circleCache[cacheId].clone();
+    const clone = circleCache[cacheId].clone();
+    clone.userData = { ...circleCache[cacheId].userData };
+    return clone;
   }
-
-  const col = new Color(color);
   
   // create a circle, just for it's vertice points
   const circle = new CircleGeometry(radius, defaultSegments);
@@ -110,22 +128,15 @@ export function createCircleOutline(radius, color = defaultLineColor) {
   vertices.push(vertices[0].clone());
 
   // create the geometry and line
-  const positions = vertices.reduce((acc, v) => [ ...acc, v.x, v.y, v.z ], []);
-  const colors = vertices.reduce((acc, v) => [ ...acc, col.r, col.g, col.b ], []);
   const geometry = new LineGeometry();
-  geometry.setPositions(positions);
-  geometry.setColors(colors);
-  const line = new Line2(geometry, lineMaterial);
-  line.computeLineDistances();
+  const line2 = new Line2(geometry, lineMaterial);
+  line2.name = 'circle_outline';
+  redrawShape(line2, vertices, color);
 
   // add the circle to the cache
-  circleCache[cacheId] = line;
+  circleCache[cacheId] = line2;
 
-  return line;
-}
-
-function drawLine(points, color) {
-
+  return line2;
 }
 
 /** 
@@ -137,9 +148,11 @@ function drawLine(points, color) {
 export function createCircleFilled(radius, color, alpha = 1) {
   const numSegments = 8;
   const material = new MeshBasicMaterial({ color, transparent: true, });
-  const geometry = new CircleGeometry(radius, numSegments);              
+  const geometry = new CircleBufferGeometry(radius, numSegments);              
   material.opacity = alpha;
-  return new Mesh(geometry, material);
+  const fill = new Mesh(geometry, material);
+  fill.name = 'circle_fill';
+  return fill;
 }
 
 /**
@@ -152,6 +165,7 @@ export function createCircleOutlineFilled(radius, color) {
   var circle = new Group();
   circle.add(createCircleFilled(radius, color));
   circle.add(createCircleOutline(radius, color));
+  circle.name = 'circle_outline_and_fill';
   return circle;
 }
 
@@ -182,15 +196,20 @@ export function drawConnectors(rootObj, inputs, outputs, color) {
  * @param {Object} rootObj Outer object3D.
  */
 function drawConnector(data, id, name, rootObj, color) {
+
+  const hitarea = createCircleFilled(2, color, 0);
+  hitarea.name = `${name}_hitarea`;
+  hitarea.userData.id = id;
+  hitarea.translateX(data.x);
+  hitarea.translateY(data.y);
+  rootObj.add(hitarea);
+
   const connector = createCircleOutline(0.6, color);
-  connector.name = name;
-  connector.userData.id = id;
-  connector.translateX(data.x);
-  connector.translateY(data.y);
-  rootObj.add(connector);
+  connector.name = `${name}_connector`;
+  hitarea.add(connector);
 
   const active = createCircleOutline(1.2, color);
-  active.name = 'active';
+  active.name = `${name}_active`;
   active.visible = false;
-  connector.add(active);
+  hitarea.add(active);
 }

@@ -1,7 +1,8 @@
 import addWindowResize from '../view/windowresize.js';
 import addConnections3d from './connections3d.js';
+import { setLineMaterialResolution } from './draw3dHelper.js';
 import { getThemeColors } from '../state/selectors.js';
-import { util } from '../core/util.js';
+import { eventType } from '../core/util.js';
 
 const {
   Color,
@@ -61,12 +62,17 @@ export default function createCanvas3d(specs, my) {
             onWindowResize();
             break;
 
+          case e.detail.actions.RESCAN_TYPES:
           case e.detail.actions.SET_THEME:
             setThemeOnWorld();
             break;
           
           case e.detail.actions.SET_CAMERA_POSITION:
             updateCamera(e.detail.state);
+            break;
+          
+          case e.detail.actions.LIBRARY_DROP:
+            onDrop(e.detail.state);
             break;
         }
       });
@@ -82,11 +88,14 @@ export default function createCanvas3d(specs, my) {
      * Initialise DOM events for click, drag etcetera.
      */
     initDOMEvents = function() {
-      renderer.domElement.addEventListener(util.eventType.click, onClick);
-      renderer.domElement.addEventListener(util.eventType.start, onTouchStart);
-      renderer.domElement.addEventListener(util.eventType.move, dragMove);
-      renderer.domElement.addEventListener(util.eventType.end, dragEnd);
-      renderer.domElement.addEventListener('drop', onDrop);
+      renderer.domElement.addEventListener('touchend', onClick);
+      renderer.domElement.addEventListener('click', onClick);
+      renderer.domElement.addEventListener('touchstart', onTouchStart);
+      renderer.domElement.addEventListener('mousedown', onTouchStart);
+      renderer.domElement.addEventListener('touchmove', dragMove);
+      renderer.domElement.addEventListener('mousemove', dragMove);
+      renderer.domElement.addEventListener('touchend', dragEnd);
+      renderer.domElement.addEventListener('mouseup', dragEnd);
 
       // prevent system doubleclick to interfere with the custom doubleclick
       renderer.domElement.addEventListener('dblclick', function(e) {e.preventDefault();});
@@ -107,6 +116,8 @@ export default function createCanvas3d(specs, my) {
       let fieldOfView = camera.fov * (Math.PI / 180); // convert fov to radians
       let targetZ = canvasRect.height / (2 * Math.tan(fieldOfView / 2));
 
+      setLineMaterialResolution();
+
       store.dispatch(store.getActions().setCameraPosition(camera.position.x, camera.position.y, targetZ * scale));
     },
 
@@ -114,12 +125,12 @@ export default function createCanvas3d(specs, my) {
      * Drop of object dragged from library.
      * Create a new processor.
      */
-    onDrop = function(e) {
-      e.preventDefault();
-      updateMouseRay(e);
+    onDrop = function(state) {
+      const { type, x, y, } = state.libraryDropPosition;
+      updateMouseRay({ clientX: x, clientY: y, });
       if (raycaster.ray.intersectPlane(plane, intersection)) {
         store.dispatch(store.getActions().createProcessor({
-          type: e.dataTransfer.getData('text/plain'),
+          type,
           positionX: intersection.x,
           positionY: intersection.y,
           positionZ: intersection.z,
@@ -173,7 +184,7 @@ export default function createCanvas3d(specs, my) {
         }
 
         // test for output connectors
-        intersect = intersects.find(intersect => intersect.object.name === 'output');
+        intersect = intersects.find(intersect => intersect.object.name === 'output_hitarea');
         if (intersect && my.isConnectMode) {
           // get outer parent of closest object
           outerObject = getOuterParentObject(intersect.object);
@@ -280,7 +291,7 @@ export default function createCanvas3d(specs, my) {
 
           // test for input connectors
           const intersects = raycaster.intersectObjects(allObjects, true);
-          const intersect = intersects.find(intersect => intersect.object.name === 'input');
+          const intersect = intersects.find(intersect => intersect.object.name === 'input_hitarea');
           if (intersect && my.isConnectMode) {
             const outerObject = getOuterParentObject(intersect.object);
             my.createConnection(
@@ -298,13 +309,15 @@ export default function createCanvas3d(specs, my) {
      * Handle single mouse click.
      */
     handleClick = function(e) {
-      updateMouseRay(e);
+      if (my.cablesGroup) {
+        updateMouseRay(e);
 
-      // look for click on connection cable delete button
-      const cableIntersects = raycaster.intersectObjects(my.cablesGroup.children, true);
-      const deleteIntersect = cableIntersects.find(intersect => intersect.object.name === 'delete');
-      if (deleteIntersect) {
-        store.dispatch(store.getActions().disconnectProcessors(deleteIntersect.object.userData.connectionId));
+        // look for click on connection cable delete button
+        const cableIntersects = raycaster.intersectObjects(my.cablesGroup.children, true);
+        const deleteIntersect = cableIntersects.find(intersect => intersect.object.name === 'delete');
+        if (deleteIntersect) {
+          store.dispatch(store.getActions().disconnectProcessors(deleteIntersect.object.userData.connectionId));
+        }
       }
     },
 
@@ -346,10 +359,13 @@ export default function createCanvas3d(specs, my) {
      * Set a raycaster's ray to point from the camera to the mouse postion.
      * @param {event} mouseEvent Event rom which to get the mouse coordinates.
      */
-    updateMouseRay = function(mouseEvent) {
+    updateMouseRay = function(e) {
+      const x = isNaN(e.clientX) ? e.changedTouches[0].clientX : e.clientX;
+      const y = isNaN(e.clientY) ? e.changedTouches[0].clientY : e.clientY;
+        
         // update mouse vector with mouse coordinated translated to viewport
-        mousePoint.x = ((mouseEvent.clientX - canvasRect.left) / canvasRect.width ) * 2 - 1;
-        mousePoint.y = - ((mouseEvent.clientY - canvasRect.top) / canvasRect.height ) * 2 + 1;
+        mousePoint.x = ((x - canvasRect.left) / canvasRect.width ) * 2 - 1;
+        mousePoint.y = - ((y - canvasRect.top) / canvasRect.height ) * 2 + 1;
 
         // update the picking ray with the camera and mouse position
         raycaster.setFromCamera(mousePoint, camera);

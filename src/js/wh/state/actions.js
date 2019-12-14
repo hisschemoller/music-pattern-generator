@@ -30,21 +30,25 @@ export default function createActions(specs = {}, my = {}) {
         TOGGLE_CONNECT_MODE = 'TOGGLE_CONNECT_MODE',
         CONNECT_PROCESSORS = 'CONNECT_PROCESSORS',
         DISCONNECT_PROCESSORS = 'DISCONNECT_PROCESSORS',
-        SET_CAMERA_POSITION = 'SET_CAMERA_POSITION';
+        SET_CAMERA_POSITION = 'SET_CAMERA_POSITION',
+        LIBRARY_DROP = 'LIBRARY_DROP';
 
     return {
 
         importProject: (file) => {
             return (dispatch, getState, getActions) => {
-                let fileReader = new FileReader();
 
-                // closure to capture the file information
-                fileReader.onload = (function(f) {
-                    return function(e) {
+                // if no file was chosen
+                if (!file) {
+                    return;
+                }
+
+                file.text()
+                    .then(text => {
                         let isJSON = true,
                             isXML = false;
                         try {
-                            const data = JSON.parse(e.target.result);
+                            const data = JSON.parse(text);
                             if (data) {
                                 dispatch(getActions().setProject(data));
                             }
@@ -54,7 +58,7 @@ export default function createActions(specs = {}, my = {}) {
                         if (!isJSON) {
 
                             // try if it's a legacy xml file
-                            const legacyData = convertLegacyFile(e.target.result);
+                            const legacyData = convertLegacyFile(text);
                             if (legacyData) {
                                 dispatch(getActions().setProject(legacyData));
                                 isXML = true;
@@ -66,9 +70,13 @@ export default function createActions(specs = {}, my = {}) {
                                 `The file to import wasn't recognised as a valid type for this application.`,
                                 'Ok');
                         }
-                    };
-                })(file);
-                fileReader.readAsText(file);
+                    })
+                    .catch(() =>{
+                        showDialog(
+                            'Import failed', 
+                            `The file could not be opened.`,
+                            'Ok');
+                    });
             }
         },
 
@@ -162,11 +170,6 @@ export default function createActions(specs = {}, my = {}) {
                     }
                 });
 
-                console.log('Processor order:');
-                data.processors.allIds.forEach(id => {
-                    console.log(':', data.processors.byId[id].params.byId['name'].value);
-                });
-
                 // create the project with the merged ports
                 dispatch(getActions().createProject(data));
             }
@@ -230,7 +233,13 @@ export default function createActions(specs = {}, my = {}) {
 
         CHANGE_PARAMETER,
         changeParameter: (processorID, paramKey, paramValue) => {
-            return { type: CHANGE_PARAMETER, processorID, paramKey, paramValue };
+            return (dispatch, getState, getActions) => {
+                const { processors } = getState();
+                const param = processors.byId[processorID].params.byId[paramKey];
+                if (paramValue !== param.value) {
+                    return { type: CHANGE_PARAMETER, processorID, paramKey, paramValue };
+                }
+            };
         },
 
         RECREATE_PARAMETER,
@@ -303,7 +312,15 @@ export default function createActions(specs = {}, my = {}) {
         toggleMIDILearnMode: () => ({ type: TOGGLE_MIDI_LEARN_MODE }),
 
         TOGGLE_MIDI_LEARN_TARGET,
-        toggleMIDILearnTarget: (processorID, parameterKey) => ({ type: TOGGLE_MIDI_LEARN_TARGET, processorID, parameterKey }),
+        toggleMIDILearnTarget: (processorID, parameterKey) => {
+            return (dispatch, getState, getActions) => {
+                const { learnTargetProcessorID, learnTargetParameterKey } = getState();
+                if (processorID === learnTargetProcessorID && parameterKey === learnTargetParameterKey) {
+                    return { type: TOGGLE_MIDI_LEARN_TARGET, processorID: null, parameterKey: null };
+                }
+                return { type: TOGGLE_MIDI_LEARN_TARGET, processorID, parameterKey };
+            }
+        },
 
         SET_TRANSPORT,
         setTransport: command => ({ type: SET_TRANSPORT, command }),
@@ -369,6 +386,11 @@ export default function createActions(specs = {}, my = {}) {
         SET_CAMERA_POSITION,
         setCameraPosition: (x, y, z, isRelative = false) => {
             return { type: SET_CAMERA_POSITION, x, y, z, isRelative, };
+        },
+
+        LIBRARY_DROP,
+        libraryDrop: (processorType, x, y) => {
+            return { type: LIBRARY_DROP, processorType, x, y, };
         },
     };
 }

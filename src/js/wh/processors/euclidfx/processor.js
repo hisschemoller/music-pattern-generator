@@ -199,8 +199,15 @@ export function createProcessor(specs, my) {
          * After a change of the steps parameter update the pulses and rotation parameters.
          */
         updatePulsesAndRotation = function() {
-            store.dispatch(store.getActions().recreateParameter(my.id, 'pulses', { max: params.steps }));
-            store.dispatch(store.getActions().recreateParameter(my.id, 'rotation', { max: params.steps - 1 }));
+            store.dispatch(store.getActions().recreateParameter(my.id, 'pulses', { 
+                max: params.steps,
+                value: Math.min(params.pulses, params.steps),
+            }));
+            store.dispatch(store.getActions().recreateParameter(my.id, 'rotation', {
+                max: params.steps - 1,
+                value: Math.min(params.rotation, params.steps - 1),
+            }));
+
             store.dispatch(store.getActions().changeParameter(my.id, 'pulses', params.pulses));
             store.dispatch(store.getActions().changeParameter(my.id, 'rotation', params.rotation));
         },

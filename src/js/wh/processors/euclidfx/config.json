@@ -58,6 +58,7 @@
                 "default": 0.25,
                 "value": 0.25,
                 "model": [
+                    {"label": "8", "value": 32},
                     {"label": "4", "value": 16},
                     {"label": "2", "value": 8},
                     {"label": "1", "value": 4},

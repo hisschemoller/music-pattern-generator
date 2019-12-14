@@ -1,12 +1,13 @@
-import {
-  EllipseCurve,
-  Vector2,
-} from '../../../lib/three.module.js';
 import { getThemeColors } from '../../state/selectors.js';
 import createObject3dControllerBase from '../../webgl/object3dControllerBase.js';
 import { getEuclidPattern, rotateEuclidPattern } from './euclid.js';
 import { PPQN } from '../../core/config.js';
 import { redrawShape } from '../../webgl/draw3dHelper.js';
+
+const {
+  EllipseCurve,
+  Vector2,
+} = THREE;
 
 const TWO_PI = Math.PI * 2;
 
@@ -17,8 +18,8 @@ export function createObject3dController(specs, my) {
     select3d,
     pointer3d,
     necklace3d,
-    defaultColor,
-    lineMaterial,
+    colorLow,
+    colorHigh,
     duration,
     pointerRotation,
     pointerRotationPrevious = 0,
@@ -28,13 +29,9 @@ export function createObject3dController(specs, my) {
     rotation,
     centerRadius = 3,
     centerScale = 0,
-    selectRadius = 2,
     innerRadius = 4,
     outerRadius = 6,
-    dotRadius = 1,
     locatorRadius = 8,
-    zeroMarkerRadius = 0.5,
-    zeroMarkerY = outerRadius + zeroMarkerRadius + 1,
     doublePI = Math.PI * 2,
 
     initialize = function() {
@@ -46,7 +43,7 @@ export function createObject3dController(specs, my) {
 
       document.addEventListener(my.store.STATE_CHANGE, handleStateChanges);
     
-      defaultColor = getThemeColors().colorHigh;
+      ({ colorLow, colorHigh, } = getThemeColors());
 
       const params = specs.processorData.params.byId;
       my.updateLabel(params.name.value);
@@ -117,8 +114,8 @@ export function createObject3dController(specs, my) {
         const curve = new EllipseCurve(
           0, 0, 
           stepRadius, stepRadius,
-          ((i / n) * doublePI) - (Math.PI / 2),
-          (((i + 1) / n) * doublePI) - (Math.PI / 2),
+          ((i / n) * doublePI) + (Math.PI * 0.5),
+          (((i + 1) / n) * doublePI) + (Math.PI * 0.5),
           false,
           0,
         );
@@ -126,12 +123,12 @@ export function createObject3dController(specs, my) {
       }
       points = [...points, points[0].clone()];
       
-      redrawShape(necklace3d, points, defaultColor);
+      redrawShape(necklace3d, points, colorHigh);
     },
 
     updateRotation = function(numRotation) {
       rotation = numRotation;
-      pointer3d.rotation.z = (rotation / steps) * -doublePI;
+      pointer3d.rotation.z = (rotation / steps) * doublePI;
     },
 
     /**
@@ -156,15 +153,15 @@ export function createObject3dController(specs, my) {
         new Vector2(0, locatorRadius),
       ];
 
-      redrawShape(pointer3d, points, defaultColor);
+      redrawShape(pointer3d, points, colorHigh);
     },
 
     /** 
      * Set theme colors on the 3D pattern.
      */
     updateTheme = function() {
-      const themeColors = getThemeColors();
-      setThemeColorRecursively(my.object3d, themeColors.colorHigh);
+      ({ colorLow, colorHigh, } = getThemeColors());
+      setThemeColorRecursively(my.object3d, colorLow, colorHigh);
     },
 
     /** 
@@ -172,12 +169,25 @@ export function createObject3dController(specs, my) {
      * @param {Object3d} An Object3d of which to change the color.
      * @param {String} HEx color string of the new color.
      */
-    setThemeColorRecursively = function(object3d, color) {
-      if (object3d.material && object3d.material.color) {
-        object3d.material.color.set( color );
+    setThemeColorRecursively = function(object3d, colorLow, colorHigh) {
+      let color = colorHigh;
+      switch (object3d.name) {
+        case 'input_connector':
+        case 'input_active':
+        case 'output_connector':
+        case 'output_active':
+          color = colorLow;
+          break;
       }
+
+      if (object3d.type === 'Line2') {
+        redrawShape(object3d, object3d.userData.points, color);
+      } else if (object3d.material) {
+        object3d.material.color.set(color);
+      }
+
       object3d.children.forEach(childObject3d => {
-        setThemeColorRecursively(childObject3d, color);
+        setThemeColorRecursively(childObject3d, colorLow, colorHigh);
       });
     },
             

@@ -41,12 +41,8 @@ export default function createMIDI(specs) {
                 navigator.requestMIDIAccess({
                     sysex: !!sysex
                 }).then(function(_midiAccess) {
-                    if (!_midiAccess.inputs.size && !_midiAccess.outputs.size) {
-                        onAccessFailure('No MIDI devices found on this system.');
-                    } else {
-                        onAccessSuccess(_midiAccess);
-                        successCallback();
-                    }
+                    onAccessSuccess(_midiAccess);
+                    successCallback();
                 }, function() {
                     failureCallback('Request for MIDI access failed.');
                 });
@@ -91,6 +87,10 @@ export default function createMIDI(specs) {
          * @param {Object} e MIDIConnectionEvent object.
          */
         onAccessStateChange = function(e) {
+
+            // start listening to the new port
+            e.port.onmidimessage = onMIDIMessage;
+
             store.dispatch(store.getActions().midiAccessChange(e.port));
         },
 
@@ -120,6 +120,10 @@ export default function createMIDI(specs) {
             });
         },
 
+        /**
+         * Handler for all incoming MIDI messages.
+         * @param {Object} e MIDIMessageEvent.
+         */
         onMIDIMessage = function(e) {
             // console.log(e.data[0] & 0xf0, e.data[0] & 0x0f, e.target.id, e.data[0], e.data[1], e.data[2]);
             switch (e.data[0] & 0xf0) {
@@ -146,12 +150,13 @@ export default function createMIDI(specs) {
          * 12 = stop
          * @see https://www.w3.org/TR/webmidi/#idl-def-MIDIMessageEvent
          * @see https://www.midi.org/specifications/item/table-1-summary-of-midi-message
-         * @param  {Object} e MIDIMessageEvent event.
+         * @param {Object} e MIDIMessageEvent.
          */
         onSystemRealtimeMessage = function(e) {
             if (syncListeners.indexOf(e.target.id) > -1) {
                 switch (e.data[0]) {
                     case 248: // clock
+                        // not implemented
                         break;
                     case 250: // start
                         store.dispatch(store.getActions().setTransport('play'));
@@ -166,6 +171,10 @@ export default function createMIDI(specs) {
             }
         },
 
+        /**
+         * MIDI Continuous Control message handler.
+         * @param {Object} e MIDIMessageEvent.
+         */
         onControlChangeMessage = function(e) {
             if (remoteListeners.indexOf(e.target.id) > -1) {
                 store.dispatch(store.getActions().receiveMIDIControlChange(e.data));

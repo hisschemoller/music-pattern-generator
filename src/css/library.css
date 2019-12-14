@@ -23,3 +23,13 @@
 .library__item-label {
     font-size: 14px;
 }
+.library__dragger {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+}
+.library__dragger-label {
+    font-size: 14px;
+}
