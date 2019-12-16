@@ -191,7 +191,7 @@ function dragEnd(e) {
 
       // test for input connectors
       const intersects = raycaster.intersectObjects(allObjects, true);
-      const intersect = intersects.find(intersect => intersect.object.name === 'input');
+      const intersect = intersects.find(intersect => intersect.object.name === 'input_hitarea');
       if (intersect && isConnectMode) {
         const outerObject = getOuterParentObject(intersect.object);
         createConnection(
@@ -424,7 +424,7 @@ function onTouchStart(e) {
     }
 
     // test for output connectors
-    intersect = intersects.find(intersect => intersect.object.name === 'output');
+    intersect = intersects.find(intersect => intersect.object.name === 'output_hitarea');
     if (intersect && isConnectMode) {
 
       // get outer parent of closest object

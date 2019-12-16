@@ -152,7 +152,7 @@ div[data-theme='dark'] {
     --text-color: #ccc;
     --webgl-high-color: #fff;
     --webgl-mid-color: #ccc;
-    --webgl-low-color: #333;
+    --webgl-low-color: #666;
 }
 
 * {

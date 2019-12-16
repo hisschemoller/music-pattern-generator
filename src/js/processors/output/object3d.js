@@ -1,8 +1,4 @@
 import {
-  Group,
-  Vector2,
-} from '../../lib/three.module.js';
-import {
   createCircleFilled,
   createCircleOutline,
   drawConnectors,
@@ -10,10 +6,18 @@ import {
 } from '../../webgl/draw3dHelper.js';
 import { getTheme } from '../../state/selectors.js';
 
+const {
+  Group,
+  Vector2,
+} = THREE;
+
 export function createObject3d(id, inputs, outputs) {
     
-  let radius = 3,
-
+  const radius = 3,
+    
+    /**
+     * Initialization.
+     */
     init = function() {
     },
     

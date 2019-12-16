@@ -1,8 +1,4 @@
 import {
-  Group,
-  LineBasicMaterial,
-} from '../../lib/three.module.js';
-import {
   createCircleFilled,
   createCircleOutline,
   createCircleOutlineFilled,
@@ -11,14 +7,16 @@ import {
 } from '../../webgl/draw3dHelper.js';
 import { getTheme } from '../../state/selectors.js';
 
+const {
+  Group,
+} = THREE;
+
 export function createObject3d(id, inputs, outputs) {
-  let defaultColor,
-    lineMaterial,
-    
+
     /**
      * Initialization.
      */
-    init = function() {
+  const init = function() {
     },
     
     /**
