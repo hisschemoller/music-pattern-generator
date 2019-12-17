@@ -352,11 +352,13 @@ div[data-theme] {
     text-align: right;
 }
 .controlbar__name {
+    color: var(--btn-color);
     font-size: 12px;
     line-height: 12px;
     padding-top: 2px;
 }
 .controlbar__version {
+    color: var(--btn-color);
     font-size: 16px;
     line-height: 16px;
 }
