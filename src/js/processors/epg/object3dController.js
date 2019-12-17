@@ -30,7 +30,8 @@ export function createObject3dController(data, that = {}, my = {}) {
     pointerRotation,
     dotAnimations = {},
     dotMaxRadius = 1,
-    defaultColor,
+    colorLow,
+    colorHigh,
     centerScale = 0,
 
     initialize = function() {
@@ -44,7 +45,7 @@ export function createObject3dController(data, that = {}, my = {}) {
 
       document.addEventListener(STATE_CHANGE, handleStateChanges);
     
-      defaultColor = getTheme().colorHigh;
+      ({ colorLow, colorHigh, } = getTheme());
 
       const params = data.processorData.params.byId;
       my.updateLabel(params.name.value);
@@ -164,9 +165,9 @@ export function createObject3dController(data, that = {}, my = {}) {
         let dot;
         const rad = TWO_PI * (i / steps);
         if (euclid[i]) {
-          dot = createCircleOutlineFilled(dotRadiusRounded, defaultColor);
+          dot = createCircleOutlineFilled(dotRadiusRounded, colorHigh);
         } else {
-          dot = createCircleOutline(dotRadiusRounded, defaultColor);
+          dot = createCircleOutline(dotRadiusRounded, colorHigh);
         }
         dot.name = 'dot';
         dot.translateX(Math.sin(rad) * radius3d);
@@ -277,7 +278,7 @@ export function createObject3dController(data, that = {}, my = {}) {
         }
       }
       
-      redrawShape(pointer3d, points, defaultColor);
+      redrawShape(pointer3d, points, colorHigh);
     },
             
     /**

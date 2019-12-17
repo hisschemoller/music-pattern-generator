@@ -18,7 +18,8 @@ export function createObject3dController(data, that = {}, my = {}) {
     select3d,
     pointer3d,
     necklace3d,
-    defaultColor,
+    colorLow,
+    colorHigh,
     duration,
     pointerRotation,
     status = true,
@@ -42,7 +43,7 @@ export function createObject3dController(data, that = {}, my = {}) {
 
       document.addEventListener(STATE_CHANGE, handleStateChanges);
     
-      defaultColor = getTheme().colorHigh;
+      ({ colorLow, colorHigh, } = getTheme());
 
       const params = data.processorData.params.byId;
       my.updateLabel(params.name.value);
@@ -129,7 +130,7 @@ export function createObject3dController(data, that = {}, my = {}) {
       }
       points = [...points, points[0].clone()];
       
-      redrawShape(necklace3d, points, defaultColor);
+      redrawShape(necklace3d, points, colorHigh);
     },
 
     updateRotation = function(numRotation) {
@@ -159,14 +160,14 @@ export function createObject3dController(data, that = {}, my = {}) {
         new Vector2(0, locatorRadius),
       ];
 
-      redrawShape(pointer3d, points, defaultColor);
+      redrawShape(pointer3d, points, colorHigh);
     },
 
     /** 
      * Set theme colors on the 3D pattern.
      */
     updateTheme = function() {
-      const { colorLow, colorHigh } = getTheme();
+      ({ colorLow, colorHigh } = getTheme());
       setThemeColorRecursively(my.object3d, colorLow, colorHigh);
     },
 
