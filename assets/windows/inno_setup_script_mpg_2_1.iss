@@ -3,7 +3,7 @@
 
 #define MyAppName "Music Pattern Generator"
 #define MyAppVersion "2.1"
-#define MyAppPublisher "Wouter Hisschemˆller"
+#define MyAppPublisher "Wouter Hisschemöller"
 #define MyAppURL "https://www.hisschemoller.com/"
 #define MyAppExeName "mpg_2_1.exe"
 
