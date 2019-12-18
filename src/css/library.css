@@ -1,0 +1,35 @@
+/************************
+ * library
+ ************************/
+
+ .library.panel {
+    display: none;
+    width: 80px;
+}
+.library .panel__viewport {
+    background-color: var(--panel-bg-color);
+    padding-bottom: 10px;
+}
+.library__list {
+    padding-top: 10px;
+}
+.library__item {
+    cursor: pointer;
+    padding: 2px 5px;
+}
+.library__item:hover {
+    background-color: var(--panel-bg-color);
+}
+.library__item-label {
+    font-size: 14px;
+}
+.library__dragger {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+}
+.library__dragger-label {
+    font-size: 14px;
+}

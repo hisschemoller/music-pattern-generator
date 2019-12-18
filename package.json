@@ -1,0 +1,29 @@
+{
+    "name": "music-pattern-generator",
+    "version": "2.2.0-alpha",
+    "description": "MIDI rhythm and music pattern generator",
+    "keywords": [
+        "MIDI",
+        "euclidean rhythm",
+        "music",
+        "percussion"
+    ],
+    "homepage": "http://github.com/hisschemoller/music-pattern-generator",
+    "license": "LGPL-3.0",
+    "private": true,
+    "main": "src/index.html",
+    "scripts": {
+        "start": "node server.js",
+        "start-nw": "nw --disable-raf-throttling"
+    },
+    "repository": {
+        "type": "git",
+        "url": "http://github.com/hisschemoller/music-pattern-generator"
+    },
+    "author": "Wouter Hisschemoller",
+    "dependencies": {},
+    "devDependencies": {
+        "express": "^4.17.1",
+        "nw": "0.42.5-sdk"
+    }
+}

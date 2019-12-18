@@ -1,0 +1,305 @@
+<!doctype html>
+<html>
+<head>
+    <title>Music Pattern Generator</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta property="og:title" content="Music Pattern Generator" />
+    <meta property="og:type" content="website" />
+    <meta property="og:description" content="Music Pattern Generator is an online app to create Euclidean and other rhythms in MIDI. It can be controlled by MIDI as well." />
+    <meta property="og:image" content="https://www.hisschemoller.com/mpg/img/mpg-app-og-preview.jpg" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="app" data-theme="light">
+        <header class="controlbar controls file">
+            <button id="file-new" class="btn" title="New project">
+                <span class="icon-new"></span>
+            </button>
+            <input type="file" multiple="false" id="file-import" class="file-import">
+            <label for="file-import" class="btn" title="Import project...">
+                <span class="icon-open"></span>
+            </label>
+            <button id="file-export" class="btn" title="Export project...">
+                <span class="icon-save"></span>
+            </button>
+            <input type="checkbox" id="play-check" class="toggle__check" />
+            <label for="play-check" class="toggle__label btn" title="Play/Stop">
+                <span class="icon-new" data-on="&#xe804;" data-off="&#xe802;"></span>
+            </label>
+            <input type="number" id="bpm-number" class="bpm" min="1" max="1000" value="" />
+            <input type="checkbox" id="library-check" class="toggle__check" />
+            <label for="library-check" class="toggle__label btn" title="Library">
+                <span class="icon-list" data-on="&#xf009;" data-off="&#xf009;"></span>
+            </label>
+            <input type="checkbox" id="prefs-check" class="toggle__check" />
+            <label for="prefs-check" class="toggle__label btn" title="Preferences">
+                <span class="icon-cog" data-on="&#xe805;" data-off="&#xe805;"></span>
+            </label>
+            <input type="checkbox" id="learn-check" class="toggle__check" />
+            <label for="learn-check" class="toggle__label btn" title="MIDI learn">
+                <span class="icon-midi" data-on="&#xe900;" data-off="&#xe900;"></span>
+            </label>
+            <input type="checkbox" id="snapshots-check" class="toggle__check" />
+            <label for="snapshots-check" class="toggle__label btn" title="Snapshots">
+                <span class="icon-snapshots" data-on="&#xe809;" data-off="&#xe809;"></span>
+            </label>
+            <input type="checkbox" id="connections-check" class="toggle__check" />
+            <label for="connections-check" class="toggle__label btn" title="Edit connections">
+                <span class="icon-connections" data-on="&#xf1e0;" data-off="&#xf1e0;"></span>
+            </label>
+            <input type="checkbox" id="edit-check" class="toggle__check" />
+            <label for="edit-check" class="toggle__label btn" title="Edit settings">
+                <span class="icon-help" data-on="&#xe808;" data-off="&#xe808;"></span>
+            </label>
+            <input type="checkbox" id="help-check" class="toggle__check" />
+            <label for="help-check" class="toggle__label btn" title="About">
+                <span class="icon-help" data-on="&#xf128;" data-off="&#xf128;"></span>
+            </label>
+            <div class="controlbar__info">
+                <span class="controlbar__name">EPG</span>
+                <span class="controlbar__version">2.2.0-alpha</span>
+            </div>
+        </header>
+        <main class="main">
+            <div id="canvas-container"></div>
+            <div class="panels">
+                <div class="panel library">
+                    <div class="panel__header">
+                        <span class="header__label">Library</span>
+                    </div>
+                    <div class="panel__viewport">
+                        <div class="panel__content">
+                            <ul class="library__list"></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="panels__left">
+                    <div class="panel prefs">
+                        <div class="panel__header">
+                            <span class="header__label">Preferences</span>
+                        </div>
+                        <div class="panel__viewport">
+                            <div class="panel__content">
+                                <div class="prefs__midi-in">
+                                    <div class="prefs__subheader panel__header panel__header--sub">
+                                        <div class="prefs__subheader-title header__label">MIDI Inputs</div>
+                                        <div class="prefs__subheader-network header__label">Network</div>
+                                        <div class="prefs__subheader-sync header__label">Sync</div>
+                                        <div class="prefs__subheader-remote header__label">Remote</div>
+                                    </div>
+                                    <ul class="prefs__inputs"></ul>
+                                </div>
+                                <div class="prefs__midi-out">
+                                    <div class="prefs__subheader panel__header panel__header--sub">
+                                        <div class="prefs__subheader-title header__label">MIDI Outputs</div>
+                                        <div class="prefs__subheader-network header__label">Network</div>
+                                        <div class="prefs__subheader-sync header__label">Sync</div>
+                                        <div class="prefs__subheader-remote header__label">Remote</div>
+                                    </div>
+                                    <ul class="prefs__outputs"></ul>
+                                </div>
+                                <div class="panel__header panel__header--sub">
+                                    <span class="header__label">Interface</span>
+                                </div>
+                                <div class="prefs__setting">
+                                    <span class="prefs__label">Dark theme</span>
+                                    <div class="prefs__input">
+                                        <label class="btn prefs__btn" title="Dark theme">
+                                            <input type="checkbox" class="prefs__btn-check prefs__dark-theme" />
+                                            <span data-on="On" data-off="Off" class="prefs__btn-text"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel remote">
+                        <div class="panel__header">
+                            <span class="header__label">Assignments</span>
+                        </div>
+                        <div class="panel__viewport">
+                            <ul class="panel__content remote__list"></ul>
+                        </div>
+                    </div>
+                    <div class="panel snapshots">
+                        <div class="panel__header">
+                            <span class="header__label">Snapshots</span>
+                        </div>
+                        <div class="panel__viewport">
+                            <div class="panel__content">
+                                <ul class=" snapshots__list"></ul>
+                                <label class="snapshots__edit" title="Edit snapshots">
+                                    <input type="checkbox" class="snapshots__edit-check" />
+                                    <span class="snapshots__edit-label">Edit Snapshots</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /panels__left -->
+                <div class="panels__right">
+                    <div class="panel help">
+                        <div class="panel__header">
+                            <span class="header__label">About</span>
+                        </div>
+                        <div class="panel__viewport">
+                            <div class="panel__content help__content">
+                                <div class="help__viewport">
+                                    <div class="help__copy">
+                                        <h2 id="about">About</h2>
+                                        <p>
+                                            Music Pattern Generator creates rhythmic music patterns. The app makes no sound itself but sends MIDI to MIDI outputs.<br>
+                                            <br>
+                                            All patterns can be changed in real time on screen or with a connected MIDI controller.<br>
+                                            <br>
+                                            The app is free and open source. See the link below for the source files on GitHub.
+                                        </p>
+                                        <h2 id="references">More information</h2>
+                                        <p>
+                                            <a href="https://www.hisschemoller.com" target="_blank">www.hisschemoller.com</a><br>
+                                            <a href="https://github.com/hisschemoller/music-pattern-generator" target="_blank">Source files on GitHub</a><br>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel edit">
+                        <div class="panel__header">
+                            <span class="header__label">Settings</span>
+                        </div>
+                        <div class="panel__viewport">
+                            <div class="panel__content"></div>
+                        </div>
+                    </div>
+                </div><!-- /panels__right -->
+            </div><!-- /panels -->
+        </main>
+        <div class="dialog">
+            <div class="dialog__layer"></div>
+            <div class="dialog__window panel">
+                <div class="panel__header dialog__header">
+                    <span class="header__label">header</span>
+                </div>
+                <div class="panel__viewport">
+                    <div class="panel__content">
+                        <span class="dialog__body">body</span>
+                        <div class="dialog__controls">
+                            <button type="button" class="btn dialog__reject">reject</button>
+                            <button type="button" class="btn dialog__resolve">resolve</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </app>
+
+    <template id="template-setting-integer">
+        <div class="setting">
+            <span class="setting__label"></span>
+            <div class="setting__value setting__integer">
+                <input type="range" min="" max="" step="1" class="setting__range" />
+                <input type="number" min="" max="" class="setting__number" />
+            </div>
+        </div>
+    </template><!-- /template-setting-integer -->
+    <template id="template-setting-boolean">
+        <div class="setting">
+            <span class="setting__label"></span>
+            <div class="setting__value">
+                <input type="checkbox" id="" class="setting__check toggle__check" />
+                <label for="" class="toggle__label btn" title="">
+                    <span class="" data-on="On" data-off="Off"></span>
+                </label>
+            </div>
+        </div>
+    </template><!-- /template-setting-boolean -->
+    <template id="template-setting-itemized">
+        <div class="setting">
+            <label class="setting__label"></label>
+            <div class="setting__value setting__radios"></div>
+        </div>
+    </template><!-- /template-setting-itemized -->
+    <template id="template-setting-itemized-item">
+        <input type="radio" id="" class="setting__radio" />
+        <label for="" class="setting__label-radio-text btn"></label>
+    </template><!-- /template-setting-itemized-item -->
+    <template id="template-setting-string">
+        <div class="setting">
+            <label class="setting__label"></label>
+            <div class="setting__value">
+                <input type="text" class="setting__text" />
+            </div>
+        </div>
+    </template><!-- /template-setting-string -->
+    <template id="template-setting-learnmode">
+        <div class="setting__learnmode"></div>
+    </template><!-- /template-setting-learnmode -->
+    <template id="template-remote-group">
+        <li class="remote__group">
+            <div class="remote__group-header panel__header panel__header--sub">
+                <div class="remote__group-header-label header__label"></div>
+                <div class="remote__group-header-channel header__label">Channel</div>
+                <div class="remote__group-header-control header__label">Control</div>
+                <div class="remote__group-header-delete header__label"></div>
+            </div>
+            <ul class="remote__group-list"></ul>
+        </li>
+    </template><!-- /template-remote-group -->
+    <template id="template-remote-item">
+        <li class="remote__item">
+            <span class="remote__item-label"></span>
+            <span class="remote__item-channel"></span>
+            <span class="remote__item-control"></span>
+            <button class="remote__item-delete btn"><span class="icon-cancel"></span></button>
+        </li>
+    </template><!-- /template-remote-item -->
+    <template id="template-midi-port">
+        <li class="midi-port">
+            <span class="midi-port__label"></span>
+            <label class="btn midi-port__btn midi-port__network" title="Network">
+                <input type="checkbox" class="midi-port__btn-check" />
+                <span data-on="On" data-off="Off" data-disabled="-" class="midi-port__btn-text"></span>
+            </label>
+            <label class="btn midi-port__btn midi-port__sync" title="Sync">
+                <input type="checkbox" class="midi-port__btn-check" />
+                <span data-on="On" data-off="Off" data-disabled="-" class="midi-port__btn-text"></span>
+            </label>
+            <label class="btn midi-port__btn midi-port__remote" title="Remote">
+                <input type="checkbox" class="midi-port__btn-check" />
+                <span data-on="On" data-off="Off" data-disabled="-" class="midi-port__btn-text"></span>
+            </label>
+        </li>
+    </template><!-- /template-midi-port -->
+    <template id="template-library-item">
+        <li class="library__item">
+            <span class="library__item-label"></span>
+        </li>
+    </template><!-- /template-library-item -->
+    <template id="template-library-dragger">
+        <div class="library__dragger">
+            <span class="library__dragger-label"></span>
+        </div>
+    </template><!-- /template-library-dragger -->
+    <template id="template-snapshots-item">
+        <li class="snapshots__item">
+            <div class="snapshots__item-load">
+                <span class="snapshots__item-label"></span>
+            </div>
+            <div class="snapshots__item-store">
+                <span class="snapshots__item-label"></span>
+            </div>
+        </li>
+    </template><!-- /template-snapshots-item -->
+    <script src="js/lib/three.js"></script>
+    <!-- LineSegmentsGeometry must be loaded before LineGeometry -->
+    <script src="js/lib/lines/LineSegmentsGeometry.js"></script>
+    <script src="js/lib/lines/LineGeometry.js"></script>
+    <script src="js/lib/lines/LineMaterial.js"></script>
+    <script src="js/lib/lines/LineSegments2.js"></script>
+    <script src="js/lib/lines/Line2.js"></script>
+    <script src="js/main.js" type="module"></script>
+</body>
+</html>

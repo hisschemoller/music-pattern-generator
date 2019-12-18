@@ -1,0 +1,129 @@
+{
+    "name": "Euclidean",
+    "positionX": 0,
+    "positionY": 0,
+    "positionZ": 0,
+    "inputs": {
+        "byId": {},
+        "allIds": []
+    },
+    "outputs": {
+        "byId": {
+            "out": {
+                "x": 0,
+                "y": -13,
+                "z": 0
+            }
+        },
+        "allIds": ["out"]
+    },
+    "params": {
+        "byId": {
+            "steps": {
+                "label": "Steps",
+                "type": "integer",
+                "default": 16,
+                "value": 16,
+                "min": 1,
+                "max": 64,
+                "isMidiControllable": true
+            },
+            "pulses": {
+                "label": "Pulses",
+                "type": "integer",
+                "default": 4,
+                "value": 4,
+                "min": 0,
+                "max": 16,
+                "isMidiControllable": true
+            },
+            "rotation": {
+                "label": "Rotation",
+                "type": "integer",
+                "default": 0,
+                "value": 0,
+                "min": 0,
+                "max": 15,
+                "isMidiControllable": true
+            },
+            "channel_out": {
+                "label": "Channel",
+                "type": "integer",
+                "default": 1,
+                "value": 1,
+                "min": 1,
+                "max": 16
+            },
+            "pitch_out": {
+                "label": "Pitch",
+                "type": "integer",
+                "default": 60,
+                "value": 60,
+                "min": 0,
+                "max": 127
+            },
+            "velocity_out": {
+                "label": "Velocity",
+                "type": "integer",
+                "default": 100,
+                "value": 100,
+                "min": 0,
+                "max": 127
+            },
+            "rate": {
+                "label": "Rate",
+                "type": "itemized",
+                "default": 0.25,
+                "value": 0.25,
+                "model": [
+                    {"label": "8", "value": 32},
+                    {"label": "4", "value": 16},
+                    {"label": "2", "value": 8},
+                    {"label": "1", "value": 4},
+                    {"label": "1/2", "value": 2},
+                    {"label": "1/4", "value": 1},
+                    {"label": "1/8", "value": 0.5},
+                    {"label": "1/16", "value": 0.25},
+                    {"label": "1/32", "value": 0.125}
+                ]
+            },
+            "is_triplets": {
+                "label": "Triplets",
+                "type": "boolean",
+                "default": false,
+                "value": false
+            },
+            "note_length": {
+                "label": "Note length",
+                "type": "itemized",
+                "default": 0.25,
+                "value": 0.25,
+                "model": [
+                    {"label": "8", "value": 32},
+                    {"label": "4", "value": 16},
+                    {"label": "2", "value": 8},
+                    {"label": "1", "value": 4},
+                    {"label": "1/2", "value": 2},
+                    {"label": "1/4", "value": 1},
+                    {"label": "1/8", "value": 0.5},
+                    {"label": "1/16", "value": 0.25},
+                    {"label": "1/32", "value": 0.125}
+                ]
+            },
+            "is_mute": {
+                "label": "Mute",
+                "type": "boolean",
+                "default": false,
+                "value": false,
+                "isMidiControllable": true
+            },
+            "name": {
+                "label": "Name",
+                "type": "string",
+                "default": "Unnamed",
+                "value": "Unnamed"
+            }
+        },
+        "allIds": ["steps", "pulses", "rotation", "channel_out", "pitch_out", "velocity_out", "rate", "note_length", "is_triplets", "is_mute", "name"]
+    }
+}

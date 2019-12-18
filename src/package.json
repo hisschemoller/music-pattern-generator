@@ -1,0 +1,14 @@
+{
+  "name": "Music Pattern Generator",
+  "description": "MIDI rhythm and music pattern generator",
+  "main": "index.html",
+  "chromium-args": "--disable-raf-throttling",
+  "window": {
+    "icon": "../assets/icons/png/128x128.png",
+    "min_height": 500,
+    "min_width": 800,
+    "height": 600,
+    "title": "Music Pattern Generator",
+    "width": 1024
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "ids": [
+    "epg",
+    "euclidfx",
+    "output"
+  ],
+  "files": [
+    "config.json",
+    "settings.html",
+    "object3d.js",
+    "object3dController.js",
+    "processor.js",
+    "utils.js"
+  ]
+}
