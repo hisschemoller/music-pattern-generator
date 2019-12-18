@@ -2,9 +2,14 @@
 
 An application to create musical rhythms in MIDI.
 
+The app online: [www.hisschemoller.com/mpg](https://www.hisschemoller.com/mpg)<br />
+Desktop installers: [github.com/hisschemoller/music-pattern-generator/releases](https://github.com/hisschemoller/music-pattern-generator/releases)
+
 ## Overview
 
 Music Pattern Generator is an app to create musical rhythms. It sends MIDI data, so it won’t make any sounds by itself. For that you need to connect it to MIDI soft- or hardware that can handle MIDI data to produce sound.
+
+Watch an [Music Pattern Generator 2.1 overview video on YouTube](https://youtu.be/Pz5x5eEtuTM).
 
 ## Processors
 
