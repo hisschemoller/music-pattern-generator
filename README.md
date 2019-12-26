@@ -6,6 +6,8 @@ An application to create musical rhythms in MIDI.
 
 Music Pattern Generator is an app to create musical rhythms. It sends MIDI data, so it won’t make any sounds by itself. For that you need to connect it to MIDI soft- or hardware that can handle MIDI data to produce sound.
 
+![App window](assets/img/mpg-2_1-animation.gif 'App window')
+
 ## Processors
 
 Music Pattern Generator has a modular setup. Modules are called processors and are connected to form a network. Processors can produce MIDI notes, transform incoming data or send notes to MIDI output ports.
