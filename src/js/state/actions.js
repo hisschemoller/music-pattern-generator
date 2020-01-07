@@ -18,7 +18,8 @@ const ADD_PROCESSOR = 'ADD_PROCESSOR',
   DRAG_SELECTED_PROCESSOR = 'DRAG_SELECTED_PROCESSOR',
 	LIBRARY_DROP = 'LIBRARY_DROP',
 	LOAD_SNAPSHOT = 'LOAD_SNAPSHOT',
-  RECEIVE_MIDI_CC = 'RECEIVE_MIDI_CC',
+	RECEIVE_MIDI_CC = 'RECEIVE_MIDI_CC',
+	RECEIVE_MIDI_NOTE = 'RECEIVE_MIDI_NOTE',
   RECREATE_PARAMETER = 'RECREATE_PARAMETER',
   SELECT_PROCESSOR = 'SELECT_PROCESSOR',
   SET_CAMERA_POSITION = 'SET_CAMERA_POSITION',
@@ -233,22 +234,43 @@ export default {
 	RECEIVE_MIDI_CC,
 	receiveMIDIControlChange: data => {
 		return (dispatch, getState, getActions) => {
-			const state = getState();
+			const { assignExternalControl, changeParameter, unassignExternalControl, } = getActions();
+			const { assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorID, processors, } = getState();
 			const remoteChannel = (data[0] & 0xf) + 1;
 			const remoteCC = data[1];
 
-			if (state.learnModeActive) {
-				dispatch(getActions().unassignExternalControl(state.learnTargetProcessorID, state.learnTargetParameterKey));
-				dispatch(getActions().assignExternalControl(`assign_${createUUID()}`, state.learnTargetProcessorID, state.learnTargetParameterKey, remoteChannel, remoteCC));
+			if (learnModeActive) {
+				dispatch(unassignExternalControl(learnTargetProcessorID, learnTargetParameterKey));
+				dispatch(assignExternalControl(`assign_${createUUID()}`, learnTargetProcessorID, learnTargetParameterKey, remoteChannel, remoteCC));
 			} else {
-				state.assignments.allIds.forEach(assignID => {
-					const assignment = state.assignments.byId[assignID];
+				assignments.allIds.forEach(assignID => {
+					const assignment = assignments.byId[assignID];
 					if (assignment.remoteChannel === remoteChannel && assignment.remoteCC === remoteCC) {
-						const param = state.processors.byId[assignment.processorID].params.byId[assignment.paramKey];
+						const param = processors.byId[assignment.processorID].params.byId[assignment.paramKey];
 						const paramValue = midiControlToParameterValue(param, data[2]);
-						dispatch(getActions().changeParameter(assignment.processorID, assignment.paramKey, paramValue));
+						dispatch(changeParameter(assignment.processorID, assignment.paramKey, paramValue));
 					}
 				});
+			}
+		}
+	},
+
+	RECEIVE_MIDI_NOTE,
+	receiveMIDINote: data => {
+		return (dispatch, getState, getActions) => {
+			const { assignExternalControl, changeParameter, unassignExternalControl, } = getActions();
+			const { assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorID, processors, } = getState();
+			const remoteChannel = (data[0] & 0xf) + 1;
+			const remotePitch = data[1];
+			const remoteVelocity = data[2];
+
+			if (learnModeActive) {
+				if (remoteVelocity > 0) {
+					dispatch(unassignExternalControl(learnTargetProcessorID, learnTargetParameterKey));
+					dispatch(assignExternalControl(`assign_${createUUID()}`, learnTargetProcessorID, learnTargetParameterKey, remoteChannel, remotePitch));
+				}
+			} else {
+
 			}
 		}
 	},

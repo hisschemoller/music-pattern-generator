@@ -150,8 +150,14 @@ function onMIDIMessage(e) {
 			break;
 		case 144: // note on
 		case 128: // note off
-			// onNoteMessage(e);
+			onNoteMessage(e);
 			break;
+	}
+}
+
+function onNoteMessage(e) {
+	if (remoteListeners.indexOf(e.target.id) > -1) {
+		dispatch(getActions().receiveMIDINote(e.data));
 	}
 }
 
