@@ -237,11 +237,12 @@ export default {
 			const { assignExternalControl, changeParameter, unassignExternalControl, } = getActions();
 			const { assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorID, processors, } = getState();
 			const remoteChannel = (data[0] & 0xf) + 1;
-			const remoteCC = data[1];
+			const remoteValue = data[1];
+			const remoteType = 'cc';
 
 			if (learnModeActive) {
 				dispatch(unassignExternalControl(learnTargetProcessorID, learnTargetParameterKey));
-				dispatch(assignExternalControl(`assign_${createUUID()}`, learnTargetProcessorID, learnTargetParameterKey, remoteChannel, remoteCC));
+				dispatch(assignExternalControl(`assign_${createUUID()}`, learnTargetProcessorID, learnTargetParameterKey, remoteType, remoteChannel, remoteValue));
 			} else {
 				assignments.allIds.forEach(assignID => {
 					const assignment = assignments.byId[assignID];
@@ -258,19 +259,27 @@ export default {
 	RECEIVE_MIDI_NOTE,
 	receiveMIDINote: data => {
 		return (dispatch, getState, getActions) => {
-			const { assignExternalControl, changeParameter, unassignExternalControl, } = getActions();
-			const { assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorID, processors, } = getState();
-			const remoteChannel = (data[0] & 0xf) + 1;
-			const remotePitch = data[1];
-			const remoteVelocity = data[2];
+			const { assignExternalControl, unassignExternalControl, } = getActions();
+			const { learnModeActive, learnTargetParameterKey, learnTargetProcessorID, } = getState();
+			const channel = (data[0] & 0xf) + 1;
+			const value = data[1];
+			const velocity = data[2];
+			const type = 'note_on';
 
 			if (learnModeActive) {
-				if (remoteVelocity > 0) {
+				if (velocity > 0) {
 					dispatch(unassignExternalControl(learnTargetProcessorID, learnTargetParameterKey));
-					dispatch(assignExternalControl(`assign_${createUUID()}`, learnTargetProcessorID, learnTargetParameterKey, remoteChannel, remotePitch));
+					dispatch(assignExternalControl(`assign_${createUUID()}`, learnTargetProcessorID, learnTargetParameterKey, type, channel, value));
 				}
 			} else {
-
+				assignments.allIds.forEach(assignID => {
+					const { paramKey, processorID, remoteChannel, remoteValue } = assignments.byId[assignID];
+					if (remoteChannel === channel && remoteValue === value) {
+						const param = processors.byId[processorID].params.byId[paramKey];
+						const paramValue = midiControlToParameterValue(param, velocity);
+						dispatch(changeParameter(processorID, paramKey, paramValue));
+					}
+				});
 			}
 		}
 	},

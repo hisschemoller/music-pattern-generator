@@ -288,22 +288,25 @@ export default function reduce(state = initialState, action, actions = {}) {
 				transport: value,
 			});
 
-		case actions.ASSIGN_EXTERNAL_CONTROL:
+		case actions.ASSIGN_EXTERNAL_CONTROL: {
+			const { assignID, processorID, paramKey, remoteChannel, remoteValue, } = action;
 			return {
 				...state,
 				assignments: {
-					allIds: [...state.assignments.allIds, action.assignID],
+					allIds: [...state.assignments.allIds, assignID],
 					byId: {
 						...state.assignments.byId,
-						[action.assignID]: {
-							remoteChannel: action.remoteChannel,
-							remoteCC: action.remoteCC,
-							processorID: action.processorID,
-							paramKey: action.paramKey
+						[assignID]: {
+							remoteType,
+							remoteChannel,
+							remoteValue,
+							processorID,
+							paramKey,
 						},
 					},
 				},
 			};
+		}
 		
 		case actions.UNASSIGN_EXTERNAL_CONTROL:
 			return {

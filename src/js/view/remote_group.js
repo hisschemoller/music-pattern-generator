@@ -80,8 +80,9 @@ export default function createRemoteGroupView(data, that = {}, my = {}) {
 				// create or delete the parameter's view
 				const view = views.byId[paramKey];
 				if (assignment && !view) {
-					const param = state.processors.byId[processorID].params.byId[paramKey];
-					addView(paramKey, param.label, assignment.remoteChannel, assignment.remoteCC);
+					const { remoteType, remoteChannel, remoteValue } = assignment;
+					const { label } = state.processors.byId[processorID].params.byId[paramKey];
+					addView(paramKey, label, remoteType, remoteChannel, remoteValue);
 				} else if (!assignment && view) {
 					removeView(paramKey);
 				}
@@ -91,14 +92,23 @@ export default function createRemoteGroupView(data, that = {}, my = {}) {
 			el.dataset.hasAssignments = (views.allIds.length > 0);
 		},
 
-		addView = function(paramKey, paramLabel, remoteChannel, remoteCC) {
+		/** 
+		 * Add a view for a newly created assignment.
+		 * @param {String} paramKey The assigned processor parameter key.
+		 * @param {String} paramLabel The parameter's label to display.
+		 * @param {String} remoteType The assignment's MIDI event type: 'note_on' or 'cc'.
+		 * @param {Number} remoteChannel The assignment's MIDI channel.
+		 * @param {Number} remoteValue The assignment's MIDI CC number or pitch value.
+		 */
+		addView = function(paramKey, paramLabel, remoteType, remoteChannel, remoteValue) {
 			views.byId[paramKey] = createRemoteItemView({
 				paramKey,
 				paramLabel,
 				processorID,
+				remoteType,
 				remoteChannel,
-				remoteCC,
-				parentEl: listEl
+				remoteValue,
+				parentEl: listEl,
 			});
 			views.allIds.push(paramKey);
 		},

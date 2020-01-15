@@ -1,5 +1,14 @@
 import { dispatch, getActions, STATE_CHANGE, } from '../state/store.js';
 
+export const NOTE_ON = 144;
+export const NOTE_OFF = 128;
+export const CONTROL_CHANGE = 176;
+export const SYSTEM_REALTIME = 240;
+export const REALTIME_CLOCK = 248;
+export const REALTIME_START = 250;
+export const REALTIME_CONTINUE = 251;
+export const REALTIME_STOP = 252;
+
 let midiAccess = null,
 	syncListeners,
 	remoteListeners;
@@ -142,14 +151,14 @@ function onControlChangeMessage(e) {
 function onMIDIMessage(e) {
 	// console.log(e.data[0] & 0xf0, e.data[0] & 0x0f, e.target.id, e.data[0], e.data[1], e.data[2]);
 	switch (e.data[0] & 0xf0) {
-		case 240:
+		case SYSTEM_REALTIME:
 			onSystemRealtimeMessage(e);
 			break;
-		case 176: // CC
+		case CONTROL_CHANGE: // CC
 			onControlChangeMessage(e);
 			break;
-		case 144: // note on
-		case 128: // note off
+		case NOTE_ON: // note on
+		case NOTE_OFF: // note off
 			onNoteMessage(e);
 			break;
 	}
@@ -176,16 +185,16 @@ function onNoteMessage(e) {
 function onSystemRealtimeMessage(e) {
 	if (syncListeners.indexOf(e.target.id) > -1) {
 		switch (e.data[0]) {
-			case 248: // clock
+			case REALTIME_CLOCK: // clock
 				// TODO: Add remote MIDI clock sync.
 				break;
-			case 250: // start
+			case REALTIME_START: // start
 				dispatch(getActions().setTransport('play'));
 				break;
-			case 251: // continue
+			case REALTIME_CONTINUE: // continue
 				dispatch(getActions().setTransport('play'));
 				break;
-			case 252: // stop
+			case REALTIME_STOP: // stop
 				dispatch(getActions().setTransport('pause'));
 				break;
 		}

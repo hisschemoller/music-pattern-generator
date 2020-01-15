@@ -75,13 +75,15 @@ function handleStateChanges(e) {
 			deleteRemoteGroups(state.processors);
 			break;
 		
-		case actions.ASSIGN_EXTERNAL_CONTROL:
-			if (state.learnTargetProcessorID) {
-				const groupView = groupViews.byId[state.learnTargetProcessorID];
-				if (!groupView) {
-					createRemoteGroups(state);
-				} else {
-					groupView.updateViews(state);
+		case actions.ASSIGN_EXTERNAL_CONTROL: {
+				const { learnTargetProcessorID } = state;
+				if (learnTargetProcessorID) {
+					const groupView = groupViews.byId[learnTargetProcessorID];
+					if (!groupView) {
+						createRemoteGroups(state);
+					} else {
+						groupView.updateViews(state);
+					}
 				}
 			}
 			break;
