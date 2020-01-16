@@ -25,7 +25,7 @@
 }
 .remote__group-header-control {
     text-align: right;
-    width: 50px;
+    width: 80px;
 }
 .remote__group-header-delete {
     width: 40px;
@@ -47,7 +47,7 @@
 }
 .remote__item-control {
     text-align: right;
-    width: 50px;
+    width: 80px;
 }
 .remote__item-delete {
     height: var(--input-height);

@@ -289,7 +289,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 			});
 
 		case actions.ASSIGN_EXTERNAL_CONTROL: {
-			const { assignID, processorID, paramKey, remoteChannel, remoteValue, } = action;
+			const { assignID, processorID, paramKey, remoteType, remoteChannel, remoteValue, } = action;
 			return {
 				...state,
 				assignments: {

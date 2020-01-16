@@ -1,4 +1,5 @@
 import { dispatch, getActions, STATE_CHANGE, } from '../state/store.js';
+import { CONTROL_CHANGE, } from '../midi/midi.js';
 
 /**
  * View for a parameter that's linked to a remote MIDI controller.
@@ -17,7 +18,8 @@ export default function createRemoteItemView(data) {
 			el = clone.firstElementChild;
 			el.querySelector('.remote__item-label').innerHTML = paramLabel;
 			el.querySelector('.remote__item-channel').innerHTML = remoteChannel;
-			el.querySelector('.remote__item-control').innerHTML = `${remoteType == 'cc' ? 'CC' : 'Note'} ${remoteValue}`;
+			el.querySelector('.remote__item-control').innerHTML = `${remoteType == CONTROL_CHANGE ? 'CC' : 'Note'} ${remoteValue}`;
+			console.log(remoteChannel, remoteType, remoteValue, `${remoteType == CONTROL_CHANGE ? 'CC' : 'Note'} ${remoteValue}`);
 			parentEl.appendChild(el);
 			
 			// add DOM event listeners

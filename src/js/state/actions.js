@@ -1,7 +1,7 @@
 import convertLegacyFile from '../core/convert_xml.js';
 import { createUUID, getProcessorDefaultName, midiControlToParameterValue, } from '../core/util.js';
 import { getConfig, setConfig, } from '../core/config.js';
-import { getAllMIDIPorts } from '../midi/midi.js';
+import { getAllMIDIPorts, CONTROL_CHANGE, NOTE_ON,  } from '../midi/midi.js';
 import { showDialog } from '../view/dialog.js';
 import { getProcessorData, } from '../core/processor-loader.js';
 
@@ -43,7 +43,7 @@ export default {
 	addProcessor: data => ({ type: ADD_PROCESSOR, data }),
 
 	ASSIGN_EXTERNAL_CONTROL,
-	assignExternalControl: (assignID, processorID, paramKey, remoteChannel, remoteCC) => ({type: ASSIGN_EXTERNAL_CONTROL, assignID, processorID, paramKey, remoteChannel, remoteCC}),
+	assignExternalControl: (assignID, processorID, paramKey, remoteType, remoteChannel, remoteValue) => ({type: ASSIGN_EXTERNAL_CONTROL, assignID, processorID, paramKey, remoteType, remoteChannel, remoteValue, }),
 
 	CHANGE_PARAMETER,
 	changeParameter: (processorID, paramKey, paramValue) => {
@@ -238,7 +238,7 @@ export default {
 			const { assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorID, processors, } = getState();
 			const remoteChannel = (data[0] & 0xf) + 1;
 			const remoteValue = data[1];
-			const remoteType = 'cc';
+			const remoteType = CONTROL_CHANGE;
 
 			if (learnModeActive) {
 				dispatch(unassignExternalControl(learnTargetProcessorID, learnTargetParameterKey));
@@ -261,13 +261,13 @@ export default {
 		return (dispatch, getState, getActions) => {
 			const { assignExternalControl, unassignExternalControl, } = getActions();
 			const { learnModeActive, learnTargetParameterKey, learnTargetProcessorID, } = getState();
+			const type = data[0] & 0xf0;
 			const channel = (data[0] & 0xf) + 1;
 			const value = data[1];
 			const velocity = data[2];
-			const type = 'note_on';
 
 			if (learnModeActive) {
-				if (velocity > 0) {
+				if (type == NOTE_ON && velocity > 0) {
 					dispatch(unassignExternalControl(learnTargetProcessorID, learnTargetParameterKey));
 					dispatch(assignExternalControl(`assign_${createUUID()}`, learnTargetProcessorID, learnTargetParameterKey, type, channel, value));
 				}
