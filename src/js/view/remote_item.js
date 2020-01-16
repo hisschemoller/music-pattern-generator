@@ -19,7 +19,6 @@ export default function createRemoteItemView(data) {
 			el.querySelector('.remote__item-label').innerHTML = paramLabel;
 			el.querySelector('.remote__item-channel').innerHTML = remoteChannel;
 			el.querySelector('.remote__item-control').innerHTML = `${remoteType == CONTROL_CHANGE ? 'CC' : 'Note'} ${remoteValue}`;
-			console.log(remoteChannel, remoteType, remoteValue, `${remoteType == CONTROL_CHANGE ? 'CC' : 'Note'} ${remoteValue}`);
 			parentEl.appendChild(el);
 			
 			// add DOM event listeners

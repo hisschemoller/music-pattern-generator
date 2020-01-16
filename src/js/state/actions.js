@@ -259,27 +259,28 @@ export default {
 	RECEIVE_MIDI_NOTE,
 	receiveMIDINote: data => {
 		return (dispatch, getState, getActions) => {
-			const { assignExternalControl, unassignExternalControl, } = getActions();
-			const { learnModeActive, learnTargetParameterKey, learnTargetProcessorID, } = getState();
+			const { assignExternalControl, changeParameter, unassignExternalControl, } = getActions();
+			const { assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorID, processors, } = getState();
 			const type = data[0] & 0xf0;
 			const channel = (data[0] & 0xf) + 1;
 			const value = data[1];
 			const velocity = data[2];
 
-			if (learnModeActive) {
-				if (type == NOTE_ON && velocity > 0) {
+			if (type == NOTE_ON && velocity > 0) {
+				if (learnModeActive) {
 					dispatch(unassignExternalControl(learnTargetProcessorID, learnTargetParameterKey));
 					dispatch(assignExternalControl(`assign_${createUUID()}`, learnTargetProcessorID, learnTargetParameterKey, type, channel, value));
+				} else {
+					assignments.allIds.forEach(assignID => {
+						const { paramKey, processorID, remoteChannel, remoteValue } = assignments.byId[assignID];
+						if (remoteChannel === channel && remoteValue === value) {
+							const param = processors.byId[processorID].params.byId[paramKey];
+							const paramValue = midiControlToParameterValue(param, velocity);
+							console.log('paramValue', paramValue);
+							dispatch(changeParameter(processorID, paramKey, paramValue));
+						}
+					});
 				}
-			} else {
-				assignments.allIds.forEach(assignID => {
-					const { paramKey, processorID, remoteChannel, remoteValue } = assignments.byId[assignID];
-					if (remoteChannel === channel && remoteValue === value) {
-						const param = processors.byId[processorID].params.byId[paramKey];
-						const paramValue = midiControlToParameterValue(param, velocity);
-						dispatch(changeParameter(processorID, paramKey, paramValue));
-					}
-				});
 			}
 		}
 	},
