@@ -164,6 +164,10 @@ function onMIDIMessage(e) {
 	}
 }
 
+/**
+ * MIDI Note message handler.
+ * @param {Object} e MIDIMessageEvent.
+ */
 function onNoteMessage(e) {
 	if (remoteListeners.indexOf(e.target.id) > -1) {
 		dispatch(getActions().receiveMIDINote(e.data));

@@ -5,7 +5,7 @@ import createRemoteItemView from './remote_item.js';
  * Group within overview list of all assigned MIDI controller assignments.
  * The items are grouped by processor.
  */
-export default function createRemoteGroupView(data, that = {}, my = {}) {
+export default function createRemoteGroupView(data) {
 	const { parentEl, processorID, } = data;
 
   let el,
@@ -26,7 +26,7 @@ export default function createRemoteGroupView(data, that = {}, my = {}) {
 			listEl = el.querySelector('.remote__group-list');
 
 			const state = getState();
-			setName(state.processors.byId[processorID].params.byId.name.value);
+			setName(state);
 			updateViews(state);
 
 			document.addEventListener(STATE_CHANGE, handleStateChange);
@@ -54,9 +54,8 @@ export default function createRemoteGroupView(data, that = {}, my = {}) {
 			const { state, action, actions, } = e.detail;
 			switch (action.type) {
 				case actions.CHANGE_PARAMETER:
-					if (action.processorID === processorID && 
-						action.paramKey === 'name') {
-						setName(state.processors.byId[processorID].params.byId.name.value);
+					if (action.processorID === processorID && action.paramKey === 'name') {
+						setName(state);
 					}
 					break;
 			}
@@ -66,22 +65,21 @@ export default function createRemoteGroupView(data, that = {}, my = {}) {
 		 * Update list to contain all assignments.
 		 */
 		updateViews = function(state) {
-			state.processors.byId[processorID].params.allIds.forEach(paramKey => {
+			const { assignments, processors, } = state
+			processors.byId[processorID].params.allIds.forEach(paramKey => {
 				
 				// search assignment for this parameter
-				let assignment;
-				state.assignments.allIds.forEach(assignID => {
-					const assign = state.assignments.byId[assignID];
-					if (assign.processorID === processorID && assign.paramKey === paramKey) {
-						assignment = assign;
-					}
+				const assignmentID = assignments.allIds.find(assignID => {
+					const { paramKey: key, processorID : id } = assignments.byId[assignID];
+					return id === processorID && key === paramKey;
 				});
+				const assignment = assignments.byId[assignmentID];
 
 				// create or delete the parameter's view
 				const view = views.byId[paramKey];
 				if (assignment && !view) {
 					const { remoteType, remoteChannel, remoteValue } = assignment;
-					const { label } = state.processors.byId[processorID].params.byId[paramKey];
+					const { label } = processors.byId[processorID].params.byId[paramKey];
 					addView(paramKey, label, remoteType, remoteChannel, remoteValue);
 				} else if (!assignment && view) {
 					removeView(paramKey);
@@ -121,15 +119,17 @@ export default function createRemoteGroupView(data, that = {}, my = {}) {
 		
 		/**
 		 * Set the group's header to the processor's name.
-		 * @param {String} name Processor's name.
+		 * @param {Object} state Application state.
 		 */
-		setName = function(name) {
+		setName = function(state) {
+			const name = state.processors.byId[processorID].params.byId.name.value;
 			el.querySelector('.remote__group-header-label').innerHTML = name;
 		};
     
-    initialize();
-    
-    that.terminate = terminate;
-    that.updateViews = updateViews;
-    return that;
+	initialize();
+
+	return {
+		terminate,
+		updateViews,
+	};
 }
