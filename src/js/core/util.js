@@ -74,3 +74,27 @@ export function midiControlToParameterValue(param, controllerValue) {
 			return param.value;
 	}
 }
+
+/**
+ * Convert a MIDI note velocity to a parameter value, depending on the parameter type.
+ * @param {Object} param Processor parameter.
+ * @param {Number} velocity MIDI note velocity in the range 0 to 127.
+ */
+export function midiNoteToParameterValue(param, velocity) {
+	const normalizedValue = velocity / 127;
+	switch (param.type) {
+		case 'integer':
+			return Math.round(param.min + (param.max - param.min) * normalizedValue);
+		case 'boolean':
+			return !param.value;
+		case 'itemized':
+			if (normalizedValue === 1) {
+				return param.model[param.model.length - 1].value;
+			}
+			return param.model[Math.floor(normalizedValue * param.model.length)].value;
+		case 'string':
+		case 'position':
+		default:
+			return param.value;
+	}
+}

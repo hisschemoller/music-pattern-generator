@@ -1,5 +1,5 @@
 import convertLegacyFile from '../core/convert_xml.js';
-import { createUUID, getProcessorDefaultName, midiControlToParameterValue, } from '../core/util.js';
+import { createUUID, getProcessorDefaultName, midiControlToParameterValue, midiNoteToParameterValue, } from '../core/util.js';
 import { getConfig, setConfig, } from '../core/config.js';
 import { getAllMIDIPorts, CONTROL_CHANGE, NOTE_ON,  } from '../midi/midi.js';
 import { showDialog } from '../view/dialog.js';
@@ -263,20 +263,19 @@ export default {
 			const { assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorID, processors, } = getState();
 			const type = data[0] & 0xf0;
 			const channel = (data[0] & 0xf) + 1;
-			const value = data[1];
+			const pitch = data[1];
 			const velocity = data[2];
 
 			if (type == NOTE_ON && velocity > 0) {
 				if (learnModeActive) {
 					dispatch(unassignExternalControl(learnTargetProcessorID, learnTargetParameterKey));
-					dispatch(assignExternalControl(`assign_${createUUID()}`, learnTargetProcessorID, learnTargetParameterKey, type, channel, value));
+					dispatch(assignExternalControl(`assign_${createUUID()}`, learnTargetProcessorID, learnTargetParameterKey, type, channel, pitch));
 				} else {
 					assignments.allIds.forEach(assignID => {
 						const { paramKey, processorID, remoteChannel, remoteValue } = assignments.byId[assignID];
-						if (remoteChannel === channel && remoteValue === value) {
+						if (remoteChannel === channel && remoteValue === pitch) {
 							const param = processors.byId[processorID].params.byId[paramKey];
-							const paramValue = midiControlToParameterValue(param, velocity);
-							console.log('paramValue', paramValue);
+							const paramValue = midiNoteToParameterValue(param, velocity);
 							dispatch(changeParameter(processorID, paramKey, paramValue));
 						}
 					});
