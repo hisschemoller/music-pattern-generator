@@ -1,23 +1,24 @@
 import { dispatch, getActions, STATE_CHANGE, } from '../state/store.js';
+import { CONTROL_CHANGE, } from '../midi/midi.js';
 
 /**
  * View for a parameter that's linked to a remote MIDI controller.
  * The items are grouped by processor.
  */
-export default function createRemoteItemView(data, that = {}, my = {}) {
-	const { paramKey, paramLabel, parentEl, processorID, remoteChannel, remoteCC, } = data;
+export default function createRemoteItemView(data) {
+	const { paramKey, paramLabel, parentEl, processorID, remoteType, remoteChannel, remoteValue, } = data;
 	
 	let el;
 			
 	const initialize = function() {
 
 			// create the DOM element.
-			let template = document.querySelector('#template-remote-item');
-			let clone = template.content.cloneNode(true);
+			const template = document.querySelector('#template-remote-item');
+			const clone = template.content.cloneNode(true);
 			el = clone.firstElementChild;
 			el.querySelector('.remote__item-label').innerHTML = paramLabel;
 			el.querySelector('.remote__item-channel').innerHTML = remoteChannel;
-			el.querySelector('.remote__item-control').innerHTML = remoteCC;
+			el.querySelector('.remote__item-control').innerHTML = `${remoteType == CONTROL_CHANGE ? 'CC' : 'Note'} ${remoteValue}`;
 			parentEl.appendChild(el);
 			
 			// add DOM event listeners
@@ -59,6 +60,7 @@ export default function createRemoteItemView(data, that = {}, my = {}) {
     
     initialize();
 
-    that.terminate = terminate;
-    return that;
+    return {
+			terminate,
+		};
 }

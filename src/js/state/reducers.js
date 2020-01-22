@@ -175,7 +175,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 				}
 			};
 		
-		case actions.CHANGE_PARAMETER:
+		case actions.CHANGE_PARAMETER: {
 			newState = { 
 				...state,
 				snapshotIndex: null,
@@ -199,6 +199,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 					break;
 			}
 			return newState;
+		}
 		
 		case actions.RECREATE_PARAMETER:
 			newState = { 
@@ -288,22 +289,25 @@ export default function reduce(state = initialState, action, actions = {}) {
 				transport: value,
 			});
 
-		case actions.ASSIGN_EXTERNAL_CONTROL:
+		case actions.ASSIGN_EXTERNAL_CONTROL: {
+			const { assignID, processorID, paramKey, remoteType, remoteChannel, remoteValue, } = action;
 			return {
 				...state,
 				assignments: {
-					allIds: [...state.assignments.allIds, action.assignID],
+					allIds: [...state.assignments.allIds, assignID],
 					byId: {
 						...state.assignments.byId,
-						[action.assignID]: {
-							remoteChannel: action.remoteChannel,
-							remoteCC: action.remoteCC,
-							processorID: action.processorID,
-							paramKey: action.paramKey
+						[assignID]: {
+							remoteType,
+							remoteChannel,
+							remoteValue,
+							processorID,
+							paramKey,
 						},
 					},
 				},
 			};
+		}
 		
 		case actions.UNASSIGN_EXTERNAL_CONTROL:
 			return {

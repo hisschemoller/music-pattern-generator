@@ -1,7 +1,7 @@
 import convertLegacyFile from '../core/convert_xml.js';
-import { createUUID, getProcessorDefaultName, midiControlToParameterValue, } from '../core/util.js';
+import { createUUID, getProcessorDefaultName, midiControlToParameterValue, midiNoteToParameterValue, } from '../core/util.js';
 import { getConfig, setConfig, } from '../core/config.js';
-import { getAllMIDIPorts } from '../midi/midi.js';
+import { getAllMIDIPorts, CONTROL_CHANGE, NOTE_ON,  } from '../midi/midi.js';
 import { showDialog } from '../view/dialog.js';
 import { getProcessorData, } from '../core/processor-loader.js';
 
@@ -18,7 +18,8 @@ const ADD_PROCESSOR = 'ADD_PROCESSOR',
   DRAG_SELECTED_PROCESSOR = 'DRAG_SELECTED_PROCESSOR',
 	LIBRARY_DROP = 'LIBRARY_DROP',
 	LOAD_SNAPSHOT = 'LOAD_SNAPSHOT',
-  RECEIVE_MIDI_CC = 'RECEIVE_MIDI_CC',
+	RECEIVE_MIDI_CC = 'RECEIVE_MIDI_CC',
+	RECEIVE_MIDI_NOTE = 'RECEIVE_MIDI_NOTE',
   RECREATE_PARAMETER = 'RECREATE_PARAMETER',
   SELECT_PROCESSOR = 'SELECT_PROCESSOR',
   SET_CAMERA_POSITION = 'SET_CAMERA_POSITION',
@@ -42,7 +43,7 @@ export default {
 	addProcessor: data => ({ type: ADD_PROCESSOR, data }),
 
 	ASSIGN_EXTERNAL_CONTROL,
-	assignExternalControl: (assignID, processorID, paramKey, remoteChannel, remoteCC) => ({type: ASSIGN_EXTERNAL_CONTROL, assignID, processorID, paramKey, remoteChannel, remoteCC}),
+	assignExternalControl: (assignID, processorID, paramKey, remoteType, remoteChannel, remoteValue) => ({type: ASSIGN_EXTERNAL_CONTROL, assignID, processorID, paramKey, remoteType, remoteChannel, remoteValue, }),
 
 	CHANGE_PARAMETER,
 	changeParameter: (processorID, paramKey, paramValue) => {
@@ -233,22 +234,55 @@ export default {
 	RECEIVE_MIDI_CC,
 	receiveMIDIControlChange: data => {
 		return (dispatch, getState, getActions) => {
-			const state = getState();
-			const remoteChannel = (data[0] & 0xf) + 1;
-			const remoteCC = data[1];
+			const { assignExternalControl, changeParameter, unassignExternalControl, } = getActions();
+			const { assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorID, processors, } = getState();
+			const type = CONTROL_CHANGE;
+			const channel = (data[0] & 0xf) + 1;
+			const control = data[1];
+			const value = data[2];
 
-			if (state.learnModeActive) {
-				dispatch(getActions().unassignExternalControl(state.learnTargetProcessorID, state.learnTargetParameterKey));
-				dispatch(getActions().assignExternalControl(`assign_${createUUID()}`, state.learnTargetProcessorID, state.learnTargetParameterKey, remoteChannel, remoteCC));
+			if (learnModeActive) {
+				dispatch(unassignExternalControl(learnTargetProcessorID, learnTargetParameterKey));
+				dispatch(assignExternalControl(`assign_${createUUID()}`, learnTargetProcessorID, learnTargetParameterKey, type, channel, control));
 			} else {
-				state.assignments.allIds.forEach(assignID => {
-					const assignment = state.assignments.byId[assignID];
-					if (assignment.remoteChannel === remoteChannel && assignment.remoteCC === remoteCC) {
-						const param = state.processors.byId[assignment.processorID].params.byId[assignment.paramKey];
-						const paramValue = midiControlToParameterValue(param, data[2]);
-						dispatch(getActions().changeParameter(assignment.processorID, assignment.paramKey, paramValue));
+				assignments.allIds.forEach(assignID => {
+					const { paramKey, processorID, remoteChannel, remoteValue } = assignments.byId[assignID];
+					if (remoteChannel === channel && remoteValue === control) {
+						const param = processors.byId[assignment.processorID].params.byId[paramKey];
+						const paramValue = midiControlToParameterValue(param, value);
+						dispatch(changeParameter(processorID, paramKey, paramValue));
 					}
 				});
+			}
+		}
+	},
+
+	RECEIVE_MIDI_NOTE,
+	receiveMIDINote: data => {
+		return (dispatch, getState, getActions) => {
+			const { assignExternalControl, changeParameter, unassignExternalControl, } = getActions();
+			const { assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorID, processors, } = getState();
+
+			// type can be note on or off
+			const type = data[0] & 0xf0;
+			const channel = (data[0] & 0xf) + 1;
+			const pitch = data[1];
+			const velocity = data[2];
+
+			if (type === NOTE_ON && velocity > 0) {
+				if (learnModeActive) {
+					dispatch(unassignExternalControl(learnTargetProcessorID, learnTargetParameterKey));
+					dispatch(assignExternalControl(`assign_${createUUID()}`, learnTargetProcessorID, learnTargetParameterKey, type, channel, pitch));
+				} else {
+					assignments.allIds.forEach(assignID => {
+						const { paramKey, processorID, remoteChannel, remoteValue } = assignments.byId[assignID];
+						if (remoteChannel === channel && remoteValue === pitch) {
+							const param = processors.byId[processorID].params.byId[paramKey];
+							const paramValue = midiNoteToParameterValue(param, velocity);
+							dispatch(changeParameter(processorID, paramKey, paramValue));
+						}
+					});
+				}
 			}
 		}
 	},
