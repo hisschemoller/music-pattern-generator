@@ -236,20 +236,21 @@ export default {
 		return (dispatch, getState, getActions) => {
 			const { assignExternalControl, changeParameter, unassignExternalControl, } = getActions();
 			const { assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorID, processors, } = getState();
-			const remoteChannel = (data[0] & 0xf) + 1;
-			const remoteValue = data[1];
-			const remoteType = CONTROL_CHANGE;
+			const type = CONTROL_CHANGE;
+			const channel = (data[0] & 0xf) + 1;
+			const control = data[1];
+			const value = data[2];
 
 			if (learnModeActive) {
 				dispatch(unassignExternalControl(learnTargetProcessorID, learnTargetParameterKey));
-				dispatch(assignExternalControl(`assign_${createUUID()}`, learnTargetProcessorID, learnTargetParameterKey, remoteType, remoteChannel, remoteValue));
+				dispatch(assignExternalControl(`assign_${createUUID()}`, learnTargetProcessorID, learnTargetParameterKey, type, channel, control));
 			} else {
 				assignments.allIds.forEach(assignID => {
-					const assignment = assignments.byId[assignID];
-					if (assignment.remoteChannel === remoteChannel && assignment.remoteCC === remoteCC) {
-						const param = processors.byId[assignment.processorID].params.byId[assignment.paramKey];
-						const paramValue = midiControlToParameterValue(param, data[2]);
-						dispatch(changeParameter(assignment.processorID, assignment.paramKey, paramValue));
+					const { paramKey, processorID, remoteChannel, remoteValue } = assignments.byId[assignID];
+					if (remoteChannel === channel && remoteValue === control) {
+						const param = processors.byId[assignment.processorID].params.byId[paramKey];
+						const paramValue = midiControlToParameterValue(param, value);
+						dispatch(changeParameter(processorID, paramKey, paramValue));
 					}
 				});
 			}
@@ -261,12 +262,14 @@ export default {
 		return (dispatch, getState, getActions) => {
 			const { assignExternalControl, changeParameter, unassignExternalControl, } = getActions();
 			const { assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorID, processors, } = getState();
+
+			// type can be note on or off
 			const type = data[0] & 0xf0;
 			const channel = (data[0] & 0xf) + 1;
 			const pitch = data[1];
 			const velocity = data[2];
 
-			if (type == NOTE_ON && velocity > 0) {
+			if (type === NOTE_ON && velocity > 0) {
 				if (learnModeActive) {
 					dispatch(unassignExternalControl(learnTargetProcessorID, learnTargetParameterKey));
 					dispatch(assignExternalControl(`assign_${createUUID()}`, learnTargetProcessorID, learnTargetParameterKey, type, channel, pitch));

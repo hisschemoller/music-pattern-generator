@@ -175,7 +175,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 				}
 			};
 		
-		case actions.CHANGE_PARAMETER:
+		case actions.CHANGE_PARAMETER: {
 			newState = { 
 				...state,
 				snapshotIndex: null,
@@ -199,6 +199,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 					break;
 			}
 			return newState;
+		}
 		
 		case actions.RECREATE_PARAMETER:
 			newState = { 

@@ -154,11 +154,11 @@ function onMIDIMessage(e) {
 		case SYSTEM_REALTIME:
 			onSystemRealtimeMessage(e);
 			break;
-		case CONTROL_CHANGE: // CC
+		case CONTROL_CHANGE:
 			onControlChangeMessage(e);
 			break;
-		case NOTE_ON: // note on
-		case NOTE_OFF: // note off
+		case NOTE_ON:
+		case NOTE_OFF:
 			onNoteMessage(e);
 			break;
 	}
