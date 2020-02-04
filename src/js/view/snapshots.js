@@ -35,6 +35,21 @@ function build() {
   }
 }
 
+/**
+ * State of the parameter in the assignment process changed,
+ * the element will show this visually.
+ * @param {String} state New state of the parameter.
+ */
+function changeRemoteState(state) {
+  const { assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorID, } = state;
+  console.log('snapshots.changeRemoteState', assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorID);
+  if (learnModeActive) {
+    showRemoteState('enter');
+  } else {
+    showRemoteState('exit');
+  }
+}
+
 function handleLoadClick(e) {
   dispatch(getActions().loadSnapshot(parseInt(e.currentTarget.parentNode.dataset.index, 10)));
 }
@@ -72,6 +87,13 @@ function handleStateChanges(e) {
     case actions.TOGGLE_PANEL:
       showSelectedIndex(state);
       break;
+				
+    case actions.TOGGLE_MIDI_LEARN_MODE:
+    case actions.TOGGLE_MIDI_LEARN_TARGET:
+    case actions.ASSIGN_EXTERNAL_CONTROL:
+    case actions.UNASSIGN_EXTERNAL_CONTROL:
+      changeRemoteState(state);
+      break;
   }
 }
 
@@ -85,6 +107,29 @@ function setSnapshotEditMode(state) {
     listEl.classList.add('edit-mode');
   } else {
     listEl.classList.remove('edit-mode');
+  }
+}
+		
+/**
+ * State of the parameter in the assignment process changed,
+ * the element will show this visually.
+ * @param {String} status New state of the parameter.
+ */
+showRemoteState = function(status) {
+  switch (status) {
+    case 'enter':
+      // my.el.appendChild(learnClickLayer);
+      // learnClickLayer.addEventListener('click', onLearnLayerClick);
+      break;
+    case 'exit':
+      if (my.el.contains(learnClickLayer)) {
+        my.el.removeChild(learnClickLayer);
+        learnClickLayer.removeEventListener('click', onLearnLayerClick);
+      }
+      break;
+    default:
+      console.log('Unknown remote state: ', state);
+      break;
   }
 }
 
