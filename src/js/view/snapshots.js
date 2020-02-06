@@ -4,6 +4,7 @@ const listEl = document.querySelector('.snapshots__list');
 const editEl = document.querySelector('.snapshots__edit');
 const numSnapshots = 16;
 let selectedListEl = null;
+let learnClickLayer = null;
 
 export function setup() {
   addEventListeners();
@@ -20,9 +21,10 @@ function addEventListeners() {
  */
 function build() {
   const template = document.querySelector('#template-snapshots-item');
+  const templateLearnmode = document.querySelector('#template-snapshots-learnmode');
   for (let i = 0, n = numSnapshots; i < n; i++) {
-    const clone = template.content.cloneNode(true);
-    const el = clone.firstElementChild;
+    let clone = template.content.cloneNode(true);
+    const  el = clone.firstElementChild;
     listEl.appendChild(el);
 
     el.querySelector('.snapshots__item-load .snapshots__item-label').innerHTML = `${i + 1}.`;
@@ -32,6 +34,12 @@ function build() {
     el.querySelector('.snapshots__item-load').addEventListener('click', handleLoadClick);
     el.querySelector('.snapshots__item-store').addEventListener('touchend', handleStoreClick);
     el.querySelector('.snapshots__item-store').addEventListener('click', handleStoreClick);
+
+    clone = templateLearnmode.content.cloneNode(true);
+    const learnmodeEl = clone.firstElementChild;
+    el.appendChild(learnmodeEl);
+
+    learnmodeEl.addEventListener('click', handleLearnLayerClick);
   }
 }
 
@@ -44,9 +52,16 @@ function changeRemoteState(state) {
   const { assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorID, } = state;
   console.log('snapshots.changeRemoteState', assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorID);
   if (learnModeActive) {
-    showRemoteState('enter');
+    document.querySelectorAll('.snapshots__learnmode').forEach(el => {
+      const index = el.parentNode.dataset.index;
+      const assignment = assignments.allIds.find(id => assignments.byId[id].processorID === 'snapshots' && assignments.byId[id].paramKey === index);
+      console.log(assignment);
+      el.classList.add('show');
+      el.dataset.assigned = !!assignment;
+      el.dataset.selected = learnTargetProcessorID === 'snapshots' && learnTargetParameterKey === index;
+    });
   } else {
-    showRemoteState('exit');
+    document.querySelectorAll('.snapshots__learnmode').forEach(el => el.classList.remove('show'));
   }
 }
 
@@ -62,6 +77,10 @@ function handleEditClick() {
   dispatch(getActions().toggleSnapshotsMode());
 }
 
+function handleLearnLayerClick(e) {
+  dispatch(getActions().toggleMIDILearnTarget('snapshots', e.target.parentNode.dataset.index));
+}
+
 /**
  * Handle state changes.
  * @param {Object} e 
@@ -75,6 +94,7 @@ function handleStateChanges(e) {
       setSnapshotEditMode(state);
       updateList(state);
       showSelectedIndex(state);
+      changeRemoteState(state);
       break;
 
     case actions.TOGGLE_SNAPSHOTS_MODE:
@@ -115,17 +135,14 @@ function setSnapshotEditMode(state) {
  * the element will show this visually.
  * @param {String} status New state of the parameter.
  */
-showRemoteState = function(status) {
+function showRemoteState(status) {
   switch (status) {
     case 'enter':
-      // my.el.appendChild(learnClickLayer);
+      document.querySelectorAll('.snapshots__learnmode').forEach(el => el.classList.add('show'));
       // learnClickLayer.addEventListener('click', onLearnLayerClick);
       break;
     case 'exit':
-      if (my.el.contains(learnClickLayer)) {
-        my.el.removeChild(learnClickLayer);
-        learnClickLayer.removeEventListener('click', onLearnLayerClick);
-      }
+      document.querySelectorAll('.snapshots__learnmode').forEach(el => el.classList.remove('show'));
       break;
     default:
       console.log('Unknown remote state: ', state);

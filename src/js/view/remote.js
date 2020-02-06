@@ -16,10 +16,11 @@ function addEventListeners() {
 }
 
 function createRemoteGroups(state) {
-	state.assignments.allIds.forEach(assignID => {
-		const assignment = state.assignments.byId[assignID];
-		if (!groupViews.byId[assignment.processorID]) {
-			createRemoteGroup(state.processors.byId[assignment.processorID]);
+	const { assignments, processors } = state;
+	assignments.allIds.forEach(assignID => {
+		const { processorID } = assignments.byId[assignID];
+		if (!groupViews.byId[processorID] && processors.allIds.includes(processorID)) {
+			createRemoteGroup(processors.byId[processorID]);
 		}
 	});
 }
