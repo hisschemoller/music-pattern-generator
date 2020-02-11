@@ -50,12 +50,10 @@ function build() {
  */
 function changeRemoteState(state) {
   const { assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorID, } = state;
-  console.log('snapshots.changeRemoteState', assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorID);
   if (learnModeActive) {
     document.querySelectorAll('.snapshots__learnmode').forEach(el => {
       const index = el.parentNode.dataset.index;
       const assignment = assignments.allIds.find(id => assignments.byId[id].processorID === 'snapshots' && assignments.byId[id].paramKey === index);
-      console.log(assignment);
       el.classList.add('show');
       el.dataset.assigned = !!assignment;
       el.dataset.selected = learnTargetProcessorID === 'snapshots' && learnTargetParameterKey === index;
