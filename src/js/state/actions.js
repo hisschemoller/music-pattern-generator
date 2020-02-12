@@ -248,7 +248,7 @@ export default {
 				assignments.allIds.forEach(assignID => {
 					const { paramKey, processorID, remoteChannel, remoteValue } = assignments.byId[assignID];
 					if (remoteChannel === channel && remoteValue === control) {
-						const param = processors.byId[assignment.processorID].params.byId[paramKey];
+						const param = processors.byId[processorID].params.byId[paramKey];
 						const paramValue = midiControlToParameterValue(param, value);
 						dispatch(changeParameter(processorID, paramKey, paramValue));
 					}

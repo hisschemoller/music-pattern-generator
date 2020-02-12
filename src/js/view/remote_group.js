@@ -65,26 +65,52 @@ export default function createRemoteGroupView(data) {
 		 * Update list to contain all assignments.
 		 */
 		updateViews = function(state) {
-			const { assignments, processors, } = state
-			processors.byId[processorID].params.allIds.forEach(paramKey => {
+			const { assignments, processors, } = state;
+			if (processorID === 'snapshots') {
 				
-				// search assignment for this parameter
-				const assignmentID = assignments.allIds.find(assignID => {
-					const { paramKey: key, processorID : id } = assignments.byId[assignID];
-					return id === processorID && key === paramKey;
-				});
-				const assignment = assignments.byId[assignmentID];
-
-				// create or delete the parameter's view
-				const view = views.byId[paramKey];
-				if (assignment && !view) {
-					const { remoteType, remoteChannel, remoteValue } = assignment;
-					const { label } = processors.byId[processorID].params.byId[paramKey];
-					addView(paramKey, label, remoteType, remoteChannel, remoteValue);
-				} else if (!assignment && view) {
-					removeView(paramKey);
+				// delete views not in the assignments anymore
+				for (let i = views.allIds.length - 1; i >= 0; i--) {
+					const viewId = views.allIds[i];
+					const assignment = assignments.allIds.find(assignID => {
+						const { paramKey, processorID } = assignments.byId[assignID]; 
+						return processorID === 'snapshots' && paramKey === viewId;
+					});
+					if (!assignment) {
+						removeView(viewId);
+					}
 				}
-			});
+
+				// create views for new assignments
+				assignments.allIds.forEach(assignID => {
+					const { paramKey, processorID, remoteType, remoteChannel, remoteValue } = assignments.byId[assignID];
+					if (processorID === 'snapshots' && !views.allIds.includes(paramKey)) {
+						const label = `Snapshot ${parseInt(paramKey, 10) + 1}`;
+						addView(paramKey, label, remoteType, remoteChannel, remoteValue);
+					}
+				});
+			} else {
+
+				// a processor
+				processors.byId[processorID].params.allIds.forEach(paramKey => {
+				
+					// search assignment for this parameter
+					const assignmentID = assignments.allIds.find(assignID => {
+						const { paramKey: key, processorID : id } = assignments.byId[assignID];
+						return id === processorID && key === paramKey;
+					});
+					const assignment = assignments.byId[assignmentID];
+	
+					// create or delete the parameter's view
+					const view = views.byId[paramKey];
+					if (assignment && !view) {
+						const { remoteType, remoteChannel, remoteValue } = assignment;
+						const { label } = processors.byId[processorID].params.byId[paramKey];
+						addView(paramKey, label, remoteType, remoteChannel, remoteValue);
+					} else if (!assignment && view) {
+						removeView(paramKey);
+					}
+				});
+			}
 
 			// show group if there are assignments
 			el.dataset.hasAssignments = (views.allIds.length > 0);
@@ -122,7 +148,7 @@ export default function createRemoteGroupView(data) {
 		 * @param {Object} state Application state.
 		 */
 		setName = function(state) {
-			const name = state.processors.byId[processorID].params.byId.name.value;
+			const name = processorID === 'snapshots' ? 'Snapshots' : state.processors.byId[processorID].params.byId.name.value;
 			el.querySelector('.remote__group-header-label').innerHTML = name;
 		};
     

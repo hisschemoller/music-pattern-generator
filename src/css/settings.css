@@ -87,15 +87,11 @@ input[type='number'].setting__number {
 .setting__learnmode {
     border: 3px dashed var(--assign-border-color);
     bottom: 0;
-    display: none;
     left: 0;
     margin: 1px;
     position: absolute;
     right: 0;
     top: 0;
-}
-.setting__learnmode.show {
-    display: block;
 }
 .setting__learnmode[data-selected='true'] {
     background-color: var(--assign-bg-color);
