@@ -371,7 +371,10 @@ export default {
 	},
 
 	SET_TEMPO,
-	setTempo: value => ({ type: SET_TEMPO, value }),
+	setTempo: value => ({ 
+		type: SET_TEMPO, 
+		value: Math.round((value * 100)) / 100,
+	}),
 
 	SET_THEME,
 	setTheme: themeName => ({ type: SET_THEME, themeName }),
