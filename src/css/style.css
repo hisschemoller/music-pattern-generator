@@ -138,7 +138,7 @@ div[data-theme='dark'] {
     --assign-bg-color: rgba(255, 255, 255, 0.2);
     --assign-border-color: #999;
     --assign-border-assigned-color: #ccc;
-    --bg-color: #000;
+    --bg-color: #111;
     --border-color: #999;
     --btn-color: #999;
     --btn-active-color: #fff;
