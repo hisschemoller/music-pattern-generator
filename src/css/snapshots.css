@@ -25,6 +25,7 @@
   cursor: pointer;
   display: flex;
   flex-basis: 25%;
+  position: relative;
 }
 .snapshots__item.is-set.is-selected .snapshots__item-load {
   background: repeating-linear-gradient(
@@ -110,4 +111,24 @@
   color: var(--btn-active-color);
 }
 .snapshots__edit-check:checked + .snapshots__edit-label:hover {
+}
+.snapshots__learnmode {
+    border: 3px dashed var(--assign-border-color);
+    bottom: 0;
+    display: none;
+    left: 0;
+    margin: 1px;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.snapshots__learnmode.show {
+  display: block;
+}
+.snapshots__learnmode[data-selected='true'] {
+    background-color: var(--assign-bg-color);
+}
+.snapshots__learnmode[data-assigned='true'] {
+    border-color: var(--assign-border-assigned-color);
+    border-style: solid;
 }

@@ -115,15 +115,7 @@
 								</div>
 							</div>
 						</div>
-					</div>
-					<div class="panel remote">
-						<div class="panel__header">
-							<span class="header__label">Assignments</span>
-						</div>
-						<div class="panel__viewport">
-							<ul class="panel__content remote__list"></ul>
-						</div>
-					</div>
+					</div><!-- /panel prefs -->
 					<div class="panel snapshots">
 						<div class="panel__header">
 							<span class="header__label">Snapshots</span>
@@ -137,7 +129,15 @@
 								</label>
 							</div>
 						</div>
-					</div>
+					</div><!-- /panel snapshots -->
+					<div class="panel remote">
+						<div class="panel__header">
+							<span class="header__label">Assignments</span>
+						</div>
+						<div class="panel__viewport">
+							<ul class="panel__content remote__list"></ul>
+						</div>
+					</div><!-- /panel remote -->
 				</div><!-- /panels__left -->
 				<div class="panels__right">
 					<div class="panel help">
@@ -293,6 +293,9 @@
 			</div>
 		</li>
 	</template><!-- /template-snapshots-item -->
+	<template id="template-snapshots-learnmode">
+			<div class="snapshots__learnmode"></div>
+	</template><!-- /template-snapshots-learnmode -->
 	<script src="js/lib/three.js"></script>
 	<!-- LineSegmentsGeometry must be loaded before LineGeometry -->
 	<script src="js/lib/lines/LineSegmentsGeometry.js"></script>

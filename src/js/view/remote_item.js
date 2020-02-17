@@ -56,11 +56,20 @@ export default function createRemoteItemView(data) {
 					// TODO: tekst grijs of zoiets
 					break;
 			}
+		},
+		
+		/**
+		 * Reattach is used when re-ordering the assigned shaphots by number.
+		 */
+		reAttach = () => {
+			parentEl.removeChild(el);
+			parentEl.appendChild(el);
 		};
     
     initialize();
 
     return {
+			reAttach,
 			terminate,
 		};
 }

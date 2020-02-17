@@ -234,7 +234,7 @@ export default {
 	RECEIVE_MIDI_CC,
 	receiveMIDIControlChange: data => {
 		return (dispatch, getState, getActions) => {
-			const { assignExternalControl, changeParameter, unassignExternalControl, } = getActions();
+			const { assignExternalControl, changeParameter, loadSnapshot, unassignExternalControl, } = getActions();
 			const { assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorID, processors, } = getState();
 			const type = CONTROL_CHANGE;
 			const channel = (data[0] & 0xf) + 1;
@@ -248,9 +248,13 @@ export default {
 				assignments.allIds.forEach(assignID => {
 					const { paramKey, processorID, remoteChannel, remoteValue } = assignments.byId[assignID];
 					if (remoteChannel === channel && remoteValue === control) {
-						const param = processors.byId[assignment.processorID].params.byId[paramKey];
-						const paramValue = midiControlToParameterValue(param, value);
-						dispatch(changeParameter(processorID, paramKey, paramValue));
+						if (processorID === 'snapshots') {
+							dispatch(loadSnapshot(parseInt(paramKey, 10)));
+						} else {
+							const param = processors.byId[processorID].params.byId[paramKey];
+							const paramValue = midiControlToParameterValue(param, value);
+							dispatch(changeParameter(processorID, paramKey, paramValue));
+						}
 					}
 				});
 			}
@@ -260,7 +264,7 @@ export default {
 	RECEIVE_MIDI_NOTE,
 	receiveMIDINote: data => {
 		return (dispatch, getState, getActions) => {
-			const { assignExternalControl, changeParameter, unassignExternalControl, } = getActions();
+			const { assignExternalControl, changeParameter, loadSnapshot, unassignExternalControl, } = getActions();
 			const { assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorID, processors, } = getState();
 
 			// type can be note on or off
@@ -268,7 +272,7 @@ export default {
 			const channel = (data[0] & 0xf) + 1;
 			const pitch = data[1];
 			const velocity = data[2];
-
+			
 			if (type === NOTE_ON && velocity > 0) {
 				if (learnModeActive) {
 					dispatch(unassignExternalControl(learnTargetProcessorID, learnTargetParameterKey));
@@ -277,9 +281,13 @@ export default {
 					assignments.allIds.forEach(assignID => {
 						const { paramKey, processorID, remoteChannel, remoteValue } = assignments.byId[assignID];
 						if (remoteChannel === channel && remoteValue === pitch) {
-							const param = processors.byId[processorID].params.byId[paramKey];
-							const paramValue = midiNoteToParameterValue(param, velocity);
-							dispatch(changeParameter(processorID, paramKey, paramValue));
+							if (processorID === 'snapshots') {
+								dispatch(loadSnapshot(parseInt(paramKey, 10)));
+							} else {
+								const param = processors.byId[processorID].params.byId[paramKey];
+								const paramValue = midiNoteToParameterValue(param, velocity);
+								dispatch(changeParameter(processorID, paramKey, paramValue));
+							}
 						}
 					});
 				}
