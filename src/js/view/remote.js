@@ -15,13 +15,18 @@ function addEventListeners() {
   document.addEventListener(STATE_CHANGE, handleStateChanges);
 }
 
+/**
+ * Create a group (sublist with header) for each processor that has assignments,
+ * and for the snaphots if a snapshots is assigned.
+ * @param {Object} state Application state.
+ */
 function createRemoteGroups(state) {
 	const { assignments, processors } = state;
 	assignments.allIds.forEach(assignID => {
 		const { processorID } = assignments.byId[assignID];
-		if (!groupViews.byId[processorID] && (processors.allIds.includes(processorID) || (processorID === 'snapshots'))) {
+		if (!groupViews.allIds.includes(processorID) && (processors.allIds.includes(processorID) || (processorID === 'snapshots'))) {
 			const id = processorID === 'snapshots' ? 'snapshots' : processorID;
-			createRemoteGroup(id);
+			createRemoteGroup(id, state);
 		}
 	});
 }
@@ -29,13 +34,15 @@ function createRemoteGroups(state) {
 /**
  * Create a container view to hold assigned parameter views.
  * @param {Array} id Processor ID or 'snapshots' in case of snapshot assignment.
+ * @param {Object} state Application state.
  */
-function createRemoteGroup(id) {
+function createRemoteGroup(id, state) {
 	if (!groupViews.byId[id]) {
 		groupViews.allIds.push(id);
 		groupViews.byId[id] = createRemoteGroupView({
 			processorID: id,
 			parentEl: listEl,
+			state,
 		});
 	}
 }
@@ -68,15 +75,6 @@ function deleteRemoteGroups(processors = null) {
 			}
 		}
 	}
-
-	// for (let i = groupViews.allIds.length - 1; i >= 0; i--) {
-	// 	const id = groupViews.allIds[i];
-	// 	if (!processors || !processors.byId || !processors.byId[id]) {
-	// 		groupViews.allIds.splice(i, 1);
-	// 		groupViews.byId[id].terminate();
-	// 		delete groupViews.byId[id];
-	// 	}
-	// }
 }
 
 /**
@@ -93,7 +91,7 @@ function handleStateChanges(e) {
 			break;
 
 		case actions.ADD_PROCESSOR:
-			createRemoteGroup(action.data.id);
+			createRemoteGroup(action.data.id, state);
 			break;
 				
 		case actions.DELETE_PROCESSOR:

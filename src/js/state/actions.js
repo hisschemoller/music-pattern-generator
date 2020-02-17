@@ -234,7 +234,7 @@ export default {
 	RECEIVE_MIDI_CC,
 	receiveMIDIControlChange: data => {
 		return (dispatch, getState, getActions) => {
-			const { assignExternalControl, changeParameter, unassignExternalControl, } = getActions();
+			const { assignExternalControl, changeParameter, loadSnapshot, unassignExternalControl, } = getActions();
 			const { assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorID, processors, } = getState();
 			const type = CONTROL_CHANGE;
 			const channel = (data[0] & 0xf) + 1;
@@ -248,9 +248,13 @@ export default {
 				assignments.allIds.forEach(assignID => {
 					const { paramKey, processorID, remoteChannel, remoteValue } = assignments.byId[assignID];
 					if (remoteChannel === channel && remoteValue === control) {
-						const param = processors.byId[processorID].params.byId[paramKey];
-						const paramValue = midiControlToParameterValue(param, value);
-						dispatch(changeParameter(processorID, paramKey, paramValue));
+						if (processorID === 'snapshots') {
+							dispatch(loadSnapshot(parseInt(paramKey, 10)));
+						} else {
+							const param = processors.byId[processorID].params.byId[paramKey];
+							const paramValue = midiControlToParameterValue(param, value);
+							dispatch(changeParameter(processorID, paramKey, paramValue));
+						}
 					}
 				});
 			}

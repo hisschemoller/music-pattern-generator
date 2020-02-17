@@ -6,7 +6,7 @@ import createRemoteItemView from './remote_item.js';
  * The items are grouped by processor.
  */
 export default function createRemoteGroupView(data) {
-	const { parentEl, processorID, } = data;
+	const { parentEl, processorID, state, } = data;
 
   let el,
 		listEl,
@@ -25,7 +25,6 @@ export default function createRemoteGroupView(data) {
 			
 			listEl = el.querySelector('.remote__group-list');
 
-			const state = getState();
 			setName(state);
 			updateViews(state);
 
@@ -88,6 +87,11 @@ export default function createRemoteGroupView(data) {
 						addView(paramKey, label, remoteType, remoteChannel, remoteValue);
 					}
 				});
+
+				// order the list by snapshot number
+				views.allIds.sort();
+				views.allIds.forEach(viewId => views.byId[viewId].reAttach());
+				console.log('views', views);
 			} else {
 
 				// a processor
@@ -137,6 +141,10 @@ export default function createRemoteGroupView(data) {
 			views.allIds.push(paramKey);
 		},
 
+		/** 
+		 * Remove the view of a parameter that was unassigned.
+		 * @param {String} paramKey The assigned processor parameter key.
+		 */
 		removeView = function(paramKey) {
 			views.byId[paramKey].terminate();
 			delete views.byId[paramKey];
