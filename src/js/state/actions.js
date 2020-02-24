@@ -7,6 +7,9 @@ import { getProcessorData, } from '../core/processor-loader.js';
 
 const ADD_PROCESSOR = 'ADD_PROCESSOR',
 	ASSIGN_EXTERNAL_CONTROL = 'ASSIGN_EXTERNAL_CONTROL',
+	CABLE_DRAG_END = 'CABLE_DRAG_END',
+	CABLE_DRAG_MOVE = 'CABLE_DRAG_MOVE',
+	CABLE_DRAG_START = 'CABLE_DRAG_START',
 	CHANGE_PARAMETER = 'CHANGE_PARAMETER',
   CONNECT_PROCESSORS = 'CONNECT_PROCESSORS',
 	CREATE_MIDI_PORT = 'CREATE_MIDI_PORT',
@@ -44,6 +47,15 @@ export default {
 
 	ASSIGN_EXTERNAL_CONTROL,
 	assignExternalControl: (assignID, processorID, paramKey, remoteType, remoteChannel, remoteValue) => ({type: ASSIGN_EXTERNAL_CONTROL, assignID, processorID, paramKey, remoteType, remoteChannel, remoteValue, }),
+
+	CABLE_DRAG_END,
+	cableDragEnd: (connectorId, processorId, x, y, z) => ({ type: CABLE_DRAG_END, connectorId, processorId, x, y, z, }),
+
+	CABLE_DRAG_MOVE,
+	cableDragMove: (x, y, z) => ({ type: CABLE_DRAG_MOVE, x, y, z, }),
+
+	CABLE_DRAG_START,
+	cableDragStart: (connectorId, processorId, x, y, z) => ({ type: CABLE_DRAG_START, connectorId, processorId, x, y, z, }),
 
 	CHANGE_PARAMETER,
 	changeParameter: (processorID, paramKey, paramValue) => {

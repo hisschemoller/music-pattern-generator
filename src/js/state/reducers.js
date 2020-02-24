@@ -1,6 +1,44 @@
 import orderProcessors from '../midi/network_ordering.js';
 
+/**
+ * Temporary user interface state that should be available to multiple
+ * components but isn't part of the app state.
+ * I keep it separate here to have a cleaner view op the app state below.
+ */
+const userInterfaceInitialState = {
+	cableDrag: {
+		active: false,
+		source: {
+			processorID: null,
+			connectorID: null,
+			connectorPosition: {
+				x: 0,
+				y: 0,
+				z: 0,
+			},
+		},
+		destination: {
+			processorID: null,
+			connectorID: null,
+			connectorPosition: {
+				x: 0,
+				y: 0,
+				z: 0,
+			},
+		},
+	},
+	libraryDropPosition: {
+		type: null,
+		x: 0,
+		y: 0,
+	},
+};
+
+/**
+ * App state.
+ */
 const initialState = {
+	...userInterfaceInitialState,
 	assignments: {
 		allIds: [],
 		byId: {},
@@ -19,11 +57,6 @@ const initialState = {
 	learnModeActive: false,
 	learnTargetParameterKey: null,
 	learnTargetProcessorID: null,
-	libraryDropPosition: {
-		type: null,
-		x: 0,
-		y: 0,
-	},
 	ports: {
 		allIds: [],
 		byId: {},
@@ -71,6 +104,53 @@ export default function reduce(state = initialState, action, actions = {}) {
 							processorID,
 							paramKey,
 						},
+					},
+				},
+			};
+		}
+
+		case actions.CABLE_DRAG_END: {
+			const { connectorId, processorId, x, y, z, } = action;
+			return {
+				...state,
+				active: false,
+				cableDrag:{
+					...state.cableDrag,
+					destination: {
+						processorId,
+						connectorId,
+						connectorPosition: { x, y, z, },
+					},
+				},
+			};
+		}
+
+		case actions.CABLE_DRAG_MOVE: {
+			const { x, y, z, } = action;
+			return {
+				...state,
+				active: false,
+				cableDrag:{
+					...state.cableDrag,
+					destination: {
+						...state.cableDrag.source,
+						connectorPosition: { x, y, z, },
+					},
+				},
+			};
+		}
+
+		case actions.CABLE_DRAG_START: {
+			const { connectorId, processorId, x, y, z, } = action;
+			return {
+				...state,
+				active: false,
+				cableDrag:{
+					...state.cableDrag,
+					source: {
+						processorId,
+						connectorId,
+						connectorPosition: { x, y, z, },
 					},
 				},
 			};
