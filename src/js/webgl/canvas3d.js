@@ -1,6 +1,6 @@
 import { dispatch, getActions, STATE_CHANGE, } from '../state/store.js';
 import addWindowResizeCallback from '../view/windowresize.js';
-import { createConnection, dragEndConnection, dragMoveConnection, dragStartConnection, getCablesGroup, } from './connections3d.js';
+import { getCablesGroup, } from './connections3d.js';
 import { setLineMaterialResolution } from './draw3dHelper.js';
 import { getTheme } from '../state/selectors.js';
 import { getProcessorData } from '../core/processor-loader.js'

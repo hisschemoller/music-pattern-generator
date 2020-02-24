@@ -7,6 +7,7 @@ const {
   CubicBezierCurve,
   Group,
   Vector2,
+  Vector3,
 } = THREE;
 
 const deleteButtonRadius = 2.0,
@@ -16,7 +17,7 @@ const deleteButtonRadius = 2.0,
 let currentCable,
   currentCableDragHandle,
   cablesGroup,
-  state = {
+  localState = {
     sourceProcessorID: null,
     sourceConnectorID: null,
     sourceConnectorPosition: null,
@@ -27,21 +28,21 @@ let currentCable,
  * @param {String} destinationProcessorID Processor ID.
  * @param {String} destinationConnectorID Connector ID.
  */
-export function createConnection(destinationProcessorID, destinationConnectorID) {
+function createConnection(destinationProcessorID, destinationConnectorID) {
   dispatch(getActions().connectProcessors({
-    sourceProcessorID: state.sourceProcessorID, 
-    sourceConnectorID: state.sourceConnectorID,
+    sourceProcessorID: localState.sourceProcessorID, 
+    sourceConnectorID: localState.sourceConnectorID,
     destinationProcessorID: destinationProcessorID,
     destinationConnectorID: destinationConnectorID,
   }));
-  state.sourceProcessorID = null;
-  state.sourceConnectorID = null;
+  localState.sourceProcessorID = null;
+  localState.sourceConnectorID = null;
 }
     
 /**
  * Drag connection cable ended.
  */
-export function dragEndConnection() {
+function dragEndConnection() {
   currentCable.geometry.dispose();
   cablesGroup.remove(currentCable);
   cablesGroup.remove(currentCableDragHandle);
@@ -51,27 +52,30 @@ export function dragEndConnection() {
  * Drag a connection cable.
  * @param {Vector3} position3d
  */
-export function dragMoveConnection(position3d) {
+function dragMoveConnection(state) {
+  const { source, destination, } = state.cableDrag;
   drawCable(
     currentCable.name,
-    new Vector2(state.sourceConnectorPosition.x, state.sourceConnectorPosition.y), 
-    new Vector2(position3d.x, position3d.y));
-  currentCableDragHandle.position.copy(position3d);
+    new Vector2(source.x, source.y), 
+    new Vector2(destination.x, destination.y));
+  currentCableDragHandle.position.copy(new Vector3(destination.x, destination.y, destination.z));
 }
-        
+
 /**
  * Start dragging a connection cable.
  * @param {String} sourceProcessorID
  * @param {String} sourceConnectorID
  * @param {Vector3} sourceConnectorPosition
  */
-export function dragStartConnection(sourceProcessorID, sourceConnectorID, sourceConnectorPosition) {
-  state = { ...state, sourceProcessorID, sourceConnectorID, sourceConnectorPosition, };
+// export function dragStartConnection(sourceProcessorID, sourceConnectorID, sourceConnectorPosition) {
+//   localState = { ...localState, sourceProcessorID, sourceConnectorID, sourceConnectorPosition, };
+function dragStartConnection(state) {
+  const { source, } = state.cableDrag;
   currentCable = createShape();
   currentCable.name = 'currentCable';
   cablesGroup.add(currentCable);
 
-  currentCableDragHandle.position.copy(sourceConnectorPosition);
+  currentCableDragHandle.position.copy(new Vector3(source.x, source.y, source.z));
   cablesGroup.add(currentCableDragHandle);
 }
 
@@ -94,7 +98,7 @@ function addEventListeners() {
 }
 
 /**
- * Draw all cables acctording to the state.
+ * Draw all cables acctording to the (local) state.
  * @param {String} connectionId Connection ID.
  * @return {Object} Cable object3d.
  */
@@ -211,6 +215,20 @@ function handleStateChanges(e) {
     case actions.DRAG_SELECTED_PROCESSOR:
     case actions.DRAG_ALL_PROCESSORS:
       drawCables(state);
+      break;
+    
+    // TODO: (conn) listen to cable drag actions
+    case actions.CABLE_DRAG_END:
+      dragEndConnection();
+      createConnection(state);
+      break;
+
+    case actions.CABLE_DRAG_MOVE:
+      dragMoveConnection(state);
+      break;
+
+    case actions.CABLE_DRAG_START:
+      dragStartConnection(state);
       break;
     
     case actions.CREATE_PROJECT:

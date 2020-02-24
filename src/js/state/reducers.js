@@ -11,20 +11,16 @@ const userInterfaceInitialState = {
 		source: {
 			processorID: null,
 			connectorID: null,
-			connectorPosition: {
-				x: 0,
-				y: 0,
-				z: 0,
-			},
+			x: 0,
+			y: 0,
+			z: 0,
 		},
 		destination: {
 			processorID: null,
 			connectorID: null,
-			connectorPosition: {
-				x: 0,
-				y: 0,
-				z: 0,
-			},
+			x: 0,
+			y: 0,
+			z: 0,
 		},
 	},
 	libraryDropPosition: {
@@ -119,7 +115,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 					destination: {
 						processorId,
 						connectorId,
-						connectorPosition: { x, y, z, },
+						x, y, z,
 					},
 				},
 			};
@@ -134,7 +130,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 					...state.cableDrag,
 					destination: {
 						...state.cableDrag.source,
-						connectorPosition: { x, y, z, },
+						x, y, z,
 					},
 				},
 			};
@@ -150,7 +146,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 					source: {
 						processorId,
 						connectorId,
-						connectorPosition: { x, y, z, },
+						x, y, z,
 					},
 				},
 			};
