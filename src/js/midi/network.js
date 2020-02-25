@@ -132,7 +132,7 @@ function handleStateChanges(e) {
 			reorderProcessors(state);
 			break;
 
-    case actions.CONNECT_PROCESSORS:
+    case actions.CREATE_CONNECTION:
 			connectProcessors(state);
 			reorderProcessors(state);
 			break;

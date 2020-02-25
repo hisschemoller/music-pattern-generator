@@ -187,20 +187,6 @@ function dragEnd(e) {
 
   switch (dragObjectType) {
     case 'connection':
-      // dragEndConnection();
-
-      // test for input connectors
-      // const intersects = raycaster.intersectObjects(allObjects, true);
-      // const intersect = intersects.find(intersect => intersect.object.name === 'input_hitarea');
-      // if (intersect && isConnectMode) {
-        // const outerObject = getOuterParentObject(intersect.object);
-        // createConnection(
-        //   outerObject.userData.id,
-        //   intersect.object.userData.id);
-        // TODO: (conn) dispatch action so input connectors can stop highlighting
-        // const { x, y, z, } = outerObject.clone().position.add(intersect.object.position);
-      // }
-
       if (isConnectMode) {
         const intersects = raycaster.intersectObjects(allObjects, true);
         const intersect = intersects.find(intersect => intersect.object.name === 'input_hitarea');
@@ -208,7 +194,9 @@ function dragEnd(e) {
         const connectorId = intersect ? intersect.object.userData.id : null;
         const processorId = outerObject ? outerObject.userData.id : null;
         const { x = 0, y = 0, z = 0, } = outerObject ? outerObject.clone().position.add(intersect.object.position) : {};
+        
         dispatch(getActions().cableDragEnd(connectorId, processorId, x, y, z));
+        dispatch(getActions().createConnection());
       }
       break;
   }
@@ -244,10 +232,8 @@ function dragMove(e) {
 
     case 'connection':
       if (raycaster.ray.intersectPlane(plane, intersection)) {
-        // TODO: (conn) dispatch action so intersected inputs can highlight
         const { x, y, z, } = intersection;
         dispatch(getActions().cableDragMove(x, y, z));
-        // dragMoveConnection(intersection);
       }
       break;
 
@@ -442,7 +428,6 @@ function onTouchStart(e) {
     if (intersect && isConnectMode) {
 
       // get outer parent of closest object
-      // TODO: (conn) dispatch action so all input connectors can highlight
       outerObject = getOuterParentObject(intersect.object);
       const { x, y, z, } = outerObject.clone().position.add(intersect.object.position);
       dispatch(getActions().cableDragStart(
@@ -450,10 +435,6 @@ function onTouchStart(e) {
         outerObject.userData.id, 
         x, y, z
       ));
-      // dragStartConnection(
-      //   outerObject.userData.id, 
-      //   intersect.object.userData.id, 
-      //   outerObject.clone().position.add(intersect.object.position));
       dragObjectType = 'connection';
     }
   }

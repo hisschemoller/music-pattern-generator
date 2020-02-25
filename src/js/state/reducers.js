@@ -177,34 +177,26 @@ export default function reduce(state = initialState, action, actions = {}) {
 			}
 			return newState;
 		}
-		
-		case actions.CONNECT_PROCESSORS: {
 
-			// abort if the connection already exists
-			for (let i = 0, n = state.connections.allIds.length; i < n; i++) {
-				const connection = state.connections.byId[state.connections.allIds[i]];
-				if (connection.sourceProcessorID === action.payload.sourceProcessorID &&
-					connection.sourceConnectorID === action.payload.sourceConnectorID &&
-					connection.destinationProcessorID === action.payload.destinationProcessorID &&
-					connection.destinationConnectorID === action.payload.destinationConnectorID) {
-					return state;
-				} 
-			}
-
-			// add new connection
-			newState = {
+		case actions.CREATE_CONNECTION: {
+			const { connectionID, destinationConnectorID, destinationProcessorID, sourceConnectorID, sourceProcessorID, } = action;
+			
+			// add the new connection
+			const newState = {
 				...state,
 				connections: {
-					byId: { ...state.connections.byId, [action.id]: action.payload },
-					allIds: [ ...state.connections.allIds, action.id ]
+					byId: { ...state.connections.byId, [connectionID]: {
+						destinationConnectorID, destinationProcessorID, sourceConnectorID, sourceProcessorID,
+					}},
+					allIds: [ ...state.connections.allIds, connectionID ],
 				},
 				processors: {
-					byId: { ...state.processors.byId },
-					allIds: [ ...state.processors.allIds ]
+					...state.processors,
+					allIds: [ ...state.processors.allIds ],
 				},
 			};
 
-			// reorder the processors
+			// update the processors' order
 			orderProcessors(newState);
 			return newState;
 		}

@@ -16,28 +16,7 @@ const deleteButtonRadius = 2.0,
 
 let currentCable,
   currentCableDragHandle,
-  cablesGroup,
-  localState = {
-    sourceProcessorID: null,
-    sourceConnectorID: null,
-    sourceConnectorPosition: null,
-  };
-
-/**
- * Create connection between two processors.
- * @param {String} destinationProcessorID Processor ID.
- * @param {String} destinationConnectorID Connector ID.
- */
-function createConnection(destinationProcessorID, destinationConnectorID) {
-  dispatch(getActions().connectProcessors({
-    sourceProcessorID: localState.sourceProcessorID, 
-    sourceConnectorID: localState.sourceConnectorID,
-    destinationProcessorID: destinationProcessorID,
-    destinationConnectorID: destinationConnectorID,
-  }));
-  localState.sourceProcessorID = null;
-  localState.sourceConnectorID = null;
-}
+  cablesGroup
     
 /**
  * Drag connection cable ended.
@@ -67,8 +46,6 @@ function dragMoveConnection(state) {
  * @param {String} sourceConnectorID
  * @param {Vector3} sourceConnectorPosition
  */
-// export function dragStartConnection(sourceProcessorID, sourceConnectorID, sourceConnectorPosition) {
-//   localState = { ...localState, sourceProcessorID, sourceConnectorID, sourceConnectorPosition, };
 function dragStartConnection(state) {
   const { source, } = state.cableDrag;
   currentCable = createShape();
@@ -206,7 +183,7 @@ function handleStateChanges(e) {
       break;
     
     case actions.DELETE_PROCESSOR:
-    case actions.CONNECT_PROCESSORS:
+    case actions.CREATE_CONNECTION:
     case actions.DISCONNECT_PROCESSORS:
       updateCables(state);
       drawCables(state);
@@ -217,10 +194,8 @@ function handleStateChanges(e) {
       drawCables(state);
       break;
     
-    // TODO: (conn) listen to cable drag actions
     case actions.CABLE_DRAG_END:
       dragEndConnection();
-      createConnection(state);
       break;
 
     case actions.CABLE_DRAG_MOVE:

@@ -11,7 +11,7 @@ const ADD_PROCESSOR = 'ADD_PROCESSOR',
 	CABLE_DRAG_MOVE = 'CABLE_DRAG_MOVE',
 	CABLE_DRAG_START = 'CABLE_DRAG_START',
 	CHANGE_PARAMETER = 'CHANGE_PARAMETER',
-  CONNECT_PROCESSORS = 'CONNECT_PROCESSORS',
+	CREATE_CONNECTION = 'CREATE_CONNECTION',
 	CREATE_MIDI_PORT = 'CREATE_MIDI_PORT',
 	CREATE_PROCESSOR = 'CREATE_PROCESSOR',
 	CREATE_PROJECT = 'CREATE_PROJECT',
@@ -68,8 +68,36 @@ export default {
 		};
 	},
 
-	CONNECT_PROCESSORS,
-	connectProcessors: payload => ({ type: CONNECT_PROCESSORS, payload, id: `conn_${createUUID()}` }),
+	CREATE_CONNECTION,
+	createConnection: () => {
+		return (dispatch, getState, getActions) => {
+			const { cableDrag, connections, } = getState();
+			const { destination, source, } = cableDrag;
+
+			// check if the connection already exists
+			let isExists = false;
+			for (let i = 0, n = connections.allIds.length; i < n; i++) {
+				const connection = connections.byId[connections.allIds[i]];
+				if (connection.sourceConnectorID === source.connectorId &&
+					connection.sourceProcessorID === source.processorId &&
+					connection.destinationConnectorID === destination.connectorId &&
+					connection.destinationProcessorID === destination.processorId) {
+						isExists = true;
+				} 
+			}
+
+			if (!isExists) {
+				return {
+					type: CREATE_CONNECTION,
+					connectionID: `conn_${createUUID()}`,
+					destinationConnectorID: destination.connectorId,
+					destinationProcessorID: destination.processorId,
+					sourceConnectorID: source.connectorId,
+					sourceProcessorID: source.processorId,
+				};
+			}
+		};
+	},
 
 	CREATE_MIDI_PORT,
 	createMIDIPort: (portID, data) => { return { type: CREATE_MIDI_PORT, portID, data } },
