@@ -30,16 +30,16 @@ export function createObject3d(id, inputs, outputs) {
       hitarea.name = 'hitarea';
       hitarea.material.opacity = 0.0;
       
-      const centreCircle = createCircleOutline(3, colorHigh);
-      centreCircle.name = 'centreCircle';
+      const centerCircle = createCircleOutline(3, colorHigh);
+      centerCircle.name = 'centerCircle';
       
       const selectCircle = createCircleOutline(2, colorHigh);
       selectCircle.name = 'select';
       selectCircle.visible = false;
       
-      const centreDot = createCircleOutlineFilled(1.5, colorHigh);
-      centreDot.name = 'centreDot';
-      centreDot.visible = false;
+      const centerDot = createCircleOutlineFilled(1.5, colorHigh);
+      centerDot.name = 'centerDot';
+      centerDot.visible = false;
       
       const pointer = createShape();
       pointer.name = 'pointer';
@@ -61,9 +61,9 @@ export function createObject3d(id, inputs, outputs) {
       root.name = 'root';
       root.userData.id = id;
       root.add(hitarea);
-      root.add(centreCircle);
+      root.add(centerCircle);
       root.add(selectCircle);
-      root.add(centreDot);
+      root.add(centerDot);
       root.add(pointer);
       root.add(necklace);
       root.add(label);

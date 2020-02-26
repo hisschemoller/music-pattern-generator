@@ -33,8 +33,8 @@ export function createObject3d(id, inputs, outputs) {
       label.scale.set(0.1, 0.1, 1);
       label.translateY(-7);
       
-      const centreCircle = createCircleOutline(radius, colorHigh);
-      centreCircle.name = 'centreCircle';
+      const centerCircle = createCircleOutline(radius, colorHigh);
+      centerCircle.name = 'centerCircle';
       
       const selectCircle = createCircleOutline(2, colorHigh);
       selectCircle.name = 'select';
@@ -56,7 +56,7 @@ export function createObject3d(id, inputs, outputs) {
       group.userData.id = id;
       group.add(hitarea);
       group.add(graphic);
-      group.add(centreCircle);
+      group.add(centerCircle);
       group.add(selectCircle);
       group.add(label);
 

@@ -35,8 +35,8 @@ export function createObject3dController(data, that = {}, my = {}) {
     doublePI = Math.PI * 2,
 
     initialize = function() {
-      centreCircle3d = my.object3d.getObjectByName('centreCircle'),
-      centreDot3d = my.object3d.getObjectByName('centreDot'),
+      centreCircle3d = my.object3d.getObjectByName('centerCircle'),
+      centreDot3d = my.object3d.getObjectByName('centerDot'),
       select3d = my.object3d.getObjectByName('select'),
       pointer3d = my.object3d.getObjectByName('pointer'),
       necklace3d = my.object3d.getObjectByName('necklace'),

@@ -69,19 +69,19 @@ export function createObject3d(id, inputs, outputs) {
       polygon.name = 'polygon';
       polygon.renderOrder = 2;
       
-      const centreCircle = createCircleOutline(3, colorHigh);
-      centreCircle.name = 'centreCircle';
-      centreCircle.renderOrder = 4;
+      const centerCircle = createCircleOutline(3, colorHigh);
+      centerCircle.name = 'centerCircle';
+      centerCircle.renderOrder = 4;
       
       const selectCircle = createCircleOutline(2, colorHigh);
       selectCircle.name = 'select';
       selectCircle.renderOrder = 5;
       selectCircle.visible = false;
       
-      const centreDot = createCircleOutlineFilled(1.5, colorHigh);
-      centreDot.name = 'centreDot';
-      centreDot.renderOrder = 6;
-      centreDot.visible = false;
+      const centerDot = createCircleOutlineFilled(1.5, colorHigh);
+      centerDot.name = 'centerDot';
+      centerDot.renderOrder = 6;
+      centerDot.visible = false;
       
       const pointer = createShape();
       pointer.name = 'pointer';
@@ -112,9 +112,9 @@ export function createObject3d(id, inputs, outputs) {
       wheel.userData.id = id;
       wheel.add(hitarea);
       wheel.add(polygon);
-      wheel.add(centreCircle);
+      wheel.add(centerCircle);
       wheel.add(selectCircle);
-      wheel.add(centreDot);
+      wheel.add(centerDot);
       wheel.add(dots);
       wheel.add(pointer);
       wheel.add(zeroMarker);

@@ -31,7 +31,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     updateSelectCircle,
   } = createObject3dControllerBase(obj3d, data, isConnectMode);
 
-  const centerDot3d = object3d.getObjectByName('centreDot');
+  const centerDot3d = object3d.getObjectByName('centerDot');
   const dots3d = object3d.getObjectByName('dots');
   const pointer3d = object3d.getObjectByName('pointer');
   const polygon3d = object3d.getObjectByName('polygon');

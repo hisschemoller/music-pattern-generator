@@ -8,7 +8,7 @@ export function createObject3dController(data, that = {}, my = {}) {
     select3d,
 
     initialize = function() {
-      centreCircle3d = my.object3d.getObjectByName('centreCircle'),
+      centreCircle3d = my.object3d.getObjectByName('centerCircle'),
       select3d = my.object3d.getObjectByName('select'),
 
       document.addEventListener(STATE_CHANGE, handleStateChanges);
