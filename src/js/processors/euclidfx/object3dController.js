@@ -1,24 +1,36 @@
 import { dispatch, getActions, STATE_CHANGE, } from '../../state/store.js';
 import { getTheme } from '../../state/selectors.js';
-import createObject3dControllerBase from '../../webgl/object3dControllerBase.js';
+import { PPQN, TWO_PI, } from '../../core/config.js';
 import { getEuclidPattern, rotateEuclidPattern } from './utils.js';
-import { PPQN } from '../../core/config.js';
-import { redrawShape } from '../../webgl/draw3dHelper.js';
+import createObject3dControllerBase from '../../webgl/object3dControllerBase.js';
+import { redrawShape, } from '../../webgl/draw3dHelper.js';
 
 const {
   EllipseCurve,
   Vector2,
 } = THREE;
 
-const TWO_PI = Math.PI * 2;
+/**
+ * 
+ * @param {Object} obj3d The 3D object to control.
+ * @param {Object} data Processor data.
+ * @param {Boolean} isConnectMode True if app is in connect mode.
+ */
+export function createObject3dController(obj3d, data, isConnectMode) {
+  const {
+    handleStateChangesOnBase,
+    hitarea3d,
+    id,
+    label3d,
+    object3d,
+    updateSelectCircle,
+  } = createObject3dControllerBase(obj3d, data, isConnectMode);
 
-export function createObject3dController(data, that = {}, my = {}) {
-  let centreCircle3d,
-    centreDot3d,
-    select3d,
-    pointer3d,
-    necklace3d,
-    colorLow,
+  const centerDot3d = object3d.getObjectByName('centerDot');
+  const pointer3d = object3d.getObjectByName('pointer');
+  const necklace3d = object3d.getObjectByName('necklace');
+
+  let colorLow,
     colorHigh,
     duration,
     pointerRotation,
@@ -30,274 +42,249 @@ export function createObject3dController(data, that = {}, my = {}) {
     centerScale = 0,
     innerRadius = 4,
     outerRadius = 6,
-    locatorRadius = 8,
-    zeroMarkerRadius = 0.5,
-    doublePI = Math.PI * 2,
+    locatorRadius = 8;
 
-    initialize = function() {
-      centreCircle3d = my.object3d.getObjectByName('centerCircle'),
-      centreDot3d = my.object3d.getObjectByName('centerDot'),
-      select3d = my.object3d.getObjectByName('select'),
-      pointer3d = my.object3d.getObjectByName('pointer'),
-      necklace3d = my.object3d.getObjectByName('necklace'),
+  /**
+   * Redraw the pattern if needed.
+   * @param {Number} position Transport playback position in ticks.
+   * @param {Array} processorEvents Array of processor generated events to display.
+   */
+  const draw = (position, processorEvents) => {
+    showPlaybackPosition(position);
 
-      document.addEventListener(STATE_CHANGE, handleStateChanges);
-    
-      ({ colorLow, colorHigh, } = getTheme());
-
-      const params = data.processorData.params.byId;
-      my.updateLabel(params.name.value);
-      updateNecklace(params.steps.value, params.pulses.value, params.rotation.value);
-      updateDuration(params.steps.value, params.rate.value);
-      updateRotation(params.rotation.value);  
+    // calculate status and redraw locator if needed
+    let currentStep = Math.floor(((position % duration) / duration) * steps);
+    currentStep = (currentStep + rotation) % steps;
+    const currentStatus = euclid[currentStep];
+    if (currentStatus !== status) {
+      status = currentStatus;
       updatePointer();
-      my.updateConnectMode(data.isConnectMode);
-    },
+    }
 
-    terminate = function() {
-      document.removeEventListener(STATE_CHANGE, handleStateChanges);
-    },
+    // start center dot animation
+    if (processorEvents[id] && processorEvents[id].length) {
+      const event = processorEvents[id][processorEvents[id].length - 1];
+      const { delayFromNowToNoteEnd, delayFromNowToNoteStart, stepIndex, } = event;
+      startNoteAnimation(stepIndex, delayFromNowToNoteStart, delayFromNowToNoteEnd);
+    }
 
-    handleStateChanges = function(e) {
-      const { action, actions, state, } = e.detail;
-      switch (action.type) {
-        case actions.CHANGE_PARAMETER:
-          if (action.processorID === my.id) {
-            const params = state.processors.byId[my.id].params.byId;
-            switch (action.paramKey) {
-              case 'steps':
-              case 'pulses':
-                updateDuration(params.steps.value, params.rate.value);
-                updateNecklace(params.steps.value, params.pulses.value, params.rotation.value);
-                break;
-              case 'rotation':
-                updateRotation(params.rotation.value);  
-                break;
-              case 'is_triplets':
-              case 'rate':
-                updateDuration(params.steps.value, params.rate.value);
-                break;
-              case 'name':
-                my.updateLabel(params.name.value);
-                break;
-              default:
-            }
+    // update center dot animation
+    if (centerScale !== 0) {
+      updateNoteAnimation();
+    }
+  };
+
+  /**
+   * The app's state has changed.
+   * @param {Object} e Custom STATE_CHANGE event.
+   */
+  const handleStateChanges = e => {
+    const { action, actions, state, } = e.detail;
+    switch (action.type) {
+
+      case actions.CHANGE_PARAMETER:
+        const { activeProcessorID, processors, } = state;
+        if (activeProcessorID === id) {
+          const { pulses, rate, rotation, steps, } = processors.byId[id].params.byId;
+          switch (action.paramKey) {
+            case 'steps':
+            case 'pulses':
+              updateDuration(steps.value, rate.value);
+              updateNecklace(steps.value, pulses.value, rotation.value);
+              break;
+            case 'rotation':
+              updateRotation(rotation.value);  
+              break;
+            case 'is_triplets':
+            case 'rate':
+              updateDuration(steps.value, rate.value);
+              break;
+            default:
           }
-
-        case actions.DRAG_SELECTED_PROCESSOR:
-          my.updatePosition(state);
-          break;
-        
-        case actions.LOAD_SNAPSHOT:
-          const params = state.processors.byId[my.id].params.byId;
-          updateDuration(params.steps.value, params.rate.value);
-          updateNecklace(params.steps.value, params.pulses.value, params.rotation.value);
-          updateRotation(params.rotation.value);  
-          break;
-
-        case actions.TOGGLE_CONNECT_MODE:
-          my.updateConnectMode(state.connectModeActive);
-          break;
-
-        case actions.SET_THEME:
-          updateTheme();
-          break;
-      }
-    },
-
-    updateNecklace = function(numSteps, pulses, rotation, isMute = false) {
-      steps = numSteps;
-
-      // create the pattern
-      euclid = getEuclidPattern(steps, pulses);
-      euclid = rotateEuclidPattern(euclid, rotation);
+        }
+        break;
       
-      let points = [];
+      case actions.LOAD_SNAPSHOT:
+        const { pulses, rate, rotation, steps, } = processors.byId[id].params.byId;
+        updateDuration(steps.value, rate.value);
+        updateNecklace(steps.value, pulses.value, rotation.value);
+        updateRotation(rotation.value);
+        break;
 
-      for (let i = 0, n = euclid.length; i < n; i++) {
-        const stepRadius = euclid[i] ? outerRadius : innerRadius;
+      case actions.SET_THEME:
+        updateTheme();
+        break;
+    }
 
-        // ax, aY, xRadius, yRadius, aStartAngle, aEndAngle, aClockwise, aRotation
-        const curve = new EllipseCurve(
-          0, 0, 
-          stepRadius, stepRadius,
-          ((i / n) * doublePI) + (Math.PI * 0.5),
-          (((i + 1) / n) * doublePI) + (Math.PI * 0.5),
-          false,
-          0,
-        );
-        points = [...points, ...curve.getPoints(5)];
-      }
-      points = [...points, points[0].clone()];
-      
-      redrawShape(necklace3d, points, colorHigh);
-    },
+    handleStateChangesOnBase(action, actions, state);
+  };
 
-    updateRotation = function(numRotation) {
-      rotation = numRotation;
-      pointer3d.rotation.z = (rotation / steps) * doublePI;
-    },
+  /**
+   * Internal initialization.
+   */
+  const initialize = () => {
+    document.addEventListener(STATE_CHANGE, handleStateChanges);
 
-    /**
-     * Redraw the location pointer and the status dot.
-     */
-    updatePointer = function() {
-      const necklacePos = status ? outerRadius : innerRadius;
-      const halfWayPos = necklacePos + ((locatorRadius - necklacePos) / 2);
-      const statusWidth = status ? 2.5 : 1;
-      const sides = status ? locatorRadius : halfWayPos;
+    ({ colorLow, colorHigh, } = getTheme());
 
-      const points = [
+    const { pulses, rate, rotation, steps, } = data.params.byId;
+    updateNecklace(steps.value, pulses.value, rotation.value);
+    updateDuration(steps.value, rate.value);
+    updateRotation(rotation.value);  
+    updatePointer();
+  };
 
-        // position locator
-        new Vector2(0, centerRadius),
-        new Vector2(0, locatorRadius),
+  /**
+   * Show the playback position within the pattern.
+   * Indicated by the pointer's rotation.
+   * @param  {Number} position Position within pattern in ticks.
+   */
+  const showPlaybackPosition = position => {
+    pointerRotation = TWO_PI * (-position % duration / duration);
+    necklace3d.rotation.z = pointerRotation;
+  };
 
-        // status indicator
-        new Vector2(-statusWidth, sides),
-        new Vector2(0, necklacePos),
-        new Vector2(statusWidth, sides),
-        new Vector2(0, locatorRadius),
-      ];
+  /**
+   * Show animation of the pattern dot that is about to play.
+   */
+  const startNoteAnimation = () => {
+    centerDot3d.scale.set(centerScale, centerScale, 1);
+    centerScale *= 0.90;
+    if (centerScale <= 0.05) {
+      centerDot3d.visible = false;
+      centerScale = 0;
+    }
+  };
 
-      redrawShape(pointer3d, points, colorHigh);
-    },
+  /**
+   * Calculate the pattern's duration in milliseconds.
+   */
+  const updateDuration = (steps, rate) => {
+    const stepDuration = rate * PPQN;
+    duration = steps * stepDuration;
+  };
 
-    /** 
-     * Set theme colors on the 3D pattern.
-     */
-    updateTheme = function() {
-      ({ colorLow, colorHigh } = getTheme());
-      setThemeColorRecursively(my.object3d, colorLow, colorHigh);
-    },
+  /**
+   * Update the hitarea used for mouse detection.
+   */
+  const updateHitarea = () => {
+    const scale = (radius3d + 3) * 0.1;
+    hitarea3d.scale.set(scale, scale, 1);
+  };
 
-    /** 
-     * Loop through all the object3d's children to set the color.
-     * @param {Object3d} An Object3d of which to change the color.
-     * @param {String} HEx color string of the new color.
-     */
-    setThemeColorRecursively = function(object3d, colorLow, colorHigh) {
-      let color = colorHigh;
-      switch (object3d.name) {
-        case 'input_connector':
-        case 'input_active':
-        case 'output_connector':
-        case 'output_active':
-          color = colorLow;
-          break;
-      }
+  /**
+   * Update necklace.
+   * @param {*} steps 
+   * @param {*} pulses 
+   * @param {*} rotation 
+   * @param {*} isMute 
+   */
+  const updateNecklace = (numSteps, pulses, rotation) => {
+    steps = numSteps;
 
-      if (object3d.type === 'Line2') {
-        redrawShape(object3d, object3d.userData.points, color);
-      } else if (object3d.material) {
-        object3d.material.color.set(color);
-      }
+    // create the pattern
+    euclid = getEuclidPattern(steps, pulses);
+    euclid = rotateEuclidPattern(euclid, rotation);
+    
+    let points = [];
 
-      object3d.children.forEach(childObject3d => {
-        setThemeColorRecursively(childObject3d, colorLow, colorHigh);
-      });
-    },
-            
-    /**
-     * Update the hitarea used for mouse detection.
-     */
-    updateHitarea = function() {
-        const scale = (radius3d + 3) * 0.1;
-        my.hitarea3d.scale.set(scale, scale, 1);
-    },
+    for (let i = 0, n = euclid.length; i < n; i++) {
+      const stepRadius = euclid[i] ? outerRadius : innerRadius;
 
-    updateLabelPosition = function() {
-      my.label3d.position.y = -radius3d - 2;
-    },
+      // ax, aY, xRadius, yRadius, aStartAngle, aEndAngle, aClockwise, aRotation
+      const curve = new EllipseCurve(
+        0, 0, 
+        stepRadius, stepRadius,
+        ((i / n) * TWO_PI) + (Math.PI * 0.5),
+        (((i + 1) / n) * TWO_PI) + (Math.PI * 0.5),
+        false,
+        0,
+      );
+      points = [...points, ...curve.getPoints(5)];
+    }
+    points = [...points, points[0].clone()];
+    
+    redrawShape(necklace3d, points, colorHigh);
+  };
+          
+  /**
+   * Update the pointer that connects the dots.
+   */
+  const updatePointer = () => {
+    const necklacePos = status ? outerRadius : innerRadius;
+    const halfWayPos = necklacePos + ((locatorRadius - necklacePos) / 2);
+    const statusWidth = status ? 2.5 : 1;
+    const sides = status ? locatorRadius : halfWayPos;
 
-    /**
-     * Show circle if the processor is selected, else hide.
-     * @param {Boolean} isSelected True if selected.
-     */
-    updateSelectCircle = function(selectedId) {
-      select3d.visible = my.id === selectedId;
-    },
+    const points = [
 
-    /**
-     * Calculate the pattern's duration in milliseconds.
-     */
-    updateDuration = function(steps, rate) {
-      // const rate = my.params.is_triplets.value ? my.params.rate.value * (2 / 3) : my.params.rate.value;
-      const stepDuration = rate * PPQN;
-      duration = steps * stepDuration;
-    },
-        
-    /**
-     * Show the playback position within the pattern.
-     * Indicated by the necklace's rotation.
-     * @param  {Number} position Position within pattern in ticks.
-     */
-    showPlaybackPosition = function(position) {
-      pointerRotation = TWO_PI * (-position % duration / duration);
-      necklace3d.rotation.z = pointerRotation;
-    },
-        
-    /**
-     * Show animation of the pattern dot that is about to play. 
-     * @param {Number} stepIndex Index of the step to play.
-     * @param {Number} noteStartDelay Delay from now until note start in ms.
-     * @param {Number} noteStopDelay Delay from now until note end in ms.
-     */
-    startNoteAnimation = function(stepIndex, noteStartDelay, noteStopDelay) {
-      // delay start of animation
-      setTimeout(() => {
-        centreDot3d.visible = true;
-        centerScale = 1;
-      }, noteStartDelay);
-    },
+      // position locator
+      new Vector2(0, centerRadius),
+      new Vector2(0, locatorRadius),
 
-    /**
-     * Update the current nacklace dot animations.
-     */
-    updateNoteAnimation = function() {
-      centreDot3d.scale.set(centerScale, centerScale, 1);
-      centerScale *= 0.90;
-      if (centerScale <= 0.05) {
-        centreDot3d.visible = false;
-        centerScale = 0;
-      }
-    },
+      // status indicator
+      new Vector2(-statusWidth, sides),
+      new Vector2(0, necklacePos),
+      new Vector2(statusWidth, sides),
+      new Vector2(0, locatorRadius),
+    ];
 
-    /**
-     * Redraw the pattern if needed.
-     * @param {Number} position Transport playback position in ticks.
-     * @param {Array} processorEvents Array of processor generated events to display.
-     */
-    draw = function(position, processorEvents) {
-      showPlaybackPosition(position);
+    redrawShape(pointer3d, points, colorHigh);
+  };
 
-      // calculate status and redraw locator if needed
-      let currentStep = Math.floor(((position % duration) / duration) * steps);
-      currentStep = (currentStep + rotation) % steps;
-      const currentStatus = euclid[currentStep];
-      if (currentStatus !== status) {
-        status = currentStatus;
-        updatePointer();
-      }
+  const updateRotation = numRotation => {
+    rotation = numRotation;
+    pointer3d.rotation.z = (rotation / steps) * TWO_PI;
+  }
 
-      // start center dot animation
-      if (processorEvents[my.id] && processorEvents[my.id].length) {
-        const event = processorEvents[my.id][processorEvents[my.id].length - 1];
-        startNoteAnimation(event.stepIndex, event.delayFromNowToNoteStart, event.delayFromNowToNoteEnd);
-      }
+  /** 
+   * Set theme colors on the 3D pattern.
+   */
+  const updateTheme = () => {
+    ({ colorLow, colorHigh, } = getTheme());
+    updateThemeColorRecursively(object3d, colorLow, colorHigh);
+  };
 
-      // update center dot animation
-      if (centerScale !== 0) {
-        updateNoteAnimation();
-      }
-    };
+  /** 
+   * Loop through all the object3d's children to set the color.
+   * @param {Object3d} object3d An Object3d of which to change the color.
+   * @param {String} colorLow Hex color string of the low contrast color.
+   * @param {String} colorHigh Hex color string of the high contrast color.
+   */
+  const updateThemeColorRecursively = (object3d, colorLow, colorHigh) => {
+    let color = colorHigh;
+    switch (object3d.name) {
+      case 'input_connector':
+      case 'input_active':
+      case 'output_connector':
+      case 'output_active':
+        color = colorLow;
+        break;
+    }
 
-  that = createObject3dControllerBase(data, that, my);
+    if (object3d.type === 'Line2') {
+      redrawShape(object3d, object3d.userData.points, color);
+    } else if (object3d.material) {
+      object3d.material.color.set(color);
+    }
+
+    object3d.children.forEach(childObject3d => {
+      setThemeColorRecursively(childObject3d, colorLow, colorHigh);
+    });
+  };
+
+  /**
+   * Perform cleanup before this controller is destroyed.
+   */
+  const terminate = () => {
+    document.removeEventListener(STATE_CHANGE, handleStateChanges);
+  };
 
   initialize();
 
-  that.terminate = terminate;
-  that.updateSelectCircle = updateSelectCircle;
-  that.draw = draw;
-  return that;
+  return {
+    draw,
+    terminate,
+    updateSelectCircle,
+  };
 }

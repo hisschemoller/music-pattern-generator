@@ -124,7 +124,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     updateNecklace(steps.value, pulses.value, rotation.value, is_mute.value);
     updateDuration(steps.value, rate.value);
   };
-        
+
   /**
    * Show the playback position within the pattern.
    * Indicated by the pointer's rotation.
@@ -173,7 +173,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     const stepDuration = rate * PPQN;
     duration = steps * stepDuration;
   };
-       
+
   /**
    * Update the hitarea used for mouse detection.
    */
