@@ -3,106 +3,104 @@ import { getTheme } from '../../state/selectors.js';
 import createObject3dControllerBase from '../../webgl/object3dControllerBase.js';
 import { redrawShape, } from '../../webgl/draw3dHelper.js';
 
-export function createObject3dController(data, that = {}, my = {}) {
-  let centreCircle3d,
-    select3d,
+/**
+ * 
+ * @param {Object} obj3d The 3D object to control.
+ * @param {Object} data Processor data.
+ * @param {Boolean} isConnectMode True if app is in connect mode.
+ */
+export function createObject3dController(obj3d, data, isConnectMode) {
+  const {
+    handleStateChangesOnBase,
+    hitarea3d,
+    id,
+    label3d,
+    object3d,
+    updateSelectCircle,
+  } = createObject3dControllerBase(obj3d, data, isConnectMode);
 
-    initialize = function() {
-      centreCircle3d = my.object3d.getObjectByName('centerCircle'),
-      select3d = my.object3d.getObjectByName('select'),
+  let colorLow,
+    colorHigh;
 
-      document.addEventListener(STATE_CHANGE, handleStateChanges);
+  /**
+   * Redraw the pattern if needed.
+   * @param {Number} position Transport playback position in ticks.
+   * @param {Array} processorEvents Array of processor generated events to display.
+   */
+  const draw = (position, processorEvents) => {};
 
-      const params = data.processorData.params.byId;
-      my.updateLabel(params.name.value);
-      my.updateConnectMode(data.isConnectMode);
-    },
+  /**
+   * The app's state has changed.
+   * @param {Object} e Custom STATE_CHANGE event.
+   */
+  const handleStateChanges = e => {
+    const { action, actions, state, } = e.detail;
+    switch (action.type) {
 
-    terminate = function() {
-      document.removeEventListener(STATE_CHANGE, handleStateChanges);
-    },
+      case actions.SET_THEME:
+        updateTheme();
+        break;
+    }
 
-    handleStateChanges = function(e) {
-      const { action, actions, state, } = e.detail;
-      switch (action.type) {
-        
-        case actions.CHANGE_PARAMETER:
-          if (action.processorID === my.id) {
-            const params = state.processors.byId[my.id].params.byId;
-            switch (action.paramKey) {
-              case 'name':
-                my.updateLabel(params.name.value);
-                break;
-            }
-          }
-          break;
+    handleStateChangesOnBase(action, actions, state);
+  };
 
-        case actions.DRAG_SELECTED_PROCESSOR:
-          my.updatePosition(state);
-          break;
+  /**
+   * Internal initialization.
+   */
+  const initialize = () => {
+    document.addEventListener(STATE_CHANGE, handleStateChanges);
 
-        case actions.TOGGLE_CONNECT_MODE:
-          my.updateConnectMode(state.connectModeActive);
-          break;
+    ({ colorLow, colorHigh, } = getTheme());
+  };
 
-        case actions.SET_THEME:
-          updateTheme();
-          break;
-      }
-    },
+  /** 
+   * Set theme colors on the 3D pattern.
+   */
+  const updateTheme = () => {
+    ({ colorLow, colorHigh, } = getTheme());
+    updateThemeColorRecursively(object3d, colorLow, colorHigh);
+  };
 
-    /** 
-     * Set theme colors on the 3D pattern.
-     */
-    updateTheme = function() {
-      const { colorLow, colorHigh } = getTheme();
-      setThemeColorRecursively(my.object3d, colorLow, colorHigh);
-    },
+  /** 
+   * Loop through all the object3d's children to set the color.
+   * @param {Object3d} object3d An Object3d of which to change the color.
+   * @param {String} colorLow Hex color string of the low contrast color.
+   * @param {String} colorHigh Hex color string of the high contrast color.
+   */
+  const updateThemeColorRecursively = (object3d, colorLow, colorHigh) => {
+    let color = colorHigh;
+    switch (object3d.name) {
+      case 'polygonLine':
+      case 'input_connector':
+      case 'input_active':
+        color = colorLow;
+        break;
+      default:
+        if (object3d.type === 'Line2') {
+          redrawShape(object3d, object3d.userData.points, colorHigh);
+        } else if (object3d.material) {
+          object3d.material.color.set(colorHigh);
+        }
+    }
 
-    /** 
-     * Loop through all the object3d's children to set the color.
-     * @param {Object3d} An Object3d of which to change the color.
-     * @param {String} colorLow Hex color string of the new color.
-     */
-    setThemeColorRecursively = function(object3d, colorLow, colorHigh) {
-      let color = colorHigh;
-      switch (object3d.name) {
-        case 'input_connector':
-        case 'input_active':
-        case 'output_connector':
-        case 'output_active':
-          color = colorLow;
-          break;
-      }
+    object3d.children.forEach(childObject3d => {
+      updateThemeColorRecursively(childObject3d, colorLow, colorHigh);
+    });
+  };
 
-      if (object3d.type === 'Line2') {
-        redrawShape(object3d, object3d.userData.points, color);
-      } else if (object3d.material) {
-        object3d.material.color.set(color);
-      }
-
-      object3d.children.forEach(childObject3d => {
-        setThemeColorRecursively(childObject3d, colorLow, colorHigh);
-      });
-    },
-              
-    /**
-     * Show circle if the processor is selected, else hide.
-     * @param {Boolean} isSelected True if selected.
-     */
-    updateSelectCircle = function(selectedId) {
-      select3d.visible = my.id === selectedId;
-    },
-      
-    draw = function(position, processorEvents) {
-    };
-
-  that = createObject3dControllerBase(data, that, my);
+  /**
+   * Perform cleanup before this controller is destroyed.
+   */
+  const terminate = () => {
+    document.removeEventListener(STATE_CHANGE, handleStateChanges);
+  };
 
   initialize();
 
-  that.terminate = terminate;
-  that.updateSelectCircle = updateSelectCircle;
-  that.draw = draw;
-  return that;
+  return {
+    draw,
+    terminate,
+    updateSelectCircle,
+  };
 }

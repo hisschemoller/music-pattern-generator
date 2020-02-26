@@ -31,7 +31,8 @@ export default function createObject3dControllerBase(obj3d, data, isConnectMode)
     switch (action.type) {
 
       case actions.CHANGE_PARAMETER:
-        if (state.activeProcessorID === id) {
+        const { activeProcessorID, processors, } = state;
+        if (activeProcessorID === id) {
           switch (action.paramKey) { 
             case 'name':
               updateLabel(processors.byId[id].params.byId.name.value);
