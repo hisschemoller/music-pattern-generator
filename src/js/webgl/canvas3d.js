@@ -121,7 +121,7 @@ function createProcessorViews(state) {
 
       // create controller for the object
       const controllerModule = getProcessorData(type, 'object3dController');
-      const controller = controllerModule.createObject3dController({ object3d, processorData, isConnectMode, });
+      const controller = controllerModule.createObject3dController(object3d, processorData, isConnectMode);
       controller.updateSelectCircle(selectedId);
       controllers.push(controller);
     }

@@ -28,6 +28,7 @@ const userInterfaceInitialState = {
 		x: 0,
 		y: 0,
 	},
+	activeProcessorID: null,
 };
 
 /**
@@ -153,26 +154,28 @@ export default function reduce(state = initialState, action, actions = {}) {
 		}
 		
 		case actions.CHANGE_PARAMETER: {
+			const { paramKey, paramValue, processorID } = action;
 			newState = { 
 				...state,
+				activeProcessorID: processorID,
 				snapshotIndex: null,
 				processors: {
 					byId: { ...state.processors.byId },
 					allIds: [ ...state.processors.allIds ]
 				} };
-			const param = newState.processors.byId[action.processorID].params.byId[action.paramKey];
+			const param = newState.processors.byId[processorID].params.byId[paramKey];
 			switch (param.type) {
 				case 'integer':
-					param.value = Math.max(param.min, Math.min(action.paramValue, param.max));
+					param.value = Math.max(param.min, Math.min(paramValue, param.max));
 					break;
 				case 'boolean':
-					param.value = !!action.paramValue;
+					param.value = !!paramValue;
 					break;
 				case 'itemized':
-					param.value = action.paramValue;
+					param.value = paramValue;
 					break;
 				case 'string':
-					param.value = action.paramValue;
+					param.value = paramValue;
 					break;
 			}
 			return newState;

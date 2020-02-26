@@ -2,54 +2,114 @@ import setText3d from './text3d.js';
 import { getTheme } from '../state/selectors.js';
 
 /**
- * Base object for all processor WebGL object controllers.
- *
- * @export
- * @param {Object} data
- * @param {Object} my Shared properties.
+ * Base functionality for processor 3D object controller.
+ * @param {Object} obj3d The 3D object to control.
+ * @param {Object} data Processor data.
+ * @param {Boolean} isConnectMode True if app is in connect mode.
  */
-export default function createObject3dControllerBase(data, that, my) {
-        
-    /**
-     * Update the pattern's name.
-     */
-  const updateLabel = function(labelString) {
-      setText3d(my.label3d, labelString.toUpperCase(), getTheme().colorHigh);
-    },
+export default function createObject3dControllerBase(obj3d, data, isConnectMode) {
+  const object3d = obj3d;
+  const id = object3d.userData.id;
+  const hitarea3d = object3d.getObjectByName('hitarea');
+  const label3d = object3d.getObjectByName('label');
+  const select3d = object3d.getObjectByName('select');
 
-    /** 
-     * Set the 3D pattern's position in the scene.
-     */
-    updatePosition = function(state) {
-      if (state.selectedId === my.id) {
-        const data = state.processors.byId[my.id];
-        my.object3d.position.set(data.positionX, data.positionY, data.positionZ);
+  /**
+   * @returns {String} The processor's ID.
+   */
+  const getID = () => {
+    return id;
+  };
+
+  /**
+   * The app's state has changed.
+   * @param {*} action 
+   * @param {*} actions 
+   * @param {*} state 
+   */
+  const handleStateChangesOnBase = (action, actions, state) => {
+    switch (action.type) {
+
+      case actions.CHANGE_PARAMETER:
+        if (state.activeProcessorID === id) {
+          switch (action.paramKey) { 
+            case 'name':
+              updateLabel(processors.byId[id].params.byId.name.value);
+              break;
+          }
+        }
+        break;
+
+      case actions.DRAG_SELECTED_PROCESSOR:
+        updatePosition(state);
+        break;
+
+      case actions.TOGGLE_CONNECT_MODE:
+        updateConnectMode(state.connectModeActive);
+        break;
+    }
+  };
+
+  /**
+   * Internal initialization.
+   */
+  const initialize = () => {
+    const { name } = data.params.byId;
+    updateLabel(name.value);
+    updateConnectMode(isConnectMode);
+  };
+
+  /**
+   * Show connect mode on the precessor's connectors.
+   * @param {Boolean} isConnectMode 
+   */
+  const updateConnectMode = isConnectMode => {
+    object3d.children.forEach(child3d => {
+      if (child3d.name === 'input_hitarea') {
+        child3d.getObjectByName('input_active').visible = isConnectMode;
       }
-    },
+      if (child3d.name === 'output_hitarea') {
+        child3d.getObjectByName('output_active').visible = isConnectMode;
+      }
+    });
+  }
 
-    updateConnectMode = function(isConnectMode) {
-      my.object3d.children.forEach(child3d => {
-        if (child3d.name === 'input_hitarea') {
-          child3d.getObjectByName('input_active').visible = isConnectMode;
-        }
-        if (child3d.name === 'output_hitarea') {
-          child3d.getObjectByName('output_active').visible = isConnectMode;
-        }
-      });
-    },
+  /**
+   * Update the pattern's name.
+   */
+  const updateLabel = textContent => {
+    setText3d(label3d, textContent.toUpperCase(), getTheme().colorHigh);
+  };
 
-    getID = function() {
-      return my.id;
-    };
-  
-  my.id = data.object3d.userData.id;
-  my.object3d = data.object3d;
-  my.hitarea3d = my.object3d.getObjectByName('hitarea');
-  my.label3d = my.object3d.getObjectByName('label');
-  my.updateLabel = updateLabel;
-  my.updatePosition = updatePosition;
-  my.updateConnectMode = updateConnectMode;
+  /** 
+   * Set the 3D pattern's position in the scene.
+   */
+  const updatePosition = state => {
+    const { processors, selectedId } = state;
+    if (selectedId === id) {
+      const { positionX, positionY, positionZ } = processors.byId[id];
+      object3d.position.set(positionX, positionY, positionZ);
+    }
+  };
 
-  that.getID = getID;
-  return that;
+  /**
+   * Show circle if the processor is selected, else hide.
+   * @param {Boolean} isSelected True if selected.
+   */
+  const updateSelectCircle = selectedId => {
+    select3d.visible = id === selectedId;
+  };
+
+  initialize();
+
+  return {
+    getID,
+    handleStateChangesOnBase,
+    hitarea3d,
+    id,
+    label3d,
+    object3d,
+    updateLabel,
+    updateSelectCircle,
+  };
 }

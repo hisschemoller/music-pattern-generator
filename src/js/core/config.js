@@ -6,6 +6,8 @@
  */
 export const PPQN = 480;
 
+export const TWO_PI = Math.PI * 2;
+
 const name = 'config';
 
 export function getConfig() {
