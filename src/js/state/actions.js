@@ -74,6 +74,8 @@ export default {
 			const { cableDrag, connections, } = getState();
 			const { destination, source, } = cableDrag;
 
+			console.log('cableDrag', cableDrag);
+
 			// check if the connection already exists
 			let isExists = false;
 			for (let i = 0, n = connections.allIds.length; i < n; i++) {
@@ -86,7 +88,10 @@ export default {
 				} 
 			}
 
-			if (!isExists) {
+			// check the connection destination (was the new cable dropped on an input?)
+			let isDestinationSet = destination.connectorId && destination.processorId;
+
+			if (!isExists && isDestinationSet) {
 				return {
 					type: CREATE_CONNECTION,
 					connectionID: `conn_${createUUID()}`,
