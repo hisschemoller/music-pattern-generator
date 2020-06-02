@@ -65,6 +65,11 @@ export function createObject3dController(obj3d, data, isConnectMode) {
   };
 
   /**
+   * @returns {String} The processor's id.
+   */
+  const getId = () => id;
+
+  /**
    * The app's state has changed.
    * @param {Object} e Custom STATE_CHANGE event.
    */
@@ -420,6 +425,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
 
   return {
     draw,
+    getId,
     terminate,
     updateSelectCircle,
   };

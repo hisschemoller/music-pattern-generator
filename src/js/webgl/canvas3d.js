@@ -169,7 +169,7 @@ function deleteProcessorView(id) {
 
   // remove controller
   controllers = controllers.reduce((accumulator, controller) => {
-    if (controller.getID() === id) {
+    if (controller.getId() === id) {
       controller.terminate();
       return accumulator;
     }
