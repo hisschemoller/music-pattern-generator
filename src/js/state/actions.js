@@ -4,6 +4,7 @@ import { getConfig, setConfig, } from '../core/config.js';
 import { getAllMIDIPorts, CONTROL_CHANGE, NOTE_ON,  } from '../midi/midi.js';
 import { showDialog } from '../view/dialog.js';
 import { getProcessorData, } from '../core/processor-loader.js';
+import { testForInfiniteLoop, } from '../midi/network_ordering.js';
 
 const ADD_PROCESSOR = 'ADD_PROCESSOR',
 	ASSIGN_EXTERNAL_CONTROL = 'ASSIGN_EXTERNAL_CONTROL',
@@ -71,7 +72,8 @@ export default {
 	CREATE_CONNECTION,
 	createConnection: () => {
 		return (dispatch, getState, getActions) => {
-			const { cableDrag, connections, } = getState();
+			const state = getState();
+			const { cableDrag, connections, } = state;
 			const { destination, source, } = cableDrag;
 
 			// check if the connection already exists
@@ -87,9 +89,12 @@ export default {
 			}
 
 			// check the connection destination (was the new cable dropped on an input?)
-			let isDestinationSet = destination.connectorId && destination.processorId;
+			const isDestinationSet = destination.connectorId && destination.processorId;
 
-			if (!isExists && isDestinationSet) {
+			// check if the connection won't cause an infinite loop.
+			const isInfiniteLoop = testForInfiniteLoop(state, source.processorId, destination.processorId);
+
+			if (!isExists && isDestinationSet && !isInfiniteLoop) {
 				return {
 					type: CREATE_CONNECTION,
 					connectionID: `conn_${createUUID()}`,
