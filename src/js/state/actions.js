@@ -94,6 +94,13 @@ export default {
 			// check if the connection won't cause an infinite loop.
 			const isInfiniteLoop = testForInfiniteLoop(state, source.processorId, destination.processorId);
 
+			if (isInfiniteLoop) {
+				showDialog(
+				  'Infinite loop warning', 
+				  `This connection can't be made because it would create an infinite feedback loop.`,
+				  'Ok');
+			}
+
 			if (!isExists && isDestinationSet && !isInfiniteLoop) {
 				return {
 					type: CREATE_CONNECTION,
