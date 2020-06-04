@@ -22,6 +22,7 @@ import { preloadProcessors } from './core/processor-loader.js';
 import { setup as setupCanvas3d } from './webgl/canvas3d.js';
 import { setup as setupConnections3d } from './webgl/connections3d.js';
 import { setup as setupControls } from './view/controls.js';
+import { setup as setupDialog } from './view/dialog.js';
 import { setup as setupLibrary } from './view/library.js';
 import { setup as setupNetwork } from './midi/network.js';
 import { setup as setupPanels } from './view/panels.js';
@@ -39,6 +40,7 @@ async function main() {
   setupPanels();
   setupCanvas3d();
   setupConnections3d();
+  setupDialog();
   setupLibrary();
   setupNetwork();
   setupPreferences();
