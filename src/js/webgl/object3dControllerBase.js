@@ -30,6 +30,14 @@ export default function createObject3dControllerBase(obj3d, data, isConnectMode)
   const handleStateChangesOnBase = (action, actions, state) => {
     switch (action.type) {
 
+      case actions.CABLE_DRAG_END:
+        updateConnectors(state.connectModeActive, false);
+        break;
+        
+      case actions.CABLE_DRAG_START:
+        updateConnectors(state.connectModeActive, true);
+        break;
+
       case actions.CHANGE_PARAMETER:
         const { activeProcessorID, processors, } = state;
         if (activeProcessorID === id) {
@@ -46,7 +54,7 @@ export default function createObject3dControllerBase(obj3d, data, isConnectMode)
         break;
 
       case actions.TOGGLE_CONNECT_MODE:
-        updateConnectMode(state.connectModeActive);
+        updateConnectors(state.connectModeActive, false);
         break;
     }
   };
@@ -57,20 +65,20 @@ export default function createObject3dControllerBase(obj3d, data, isConnectMode)
   const initialize = () => {
     const { name } = data.params.byId;
     updateLabel(name.value);
-    updateConnectMode(isConnectMode);
+    updateConnectors(isConnectMode, false);
   };
 
   /**
    * Show connect mode on the precessor's connectors.
    * @param {Boolean} isConnectMode 
    */
-  const updateConnectMode = isConnectMode => {
+  const updateConnectors = (isConnectMode, isDraggingCable) => {
     object3d.children.forEach(child3d => {
       if (child3d.name === 'input_hitarea') {
-        child3d.getObjectByName('input_active').visible = isConnectMode;
+        child3d.getObjectByName('input_active').visible = isConnectMode && isDraggingCable;
       }
       if (child3d.name === 'output_hitarea') {
-        child3d.getObjectByName('output_active').visible = isConnectMode;
+        child3d.getObjectByName('output_active').visible = isConnectMode && !isDraggingCable;
       }
     });
   }
