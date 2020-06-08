@@ -23,7 +23,6 @@
 }
 .snapshots__item {
   cursor: pointer;
-  display: flex;
   flex-basis: 25%;
   position: relative;
 }
@@ -42,24 +41,26 @@
   );
 }
 .snapshots__item-load {
-  flex-basis: 100%;
   padding: 20px 10px;
   text-align: center;
 }
+.snapshots__item-load:hover{
+  background-color: var(--btn-active-bg-color);
+}
 .snapshots__item-store {
   display: none;
-  flex-basis: 50%;
-  padding: 20px 10px;
+  position: absolute;
+  right: 11px;
   text-align: center;
+  top: 19px;
 }
 .snapshots__item-store .snapshots__item-label {
   background-color: var(--btn-color);
   color: var(--input-bg-color);
   padding: 0 5px 2px;
 }
-.snapshots__item-load:hover,
-.snapshots__item-store:hover {
-  background-color: var(--btn-active-bg-color);
+.snapshots__item-store:hover .snapshots__item-label {
+  background-color: var(--btn-active-color);
 }
 .snapshots__item.is-set .snapshots__item-load {
   background: repeating-linear-gradient(
