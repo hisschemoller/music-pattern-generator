@@ -87,33 +87,36 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     const { action, actions, state, } = e.detail;
     switch (action.type) {
 
-      case actions.CHANGE_PARAMETER:
-        const { activeProcessorID, processors, } = state;
-        if (activeProcessorID === id) {
-          const { pulses, rate, rotation, steps, } = processors.byId[id].params.byId;
-          switch (action.paramKey) {
-            case 'steps':
-            case 'pulses':
-              updateDuration(steps.value, rate.value);
-              updateNecklace(steps.value, pulses.value, rotation.value);
-              break;
-            case 'rotation':
-              updateRotation(rotation.value);  
-              break;
-            case 'is_triplets':
-            case 'rate':
-              updateDuration(steps.value, rate.value);
-              break;
-            default:
+      case actions.CHANGE_PARAMETER: {
+          const { activeProcessorID, processors, } = state;
+          if (activeProcessorID === id) {
+            const { pulses, rate, rotation, steps, } = processors.byId[id].params.byId;
+            switch (action.paramKey) {
+              case 'steps':
+              case 'pulses':
+                updateDuration(steps.value, rate.value);
+                updateNecklace(steps.value, pulses.value, rotation.value);
+                break;
+              case 'rotation':
+                updateRotation(rotation.value);  
+                break;
+              case 'is_triplets':
+              case 'rate':
+                updateDuration(steps.value, rate.value);
+                break;
+              default:
+            }
           }
         }
         break;
       
-      case actions.LOAD_SNAPSHOT:
-        const { pulses, rate, rotation, steps, } = processors.byId[id].params.byId;
-        updateDuration(steps.value, rate.value);
-        updateNecklace(steps.value, pulses.value, rotation.value);
-        updateRotation(rotation.value);
+      case actions.LOAD_SNAPSHOT: {
+          const { processors, } = state;
+          const { pulses, rate, rotation, steps, } = processors.byId[id].params.byId;
+          updateDuration(steps.value, rate.value);
+          updateNecklace(steps.value, pulses.value, rotation.value);
+          updateRotation(rotation.value);
+        }
         break;
 
       case actions.SET_THEME:
