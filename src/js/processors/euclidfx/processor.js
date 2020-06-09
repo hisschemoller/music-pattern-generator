@@ -104,6 +104,14 @@ export function createProcessor(data, my = {}) {
 				return;
 			}
 
+			// if bypass is enabled push all input data directly to the output
+			if (params.isBypass) {
+				inputData.forEach(event => {
+					my.setOutputData(event);
+				});
+				return;
+			}
+			
 			// calculate the processed timespan's position within the pattern, 
 			// taking into account the pattern looping during this timespan.
 			let localScanStart = scanStart % duration,
@@ -163,7 +171,7 @@ export function createProcessor(data, my = {}) {
 							}
 							break;
 						case 'output':
-							// v2.2
+							// v2.3 or some further future version
 							break;
 					}
 
@@ -252,6 +260,7 @@ export function createProcessor(data, my = {}) {
 			params.high = parameters.high.value;
 			params.low = parameters.low.value;
 			params.target = parameters.target.value;
+			params.isBypass = parameters.is_bypass.value;
 			params.isRelative = parameters.mode.value !== parameters.mode.default;
 		},
 			
