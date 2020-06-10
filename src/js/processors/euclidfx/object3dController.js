@@ -38,6 +38,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     euclid,
     steps,
     rotation,
+    isBypass = false,
     centerRadius = 3,
     centerScale = 0,
     innerRadius = 4,
@@ -90,7 +91,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
       case actions.CHANGE_PARAMETER: {
           const { activeProcessorID, processors, } = state;
           if (activeProcessorID === id) {
-            const { pulses, rate, rotation, steps, } = processors.byId[id].params.byId;
+            const { is_bypass, pulses, rate, rotation, steps, } = processors.byId[id].params.byId;
             switch (action.paramKey) {
               case 'steps':
               case 'pulses':
@@ -103,6 +104,10 @@ export function createObject3dController(obj3d, data, isConnectMode) {
               case 'is_triplets':
               case 'rate':
                 updateDuration(steps.value, rate.value);
+                break;
+              case 'is_bypass':
+                updateBypass(is_bypass.value);
+                updatePointer();
                 break;
               default:
             }
@@ -135,10 +140,11 @@ export function createObject3dController(obj3d, data, isConnectMode) {
 
     ({ colorLow, colorHigh, } = getTheme());
 
-    const { pulses, rate, rotation, steps, } = data.params.byId;
+    const { pulses, rate, rotation, steps, is_bypass, } = data.params.byId;
     updateNecklace(steps.value, pulses.value, rotation.value);
     updateDuration(steps.value, rate.value);
     updateRotation(rotation.value);  
+    updateBypass(is_bypass.value);
     updatePointer();
   };
 
@@ -162,6 +168,14 @@ export function createObject3dController(obj3d, data, isConnectMode) {
       centerDot3d.visible = false;
       centerScale = 0;
     }
+  };
+
+  /**
+   * Store the bypass parameter value locally.
+   * @param {Boolean} isBypassValue Bypass parameter value.
+   */
+  const updateBypass = isBypassValue => {
+    isBypass = isBypassValue;
   };
 
   /**
@@ -223,19 +237,37 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     const halfWayPos = necklacePos + ((locatorRadius - necklacePos) / 2);
     const statusWidth = status ? 2.5 : 1;
     const sides = status ? locatorRadius : halfWayPos;
+    let points;
 
-    const points = [
+    if (isBypass) {
+      points = [
+  
+        // position locator
+        new Vector2(0, locatorRadius - 2),
+        new Vector2(0, locatorRadius),
 
-      // position locator
-      new Vector2(0, centerRadius),
-      new Vector2(0, locatorRadius),
+        // status indicator
+        new Vector2(-1, locatorRadius - 1),
+        new Vector2(0, locatorRadius - 2),
+        new Vector2(1, locatorRadius - 1),
+        new Vector2(0, locatorRadius),
+        new Vector2(-1, locatorRadius - 1),
 
-      // status indicator
-      new Vector2(-statusWidth, sides),
-      new Vector2(0, necklacePos),
-      new Vector2(statusWidth, sides),
-      new Vector2(0, locatorRadius),
-    ];
+      ];
+    } else {
+      points = [
+  
+        // position locator
+        new Vector2(0, centerRadius),
+        new Vector2(0, locatorRadius),
+  
+        // status indicator
+        new Vector2(-statusWidth, sides),
+        new Vector2(0, necklacePos),
+        new Vector2(statusWidth, sides),
+        new Vector2(0, locatorRadius),
+      ];
+    }
 
     redrawShape(pointer3d, points, colorHigh);
   };
