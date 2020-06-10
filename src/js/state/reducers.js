@@ -71,9 +71,9 @@ const initialState = {
 	showPreferencesPanel: false,
 	showSnapshotsPanel: false,
 	showSettingsPanel: false,
-	theme: 'dev', // 'light|dark|dev' 
+	theme: 'light', // 'light|dark|dev' 
 	transport: 'stop', // 'play|pause|stop'
-	version: '2.2.0-alpha',
+	version: '2.2.0-beta',
 };
 
 /**
