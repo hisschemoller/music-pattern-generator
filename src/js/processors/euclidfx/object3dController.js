@@ -309,7 +309,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     }
 
     object3d.children.forEach(childObject3d => {
-      setThemeColorRecursively(childObject3d, colorLow, colorHigh);
+      updateThemeColorRecursively(childObject3d, colorLow, colorHigh);
     });
   };
 
