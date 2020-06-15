@@ -1,5 +1,6 @@
 import { dispatch, getActions, getState, STATE_CHANGE, } from '../../state/store.js';
 import createMIDIProcessorBase from '../../midi/processorbase.js';
+import { initAudioFiles } from './utils.js';
 
 /**
  * Sample player processor.
@@ -9,8 +10,10 @@ export function createProcessor(data, my = {}) {
 			params = {};
 	
 	const initialize = function() {
+			const { processors } = getState();
 			document.addEventListener(STATE_CHANGE, handleStateChange);
-			updateAllParams(getState().processors.byId[my.id].params.byId);
+			updateAllParams(processors.byId[my.id].params.byId);
+			initAudioFiles(processors.byId[my.id].params.byId.sample.model);
 		},
 
 		terminate = function() {
