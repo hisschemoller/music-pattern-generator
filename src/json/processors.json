@@ -2,7 +2,8 @@
   "ids": [
     "epg",
     "euclidfx",
-    "output"
+    "output",
+    "soundbank"
   ],
   "files": [
     "config.json",

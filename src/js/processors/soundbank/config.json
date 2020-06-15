@@ -1,0 +1,40 @@
+{
+    "name": "Soundbank",
+    "positionX": 0,
+    "positionY": 0,
+    "positionZ": 0,
+    "inputs": {
+        "byId": {
+            "in": {
+                "x": 0,
+                "y": 5,
+                "z": 0
+            }
+        },
+        "allIds": ["in"]
+    },
+    "outputs": {
+        "byId": {},
+        "allIds": []
+    },
+    "params": {
+        "byId": {
+            "sample": {
+                "label": "Sample",
+                "type": "itemized",
+                "default": "none",
+                "value": "none",
+                "model": [
+                    { "label": "No sample", "value": "none" }
+                ]
+            },
+            "name": {
+                "label": "Name",
+                "type": "string",
+                "default": "Unnamed",
+                "value": "Unnamed"
+            }
+        },
+        "allIds": ["port", "name"]
+    }
+}
