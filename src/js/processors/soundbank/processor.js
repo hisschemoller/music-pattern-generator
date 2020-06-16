@@ -39,14 +39,27 @@ export function createProcessor(data, my = {}) {
 		 * Process events to happen in a time slice.
 		 * @param {Number} scanStart Timespan start in ticks from timeline start.
 		 * @param {Number} scanEnd   Timespan end in ticks from timeline start.
-		 * @param {Number} nowToScanStart Timespan from current timeline position to scanStart.
+		 * @param {Number} nowToScanStart Timespan from current timeline position to scanStart, in ticks.
 		 * @param {Number} ticksToMsMultiplier Duration of one tick in milliseconds.
 		 * @param {Number} offset Time from doc start to timeline start in ticks.
 		 */
 		process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset) {
+
+			// retrieve events waiting at the processor's input
+			const inputData = my.getInputData();
+			const origin = performance.now() - (offset * ticksToMsMultiplier);
+			
+			inputData.forEach(data => {
+
+				// timestampTicks: Timespan from timeline start to note start
+				const { channel, durationTicks, pitch, timestampTicks, type, velocity, } = data;
+				const nowToEventInSecs = (timestampTicks - scanStart + nowToScanStart) * ticksToMsMultiplier * 0.001;
+				console.log(nowToEventInSecs);
+			});
 		},
 
 		updateAllParams = function(parameters) {
+			params.sample = parameters.sample.value;
 		};
 
 	that = createMIDIProcessorBase(data, that, my);
