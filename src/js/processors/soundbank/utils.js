@@ -28,3 +28,10 @@ export function initAudioFiles(samplesData) {
     });
   }
 }
+
+export function playSound(nowToStartInSecs, bufferId) {
+  const source = audioCtx.createBufferSource();
+  source.buffer = buffers.byId[bufferId].buffer;
+  source.connect(audioCtx.destination);
+  source.start(audioCtx.currentTime + nowToStartInSecs);
+}

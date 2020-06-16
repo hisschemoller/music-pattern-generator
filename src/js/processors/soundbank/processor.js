@@ -1,6 +1,6 @@
 import { dispatch, getActions, getState, STATE_CHANGE, } from '../../state/store.js';
 import createMIDIProcessorBase from '../../midi/processorbase.js';
-import { initAudioFiles } from './utils.js';
+import { initAudioFiles, playSound } from './utils.js';
 
 /**
  * Sample player processor.
@@ -54,7 +54,7 @@ export function createProcessor(data, my = {}) {
 				// timestampTicks: Timespan from timeline start to note start
 				const { channel, durationTicks, pitch, timestampTicks, type, velocity, } = data;
 				const nowToEventInSecs = (timestampTicks - scanStart + nowToScanStart) * ticksToMsMultiplier * 0.001;
-				console.log(nowToEventInSecs);
+				playSound(nowToEventInSecs, params.sample);
 			});
 		},
 
