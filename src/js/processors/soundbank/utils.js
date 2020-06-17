@@ -33,12 +33,31 @@ export function initAudioFiles(samplesData) {
   }
 }
 
-export function playSound(nowToStartInSecs, bufferId) {
-  const source = audioCtx.createBufferSource();
-  source.buffer = buffers.byId[bufferId].buffer;
-  source.connect(audioCtx.destination);
-  source.start(audioCtx.currentTime + nowToStartInSecs);
+export function playSound(nowToStartInSecs, bufferId, pitch, velocity) {
+  const startTime = audioCtx.currentTime + nowToStartInSecs;
+  const voice = voices.shift();
+  voices.push(voice);
+
+  if (voice.isPlaying) {
+    console.log('isPlaying');
+    voice.source.stop();
+  }
+
+  (pitch - 60) / 12
+
+  voice.isPlaying = true;
+  voice.gain.gain.setValueAtTime(velocity / 127, startTime);
+  voice.source = audioCtx.createBufferSource();
+  voice.source.buffer = buffers.byId[bufferId].buffer;
+  voice.source.playbackRate.setValueAtTime(2 ** ((pitch - 60) / 12), startTime);
+  voice.source.connect(voice.gain);
+  voice.source.start(startTime);
+  voice.source.onended = function() {
+    voice.isPlaying = false;
+    console.log('ended');
+  }
 }
+
 function createVoices() {
   for (let i = 0; i < numVoices; i++) {
     const gain = audioCtx.createGain();
