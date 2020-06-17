@@ -54,7 +54,7 @@ export function createProcessor(data, my = {}) {
 				// timestampTicks: Timespan from timeline start to note start
 				const { channel, durationTicks, pitch, timestampTicks, type, velocity, } = data;
 				const nowToEventInSecs = (timestampTicks - scanStart + nowToScanStart) * ticksToMsMultiplier * 0.001;
-				playSound(nowToEventInSecs, params.sample);
+				playSound(nowToEventInSecs, params.sample, pitch, velocity);
 			});
 		},
 

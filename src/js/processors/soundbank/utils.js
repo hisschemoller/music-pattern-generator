@@ -1,13 +1,17 @@
 
 
+const numVoices = 32;
 const buffers = {
   allIds: [],
   byId: {},
 };
+const voices = [];
+
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 export function initAudioFiles(samplesData) {
   if (buffers.allIds.length === 0) {
+    createVoices();
     samplesData.forEach(data => {
       if (data.value.endsWith('.wav')) {
         buffers.allIds.push(data.value);
@@ -34,4 +38,16 @@ export function playSound(nowToStartInSecs, bufferId) {
   source.buffer = buffers.byId[bufferId].buffer;
   source.connect(audioCtx.destination);
   source.start(audioCtx.currentTime + nowToStartInSecs);
+}
+function createVoices() {
+  for (let i = 0; i < numVoices; i++) {
+    const gain = audioCtx.createGain();
+    gain.connect(audioCtx.destination);
+
+    voices.push({
+      isPlaying: false,
+      gain,
+      source: null,
+    });
+  }
 }
