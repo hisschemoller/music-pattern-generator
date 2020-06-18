@@ -161,13 +161,15 @@ export function createObject3dController(obj3d, data, isConnectMode) {
   /**
    * Show animation of the pattern dot that is about to play.
    */
-  const startNoteAnimation = () => {
-    centerDot3d.scale.set(centerScale, centerScale, 1);
-    centerScale *= 0.90;
-    if (centerScale <= 0.05) {
-      centerDot3d.visible = false;
-      centerScale = 0;
-    }
+  const startNoteAnimation = (stepIndex, noteStartDelay, noteStopDelay) => {
+
+    // delay start of animation
+    setTimeout(() => {
+
+      // center dot
+      centerDot3d.visible = true;
+      centerScale = 1;
+    }, noteStartDelay);
   };
 
   /**
@@ -227,6 +229,20 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     points = [...points, points[0].clone()];
     
     redrawShape(necklace3d, points, colorHigh);
+  };
+
+  /**
+   * Update the current nacklace dot animations.
+   */
+  const updateNoteAnimation = () => {
+
+    // center dot
+    centerDot3d.scale.set(centerScale, centerScale, 1);
+    centerScale -= 0.06;
+    if (centerScale <= 0.05) {
+      centerDot3d.visible = false;
+      centerScale = 0;
+    }
   };
           
   /**
