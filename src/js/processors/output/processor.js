@@ -47,20 +47,20 @@ export function createProcessor(data, my = {}) {
 		 * Process events to happen in a time slice.
 		 * @param {Number} scanStart Timespan start in ticks from timeline start.
 		 * @param {Number} scanEnd   Timespan end in ticks from timeline start.
-		 * @param {Number} nowToScanStart Timespan from current timeline position to scanStart.
+		 * @param {Number} nowToScanStart Timespan from current timeline position to scanStart, in ticks.
 		 * @param {Number} ticksToMsMultiplier Duration of one tick in milliseconds.
 		 * @param {Number} offset Time from doc start to timeline start in ticks.
 		 */
 		process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset) {
-
-			// retrieve events waiting at the processor's input
-			const inputData = my.getInputData(),
-				origin = performance.now() - (offset * ticksToMsMultiplier),
-				n = inputData.length;
-			
 			if (midiOutput && midiOutput.state === 'connected') {
+
+				// retrieve events waiting at the processor's input
+				const inputData = my.getInputData();
+				const origin = performance.now() - (offset * ticksToMsMultiplier);
+				const n = inputData.length;
+
 				for (var i = 0; i < n; i++) {
-					const {  channel, durationTicks, pitch, timestampTicks, type, velocity, } = inputData[i];
+					const { channel, durationTicks, pitch, timestampTicks, type, velocity, } = inputData[i];
 
 					// item.timestampTicks is time since transport play started
 					const timestamp = origin + (timestampTicks * ticksToMsMultiplier);

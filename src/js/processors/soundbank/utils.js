@@ -6,6 +6,7 @@ const buffers = {
   byId: {},
 };
 const voices = [];
+let voiceIndex = 0;
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -35,15 +36,13 @@ export function initAudioFiles(samplesData) {
 
 export function playSound(nowToStartInSecs, bufferId, pitch, velocity) {
   const startTime = audioCtx.currentTime + nowToStartInSecs;
-  const voice = voices.shift();
-  voices.push(voice);
+  const voice = voices[voiceIndex];
+  voiceIndex = ++voiceIndex % numVoices;
 
   if (voice.isPlaying) {
     console.log('isPlaying');
     voice.source.stop();
   }
-
-  (pitch - 60) / 12
 
   voice.isPlaying = true;
   voice.gain.gain.setValueAtTime(velocity / 127, startTime);
@@ -54,7 +53,6 @@ export function playSound(nowToStartInSecs, bufferId, pitch, velocity) {
   voice.source.start(startTime);
   voice.source.onended = function() {
     voice.isPlaying = false;
-    console.log('ended');
   }
 }
 
