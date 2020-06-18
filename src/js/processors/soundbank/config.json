@@ -22,10 +22,10 @@
             "sample": {
                 "label": "Sample",
                 "type": "itemized",
-                "default": "none",
-                "value": "none",
+                "default": false,
+                "value": false,
                 "model": [
-                    { "label": "No sample", "value": "none" },
+                    { "label": "No sample", "value": false},
                     { "label": "Kick drum", "value": "367059__electronicmotion__kick-long-tr-8.wav" },
                     { "label": "Snare drum", "value": "252734__crispydinner__crdn-upgrsn-004.wav" },
                     { "label": "Closed Hi-hat", "value": "802__bdu__closehatac.wav" }

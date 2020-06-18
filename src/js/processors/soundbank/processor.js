@@ -44,6 +44,9 @@ export function createProcessor(data, my = {}) {
 		 * @param {Number} offset Time from doc start to timeline start in ticks.
 		 */
 		process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset) {
+			if (!params.sample) {
+				return;
+			}
 
 			// retrieve events waiting at the processor's input
 			const inputData = my.getInputData();

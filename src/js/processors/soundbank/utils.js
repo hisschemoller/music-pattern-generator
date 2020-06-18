@@ -14,7 +14,7 @@ export function initAudioFiles(samplesData) {
   if (buffers.allIds.length === 0) {
     createVoices();
     samplesData.forEach(data => {
-      if (data.value.endsWith('.wav')) {
+      if (data.value) {
         buffers.allIds.push(data.value);
         buffers.byId[data.value] = {
           buffer: null,
