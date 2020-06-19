@@ -22,10 +22,10 @@
             "sample": {
                 "label": "Sample",
                 "type": "itemized",
-                "default": false,
-                "value": false,
+                "default": "475901__mattiagiovanetti__metronome.wav",
+                "value": "475901__mattiagiovanetti__metronome.wav",
                 "model": [
-                    { "label": "No sample", "value": false},
+                    { "label": "Metronome", "value": "475901__mattiagiovanetti__metronome.wav"},
                     { "label": "Kick drum", "value": "367059__electronicmotion__kick-long-tr-8.wav" },
                     { "label": "Snare drum", "value": "252734__crispydinner__crdn-upgrsn-004.wav" },
                     { "label": "Closed Hi-hat", "value": "802__bdu__closehatac.wav" }
