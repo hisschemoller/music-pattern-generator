@@ -13,6 +13,7 @@ export function createProcessor(data, my = {}) {
 			const { processors } = getState();
 			document.addEventListener(STATE_CHANGE, handleStateChange);
 			updateAllParams(processors.byId[my.id].params.byId);
+			updateSampleParameter(getState());
 			initAudioFiles(processors.byId[my.id].params.byId.sample.model);
 		},
 
@@ -28,6 +29,7 @@ export function createProcessor(data, my = {}) {
 						updateAllParams(state.processors.byId[my.id].params.byId);
 						switch (action.paramKey) {
 							case 'sample':
+								updateSampleParameter(state);
 								break;
 						}
 					}
@@ -44,9 +46,6 @@ export function createProcessor(data, my = {}) {
 		 * @param {Number} offset Time from doc start to timeline start in ticks.
 		 */
 		process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset) {
-			if (!params.sample) {
-				return;
-			}
 
 			// retrieve events waiting at the processor's input
 			const inputData = my.getInputData();
@@ -63,6 +62,16 @@ export function createProcessor(data, my = {}) {
 
 		updateAllParams = function(parameters) {
 			params.sample = parameters.sample.value;
+		},
+		
+		/**
+		 * If the sample changes update the processor's name as well.
+		 * @param {Object} state Application state.
+		 */
+		updateSampleParameter = state => {
+			const param = state.processors.byId[my.id].params.byId.sample;
+			const label = param.model.find(item => item.value === param.value).label;
+			dispatch(getActions().changeParameter(my.id, 'name', label));
 		};
 
 	that = createMIDIProcessorBase(data, that, my);

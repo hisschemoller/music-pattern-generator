@@ -14,22 +14,20 @@ export function initAudioFiles(samplesData) {
   if (buffers.allIds.length === 0) {
     createVoices();
     samplesData.forEach(data => {
-      if (data.value) {
-        buffers.allIds.push(data.value);
-        buffers.byId[data.value] = {
-          buffer: null,
-        };
+      buffers.allIds.push(data.value);
+      buffers.byId[data.value] = {
+        buffer: null,
+      };
 
-        fetch(`audio/${data.value}`).then(response => {
-          if (response.status === 200) {
-            response.arrayBuffer().then(arrayBuffer => {
-              audioCtx.decodeAudioData(arrayBuffer).then((audioBuffer) => {
-                buffers.byId[data.value].buffer = audioBuffer;
-              });
-            })
-          }
-        });
-      }
+      fetch(`audio/${data.value}`).then(response => {
+        if (response.status === 200) {
+          response.arrayBuffer().then(arrayBuffer => {
+            audioCtx.decodeAudioData(arrayBuffer).then((audioBuffer) => {
+              buffers.byId[data.value].buffer = audioBuffer;
+            });
+          })
+        }
+      });
     });
   }
 }
