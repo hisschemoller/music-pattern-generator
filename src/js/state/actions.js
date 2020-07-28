@@ -59,12 +59,12 @@ export default {
 	cableDragStart: (connectorId, processorId, x, y, z) => ({ type: CABLE_DRAG_START, connectorId, processorId, x, y, z, }),
 
 	CHANGE_PARAMETER,
-	changeParameter: (processorID, paramKey, paramValue) => {
+	changeParameter: (processorId, paramKey, paramValue) => {
 		return (dispatch, getState, getActions) => {
 			const { processors } = getState();
-			const param = processors.byId[processorID].params.byId[paramKey];
-			if (paramValue !== param.value) {
-				return { type: CHANGE_PARAMETER, processorID, paramKey, paramValue };
+			const { value } = processors.byId[processorId].params.byId[paramKey];
+			if (paramValue !== value) {
+				return { type: CHANGE_PARAMETER, processorId, paramKey, paramValue };
 			}
 		};
 	},
@@ -115,7 +115,7 @@ export default {
 	},
 
 	CREATE_MIDI_PORT,
-	createMIDIPort: (portID, data) => { return { type: CREATE_MIDI_PORT, portID, data } },
+	createMIDIPort: (portId, data) => { return { type: CREATE_MIDI_PORT, portId, data } },
 
 	CREATE_PROCESSOR,
 	createProcessor: data => {
@@ -140,18 +140,7 @@ export default {
 	deleteProcessor: id => ({ type: DELETE_PROCESSOR, id }),
 
 	DISCONNECT_PROCESSORS,
-	disconnectProcessors: id => {
-		return (dispatch, getState, getActions) => {
-			const { connections, processors, } = getState();
-			const connection = connections.byId[id];
-			const sourceProcessor = processors.byId[connection.sourceProcessorID];
-			const destinationProcessor = processors.byId[connection.destinationProcessorID];
-
-			// disconnect the processors
-			dispatch(getActions().disconnectProcessors2(id));
-		}
-	},
-	disconnectProcessors2: id => ({ type: DISCONNECT_PROCESSORS, id }),
+	disconnectProcessors: id => ({ type: DISCONNECT_PROCESSORS, id }),
 
 	DRAG_ALL_PROCESSORS,
 	dragAllProcessors: (x, y) => ({ type: DRAG_ALL_PROCESSORS, x, y }),
@@ -351,7 +340,7 @@ export default {
 	},
 
 	RECREATE_PARAMETER,
-	recreateParameter: (processorID, paramKey, paramObj) => ({ type: RECREATE_PARAMETER, processorID, paramKey, paramObj }),
+	recreateParameter: (processorId, paramKey, paramObj) => ({ type: RECREATE_PARAMETER, processorId, paramKey, paramObj }),
 
 	SELECT_PROCESSOR,
 	selectProcessor: id => ({ type: SELECT_PROCESSOR, id }),
@@ -377,9 +366,8 @@ export default {
 			// copy the port settings defined in the project
 			const projectPorts = { ...data.ports };
 
-			// clear the project's port settings
-			data.ports.allIds = [];
-			data.ports.byId = {};
+			// clear the loaded project's port settings
+			data.ports = { allIds: [], byId: {}, };
 
 			// add all existing ports to the project data
 			existingPorts.allIds.forEach(existingPortID => {
@@ -426,10 +414,7 @@ export default {
 	},
 
 	SET_TEMPO,
-	setTempo: value => ({ 
-		type: SET_TEMPO, 
-		value: Math.round((value * 100)) / 100,
-	}),
+	setTempo: value => ({ type: SET_TEMPO, value: Math.round((value * 100)) / 100 }),
 
 	SET_THEME,
 	setTheme: themeName => ({ type: SET_THEME, themeName }),
@@ -444,7 +429,7 @@ export default {
 
 			// create parameter key value objects for all processors
 			const snapshot = processors.allIds.reduce((accumulator, processorId) => {
-				const params = processors.byId[processorId].params;
+				const { params } = processors.byId[processorId].params;
 				return {
 					...accumulator,
 					[processorId]: params.allIds.reduce((acc, paramId) => {
@@ -460,7 +445,7 @@ export default {
 	},
 
 	UPDATE_MIDI_PORT,
-	updateMIDIPort: (portID, data) => { return { type: UPDATE_MIDI_PORT, portID, data } },
+	updateMIDIPort: (portId, data) => { return { type: UPDATE_MIDI_PORT, portId, data } },
 
 	TOGGLE_CONNECT_MODE,
 	toggleConnectMode: () => ({ type: TOGGLE_CONNECT_MODE }),
@@ -470,6 +455,7 @@ export default {
 
 	TOGGLE_MIDI_LEARN_TARGET,
 	toggleMIDILearnTarget: (processorID, parameterKey) => {
+		console.log(processorID, parameterKey);
 		return (dispatch, getState, getActions) => {
 			const { learnTargetProcessorID, learnTargetParameterKey } = getState();
 			if (processorID === learnTargetProcessorID && parameterKey === learnTargetParameterKey) {

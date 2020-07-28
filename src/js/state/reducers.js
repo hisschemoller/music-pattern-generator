@@ -154,16 +154,16 @@ export default function reduce(state = initialState, action, actions = {}) {
 		}
 		
 		case actions.CHANGE_PARAMETER: {
-			const { paramKey, paramValue, processorID } = action;
+			const { paramKey, paramValue, processorId } = action;
 			newState = { 
 				...state,
-				activeProcessorID: processorID,
+				activeProcessorID: processorId,
 				snapshotIndex: null,
 				processors: {
 					byId: { ...state.processors.byId },
 					allIds: [ ...state.processors.allIds ]
 				} };
-			const param = newState.processors.byId[processorID].params.byId[paramKey];
+			const param = newState.processors.byId[processorId].params.byId[paramKey];
 			switch (param.type) {
 				case 'integer':
 					param.value = Math.max(param.min, Math.min(paramValue, param.max));
@@ -204,24 +204,22 @@ export default function reduce(state = initialState, action, actions = {}) {
 			return newState;
 		}
 
-		case actions.CREATE_MIDI_PORT:
+		case actions.CREATE_MIDI_PORT: {
+			const { data, portId, } = action;
 			return {
 				...state,
 				ports: {
-					allIds: [ ...state.ports.allIds, action.portID ],
-					byId: { 
-						...state.ports.byId,
-						[action.portID]: action.data
-					},
+					allIds: [ ...state.ports.allIds, portId ],
+					byId: { ...state.ports.byId, [portId]: data },
 				},
 			};
+		}
 
-		case actions.CREATE_PROJECT:
-			return { 
-				...initialState, 
-				...(action.data || {}),
-				transport: initialState.transport,
-			};
+		case actions.CREATE_PROJECT: {
+			const { data = {}, } = action;
+			const { transport, } = initialState;
+			return { ...initialState, ...data, transport, };
+		}
 		
 		case actions.DELETE_PROCESSOR: {
 			const index = state.processors.allIds.indexOf(action.id);
@@ -291,46 +289,51 @@ export default function reduce(state = initialState, action, actions = {}) {
 			orderProcessors(newState);
 			return newState;
 
-		case actions.DRAG_ALL_PROCESSORS:
+		case actions.DRAG_ALL_PROCESSORS: {
+			const { x, y, } = action;
 			return {
 				...state,
 				processors: {
 					allIds: [ ...state.processors.allIds ],
-					byId: Object.values(state.processors.byId).reduce((accumulator, processor) => {
-						accumulator[processor.id] = { 
-							...processor, 
-							positionX: processor.positionX + action.x, 
-							positionY: processor.positionY + action.y };
-						return accumulator;
-					}, {})
+					byId: state.processors.allIds.reduce((accumulator, processorId) => {
+						const processor = state.processors.byId[processorId];
+						return { 
+							...accumulator,
+							[processorId]: { 
+								...processor, 
+								positionX: processor.positionX + x, 
+								positionY: processor.positionY + y,
+							},
+						};
+					}, {}),
 				}
 			};
+		}
 		
-		case actions.DRAG_SELECTED_PROCESSOR:
+		case actions.DRAG_SELECTED_PROCESSOR: {
+			const { x, y, z, } = action;
 			return {
 				...state,
 				processors: {
 					allIds: [ ...state.processors.allIds ],
-					byId: Object.values(state.processors.byId).reduce((accumulator, processor) => {
-						if (processor.id === state.selectedId) {
-							accumulator[processor.id] = { ...processor, positionX: action.x, positionY: action.y, positionZ: action.z };
-						} else {
-							accumulator[processor.id] = { ...processor };
+					byId: state.processors.allIds.reduce((accumulator, processorId) => {
+						const processor = state.processors.byId[processorId];
+						if (processorId === state.selectedId) {
+							return { ...accumulator, [processorId]: { ...processor, positionX: x, positionY: y, positionZ: z } };
 						}
-						return accumulator;
-					}, {})
+						return { ...accumulator, [processorId]: { ...processor } };
+					}, {}),
 				}
 			};
-		
-		case actions.LIBRARY_DROP:
-			return {
-				...state,
-				libraryDropPosition: {
-					type: action.processorType,
-					x: action.x,
-					y: action.y,
-				},
+		}
+
+		case actions.LIBRARY_DROP: {
+			const { processorType, x, y, } = action;
+			return { 
+				...state, 
+				libraryDropPosition: { type: processorType, x, y, },
 			};
+		}
 
 		case actions.LOAD_SNAPSHOT: {
 			const { index, } = action;
@@ -375,21 +378,39 @@ export default function reduce(state = initialState, action, actions = {}) {
 			};
 		}
 		
-		case actions.RECREATE_PARAMETER:
-			newState = { 
+		case actions.RECREATE_PARAMETER: {
+			const { paramKey, paramObj, processorId } = action;
+			return {
 				...state,
 				processors: {
-					byId: { ...state.processors.byId },
 					allIds: [ ...state.processors.allIds ],
-				} };
-			
-			// clone parameter, overwrite with new settings.
-			newState.processors.byId[action.processorID].params.byId[action.paramKey] = {
-				...newState.processors.byId[action.processorID].params.byId[action.paramKey],
-				...action.paramObj,
+					byId: state.processors.allIds.reduce((accumulator, procId) => {
+						if (procId === processorId) {
+							const processor = state.processors.byId[procId];
+							return { 
+								...accumulator, 
+								[procId]: { 
+									...processor,
+									params: {
+										allIds: [ ...processor.params.allIds ],
+										byId: processor.params.allIds.reduce((acc, paramId) => {
+											if (paramId === paramKey) {
+
+												// clone parameter, overwrite with new settings.
+												return { ...acc, [paramId]: { ...processor.params.byId[paramId], ...paramObj }, };
+											} else {
+												return { ...acc, [paramId]: processor.params.byId[paramId] };
+											}
+										}, {}),
+									},
+							 }, 
+							};
+						}
+						return { ...accumulator, [procId]: state.processors.byId[procId] };
+					}, {}),
+				},
 			};
-			
-			return newState;
+		}
 		
 		case actions.SELECT_PROCESSOR:
 			return { ...state, selectedId: action.id };
@@ -425,41 +446,37 @@ export default function reduce(state = initialState, action, actions = {}) {
 		
 		case actions.STORE_SNAPSHOT: {
 			const { index, snapshot, } = action;
-			const snapshots = [ ...state.snapshots, ];
-			snapshots[index] = snapshot;
 			return {
 				...state,
 				snapshotIndex: index,
-				snapshots,
+				snapshots: state.snapshots.reduce((accumulator, snap, i) => {
+					return [ ...accumulator, (i === index) ? snapshot : snap ];
+				}, []),
 			};
 		}
 		
 		case actions.TOGGLE_CONNECT_MODE:
-			return {
-				...state,
-				connectModeActive: !state.connectModeActive,
-			};
+			return { ...state, connectModeActive: !state.connectModeActive };
 		
 		case actions.TOGGLE_MIDI_LEARN_MODE:
 			return { ...state, learnModeActive: !state.learnModeActive };
 		
-		case actions.TOGGLE_MIDI_LEARN_TARGET:
-			return { 
-				...state, 
-				learnTargetProcessorID: action.processorID, 
-				learnTargetParameterKey: action.parameterKey 
-			};
+		case actions.TOGGLE_MIDI_LEARN_TARGET: {
+			const { parameterKey: learnTargetParameterKey, processorID: learnTargetProcessorID } = action;
+			return { ...state, learnTargetParameterKey, learnTargetProcessorID };
+		}
 		
-		case actions.TOGGLE_MIDI_PREFERENCE:
+		case actions.TOGGLE_MIDI_PREFERENCE: {
+			const { id, isEnabled, preferenceName } = action;
 			return {
 				...state,
 				ports: {
 					allIds: [ ...state.ports.allIds ],
-					byId: Object.values(state.ports.allIds).reduce((accumulator, portID) => {
-						if (portID === action.id) {
-							accumulator[portID] = { 
+					byId: state.ports.allIds.reduce((accumulator, portID) => {
+						if (portID === id) {
+							accumulator[portID] = {
 								...state.ports.byId[portID],
-								[action.preferenceName]: typeof action.isEnabled === 'boolean' ? isEnabled : !state.ports.byId[action.id][action.preferenceName]
+								[preferenceName]: (typeof isEnabled === 'boolean') ? isEnabled : !state.ports.byId[id][preferenceName],
 							};
 						} else {
 							accumulator[portID] = { ...state.ports.byId[portID] };
@@ -468,37 +485,41 @@ export default function reduce(state = initialState, action, actions = {}) {
 					}, {}),
 				},
 			};
+		}
 
 		case actions.TOGGLE_SNAPSHOTS_MODE:
 			return { ...state, snapshotsEditModeActive: !state.snapshotsEditModeActive };
 
-		case actions.ADD_PROCESSOR:
-			newState = { 
+		case actions.ADD_PROCESSOR: {
+			const { data } = action; 
+			const newState = { 
 				...state,
 				showSettingsPanel: true,
 				processors: {
+					allIds: [ ...state.processors.allIds ],
 					byId: { 
 						...state.processors.byId,
-						[action.data.id]: action.data
+						[data.id]: data,
 					},
-					allIds: [ ...state.processors.allIds ]
-				} };
+				},
+			};
 
 			// array index depends on processor type
 			let numInputProcessors = newState.processors.allIds.filter(id => { newState.processors.byId[id].type === 'input' }).length;
-			switch (action.data.type) {
+			switch (data.type) {
 				case 'input':
-					newState.processors.allIds.unshift(action.data.id);
+					newState.processors.allIds.unshift(data.id);
 					numInputProcessors++;
 					break;
 				case 'output':
-					newState.processors.allIds.push(action.data.id);
+					newState.processors.allIds.push(data.id);
 					break;
 				default:
-					newState.processors.allIds.splice(numInputProcessors, 0, action.data.id);
+					newState.processors.allIds.splice(numInputProcessors, 0, data.id);
 			}
 			
 			return newState;
+		}
 		
 		case actions.TOGGLE_PANEL:
 			return {
@@ -524,28 +545,29 @@ export default function reduce(state = initialState, action, actions = {}) {
 					byId: state.assignments.allIds.reduce((accumulator, assignID) => {
 						const assignment = state.assignments.byId[assignID];
 						if (assignment.processorID !== action.processorID || assignment.paramKey !== action.paramKey) {
-							accumulator[assignID] = {...assignment};
+							accumulator[assignID] = { ...assignment };
 						}
 						return accumulator;
 					}, {}),
 				}
 			};
 
-		case actions.UPDATE_MIDI_PORT:
+		case actions.UPDATE_MIDI_PORT: {
+			const { data, portId } = action;
 			return {
 				...state,
 				ports: {
 					allIds: [ ...state.ports.allIds ],
-					byId: Object.values(state.ports.byId).reduce((returnObject, port) => {
-						if (port.id === action.portID) {
-							returnObject[port.id] = { ...port, ...action.data };
-						} else {
-							returnObject[port.id] = { ...port };
+					byId: state.ports.allIds.reduce((accumulator, pId) => {
+						const port = state.ports.byId[pId];
+						if (pId === portId) {
+							return { ...accumulator, [pId]: { ...port, ...data } };
 						}
-						return returnObject;
-					}, {})
+						return { ...accumulator, [pId]: { ...port }  };
+					}, {}),
 				},
 			};
+		}
 
 		default:
 			return state ? state : initialState;
