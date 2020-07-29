@@ -155,30 +155,34 @@ export default function reduce(state = initialState, action, actions = {}) {
 		
 		case actions.CHANGE_PARAMETER: {
 			const { paramKey, paramValue, processorId } = action;
-			newState = { 
+			return { 
 				...state,
 				activeProcessorID: processorId,
 				snapshotIndex: null,
 				processors: {
-					byId: { ...state.processors.byId },
-					allIds: [ ...state.processors.allIds ]
-				} };
-			const param = newState.processors.byId[processorId].params.byId[paramKey];
-			switch (param.type) {
-				case 'integer':
-					param.value = Math.max(param.min, Math.min(paramValue, param.max));
-					break;
-				case 'boolean':
-					param.value = !!paramValue;
-					break;
-				case 'itemized':
-					param.value = paramValue;
-					break;
-				case 'string':
-					param.value = paramValue;
-					break;
-			}
-			return newState;
+					allIds: [ ...state.processors.allIds ],
+					byId: state.processors.allIds.reduce((accumulator, procId) => {
+						if (pId === processorId) {
+							const processor = state.processors.byId[procId];
+							return { ...accumulator, [procId]: {
+									...processor,
+									params: {
+										allIds: [ ...processor.params.allIds ],
+										byId: processor.params.allIds.reduce((acc2, paramId) => {
+											const param = processor.params.byId[paramId];
+											if (paramId === paramKey) {
+												return { ...acc2, [paramId]: { ...param, value: paramValue, }, };
+											}
+											return { ...acc2, [paramId]: param };
+										}, {}),
+									},
+								}
+							};
+						}
+						return { ...accumulator, [procId]: state.processors.byId[procId] };
+					}, {}),
+				}
+			};
 		}
 
 		case actions.CREATE_CONNECTION: {
@@ -222,16 +226,17 @@ export default function reduce(state = initialState, action, actions = {}) {
 		}
 		
 		case actions.DELETE_PROCESSOR: {
-			const index = state.processors.allIds.indexOf(action.id);
+			const { id: processorId } = action;
+			const index = state.processors.allIds.indexOf(processorId);
 			
 			// delete the processor
-			newState = { 
+			const newState = { 
 				...state,
 				processors: {
 					byId: { ...state.processors.byId },
-					allIds: state.processors.allIds.filter(id => id !== action.id)
+					allIds: state.processors.allIds.filter(id => id !== processorId)
 				} };
-			delete newState.processors.byId[action.id];
+			delete newState.processors.byId[processorId];
 			
 			// delete all connections to and from the deleted processor
 			newState.connections = {
@@ -241,7 +246,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 			for (let i = newState.connections.allIds.length -1, n = 0; i >= n; i--) {
 				const connectionID = newState.connections.allIds[i];
 				const connection = newState.connections.byId[connectionID];
-				if (connection.sourceProcessorID === action.id || connection.destinationProcessorID === action.id) {
+				if (connection.sourceProcessorID === processorId || connection.destinationProcessorID === processorId) {
 					newState.connections.allIds.splice(i, 1);
 					delete newState.connections.byId[connectionID];
 				}
@@ -249,7 +254,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 
 			// select the next processor, if any, or a previous one
 			let newIndex;
-			if (newState.selectedId === action.id && newState.processors.allIds.length) {
+			if (newState.selectedId === processorId && newState.processors.allIds.length) {
 				if (newState.processors.allIds[index]) {
 					newIndex = index;
 				} else if (index > 0) {
@@ -266,19 +271,20 @@ export default function reduce(state = initialState, action, actions = {}) {
 			return newState;
 		}
 		
-		case actions.DISCONNECT_PROCESSORS:
-			newState =  {
+		case actions.DISCONNECT_PROCESSORS: {
+			const { id } = action;
+			const newState = {
 				...state,
 				connections: {
-					allIds: state.connections.allIds.reduce((accumulator, connectionID) => {
-						if (connectionID !== action.id) {
-							accumulator.push(connectionID)
+					allIds: state.connections.allIds.reduce((accumulator, connectionId) => {
+						if (connectionId !== id) {
+							return { ...accumulator, connectionId };
 						}
 						return accumulator;
 					}, []),
-					byId: Object.values(state.connections.allIds).reduce((accumulator, connectionID) => {
-						if (connectionID !== action.id) {
-							accumulator[connectionID] = { ...state.connections.byId[connectionID] };
+					byId: state.connections.allIds.reduce((accumulator, connectionId) => {
+						if (connectionId !== id) {
+							return { ...accumulator, [connectionId]: { ...state.connections.byId[connectionId] }, };
 						}
 						return accumulator;
 					}, {}),
@@ -288,6 +294,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 			// reorder the processors
 			orderProcessors(newState);
 			return newState;
+		}
 
 		case actions.DRAG_ALL_PROCESSORS: {
 			const { x, y, } = action;

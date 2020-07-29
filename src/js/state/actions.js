@@ -59,10 +59,25 @@ export default {
 	cableDragStart: (connectorId, processorId, x, y, z) => ({ type: CABLE_DRAG_START, connectorId, processorId, x, y, z, }),
 
 	CHANGE_PARAMETER,
-	changeParameter: (processorId, paramKey, paramValue) => {
+	changeParameter: (processorId, paramKey, paramValueRaw) => {
 		return (dispatch, getState, getActions) => {
 			const { processors } = getState();
-			const { value } = processors.byId[processorId].params.byId[paramKey];
+			const { max, min, type, value } = processors.byId[processorId].params.byId[paramKey];
+			let paramValue;
+			switch (type) {
+				case 'integer':
+					paramValue = Math.max(min, Math.min(paramValueRaw, max));
+					break;
+				case 'boolean':
+					paramValue = !!paramValueRaw;
+					break;
+				case 'itemized':
+					paramValue = paramValueRaw;
+					break;
+				case 'string':
+					paramValue = paramValueRaw;
+					break;
+			}
 			if (paramValue !== value) {
 				return { type: CHANGE_PARAMETER, processorId, paramKey, paramValue };
 			}
