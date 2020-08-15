@@ -162,7 +162,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 				processors: {
 					allIds: [ ...state.processors.allIds ],
 					byId: state.processors.allIds.reduce((accumulator, procId) => {
-						if (pId === processorId) {
+						if (procId === processorId) {
 							const processor = state.processors.byId[procId];
 							return { ...accumulator, [procId]: {
 									...processor,

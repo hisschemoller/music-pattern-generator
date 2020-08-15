@@ -38,7 +38,7 @@ export default function createBaseSettingView(specs, my) {
 			const { state, action, actions, } = e.detail;
 			switch (action.type) {
 				case actions.CHANGE_PARAMETER:
-					if (action.processorID === my.processorID && 
+					if (action.processorId === my.processorID && 
 						action.paramKey === my.key) {
 						my.setValue(state.processors.byId[my.processorID].params.byId[my.key].value);
 					}
@@ -49,7 +49,7 @@ export default function createBaseSettingView(specs, my) {
 					break;
 			
 				case actions.RECREATE_PARAMETER:
-					if (action.processorID === my.processorID && 
+					if (action.processorId === my.processorID && 
 						action.paramKey === my.key) {
 						my.data = state.processors.byId[my.processorID].params.byId[my.key];
 						my.initData();
@@ -67,8 +67,18 @@ export default function createBaseSettingView(specs, my) {
 						my.changeRemoteState(state);
 					}
 					break;
+
+				// case actions.TOGGLE_MIDI_PREFERENCE:
+				// 	if (my.key === 'port') {
+				// 		console.log('setting', my.key, action);
+				// 		my.data = state.processors.byId[my.processorID].params.byId[my.key];
+				// 		my.initData();
+				// 		my.setValue(state.processors.byId[my.processorID].params.byId[my.key].value);
+				// 	}
+				// 	break;
 			}
 		};
+
 
 	my = my || {};
 	my.key = specs.key;
