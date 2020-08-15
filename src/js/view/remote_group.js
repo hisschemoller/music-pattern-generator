@@ -6,7 +6,7 @@ import createRemoteItemView from './remote_item.js';
  * The items are grouped by processor.
  */
 export default function createRemoteGroupView(data) {
-	const { parentEl, processorID, state, } = data;
+	const { parentEl, processorId, state, } = data;
 
   let el,
 		listEl,
@@ -53,7 +53,7 @@ export default function createRemoteGroupView(data) {
 			const { state, action, actions, } = e.detail;
 			switch (action.type) {
 				case actions.CHANGE_PARAMETER:
-					if (action.processorID === processorID && action.paramKey === 'name') {
+					if (action.processorId === processorId && action.paramKey === 'name') {
 						setName(state);
 					}
 					break;
@@ -65,14 +65,14 @@ export default function createRemoteGroupView(data) {
 		 */
 		updateViews = function(state) {
 			const { assignments, processors, } = state;
-			if (processorID === 'snapshots') {
+			if (processorId === 'snapshots') {
 				
 				// delete views not in the assignments anymore
 				for (let i = views.allIds.length - 1; i >= 0; i--) {
 					const viewId = views.allIds[i];
-					const assignment = assignments.allIds.find(assignID => {
-						const { paramKey, processorID } = assignments.byId[assignID]; 
-						return processorID === 'snapshots' && paramKey === viewId;
+					const assignment = assignments.allIds.find(assignId => {
+						const { paramKey, processorId } = assignments.byId[assignId]; 
+						return processorId === 'snapshots' && paramKey === viewId;
 					});
 					if (!assignment) {
 						removeView(viewId);
@@ -80,9 +80,9 @@ export default function createRemoteGroupView(data) {
 				}
 
 				// create views for new assignments
-				assignments.allIds.forEach(assignID => {
-					const { paramKey, processorID, remoteType, remoteChannel, remoteValue } = assignments.byId[assignID];
-					if (processorID === 'snapshots' && !views.allIds.includes(paramKey)) {
+				assignments.allIds.forEach(assignId => {
+					const { paramKey, processorId, remoteType, remoteChannel, remoteValue } = assignments.byId[assignId];
+					if (processorId === 'snapshots' && !views.allIds.includes(paramKey)) {
 						const label = `Snapshot ${parseInt(paramKey, 10) + 1}`;
 						addView(paramKey, label, remoteType, remoteChannel, remoteValue);
 					}
@@ -95,20 +95,20 @@ export default function createRemoteGroupView(data) {
 			} else {
 
 				// a processor
-				processors.byId[processorID].params.allIds.forEach(paramKey => {
+				processors.byId[processorId].params.allIds.forEach(paramKey => {
 				
 					// search assignment for this parameter
-					const assignmentID = assignments.allIds.find(assignID => {
-						const { paramKey: key, processorID : id } = assignments.byId[assignID];
-						return id === processorID && key === paramKey;
+					const assignmentId = assignments.allIds.find(assignId => {
+						const { paramKey: key, processorId : id } = assignments.byId[assignId];
+						return id === processorId && key === paramKey;
 					});
-					const assignment = assignments.byId[assignmentID];
+					const assignment = assignments.byId[assignmentId];
 	
 					// create or delete the parameter's view
 					const view = views.byId[paramKey];
 					if (assignment && !view) {
 						const { remoteType, remoteChannel, remoteValue } = assignment;
-						const { label } = processors.byId[processorID].params.byId[paramKey];
+						const { label } = processors.byId[processorId].params.byId[paramKey];
 						addView(paramKey, label, remoteType, remoteChannel, remoteValue);
 					} else if (!assignment && view) {
 						removeView(paramKey);
@@ -132,7 +132,7 @@ export default function createRemoteGroupView(data) {
 			views.byId[paramKey] = createRemoteItemView({
 				paramKey,
 				paramLabel,
-				processorID,
+				processorId,
 				remoteType,
 				remoteChannel,
 				remoteValue,
@@ -156,7 +156,7 @@ export default function createRemoteGroupView(data) {
 		 * @param {Object} state Application state.
 		 */
 		setName = function(state) {
-			const name = processorID === 'snapshots' ? 'Snapshots' : state.processors.byId[processorID].params.byId.name.value;
+			const name = processorId === 'snapshots' ? 'Snapshots' : state.processors.byId[processorId].params.byId.name.value;
 			el.querySelector('.remote__group-header-label').innerHTML = name;
 		};
     

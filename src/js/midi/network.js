@@ -32,10 +32,10 @@ function addEventListeners() {
  * @param {Object} state App state.
  */
 function connectProcessors(state) {
-	state.connections.allIds.forEach(connectionID => {
-		const connection = state.connections.byId[connectionID];
-		const sourceProcessor = processors.find(processor => processor.getID() === connection.sourceProcessorID);
-		const destinationProcessor = processors.find(processor => processor.getID() === connection.destinationProcessorID);
+	state.connections.allIds.forEach(connectionId => {
+		const connection = state.connections.byId[connectionId];
+		const sourceProcessor = processors.find(processor => processor.getID() === connection.sourceProcessorId);
+		const destinationProcessor = processors.find(processor => processor.getID() === connection.destinationProcessorId);
 		if (!sourceProcessor.getDestinations().includes(destinationProcessor)) {
 			sourceProcessor.connect(destinationProcessor);
 		}
@@ -69,7 +69,7 @@ function deleteProcessors(state) {
 		const processor = processors[i];
 		
 		// search for the processor in the state
-		const processorData = state.processors.allIds.find(processorID => processorID === processor.getID());
+		const processorData = state.processors.allIds.find(processorId => processorId === processor.getID());
 
 		// remove processor if it doesn't exist in the state
 		if (!processorData) {
@@ -94,10 +94,10 @@ function disconnectProcessors(state) {
 			const destinationProcessors = sourceProcessor.getDestinations();
 			destinationProcessors.forEach(destinationProcessor => {
 				let exists = false;
-				state.connections.allIds.forEach(connectionID => {
-					const connection = state.connections.byId[connectionID];
-					if (connection.sourceProcessorID === sourceProcessor.getID() &&
-						connection.destinationProcessorID === destinationProcessor.getID()) {
+				state.connections.allIds.forEach(connectionId => {
+					const connection = state.connections.byId[connectionId];
+					if (connection.sourceProcessorId === sourceProcessor.getID() &&
+						connection.destinationProcessorId === destinationProcessor.getID()) {
 						exists = true;
 					}
 				});

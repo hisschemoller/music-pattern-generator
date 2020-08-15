@@ -22,7 +22,7 @@ export default function createStringSettingView(specs, my) {
 		onChange = function(e) {
 			e.preventDefault();
 			dispatch(getActions().changeParameter(
-				my.processorID, 
+				my.processorId, 
 				my.key, 
 				e.target.value));
 		},

@@ -32,7 +32,7 @@ export default function createIntegerSettingView(specs, my) {
 			
 			onChange = function(e) {
 				dispatch(getActions().changeParameter(
-					my.processorID, 
+					my.processorId, 
 					my.key, 
 					parseInt(e.target.value, 10)));
 			},

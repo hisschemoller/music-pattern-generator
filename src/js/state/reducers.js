@@ -9,15 +9,15 @@ const userInterfaceInitialState = {
 	cableDrag: {
 		active: false,
 		source: {
-			processorID: null,
-			connectorID: null,
+			processorId: null,
+			connectorId: null,
 			x: 0,
 			y: 0,
 			z: 0,
 		},
 		destination: {
-			processorID: null,
-			connectorID: null,
+			processorId: null,
+			connectorId: null,
 			x: 0,
 			y: 0,
 			z: 0,
@@ -28,7 +28,7 @@ const userInterfaceInitialState = {
 		x: 0,
 		y: 0,
 	},
-	activeProcessorID: null,
+	activeProcessorId: null,
 };
 
 /**
@@ -53,7 +53,7 @@ const initialState = {
 	connectModeActive: false,
 	learnModeActive: false,
 	learnTargetParameterKey: null,
-	learnTargetProcessorID: null,
+	learnTargetProcessorId: null,
 	ports: {
 		allIds: [],
 		byId: {},
@@ -87,18 +87,18 @@ export default function reduce(state = initialState, action, actions = {}) {
 	switch(action.type) {
 
 		case actions.ASSIGN_EXTERNAL_CONTROL: {
-			const { assignID, processorID, paramKey, remoteType, remoteChannel, remoteValue, } = action;
+			const { assignId, processorId, paramKey, remoteType, remoteChannel, remoteValue, } = action;
 			return {
 				...state,
 				assignments: {
-					allIds: [...state.assignments.allIds, assignID],
+					allIds: [...state.assignments.allIds, assignId],
 					byId: {
 						...state.assignments.byId,
-						[assignID]: {
+						[assignId]: {
 							remoteType,
 							remoteChannel,
 							remoteValue,
-							processorID,
+							processorId,
 							paramKey,
 						},
 					},
@@ -157,7 +157,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 			const { paramKey, paramValue, processorId } = action;
 			return { 
 				...state,
-				activeProcessorID: processorId,
+				activeProcessorId: processorId,
 				snapshotIndex: null,
 				processors: {
 					allIds: [ ...state.processors.allIds ],
@@ -186,16 +186,16 @@ export default function reduce(state = initialState, action, actions = {}) {
 		}
 
 		case actions.CREATE_CONNECTION: {
-			const { connectionID, destinationConnectorID, destinationProcessorID, sourceConnectorID, sourceProcessorID, } = action;
+			const { connectionId, destinationConnectorId, destinationProcessorId, sourceConnectorId, sourceProcessorId, } = action;
 			
 			// add the new connection
 			const newState = {
 				...state,
 				connections: {
-					byId: { ...state.connections.byId, [connectionID]: {
-						destinationConnectorID, destinationProcessorID, sourceConnectorID, sourceProcessorID,
+					byId: { ...state.connections.byId, [connectionId]: {
+						destinationConnectorId, destinationProcessorId, sourceConnectorId, sourceProcessorId,
 					}},
-					allIds: [ ...state.connections.allIds, connectionID ],
+					allIds: [ ...state.connections.allIds, connectionId ],
 				},
 				processors: {
 					...state.processors,
@@ -244,11 +244,11 @@ export default function reduce(state = initialState, action, actions = {}) {
 				allIds: [ ...state.connections.allIds ]
 			}
 			for (let i = newState.connections.allIds.length -1, n = 0; i >= n; i--) {
-				const connectionID = newState.connections.allIds[i];
-				const connection = newState.connections.byId[connectionID];
-				if (connection.sourceProcessorID === processorId || connection.destinationProcessorID === processorId) {
+				const connectionId = newState.connections.allIds[i];
+				const connection = newState.connections.byId[connectionId];
+				if (connection.sourceProcessorId === processorId || connection.destinationProcessorId === processorId) {
 					newState.connections.allIds.splice(i, 1);
-					delete newState.connections.byId[connectionID];
+					delete newState.connections.byId[connectionId];
 				}
 			}
 
@@ -469,8 +469,8 @@ export default function reduce(state = initialState, action, actions = {}) {
 			return { ...state, learnModeActive: !state.learnModeActive };
 		
 		case actions.TOGGLE_MIDI_LEARN_TARGET: {
-			const { parameterKey: learnTargetParameterKey, processorID: learnTargetProcessorID } = action;
-			return { ...state, learnTargetParameterKey, learnTargetProcessorID };
+			const { parameterKey: learnTargetParameterKey, processorId: learnTargetProcessorId } = action;
+			return { ...state, learnTargetParameterKey, learnTargetProcessorId };
 		}
 		
 		case actions.TOGGLE_MIDI_PREFERENCE: {
@@ -479,14 +479,14 @@ export default function reduce(state = initialState, action, actions = {}) {
 				...state,
 				ports: {
 					allIds: [ ...state.ports.allIds ],
-					byId: state.ports.allIds.reduce((accumulator, portID) => {
-						if (portID === id) {
-							accumulator[portID] = {
-								...state.ports.byId[portID],
+					byId: state.ports.allIds.reduce((accumulator, portId) => {
+						if (portId === id) {
+							accumulator[portId] = {
+								...state.ports.byId[portId],
 								[preferenceName]: (typeof isEnabled === 'boolean') ? isEnabled : !state.ports.byId[id][preferenceName],
 							};
 						} else {
-							accumulator[portID] = { ...state.ports.byId[portID] };
+							accumulator[portId] = { ...state.ports.byId[portId] };
 						}
 						return accumulator;
 					}, {}),
@@ -542,17 +542,17 @@ export default function reduce(state = initialState, action, actions = {}) {
 			return {
 				...state,
 				assignments: {
-					allIds: state.assignments.allIds.reduce((accumulator, assignID) => {
-						const assignment = state.assignments.byId[assignID];
-						if (assignment.processorID !== action.processorID || assignment.paramKey !== action.paramKey) {
-							accumulator.push(assignID);
+					allIds: state.assignments.allIds.reduce((accumulator, assignId) => {
+						const assignment = state.assignments.byId[assignId];
+						if (assignment.processorId !== action.processorId || assignment.paramKey !== action.paramKey) {
+							accumulator.push(assignId);
 						}
 						return accumulator;
 					}, []),
-					byId: state.assignments.allIds.reduce((accumulator, assignID) => {
-						const assignment = state.assignments.byId[assignID];
-						if (assignment.processorID !== action.processorID || assignment.paramKey !== action.paramKey) {
-							accumulator[assignID] = { ...assignment };
+					byId: state.assignments.allIds.reduce((accumulator, assignId) => {
+						const assignment = state.assignments.byId[assignId];
+						if (assignment.processorId !== action.processorId || assignment.paramKey !== action.paramKey) {
+							accumulator[assignId] = { ...assignment };
 						}
 						return accumulator;
 					}, {}),

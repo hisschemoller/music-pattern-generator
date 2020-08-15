@@ -38,22 +38,22 @@ export default function createBaseSettingView(specs, my) {
 			const { state, action, actions, } = e.detail;
 			switch (action.type) {
 				case actions.CHANGE_PARAMETER:
-					if (action.processorId === my.processorID && 
+					if (action.processorId === my.processorId && 
 						action.paramKey === my.key) {
-						my.setValue(state.processors.byId[my.processorID].params.byId[my.key].value);
+						my.setValue(state.processors.byId[my.processorId].params.byId[my.key].value);
 					}
 					break;
 
 				case actions.LOAD_SNAPSHOT:
-					my.setValue(state.processors.byId[my.processorID].params.byId[my.key].value);
+					my.setValue(state.processors.byId[my.processorId].params.byId[my.key].value);
 					break;
 			
 				case actions.RECREATE_PARAMETER:
-					if (action.processorId === my.processorID && 
+					if (action.processorId === my.processorId && 
 						action.paramKey === my.key) {
-						my.data = state.processors.byId[my.processorID].params.byId[my.key];
+						my.data = state.processors.byId[my.processorId].params.byId[my.key];
 						my.initData();
-						my.setValue(state.processors.byId[my.processorID].params.byId[my.key].value);
+						my.setValue(state.processors.byId[my.processorId].params.byId[my.key].value);
 					}
 					break;
 				
@@ -71,9 +71,9 @@ export default function createBaseSettingView(specs, my) {
 				// case actions.TOGGLE_MIDI_PREFERENCE:
 				// 	if (my.key === 'port') {
 				// 		console.log('setting', my.key, action);
-				// 		my.data = state.processors.byId[my.processorID].params.byId[my.key];
+				// 		my.data = state.processors.byId[my.processorId].params.byId[my.key];
 				// 		my.initData();
-				// 		my.setValue(state.processors.byId[my.processorID].params.byId[my.key].value);
+				// 		my.setValue(state.processors.byId[my.processorId].params.byId[my.key].value);
 				// 	}
 				// 	break;
 			}
@@ -83,7 +83,7 @@ export default function createBaseSettingView(specs, my) {
 	my = my || {};
 	my.key = specs.key;
 	my.data = specs.data;
-	my.processorID = specs.processorID;
+	my.processorId = specs.processorId;
 	my.el;
 	
 	that = that || {};

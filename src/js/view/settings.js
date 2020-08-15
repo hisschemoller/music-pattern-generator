@@ -30,7 +30,7 @@ export default function createSettingsPanel(specs, my) {
               key: paramId,
               data: paramData,
               parentEl: settingContainerEl,
-              processorID: id
+              processorId: id
             };
 
           // create the setting view based on the parameter type

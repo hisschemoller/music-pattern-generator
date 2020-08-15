@@ -78,8 +78,8 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     switch (action.type) {
 
       case actions.CHANGE_PARAMETER:
-        const { activeProcessorID, processors, } = state;
-        if (activeProcessorID === id) {
+        const { activeProcessorId, processors, } = state;
+        if (activeProcessorId === id) {
           const { is_mute, pulses, rate, rotation, steps, } = processors.byId[id].params.byId;
           switch (action.paramKey) {
             case 'steps':

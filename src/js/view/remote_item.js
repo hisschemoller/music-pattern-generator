@@ -6,7 +6,7 @@ import { CONTROL_CHANGE, } from '../midi/midi.js';
  * The items are grouped by processor.
  */
 export default function createRemoteItemView(data) {
-	const { paramKey, paramLabel, parentEl, processorID, remoteType, remoteChannel, remoteValue, } = data;
+	const { paramKey, paramLabel, parentEl, processorId, remoteType, remoteChannel, remoteValue, } = data;
 	
 	let el;
 			
@@ -38,7 +38,7 @@ export default function createRemoteItemView(data) {
 		 * @param  {Object} e Click event object.
 		 */
 		onUnregisterClick = function(e) {
-			dispatch(getActions().unassignExternalControl(processorID, paramKey));
+			dispatch(getActions().unassignExternalControl(processorId, paramKey));
 		},
 		
 		/**

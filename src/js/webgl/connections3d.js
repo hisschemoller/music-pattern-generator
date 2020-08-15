@@ -42,8 +42,8 @@ function dragMoveConnection(state) {
 
 /**
  * Start dragging a connection cable.
- * @param {String} sourceProcessorID
- * @param {String} sourceConnectorID
+ * @param {String} sourceProcessorId
+ * @param {String} sourceConnectorId
  * @param {Vector3} sourceConnectorPosition
  */
 function dragStartConnection(state) {
@@ -120,8 +120,8 @@ function createCable(connectionId, isConnectMode) {
  * @param {Vector3} sourcePosition Cable start position.
  * @param {Vector3} destinationPosition Cable end position.
  */
-function drawCable(connectionID, sourcePosition, destinationPosition) {
-  const cable = cablesGroup.getObjectByName(connectionID);
+function drawCable(connectionId, sourcePosition, destinationPosition) {
+  const cable = cablesGroup.getObjectByName(connectionId);
   if (cable) {
     const distance = sourcePosition.distanceTo(destinationPosition);
     const curveStrength = Math.min(distance / 2, 30);
@@ -150,17 +150,17 @@ function drawCable(connectionID, sourcePosition, destinationPosition) {
  * @param {Object} state Application state.
  */
 function drawCables(state) {
-  state.connections.allIds.forEach(connectionID => {
-    const connection = state.connections.byId[connectionID];
-    const sourceProcessor = state.processors.byId[connection.sourceProcessorID];
-    const destinationProcessor = state.processors.byId[connection.destinationProcessorID];
+  state.connections.allIds.forEach(connectionId => {
+    const connection = state.connections.byId[connectionId];
+    const sourceProcessor = state.processors.byId[connection.sourceProcessorId];
+    const destinationProcessor = state.processors.byId[connection.destinationProcessorId];
 
     if (sourceProcessor && destinationProcessor) {
-      const sourceConnector = sourceProcessor.outputs.byId[connection.sourceConnectorID];
-      const destinationConnector = destinationProcessor.inputs.byId[connection.destinationConnectorID];
+      const sourceConnector = sourceProcessor.outputs.byId[connection.sourceConnectorId];
+      const destinationConnector = destinationProcessor.inputs.byId[connection.destinationConnectorId];
       
       drawCable(
-        connectionID,
+        connectionId,
         new Vector2(
           sourceProcessor.positionX + sourceConnector.x,
           sourceProcessor.positionY + sourceConnector.y,), 

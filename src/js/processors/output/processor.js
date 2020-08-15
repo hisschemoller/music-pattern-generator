@@ -25,7 +25,7 @@ export function createProcessor(data, my = {}) {
 			const { state, action, actions, } = e.detail;
 			switch (action.type) {
 				case actions.CHANGE_PARAMETER:
-					if (action.processorID === my.id) {
+					if (action.processorId === my.id) {
 						updateAllParams(state.processors.byId[my.id].params.byId);
 						switch (action.paramKey) {
 							case 'port':
@@ -101,8 +101,8 @@ export function createProcessor(data, my = {}) {
 			const portsModel = [
 				{ label: 'No output', value: 'none' }
 			];
-			state.ports.allIds.forEach(portID => {
-				const port = state.ports.byId[portID];
+			state.ports.allIds.forEach(portId => {
+				const port = state.ports.byId[portId];
 				if (port.type === 'output' && port.networkEnabled && port.state === 'connected') {
 					portsModel.push({ label: port.name, value: port.id });
 				}
@@ -126,7 +126,7 @@ export function createProcessor(data, my = {}) {
 		},
 
 		getMIDIPortID = function() {
-			return portID;
+			return portId;
 		};
 
 	my.isEnabled = true;

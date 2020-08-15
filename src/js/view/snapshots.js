@@ -49,14 +49,14 @@ function build() {
  * @param {String} state New state of the parameter.
  */
 function changeRemoteState(state) {
-  const { assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorID, } = state;
+  const { assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorId, } = state;
   if (learnModeActive) {
     document.querySelectorAll('.snapshots__learnmode').forEach(el => {
       const index = el.parentNode.dataset.index;
-      const assignment = assignments.allIds.find(id => assignments.byId[id].processorID === 'snapshots' && assignments.byId[id].paramKey === index);
+      const assignment = assignments.allIds.find(id => assignments.byId[id].processorId === 'snapshots' && assignments.byId[id].paramKey === index);
       el.classList.add('show');
       el.dataset.assigned = !!assignment;
-      el.dataset.selected = learnTargetProcessorID === 'snapshots' && learnTargetParameterKey === index;
+      el.dataset.selected = learnTargetProcessorId === 'snapshots' && learnTargetParameterKey === index;
     });
   } else {
     document.querySelectorAll('.snapshots__learnmode').forEach(el => el.classList.remove('show'));

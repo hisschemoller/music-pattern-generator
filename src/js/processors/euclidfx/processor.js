@@ -29,7 +29,7 @@ export function createProcessor(data, my = {}) {
 			const { state, action, actions, } = e.detail;
 			switch (action.type) {
 				case actions.CHANGE_PARAMETER:
-					if (action.processorID === my.id) {
+					if (action.processorId === my.id) {
 						updateAllParams(state.processors.byId[my.id].params.byId);
 						switch (action.paramKey) {
 							case 'steps':
@@ -60,7 +60,7 @@ export function createProcessor(data, my = {}) {
 					break;
 
 				case actions.RECREATE_PARAMETER:
-					if (action.processorID === my.id) {
+					if (action.processorId === my.id) {
 						updateAllParams(state.processors.byId[my.id].params.byId);
 					}
 					break;

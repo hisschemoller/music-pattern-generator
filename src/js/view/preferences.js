@@ -59,10 +59,14 @@ function updateMIDIPortViews(ports) {
 	ports.allIds.forEach(id => {
 		const port = ports.byId[id];
 		let view = midiPortViews.find(view => port.id === view.getID());
+
+		// remove ports that don't exist anymore
 		if (view && port.state === 'disconnected') {
 			view.terminate();
 			midiPortViews.splice(midiPortViews.findIndex(view => port.id === view.getID()), 1);
 		}
+
+		// add new ports
 		if (!view && port.state === 'connected') {
 			let createFunction, parentEl;
 			if (port.type === 'input') {
