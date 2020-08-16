@@ -49,18 +49,25 @@ export default function createBaseSettingView(specs, my) {
 					break;
 			
 				case actions.RECREATE_PARAMETER:
-					if (action.processorId === my.processorId && 
-						action.paramKey === my.key) {
+					if (action.processorId === my.processorId && action.paramKey === my.key) {
 						my.data = state.processors.byId[my.processorId].params.byId[my.key];
 						my.initData();
 						my.setValue(state.processors.byId[my.processorId].params.byId[my.key].value);
 					}
 					break;
 				
+				case actions.DELETE_PROCESSOR: {
+					const { processors } = state;
+					if (!processors.allIds.includes(my.processorId)) {
+						terminate();
+					}
+					break;
+				}
+				
 				case actions.TOGGLE_MIDI_LEARN_MODE:
 				case actions.TOGGLE_MIDI_LEARN_TARGET:
 				case actions.SELECT_PROCESSOR:
-				case actions.DELETE_PROCESSOR:
+				// case actions.DELETE_PROCESSOR:
 				case actions.ASSIGN_EXTERNAL_CONTROL:
 				case actions.UNASSIGN_EXTERNAL_CONTROL:
 					if (my.data.isMidiControllable) {
