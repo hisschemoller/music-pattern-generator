@@ -444,7 +444,7 @@ export default {
 
 			// create parameter key value objects for all processors
 			const snapshot = processors.allIds.reduce((accumulator, processorId) => {
-				const { params } = processors.byId[processorId].params;
+				const { params } = processors.byId[processorId];
 				return {
 					...accumulator,
 					[processorId]: params.allIds.reduce((acc, paramId) => {

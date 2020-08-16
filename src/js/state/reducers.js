@@ -278,7 +278,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 				connections: {
 					allIds: state.connections.allIds.reduce((accumulator, connectionId) => {
 						if (connectionId !== id) {
-							return { ...accumulator, connectionId };
+							return [ ...accumulator, connectionId ];
 						}
 						return accumulator;
 					}, []),
