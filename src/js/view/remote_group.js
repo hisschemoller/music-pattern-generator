@@ -91,7 +91,6 @@ export default function createRemoteGroupView(data) {
 				// order the list by snapshot number
 				views.allIds.sort();
 				views.allIds.forEach(viewId => views.byId[viewId].reAttach());
-				console.log('views', views);
 			} else {
 
 				// a processor

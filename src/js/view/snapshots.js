@@ -2,13 +2,11 @@ import { dispatch, getActions, STATE_CHANGE, } from '../state/store.js';
 
 const listEl = document.querySelector('.snapshots__list');
 const editEl = document.querySelector('.snapshots__edit');
-const numSnapshots = 16;
 let selectedListEl = null;
 let learnClickLayer = null;
 
 export function setup() {
   addEventListeners();
-  build();
 }
 
 function addEventListeners() {
@@ -18,11 +16,18 @@ function addEventListeners() {
 
 /**
  * Crete the 16 list items.
+ * @param {Object} state Application state.
  */
-function build() {
+function build(state) {
+  const { snapshots } = state;
+
+  if (listEl.childNodes.length > 0) {
+    return;
+  }
+
   const template = document.querySelector('#template-snapshots-item');
   const templateLearnmode = document.querySelector('#template-snapshots-learnmode');
-  for (let i = 0, n = numSnapshots; i < n; i++) {
+  for (let i = 0, n = snapshots.length; i < n; i++) {
     let clone = template.content.cloneNode(true);
     const  el = clone.firstElementChild;
     listEl.appendChild(el);
@@ -53,7 +58,9 @@ function changeRemoteState(state) {
   if (learnModeActive) {
     document.querySelectorAll('.snapshots__learnmode').forEach(el => {
       const index = el.parentNode.dataset.index;
-      const assignment = assignments.allIds.find(id => assignments.byId[id].processorId === 'snapshots' && assignments.byId[id].paramKey === index);
+      const assignment = assignments.allIds.find(id => 
+        assignments.byId[id].processorId === 'snapshots' && 
+         assignments.byId[id].paramKey === index);
       el.classList.add('show');
       el.dataset.assigned = !!assignment;
       el.dataset.selected = learnTargetProcessorId === 'snapshots' && learnTargetParameterKey === index;
@@ -89,6 +96,7 @@ function handleStateChanges(e) {
 
     case actions.CREATE_PROJECT:
     case actions.STORE_SNAPSHOT:
+      build(state);
       setSnapshotEditMode(state);
       updateList(state);
       showSelectedIndex(state);
@@ -167,8 +175,9 @@ function showSelectedIndex(state) {
  * @param {Object} state App state.
  */
 function updateList(state) {
-  for (let i = 0, n = numSnapshots; i < n; i++) {
-    if (state.snapshots[i]) {
+  const { snapshots } = state;
+  for (let i = 0, n = snapshots.length; i < n; i++) {
+    if (snapshots[i]) {
       listEl.children[i].classList.add('is-set');
     } else {
       listEl.children[i].classList.remove('is-set');

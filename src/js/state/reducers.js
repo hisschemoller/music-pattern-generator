@@ -59,7 +59,7 @@ const initialState = {
 		byId: {},
 	},
 	snapshotIndex: null,
-	snapshots: [],
+	snapshots: new Array(16),
 	snapshotsEditModeActive: false,
 	processors: {
 		allIds: [],
@@ -453,12 +453,12 @@ export default function reduce(state = initialState, action, actions = {}) {
 		
 		case actions.STORE_SNAPSHOT: {
 			const { index, snapshot, } = action;
+			const snapshots = [ ...state.snapshots ];
+			snapshots[index] = snapshot;
 			return {
 				...state,
 				snapshotIndex: index,
-				snapshots: state.snapshots.reduce((accumulator, snap, i) => {
-					return [ ...accumulator, (i === index) ? snapshot : snap ];
-				}, []),
+				snapshots,
 			};
 		}
 		

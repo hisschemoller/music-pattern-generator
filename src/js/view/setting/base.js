@@ -67,15 +67,6 @@ export default function createBaseSettingView(specs, my) {
 						my.changeRemoteState(state);
 					}
 					break;
-
-				// case actions.TOGGLE_MIDI_PREFERENCE:
-				// 	if (my.key === 'port') {
-				// 		console.log('setting', my.key, action);
-				// 		my.data = state.processors.byId[my.processorId].params.byId[my.key];
-				// 		my.initData();
-				// 		my.setValue(state.processors.byId[my.processorId].params.byId[my.key].value);
-				// 	}
-				// 	break;
 			}
 		};
 
