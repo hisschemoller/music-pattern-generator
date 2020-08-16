@@ -96,7 +96,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
               updateDuration(steps.value, rate.value);
               break;
             case 'is_mute':
-              updatePointer(params.is_mute.value);
+              updatePointer(is_mute.value);
               break;
           }
         }
