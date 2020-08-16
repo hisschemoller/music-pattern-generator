@@ -252,6 +252,28 @@ export default function reduce(state = initialState, action, actions = {}) {
 				}
 			}
 
+			// delete all assignments to the deleted processor's parameters
+			newState.assignments = {
+				byId: { ...state.assignments.byId },
+				allIds: [ ...state.assignments.allIds ],
+			}
+			for (let i = newState.assignments.allIds.length -1, n = 0; i >= n; i--) {
+				const assignmentId = newState.assignments.allIds[i];
+				const assignment = newState.assignments.byId[assignmentId];
+				if (assignment.processorId === processorId) {
+					newState.assignments.allIds.splice(i, 1);
+					delete newState.assignments.byId[assignmentId];
+				}
+			}
+
+			// delete all snapshot values referencing the deleted processor
+			newState.snapshots = state.snapshots.map(snapshot => {
+				if (snapshot && snapshot[processorId]) {
+					delete snapshot[processorId];
+				}
+				return snapshot;
+			});
+
 			// select the next processor, if any, or a previous one
 			let newIndex;
 			if (newState.selectedId === processorId && newState.processors.allIds.length) {
