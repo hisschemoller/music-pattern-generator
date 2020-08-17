@@ -381,7 +381,7 @@ export default {
 			});
 
 			// copy the port settings of existing ports
-			const existingPorts = { ...getState().ports }
+			const existingPorts = { ...getState().ports };
 
 			// copy the port settings defined in the project
 			const projectPorts = { ...data.ports };
