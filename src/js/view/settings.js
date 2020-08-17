@@ -88,7 +88,7 @@ export default function createSettingsPanel(specs, my) {
      * @param {String} id ID of the selected processor.
      */
     select = function(_id) {
-      show(_id ===   id);
+      show(_id === id);
     },
         
     getID = function() {

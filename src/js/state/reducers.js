@@ -86,6 +86,37 @@ export default function reduce(state = initialState, action, actions = {}) {
 	let newState;
 	switch(action.type) {
 
+		case actions.ADD_PROCESSOR: {
+			const { data } = action; 
+			const newState = { 
+				...state,
+				showSettingsPanel: true,
+				processors: {
+					allIds: [ ...state.processors.allIds ],
+					byId: { 
+						...state.processors.byId,
+						[data.id]: data,
+					},
+				},
+			};
+
+			// array index depends on processor type
+			let numInputProcessors = newState.processors.allIds.filter(id => { newState.processors.byId[id].type === 'input' }).length;
+			switch (data.type) {
+				case 'input':
+					newState.processors.allIds.unshift(data.id);
+					numInputProcessors++;
+					break;
+				case 'output':
+					newState.processors.allIds.push(data.id);
+					break;
+				default:
+					newState.processors.allIds.splice(numInputProcessors, 0, data.id);
+			}
+			
+			return newState;
+		}
+
 		case actions.ASSIGN_EXTERNAL_CONTROL: {
 			const { assignId, processorId, paramKey, remoteType, remoteChannel, remoteValue, } = action;
 			return {
@@ -241,7 +272,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 			// delete all connections to and from the deleted processor
 			newState.connections = {
 				byId: { ...state.connections.byId },
-				allIds: [ ...state.connections.allIds ]
+				allIds: [ ...state.connections.allIds ],
 			}
 			for (let i = newState.connections.allIds.length -1, n = 0; i >= n; i--) {
 				const connectionId = newState.connections.allIds[i];
@@ -458,7 +489,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 		case actions.SET_TEMPO:
 			return { ...state, bpm: action.value };
 
-		case actions.SET_THEME:
+		case actions.TOGGLE_THEME:
 			return { 
 				...state, 
 				theme: state.theme === 'light' ? 'dark' : 'light',
@@ -518,37 +549,6 @@ export default function reduce(state = initialState, action, actions = {}) {
 
 		case actions.TOGGLE_SNAPSHOTS_MODE:
 			return { ...state, snapshotsEditModeActive: !state.snapshotsEditModeActive };
-
-		case actions.ADD_PROCESSOR: {
-			const { data } = action; 
-			const newState = { 
-				...state,
-				showSettingsPanel: true,
-				processors: {
-					allIds: [ ...state.processors.allIds ],
-					byId: { 
-						...state.processors.byId,
-						[data.id]: data,
-					},
-				},
-			};
-
-			// array index depends on processor type
-			let numInputProcessors = newState.processors.allIds.filter(id => { newState.processors.byId[id].type === 'input' }).length;
-			switch (data.type) {
-				case 'input':
-					newState.processors.allIds.unshift(data.id);
-					numInputProcessors++;
-					break;
-				case 'output':
-					newState.processors.allIds.push(data.id);
-					break;
-				default:
-					newState.processors.allIds.splice(numInputProcessors, 0, data.id);
-			}
-			
-			return newState;
-		}
 		
 		case actions.TOGGLE_PANEL:
 			return {

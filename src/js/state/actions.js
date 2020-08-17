@@ -1,6 +1,6 @@
 import convertLegacyFile from '../core/convert_xml.js';
 import { createUUID, getProcessorDefaultName, midiControlToParameterValue, midiNoteToParameterValue, } from '../core/util.js';
-import { getConfig, setConfig, } from '../core/config.js';
+import { getConfig, } from '../core/config.js';
 import { getAllMIDIPorts, CONTROL_CHANGE, NOTE_ON,  } from '../midi/midi.js';
 import { showDialog } from '../view/dialog.js';
 import { getProcessorData, } from '../core/processor-loader.js';
@@ -28,7 +28,6 @@ const ADD_PROCESSOR = 'ADD_PROCESSOR',
   SELECT_PROCESSOR = 'SELECT_PROCESSOR',
   SET_CAMERA_POSITION = 'SET_CAMERA_POSITION',
   SET_TEMPO = 'SET_TEMPO',
-  SET_THEME = 'SET_THEME',
   SET_TRANSPORT = 'SET_TRANSPORT',
   STORE_SNAPSHOT = 'STORE_SNAPSHOT',
   TOGGLE_CONNECT_MODE = 'TOGGLE_CONNECT_MODE',
@@ -37,6 +36,7 @@ const ADD_PROCESSOR = 'ADD_PROCESSOR',
   TOGGLE_MIDI_PREFERENCE = 'TOGGLE_MIDI_PREFERENCE',
   TOGGLE_SNAPSHOTS_MODE = 'TOGGLE_SNAPSHOTS_MODE',
   TOGGLE_PANEL = 'TOGGLE_PANEL',
+  TOGGLE_THEME = 'TOGGLE_THEME',
   UNASSIGN_EXTERNAL_CONTROL = 'UNASSIGN_EXTERNAL_CONTROL',
   UPDATE_MIDI_PORT = 'UPDATE_MIDI_PORT';
 
@@ -149,7 +149,12 @@ export default {
 	},
 
 	CREATE_PROJECT,
-	createProject: data => ({ type: CREATE_PROJECT, data }),
+	createProject: data => {
+		return (dispatch, getState, getActions) => {
+			const { theme } = getConfig();
+			return { type: CREATE_PROJECT, data: { ...data, theme, }, };
+		}
+	},
 
 	DELETE_PROCESSOR,
 	deleteProcessor: id => ({ type: DELETE_PROCESSOR, id }),
@@ -214,7 +219,7 @@ export default {
             'Import failed', 
             `The file could not be opened.`,
             'Ok');
-      });
+      	});
     }
   },
 
@@ -269,7 +274,7 @@ export default {
 			}
 
 			// store the changes in configuration
-			setConfig(getState());
+			// setConfig(getState());
 		};
 	},
 
@@ -286,7 +291,7 @@ export default {
 			});
 
 			// recreate the state with the existing ports
-			dispatch(getActions().createProject(getState()));
+			// dispatch(getActions().createProject(getState()));
 		}
 	},
 
@@ -431,9 +436,6 @@ export default {
 	SET_TEMPO,
 	setTempo: value => ({ type: SET_TEMPO, value: Math.round((value * 100)) / 100 }),
 
-	SET_THEME,
-	setTheme: themeName => ({ type: SET_THEME, themeName }),
-
 	SET_TRANSPORT,
 	setTransport: command => ({ type: SET_TRANSPORT, command }),
 
@@ -458,9 +460,6 @@ export default {
 			return { type: STORE_SNAPSHOT, index, snapshot };
 		}
 	},
-
-	UPDATE_MIDI_PORT,
-	updateMIDIPort: (portId, data) => { return { type: UPDATE_MIDI_PORT, portId, data } },
 
 	TOGGLE_CONNECT_MODE,
 	toggleConnectMode: () => ({ type: TOGGLE_CONNECT_MODE }),
@@ -489,6 +488,12 @@ export default {
 	TOGGLE_PANEL,
 	togglePanel: panelName => ({type: TOGGLE_PANEL, panelName}),
 
+	TOGGLE_THEME,
+	toggleTheme: () => ({ type: TOGGLE_THEME }),
+
 	UNASSIGN_EXTERNAL_CONTROL,
 	unassignExternalControl: (processorId, paramKey) => ({type: UNASSIGN_EXTERNAL_CONTROL, processorId, paramKey}),
+
+	UPDATE_MIDI_PORT,
+	updateMIDIPort: (portId, data) => { return { type: UPDATE_MIDI_PORT, portId, data } },
 }

@@ -1,3 +1,5 @@
+import { setConfig, } from '../core/config.js';
+
 let theme = {};
 
 /**
@@ -16,9 +18,17 @@ export function getTheme() {
 export default function memoize(state, action = {}, actions) {
   switch (action.type) {
 
+    case actions.CREATE_MIDI_PORT:
+      setConfig(state);
+      break;
+
     case actions.CREATE_PROJECT:
-    case actions.SET_THEME:
-      setTheme(state);
+      toggleTheme(state);
+      break;
+    
+    case actions.TOGGLE_THEME:
+      setConfig(state);
+      toggleTheme(state);
       break;
   }
 }
@@ -27,7 +37,7 @@ export default function memoize(state, action = {}, actions) {
  * Recreate the theme.
  * @param {Object} state 
  */
-function setTheme(state) {
+function toggleTheme(state) {
   document.querySelector('#app').dataset.theme = state.theme;
   const themeStyles = window.getComputedStyle(document.querySelector('[data-theme]'));
   theme = Object.freeze({

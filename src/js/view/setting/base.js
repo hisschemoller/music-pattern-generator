@@ -37,9 +37,9 @@ export default function createBaseSettingView(specs, my) {
 		handleStateChanges = function(e) {
 			const { state, action, actions, } = e.detail;
 			switch (action.type) {
+
 				case actions.CHANGE_PARAMETER:
-					if (action.processorId === my.processorId && 
-						action.paramKey === my.key) {
+					if (action.processorId === my.processorId && action.paramKey === my.key) {
 						my.setValue(state.processors.byId[my.processorId].params.byId[my.key].value);
 					}
 					break;
@@ -86,7 +86,7 @@ export default function createBaseSettingView(specs, my) {
 	
 	that = that || {};
 	if (my.data.isMidiControllable) {
-			that = createRemoteSettingView(specs, my);
+		that = createRemoteSettingView(specs, my);
 	}
 	
 	initialise();

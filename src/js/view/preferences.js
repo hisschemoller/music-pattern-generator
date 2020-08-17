@@ -13,8 +13,8 @@ export function setup() {
 
 function addEventListeners() {
   document.addEventListener(STATE_CHANGE, handleStateChanges);
-  themeCheckEl.addEventListener('change', e => {
-    dispatch(getActions().setTheme(e.target.checked));
+  themeCheckEl.addEventListener('change',() => {
+    dispatch(getActions().toggleTheme());
 	});
 }
 
@@ -25,7 +25,8 @@ function addEventListeners() {
 function handleStateChanges(e) {
   const { state, action, actions, } = e.detail;
   switch (action.type) {
-    case actions.SET_THEME:
+    case actions.CREATE_PROJECT:
+    case actions.TOGGLE_THEME:
         updateControl('dark-theme', state.theme === 'dark');
         break;
     

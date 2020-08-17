@@ -92,7 +92,6 @@ function handleStateChanges(e) {
     case actions.SELECT_PROCESSOR:
       selectSettingsView(action.id);
 
-      // fallthrough intentional
     case actions.TOGGLE_MIDI_LEARN_MODE:
     case actions.TOGGLE_PANEL:
       showPanels(state);
