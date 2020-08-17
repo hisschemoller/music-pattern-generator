@@ -258,16 +258,20 @@ export default function reduce(state = initialState, action, actions = {}) {
 		
 		case actions.DELETE_PROCESSOR: {
 			const { id: processorId } = action;
-			const index = state.processors.allIds.indexOf(processorId);
 			
 			// delete the processor
 			const newState = { 
 				...state,
 				processors: {
+					allIds: state.processors.allIds.filter(id => id !== processorId),
 					byId: { ...state.processors.byId },
-					allIds: state.processors.allIds.filter(id => id !== processorId)
-				} };
-			delete newState.processors.byId[processorId];
+					byId: state.processors.allIds.reduce((accumulator, id) => {
+						if (id !== processorId) {
+							return { ...accumulator, [id]: state.processors.byId[id] };
+						}
+					}, {}),
+				},
+			};
 			
 			// delete all connections to and from the deleted processor
 			newState.connections = {
@@ -306,6 +310,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 			});
 
 			// select the next processor, if any, or a previous one
+			const index = state.processors.allIds.indexOf(processorId);
 			let newIndex;
 			if (newState.selectedId === processorId && newState.processors.allIds.length) {
 				if (newState.processors.allIds[index]) {
