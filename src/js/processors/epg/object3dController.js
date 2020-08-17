@@ -78,8 +78,8 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     switch (action.type) {
 
       case actions.CHANGE_PARAMETER:
-        const { activeProcessorID, processors, } = state;
-        if (activeProcessorID === id) {
+        const { activeProcessorId, processors, } = state;
+        if (activeProcessorId === id) {
           const { is_mute, pulses, rate, rotation, steps, } = processors.byId[id].params.byId;
           switch (action.paramKey) {
             case 'steps':
@@ -96,7 +96,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
               updateDuration(steps.value, rate.value);
               break;
             case 'is_mute':
-              updatePointer(params.is_mute.value);
+              updatePointer(is_mute.value);
               break;
           }
         }
@@ -109,7 +109,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
         updatePointer(is_mute.value);
         break;
 
-      case actions.SET_THEME:
+      case actions.TOGGLE_THEME:
         updateTheme();
         break;
     }

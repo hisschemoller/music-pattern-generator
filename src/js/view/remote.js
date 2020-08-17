@@ -22,10 +22,10 @@ function addEventListeners() {
  */
 function createRemoteGroups(state) {
 	const { assignments, processors } = state;
-	assignments.allIds.forEach(assignID => {
-		const { processorID } = assignments.byId[assignID];
-		if (!groupViews.allIds.includes(processorID) && (processors.allIds.includes(processorID) || (processorID === 'snapshots'))) {
-			const id = processorID === 'snapshots' ? 'snapshots' : processorID;
+	assignments.allIds.forEach(assignId => {
+		const { processorId } = assignments.byId[assignId];
+		if (!groupViews.allIds.includes(processorId) && (processors.allIds.includes(processorId) || (processorId === 'snapshots'))) {
+			const id = processorId === 'snapshots' ? 'snapshots' : processorId;
 			createRemoteGroup(id, state);
 		}
 	});
@@ -40,7 +40,7 @@ function createRemoteGroup(id, state) {
 	if (!groupViews.byId[id]) {
 		groupViews.allIds.push(id);
 		groupViews.byId[id] = createRemoteGroupView({
-			processorID: id,
+			processorId: id,
 			parentEl: listEl,
 			state,
 		});
@@ -99,9 +99,9 @@ function handleStateChanges(e) {
 			break;
 		
 		case actions.ASSIGN_EXTERNAL_CONTROL: {
-				const { learnTargetProcessorID } = state;
-				if (learnTargetProcessorID) {
-					const groupView = groupViews.byId[learnTargetProcessorID];
+				const { learnTargetProcessorId } = state;
+				if (learnTargetProcessorId) {
+					const groupView = groupViews.byId[learnTargetProcessorId];
 					if (!groupView) {
 						createRemoteGroups(state);
 					} else {
@@ -112,9 +112,9 @@ function handleStateChanges(e) {
 			break;
 		
 		case actions.UNASSIGN_EXTERNAL_CONTROL:
-			const groupView = groupViews.byId[action.processorID];
-			const isProcessor = state.processors.allIds.includes(state.learnTargetProcessorID);
-			const isSnapshot = state.learnTargetProcessorID === 'snapshots';
+			const groupView = groupViews.byId[action.processorId];
+			const isProcessor = state.processors.allIds.includes(state.learnTargetProcessorId);
+			const isSnapshot = state.learnTargetProcessorId === 'snapshots';
 			if (groupView && (isProcessor || isSnapshot)) {
 				groupView.updateViews(state);
 			}

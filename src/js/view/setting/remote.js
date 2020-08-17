@@ -21,16 +21,16 @@ export default function createRemoteSettingView(specs, my) {
 		 * @param {String} state New state of the parameter.
 		 */
 		changeRemoteState = function() {
-			const { assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorID, } = getState();
+			const { assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorId, } = getState();
 			if (my.data.isMidiControllable) {
 				if (learnModeActive) {
 					showRemoteState('enter');
 
 					// search for assignment
 					let assignment;
-					assignments.allIds.forEach(assignID => {
-						const assign = assignments.byId[assignID];
-						if (assign.processorID === my.processorID && assign.paramKey === my.key) {
+					assignments.allIds.forEach(assignId => {
+						const assign = assignments.byId[assignId];
+						if (assign.processorId === my.processorId && assign.paramKey === my.key) {
 							assignment = assign;
 						}
 					});
@@ -40,7 +40,7 @@ export default function createRemoteSettingView(specs, my) {
 					} else {
 						showRemoteState('unassigned');
 					}
-					if (learnTargetProcessorID === my.processorID && learnTargetParameterKey === my.key) {
+					if (learnTargetProcessorId === my.processorId && learnTargetParameterKey === my.key) {
 						showRemoteState('selected');
 					} else {
 						showRemoteState('deselected');
@@ -87,7 +87,7 @@ export default function createRemoteSettingView(specs, my) {
 		},
 		
 		onLearnLayerClick = function(e) {
-			dispatch(getActions().toggleMIDILearnTarget(my.processorID, my.key));
+			dispatch(getActions().toggleMIDILearnTarget(my.processorId, my.key));
 		};
 	
 	my = my || {};

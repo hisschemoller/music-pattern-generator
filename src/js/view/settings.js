@@ -23,14 +23,14 @@ export default function createSettingsPanel(specs, my) {
       // loop through all processor parameters and add setting view if required
       params.allIds.forEach(paramId => {
         // only create setting if there's a container el for it in the settings panel
-        var settingContainerEl = el.querySelector('.' + paramId);
+        var settingContainerEl = el.querySelector(`.${paramId}`);
         if (settingContainerEl) {
           let paramData = params.byId[paramId],
             settingViewSpecs = {
               key: paramId,
               data: paramData,
               parentEl: settingContainerEl,
-              processorID: id
+              processorId: id,
             };
 
           // create the setting view based on the parameter type
@@ -88,7 +88,7 @@ export default function createSettingsPanel(specs, my) {
      * @param {String} id ID of the selected processor.
      */
     select = function(_id) {
-      show(_id ===   id);
+      show(_id === id);
     },
         
     getID = function() {

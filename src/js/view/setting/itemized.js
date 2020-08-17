@@ -60,7 +60,7 @@ export default function createItemizedSettingView(specs, my) {
 		
 		onChange = function(e) {
 			dispatch(getActions().changeParameter(
-				my.processorID, 
+				my.processorId, 
 				my.key, 
 				e.target.value));
 		},

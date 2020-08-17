@@ -37,30 +37,37 @@ export default function createBaseSettingView(specs, my) {
 		handleStateChanges = function(e) {
 			const { state, action, actions, } = e.detail;
 			switch (action.type) {
+
 				case actions.CHANGE_PARAMETER:
-					if (action.processorID === my.processorID && 
-						action.paramKey === my.key) {
-						my.setValue(state.processors.byId[my.processorID].params.byId[my.key].value);
+					if (action.processorId === my.processorId && action.paramKey === my.key) {
+						my.setValue(state.processors.byId[my.processorId].params.byId[my.key].value);
 					}
 					break;
 
 				case actions.LOAD_SNAPSHOT:
-					my.setValue(state.processors.byId[my.processorID].params.byId[my.key].value);
+					my.setValue(state.processors.byId[my.processorId].params.byId[my.key].value);
 					break;
 			
 				case actions.RECREATE_PARAMETER:
-					if (action.processorID === my.processorID && 
-						action.paramKey === my.key) {
-						my.data = state.processors.byId[my.processorID].params.byId[my.key];
+					if (action.processorId === my.processorId && action.paramKey === my.key) {
+						my.data = state.processors.byId[my.processorId].params.byId[my.key];
 						my.initData();
-						my.setValue(state.processors.byId[my.processorID].params.byId[my.key].value);
+						my.setValue(state.processors.byId[my.processorId].params.byId[my.key].value);
 					}
 					break;
+				
+				case actions.DELETE_PROCESSOR: {
+					const { processors } = state;
+					if (!processors.allIds.includes(my.processorId)) {
+						terminate();
+					}
+					break;
+				}
 				
 				case actions.TOGGLE_MIDI_LEARN_MODE:
 				case actions.TOGGLE_MIDI_LEARN_TARGET:
 				case actions.SELECT_PROCESSOR:
-				case actions.DELETE_PROCESSOR:
+				// case actions.DELETE_PROCESSOR:
 				case actions.ASSIGN_EXTERNAL_CONTROL:
 				case actions.UNASSIGN_EXTERNAL_CONTROL:
 					if (my.data.isMidiControllable) {
@@ -70,15 +77,16 @@ export default function createBaseSettingView(specs, my) {
 			}
 		};
 
+
 	my = my || {};
 	my.key = specs.key;
 	my.data = specs.data;
-	my.processorID = specs.processorID;
+	my.processorId = specs.processorId;
 	my.el;
 	
 	that = that || {};
 	if (my.data.isMidiControllable) {
-			that = createRemoteSettingView(specs, my);
+		that = createRemoteSettingView(specs, my);
 	}
 	
 	initialise();

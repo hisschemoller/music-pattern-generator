@@ -16,24 +16,23 @@ export function getConfig() {
 }
 
 export function setConfig(state) {
+  const { ports: statePorts, theme } = state;
   const config = getConfig();
-  let data = {
-    theme: state.theme
-  };
+  const data = { theme };
 
   if (config && config.ports) {
       
     // update the existing config with new data from the current state
-    const ports = config.ports;
-    state.ports.allIds.forEach(statePortID => {
+    const { ports: configPorts } = config;
+    statePorts.allIds.forEach(statePortId => {
       let portExistsInConfig = false;
-      config.ports.allIds.forEach(configPortID => {
-        if (configPortID === statePortID) {
+      configPorts.allIds.forEach(configPortId => {
+        if (configPortId === statePortId) {
           portExistsInConfig = true;
 
           // update port if it exists
-          const configPort = config.ports.byId[configPortID];
-          const statePort = state.ports.byId[statePortID];
+          const configPort = configPorts.byId[configPortId];
+          const statePort = statePorts.byId[statePortId];
           configPort.syncEnabled = statePort.syncEnabled;
           configPort.remoteEnabled = statePort.remoteEnabled;
           configPort.networkEnabled = statePort.networkEnabled;
@@ -42,13 +41,13 @@ export function setConfig(state) {
 
       // add port if it doesn't exist yet
       if (!portExistsInConfig) {
-        config.ports.allIds.push(statePortID);
-        config.ports.byId[statePortID] = state.ports.byId[statePortID]
+        configPorts.allIds.push(statePortId);
+        configPorts.byId[statePortId] = statePorts.byId[statePortId]
       }
     });
-    data.ports = config.ports;
+    data.ports = configPorts;
   } else {
-    data.ports = state.ports;
+    data.ports = statePorts;
   }
 
   localStorage.setItem(name, JSON.stringify(data));

@@ -98,8 +98,8 @@ function createNodes(state) {
 function getSourceIds(processorId, connections) {
   return connections.allIds.reduce((sourceIds, connectionId) => {
     const connection = connections.byId[connectionId];
-    if (connection.destinationProcessorID === processorId) {
-      return [...sourceIds, connection.sourceProcessorID];
+    if (connection.destinationProcessorId === processorId) {
+      return [...sourceIds, connection.sourceProcessorId];
     };
     return sourceIds;
   }, []);
@@ -114,8 +114,8 @@ function getSourceIds(processorId, connections) {
 function getDestinationIds(processorId, connections) {
   return connections.allIds.reduce((destinationIds, connectionId) => {
     const connection = connections.byId[connectionId];
-    if (connection.sourceProcessorID === processorId) {
-      return [...destinationIds, connection.destinationProcessorID];
+    if (connection.sourceProcessorId === processorId) {
+      return [...destinationIds, connection.destinationProcessorId];
     };
     return destinationIds;
   }, []);

@@ -59,7 +59,7 @@ export function createShape(points = [], color = defaultLineColor) {
 }
 
 /**
- *Create text with a thinner line.
+ * Create text with a thinner line.
  * @param {Array} points An array of point objects.
  * @param {Number} points.x
  * @param {Number} points.y

@@ -23,13 +23,14 @@ export function createProcessor(data, my = {}) {
 
 		/**
 		 * Handle state changes.
-		 * @param {Object} e 
+		 * @param {Object} e Application state.
 		 */
 		handleStateChanges = e => {
 			const { state, action, actions, } = e.detail;
 			switch (action.type) {
+
 				case actions.CHANGE_PARAMETER:
-					if (action.processorID === my.id) {
+					if (action.processorId === my.id) {
 						updateAllParams(state.processors.byId[my.id].params.byId);
 						switch (action.paramKey) {
 							case 'steps':
@@ -46,7 +47,7 @@ export function createProcessor(data, my = {}) {
 								break;
 							case 'target':
 							case 'mode':
-								updateEffectSettings();
+								updateEffectSettings(false);
 								break;
 						}
 					}
@@ -56,11 +57,12 @@ export function createProcessor(data, my = {}) {
 					updateAllParams(state.processors.byId[my.id].params.byId);
 					updatePulsesAndRotation();
 					updatePattern(true);
-					updateEffectSettings();
+					updateEffectSettings(true);
+
 					break;
 
 				case actions.RECREATE_PARAMETER:
-					if (action.processorID === my.id) {
+					if (action.processorId === my.id) {
 						updateAllParams(state.processors.byId[my.id].params.byId);
 					}
 					break;
@@ -263,8 +265,12 @@ export function createProcessor(data, my = {}) {
 			params.isBypass = parameters.is_bypass.value;
 			params.isRelative = parameters.mode.value !== parameters.mode.default;
 		},
-			
-		updateEffectSettings = function() {
+
+		/**
+		 * Reset the low and high sliders after 
+		 * @param {Boolean} useCurrentValues Don't reset the low and high values.
+		 */
+		updateEffectSettings = function(useCurrentValues) {
 			let min, max, lowValue, highValue;
 
 			// set minimum and maximum value according to target type
@@ -310,6 +316,12 @@ export function createProcessor(data, my = {}) {
 			// clamp parameter's value between minimum and maximum value
 			lowValue = Math.max(min, Math.min(lowValue, max));
 			highValue = Math.max(min, Math.min(highValue, max));
+
+			// use the current, not the default values, for example when loading a snapshot
+			if (useCurrentValues) {
+				lowValue = params.low;
+				highValue = params.high;
+			}
 
 			// apply all new settings to the effect parameters 
 			dispatch(getActions().recreateParameter(my.id, 'low', { min: min, max: max, value: lowValue }));

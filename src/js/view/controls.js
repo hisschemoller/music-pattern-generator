@@ -28,6 +28,7 @@ function addEventListeners() {
   });
   importEl.addEventListener('change', e => {
     dispatch(actions.importProject(e.target.files[0]));
+    e.target.value = null;
   });
   exportEl.addEventListener('click', e => {
     dispatch(actions.exportProject());

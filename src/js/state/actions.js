@@ -1,6 +1,6 @@
 import convertLegacyFile from '../core/convert_xml.js';
 import { createUUID, getProcessorDefaultName, midiControlToParameterValue, midiNoteToParameterValue, } from '../core/util.js';
-import { getConfig, setConfig, } from '../core/config.js';
+import { getConfig, } from '../core/config.js';
 import { getAllMIDIPorts, CONTROL_CHANGE, NOTE_ON,  } from '../midi/midi.js';
 import { showDialog } from '../view/dialog.js';
 import { getProcessorData, } from '../core/processor-loader.js';
@@ -28,7 +28,6 @@ const ADD_PROCESSOR = 'ADD_PROCESSOR',
   SELECT_PROCESSOR = 'SELECT_PROCESSOR',
   SET_CAMERA_POSITION = 'SET_CAMERA_POSITION',
   SET_TEMPO = 'SET_TEMPO',
-  SET_THEME = 'SET_THEME',
   SET_TRANSPORT = 'SET_TRANSPORT',
   STORE_SNAPSHOT = 'STORE_SNAPSHOT',
   TOGGLE_CONNECT_MODE = 'TOGGLE_CONNECT_MODE',
@@ -37,6 +36,7 @@ const ADD_PROCESSOR = 'ADD_PROCESSOR',
   TOGGLE_MIDI_PREFERENCE = 'TOGGLE_MIDI_PREFERENCE',
   TOGGLE_SNAPSHOTS_MODE = 'TOGGLE_SNAPSHOTS_MODE',
   TOGGLE_PANEL = 'TOGGLE_PANEL',
+  TOGGLE_THEME = 'TOGGLE_THEME',
   UNASSIGN_EXTERNAL_CONTROL = 'UNASSIGN_EXTERNAL_CONTROL',
   UPDATE_MIDI_PORT = 'UPDATE_MIDI_PORT';
 
@@ -47,7 +47,7 @@ export default {
 	addProcessor: data => ({ type: ADD_PROCESSOR, data }),
 
 	ASSIGN_EXTERNAL_CONTROL,
-	assignExternalControl: (assignID, processorID, paramKey, remoteType, remoteChannel, remoteValue) => ({type: ASSIGN_EXTERNAL_CONTROL, assignID, processorID, paramKey, remoteType, remoteChannel, remoteValue, }),
+	assignExternalControl: (assignId, processorId, paramKey, remoteType, remoteChannel, remoteValue) => ({type: ASSIGN_EXTERNAL_CONTROL, assignId, processorId, paramKey, remoteType, remoteChannel, remoteValue, }),
 
 	CABLE_DRAG_END,
 	cableDragEnd: (connectorId, processorId, x, y, z) => ({ type: CABLE_DRAG_END, connectorId, processorId, x, y, z, }),
@@ -59,12 +59,27 @@ export default {
 	cableDragStart: (connectorId, processorId, x, y, z) => ({ type: CABLE_DRAG_START, connectorId, processorId, x, y, z, }),
 
 	CHANGE_PARAMETER,
-	changeParameter: (processorID, paramKey, paramValue) => {
+	changeParameter: (processorId, paramKey, paramValueRaw) => {
 		return (dispatch, getState, getActions) => {
 			const { processors } = getState();
-			const param = processors.byId[processorID].params.byId[paramKey];
-			if (paramValue !== param.value) {
-				return { type: CHANGE_PARAMETER, processorID, paramKey, paramValue };
+			const { max, min, type, value } = processors.byId[processorId].params.byId[paramKey];
+			let paramValue;
+			switch (type) {
+				case 'integer':
+					paramValue = Math.max(min, Math.min(paramValueRaw, max));
+					break;
+				case 'boolean':
+					paramValue = !!paramValueRaw;
+					break;
+				case 'itemized':
+					paramValue = paramValueRaw;
+					break;
+				case 'string':
+					paramValue = paramValueRaw;
+					break;
+			}
+			if (paramValue !== value) {
+				return { type: CHANGE_PARAMETER, processorId, paramKey, paramValue };
 			}
 		};
 	},
@@ -80,10 +95,10 @@ export default {
 			let isExists = false;
 			for (let i = 0, n = connections.allIds.length; i < n; i++) {
 				const connection = connections.byId[connections.allIds[i]];
-				if (connection.sourceConnectorID === source.connectorId &&
-					connection.sourceProcessorID === source.processorId &&
-					connection.destinationConnectorID === destination.connectorId &&
-					connection.destinationProcessorID === destination.processorId) {
+				if (connection.sourceConnectorId === source.connectorId &&
+					connection.sourceProcessorId === source.processorId &&
+					connection.destinationConnectorId === destination.connectorId &&
+					connection.destinationProcessorId === destination.processorId) {
 						isExists = true;
 				} 
 			}
@@ -104,18 +119,18 @@ export default {
 			if (!isExists && isDestinationSet && !isInfiniteLoop) {
 				return {
 					type: CREATE_CONNECTION,
-					connectionID: `conn_${createUUID()}`,
-					destinationConnectorID: destination.connectorId,
-					destinationProcessorID: destination.processorId,
-					sourceConnectorID: source.connectorId,
-					sourceProcessorID: source.processorId,
+					connectionId: `conn_${createUUID()}`,
+					destinationConnectorId: destination.connectorId,
+					destinationProcessorId: destination.processorId,
+					sourceConnectorId: source.connectorId,
+					sourceProcessorId: source.processorId,
 				};
 			}
 		};
 	},
 
 	CREATE_MIDI_PORT,
-	createMIDIPort: (portID, data) => { return { type: CREATE_MIDI_PORT, portID, data } },
+	createMIDIPort: (portId, data) => { return { type: CREATE_MIDI_PORT, portId, data } },
 
 	CREATE_PROCESSOR,
 	createProcessor: data => {
@@ -134,24 +149,18 @@ export default {
 	},
 
 	CREATE_PROJECT,
-	createProject: data => ({ type: CREATE_PROJECT, data }),
+	createProject: data => {
+		return (dispatch, getState, getActions) => {
+			const { theme } = getConfig();
+			return { type: CREATE_PROJECT, data: { ...data, theme, }, };
+		}
+	},
 
 	DELETE_PROCESSOR,
 	deleteProcessor: id => ({ type: DELETE_PROCESSOR, id }),
 
 	DISCONNECT_PROCESSORS,
-	disconnectProcessors: id => {
-		return (dispatch, getState, getActions) => {
-			const { connections, processors, } = getState();
-			const connection = connections.byId[id];
-			const sourceProcessor = processors.byId[connection.sourceProcessorID];
-			const destinationProcessor = processors.byId[connection.destinationProcessorID];
-
-			// disconnect the processors
-			dispatch(getActions().disconnectProcessors2(id));
-		}
-	},
-	disconnectProcessors2: id => ({ type: DISCONNECT_PROCESSORS, id }),
+	disconnectProcessors: id => ({ type: DISCONNECT_PROCESSORS, id }),
 
 	DRAG_ALL_PROCESSORS,
 	dragAllProcessors: (x, y) => ({ type: DRAG_ALL_PROCESSORS, x, y }),
@@ -210,7 +219,7 @@ export default {
             'Import failed', 
             `The file could not be opened.`,
             'Ok');
-      });
+      	});
     }
   },
 
@@ -265,7 +274,7 @@ export default {
 			}
 
 			// store the changes in configuration
-			setConfig(getState());
+			// setConfig(getState());
 		};
 	},
 
@@ -282,7 +291,7 @@ export default {
 			});
 
 			// recreate the state with the existing ports
-			dispatch(getActions().createProject(getState()));
+			// dispatch(getActions().createProject(getState()));
 		}
 	},
 
@@ -290,25 +299,25 @@ export default {
 	receiveMIDIControlChange: data => {
 		return (dispatch, getState, getActions) => {
 			const { assignExternalControl, changeParameter, loadSnapshot, unassignExternalControl, } = getActions();
-			const { assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorID, processors, } = getState();
+			const { assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorId, processors, } = getState();
 			const type = CONTROL_CHANGE;
 			const channel = (data[0] & 0xf) + 1;
 			const control = data[1];
 			const value = data[2];
 
 			if (learnModeActive) {
-				dispatch(unassignExternalControl(learnTargetProcessorID, learnTargetParameterKey));
-				dispatch(assignExternalControl(`assign_${createUUID()}`, learnTargetProcessorID, learnTargetParameterKey, type, channel, control));
+				dispatch(unassignExternalControl(learnTargetProcessorId, learnTargetParameterKey));
+				dispatch(assignExternalControl(`assign_${createUUID()}`, learnTargetProcessorId, learnTargetParameterKey, type, channel, control));
 			} else {
-				assignments.allIds.forEach(assignID => {
-					const { paramKey, processorID, remoteChannel, remoteValue } = assignments.byId[assignID];
+				assignments.allIds.forEach(assignId => {
+					const { paramKey, processorId, remoteChannel, remoteValue } = assignments.byId[assignId];
 					if (remoteChannel === channel && remoteValue === control) {
-						if (processorID === 'snapshots') {
+						if (processorId === 'snapshots') {
 							dispatch(loadSnapshot(parseInt(paramKey, 10)));
 						} else {
-							const param = processors.byId[processorID].params.byId[paramKey];
+							const param = processors.byId[processorId].params.byId[paramKey];
 							const paramValue = midiControlToParameterValue(param, value);
-							dispatch(changeParameter(processorID, paramKey, paramValue));
+							dispatch(changeParameter(processorId, paramKey, paramValue));
 						}
 					}
 				});
@@ -320,7 +329,7 @@ export default {
 	receiveMIDINote: data => {
 		return (dispatch, getState, getActions) => {
 			const { assignExternalControl, changeParameter, loadSnapshot, unassignExternalControl, } = getActions();
-			const { assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorID, processors, } = getState();
+			const { assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorId, processors, } = getState();
 
 			// type can be note on or off
 			const type = data[0] & 0xf0;
@@ -330,18 +339,18 @@ export default {
 			
 			if (type === NOTE_ON && velocity > 0) {
 				if (learnModeActive) {
-					dispatch(unassignExternalControl(learnTargetProcessorID, learnTargetParameterKey));
-					dispatch(assignExternalControl(`assign_${createUUID()}`, learnTargetProcessorID, learnTargetParameterKey, type, channel, pitch));
+					dispatch(unassignExternalControl(learnTargetProcessorId, learnTargetParameterKey));
+					dispatch(assignExternalControl(`assign_${createUUID()}`, learnTargetProcessorId, learnTargetParameterKey, type, channel, pitch));
 				} else {
-					assignments.allIds.forEach(assignID => {
-						const { paramKey, processorID, remoteChannel, remoteValue } = assignments.byId[assignID];
+					assignments.allIds.forEach(assignId => {
+						const { paramKey, processorId, remoteChannel, remoteValue } = assignments.byId[assignId];
 						if (remoteChannel === channel && remoteValue === pitch) {
-							if (processorID === 'snapshots') {
+							if (processorId === 'snapshots') {
 								dispatch(loadSnapshot(parseInt(paramKey, 10)));
 							} else {
-								const param = processors.byId[processorID].params.byId[paramKey];
+								const param = processors.byId[processorId].params.byId[paramKey];
 								const paramValue = midiNoteToParameterValue(param, velocity);
-								dispatch(changeParameter(processorID, paramKey, paramValue));
+								dispatch(changeParameter(processorId, paramKey, paramValue));
 							}
 						}
 					});
@@ -351,7 +360,7 @@ export default {
 	},
 
 	RECREATE_PARAMETER,
-	recreateParameter: (processorID, paramKey, paramObj) => ({ type: RECREATE_PARAMETER, processorID, paramKey, paramObj }),
+	recreateParameter: (processorId, paramKey, paramObj) => ({ type: RECREATE_PARAMETER, processorId, paramKey, paramObj }),
 
 	SELECT_PROCESSOR,
 	selectProcessor: id => ({ type: SELECT_PROCESSOR, id }),
@@ -372,32 +381,31 @@ export default {
 			});
 
 			// copy the port settings of existing ports
-			const existingPorts = { ...getState().ports }
+			const existingPorts = { ...getState().ports };
 
 			// copy the port settings defined in the project
 			const projectPorts = { ...data.ports };
 
-			// clear the project's port settings
-			data.ports.allIds = [];
-			data.ports.byId = {};
+			// clear the loaded project's port settings
+			data.ports = { allIds: [], byId: {}, };
 
 			// add all existing ports to the project data
-			existingPorts.allIds.forEach(existingPortID => {
-				data.ports.allIds.push(existingPortID);
-				data.ports.byId[existingPortID] = existingPorts.byId[existingPortID];
+			existingPorts.allIds.forEach(existingPortId => {
+				data.ports.allIds.push(existingPortId);
+				data.ports.byId[existingPortId] = existingPorts.byId[existingPortId];
 			});
 
 			// set the existing ports to the project's settings,
 			// and create ports that do not exist
-			projectPorts.allIds.forEach(projectPortID => {
-				const projectPort = projectPorts.byId[projectPortID];
+			projectPorts.allIds.forEach(projectPortId => {
+				const projectPort = projectPorts.byId[projectPortId];
 				let portExists = false;
-				existingPorts.allIds.forEach(existingPortID => {
-					if (existingPortID === projectPortID) {
+				existingPorts.allIds.forEach(existingPortId => {
+					if (existingPortId === projectPortId) {
 						portExists = true;
 
 						// project port's settings exists, update the settings
-						const existingPort = existingPorts.byId[existingPortID];
+						const existingPort = existingPorts.byId[existingPortId];
 						existingPort.syncEnabled = projectPort.syncEnabled;
 						existingPort.remoteEnabled = projectPort.remoteEnabled;
 						existingPort.networkEnabled = projectPort.networkEnabled;
@@ -406,9 +414,9 @@ export default {
 
 				// port settings object doesn't exist, so create it, but disabled
 				if (!portExists) {
-					data.ports.allIds.push(projectPortID);
-					data.ports.byId[projectPortID] = {
-						id: projectPortID,
+					data.ports.allIds.push(projectPortId);
+					data.ports.byId[projectPortId] = {
+						id: projectPortId,
 						type: projectPort.type,
 						name: projectPort.name,
 						connection: 'closed', // closed | open | pending
@@ -426,13 +434,7 @@ export default {
 	},
 
 	SET_TEMPO,
-	setTempo: value => ({ 
-		type: SET_TEMPO, 
-		value: Math.round((value * 100)) / 100,
-	}),
-
-	SET_THEME,
-	setTheme: themeName => ({ type: SET_THEME, themeName }),
+	setTempo: value => ({ type: SET_TEMPO, value: Math.round((value * 100)) / 100 }),
 
 	SET_TRANSPORT,
 	setTransport: command => ({ type: SET_TRANSPORT, command }),
@@ -444,7 +446,7 @@ export default {
 
 			// create parameter key value objects for all processors
 			const snapshot = processors.allIds.reduce((accumulator, processorId) => {
-				const params = processors.byId[processorId].params;
+				const { params } = processors.byId[processorId];
 				return {
 					...accumulator,
 					[processorId]: params.allIds.reduce((acc, paramId) => {
@@ -459,9 +461,6 @@ export default {
 		}
 	},
 
-	UPDATE_MIDI_PORT,
-	updateMIDIPort: (portID, data) => { return { type: UPDATE_MIDI_PORT, portID, data } },
-
 	TOGGLE_CONNECT_MODE,
 	toggleConnectMode: () => ({ type: TOGGLE_CONNECT_MODE }),
 	
@@ -469,13 +468,14 @@ export default {
 	toggleMIDILearnMode: () => ({ type: TOGGLE_MIDI_LEARN_MODE }),
 
 	TOGGLE_MIDI_LEARN_TARGET,
-	toggleMIDILearnTarget: (processorID, parameterKey) => {
+	toggleMIDILearnTarget: (processorId, parameterKey) => {
+		console.log(processorId, parameterKey);
 		return (dispatch, getState, getActions) => {
-			const { learnTargetProcessorID, learnTargetParameterKey } = getState();
-			if (processorID === learnTargetProcessorID && parameterKey === learnTargetParameterKey) {
-				return { type: TOGGLE_MIDI_LEARN_TARGET, processorID: null, parameterKey: null };
+			const { learnTargetProcessorId, learnTargetParameterKey } = getState();
+			if (processorId === learnTargetProcessorId && parameterKey === learnTargetParameterKey) {
+				return { type: TOGGLE_MIDI_LEARN_TARGET, processorId: null, parameterKey: null };
 			}
-			return { type: TOGGLE_MIDI_LEARN_TARGET, processorID, parameterKey };
+			return { type: TOGGLE_MIDI_LEARN_TARGET, processorId, parameterKey };
 		}
 	},
 
@@ -488,6 +488,12 @@ export default {
 	TOGGLE_PANEL,
 	togglePanel: panelName => ({type: TOGGLE_PANEL, panelName}),
 
+	TOGGLE_THEME,
+	toggleTheme: () => ({ type: TOGGLE_THEME }),
+
 	UNASSIGN_EXTERNAL_CONTROL,
-	unassignExternalControl: (processorID, paramKey) => ({type: UNASSIGN_EXTERNAL_CONTROL, processorID, paramKey}),
+	unassignExternalControl: (processorId, paramKey) => ({type: UNASSIGN_EXTERNAL_CONTROL, processorId, paramKey}),
+
+	UPDATE_MIDI_PORT,
+	updateMIDIPort: (portId, data) => { return { type: UPDATE_MIDI_PORT, portId, data } },
 }
