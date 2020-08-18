@@ -227,7 +227,13 @@ export default {
 	libraryDrop: (processorType, x, y) => ({ type: LIBRARY_DROP, processorType, x, y, }),
 
 	LOAD_SNAPSHOT,
-	loadSnapshot: index => ({ type: LOAD_SNAPSHOT, index, }),
+	loadSnapshot: index => {
+		return (dispatch, getState, getActions) => {
+			if (getState().snapshots[index]) {
+				return { type: LOAD_SNAPSHOT, index, };
+			}
+		}
+	},
 
 	midiAccessChange: midiPort => {
 		return (dispatch, getState, getActions) => {

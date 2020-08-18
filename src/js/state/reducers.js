@@ -405,17 +405,12 @@ export default function reduce(state = initialState, action, actions = {}) {
 			const { snapshots, processors, } = state;
 			const snapshot = snapshots[index];
 
-			if (!snapshot) {
-				return state;
-			}
-
 			return {
 				...state,
 				snapshotIndex: index,
 				processors: {
 					allIds: [ ...processors.allIds ],
 					byId: processors.allIds.reduce((procAcc, processorId) => {
-						console.log('processors', processors);
 						const processor = processors.byId[processorId];
 						const processorSnapshot = snapshot[processorId];
 						return {
