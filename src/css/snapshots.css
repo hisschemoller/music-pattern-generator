@@ -72,8 +72,8 @@
   ),
   linear-gradient(
     to bottom,
-    var(--btn-active-bg-color),
-    var(--btn-active-bg-color)
+    var(--snapshot-strike),
+    var(--snapshot-strike)
   );
 }.snapshots__item.is-set .snapshots__item-load:hover {
   background: repeating-linear-gradient(
