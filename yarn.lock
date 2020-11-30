@@ -134,11 +134,6 @@ chalk@~1.1.3:
     strip-ansi "^3.0.0"
     supports-color "^2.0.0"
 
-charm@~0.1.1:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/charm/-/charm-0.1.2.tgz#06c21eed1a1b06aeb67553cdc53e23274bac2296"
-  integrity sha1-BsIe7RobBq62dVPNxT4jJ0usIpY=
-
 cliui@^3.0.3:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/cliui/-/cliui-3.2.0.tgz#120601537a916d29940f934da3b48d585a39213d"
@@ -710,13 +705,6 @@ ms@2.1.1:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.1.tgz#30a5864eb3ebb0a66f2ebe6d727af06a09d86e0a"
   integrity sha512-tgp+dl5cGk28utYktBsrFqA7HKgrhgPsg6Z/EfhWI4gl1Hwq8B/GmY/0oXZ6nF8hDVesS/FpnYaD/kOWhYQvyg==
 
-multimeter@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/multimeter/-/multimeter-0.1.1.tgz#f856c80fc3cf0f1d4ad8eb36ad68735e3ed5b3ea"
-  integrity sha1-+FbID8PPDx1K2Os2rWhzXj7Vs+o=
-  dependencies:
-    charm "~0.1.1"
-
 negotiator@0.6.2:
   version "0.6.2"
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.2.tgz#feacf7ccf525a77ae9634436a64883ffeca346fb"
@@ -735,17 +723,17 @@ number-is-nan@^1.0.0:
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
   integrity sha1-CXtgK1NCKlIsGvuHkDGDNpQaAR0=
 
-nw@0.46.2-sdk:
-  version "0.46.2-sdk"
-  resolved "https://registry.yarnpkg.com/nw/-/nw-0.46.2-sdk.tgz#84abba92a0b18ab5b72fda7925d2014309d925b6"
-  integrity sha512-FCPL2ELA8PGKQdV7q6DN7vg9v5Ye4yWGmp1Ax2QgBRLmS8BKheOICQW9/IvOA7VDb6uO8bFVDr4zNyTY0Sgzwg==
+nw@0.50.1-sdk:
+  version "0.50.1-sdk"
+  resolved "https://registry.yarnpkg.com/nw/-/nw-0.50.1-sdk.tgz#c676eb6e559dad6b84bd8ae77644c69cdb362dc9"
+  integrity sha512-EGXntkgD9QBLM+FFnELVzNKnhr9MDIuG1/gzhWALYC0s0VhH1Xv0lQWRIAan4ZgtD6PLCFnjuJ1hPhXibrlZSA==
   dependencies:
     chalk "~1.1.3"
     decompress "^4.2.0"
     download "^5.0.3"
     file-exists "^2.0.0"
     merge "^1.2.0"
-    multimeter "^0.1.1"
+    progress "^2.0.3"
     rimraf "^2.2.8"
     semver "^5.1.0"
     yargs "^3.2.1"
@@ -828,6 +816,11 @@ process-nextick-args@~2.0.0:
   resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-2.0.1.tgz#7820d9b16120cc55ca9ae7792680ae7dba6d7fe2"
   integrity sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==
 
+progress@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
+  integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
+
 proto-list@~1.2.1:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/proto-list/-/proto-list-1.2.4.tgz#212d5bfe1318306a420f6402b8e26ff39647a849"
@@ -881,20 +874,12 @@ rimraf@^2.2.8:
   dependencies:
     glob "^7.0.5"
 
-<<<<<<< HEAD
-safe-buffer@5.1.2, safe-buffer@^5.0.1, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
-=======
 safe-buffer@5.1.2, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
->>>>>>> 921d0ee597515fb3011eb3124a1e46896fb34d43
   version "5.1.2"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.2.tgz#991ec69d296e0313747d59bdfd2b745c35f8828d"
   integrity sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==
 
-<<<<<<< HEAD
-safe-buffer@^5.1.1:
-=======
 safe-buffer@^5.0.1, safe-buffer@^5.1.1:
->>>>>>> 921d0ee597515fb3011eb3124a1e46896fb34d43
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.2.1.tgz#1eaf9fa9bdb1fdd4ec75f58f9cdb4e6b7827eec6"
   integrity sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==
