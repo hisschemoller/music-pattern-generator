@@ -475,7 +475,6 @@ export default {
 
 	TOGGLE_MIDI_LEARN_TARGET,
 	toggleMIDILearnTarget: (processorId, parameterKey) => {
-		console.log(processorId, parameterKey);
 		return (dispatch, getState, getActions) => {
 			const { learnTargetProcessorId, learnTargetParameterKey } = getState();
 			if (processorId === learnTargetProcessorId && parameterKey === learnTargetParameterKey) {
