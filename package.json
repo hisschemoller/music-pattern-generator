@@ -1,6 +1,6 @@
 {
     "name": "music-pattern-generator",
-    "version": "2.1",
+    "version": "2.2.0",
     "description": "MIDI rhythm and music pattern generator",
     "keywords": [
         "MIDI",
@@ -24,6 +24,6 @@
     "dependencies": {},
     "devDependencies": {
         "express": "^4.17.1",
-        "nw": "0.42.5-sdk"
+        "nw": "0.50.1-sdk"
     }
 }

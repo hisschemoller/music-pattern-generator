@@ -2,6 +2,7 @@
 @import 'library.css';
 @import 'preferences.css';
 @import 'rangeslider.css';
+@import 'snapshots.css';
 @import 'remote.css';
 @import 'settings.css';
 
@@ -108,6 +109,7 @@
     --slider-track-height: 2px;
     --subheader-bg-color: #999;
     --text-color: #333;
+    --snapshot-strike: #bbb;
     --webgl-high-color: #333;
     --webgl-mid-color: #999;
     --webgl-low-color: #ddd;
@@ -119,6 +121,7 @@ div[data-theme='dev'] {
     --bg-color: #fff;
     --border-color: #ddd;
     --btn-color: #bbb;
+    --btn-hover-color: #aaa;
     --btn-active-color: #999;
     --btn-bg-color: #eee;
     --btn-active-bg-color: #ddd;
@@ -136,7 +139,7 @@ div[data-theme='dark'] {
     --assign-bg-color: rgba(255, 255, 255, 0.2);
     --assign-border-color: #999;
     --assign-border-assigned-color: #ccc;
-    --bg-color: #000;
+    --bg-color: #111;
     --border-color: #999;
     --btn-color: #999;
     --btn-active-color: #fff;
@@ -376,7 +379,7 @@ div[data-theme] {
     height: 30px;
     margin: 5px;
     text-align: right;
-    width: 50px;
+    width: 65px;
 }
 
 

@@ -3,7 +3,7 @@
 
 #define MyAppName "Music Pattern Generator"
 #define MyAppVersion "2.1"
-#define MyAppPublisher "Wouter Hisschemöller"
+#define MyAppPublisher "Wouter HisschemÃ¶ller"
 #define MyAppURL "https://www.hisschemoller.com/"
 #define MyAppExeName "mpg_2_1.exe"
 
@@ -45,4 +45,3 @@ Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: 
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
-

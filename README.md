@@ -2,11 +2,16 @@
 
 An application to create musical rhythms in MIDI.
 
+Try the app online: [www.hisschemoller.com/mpg](https://www.hisschemoller.com/mpg)<br />
+Desktop installers: [github.com/hisschemoller/music-pattern-generator/releases](https://github.com/hisschemoller/music-pattern-generator/releases)
+
 ## Overview
 
 Music Pattern Generator is an app to create musical rhythms. It sends MIDI data, so it won’t make any sounds by itself. For that you need to connect it to MIDI soft- or hardware that can handle MIDI data to produce sound.
 
 ![App window](assets/img/mpg-2_1-animation.gif 'App window')
+
+Watch a [Music Pattern Generator 2.1 overview video on YouTube](https://youtu.be/Pz5x5eEtuTM).
 
 ## Processors
 
@@ -151,9 +156,37 @@ To remove an assignment click the delete (x) button at the right of the assignme
 
 To actually use the remote control, exit MIDI Learn mode by clicking the 'MIDI Learn' button again. Now the assigned controller will control the processor setting. You'll see and the processor graphic and editor setting follow the incoming MIDI data.
 
+## Snapshots
+
+![Snapshots](assets/img/snapshots.gif 'Snapshots')
+
+Snapshots store and recall the settings of all processors in one go. Handy for immediate changes to many parameters at the same time. 16 snapshots can be stored. The feature was added in version 2.2.
+
+Open the Snapshots panel with the camera button in the Control Bar. The image above shows snapshot #2 assigned and #3 assigned and active. Click a snapshot to activate it. All processor settings will be set to their stored value.
+
+### Editing Snapshots
+
+![Snapshots Edit Mode](assets/img/snapshots-edit.gif 'Snapshots Edit Mode')
+
+Click the 'Edit Snapshots' button to enter Edit Mode. Each snapshot slot will show a '+' button. Click a '+' button to store all current processor settings in that snapshot slot, or to overwrite previously stored settings.
+
+### Snapshots remote MIDI control
+
+![Snapshots Assignments Mode](assets/img/snapshots-assignments.gif 'Snapshots Assignments Mode')
+
+Snapshot slots can be assigned to MIDI controllers. Just like processor settings can. Snapshots may then be activated by remote MIDI control.
+
+1. Open the Assignments panel by clicking the 'MIDI connector' button in the Control Bar. The Assignments panel appears below the Snapshots and the snapshot slots show a dashed border to indicate they're now assignable.
+2. Click a slot to arm it for being assigned. The slot shows a darker background. See slot #2 in the image above. 
+3. Play a note or turn a knob on an attached MIDI controller. The armed slot will now be assigned to the received MIDI note or continuous controller. It shows a solid border to indicate it has been assigned. And the snapshot appears in the Assignments panel. See image below.
+
+![Snapshots Assigned](assets/img/snapshots-assigned.gif 'Snapshots Assigned')
+
+For general information about MIDI controller setup or making and removing assignments, please see the chapter 'MIDI Remote Control' above.
+
 ## The Control Bar
 
-![The Control Bar](assets/img/controlbar.jpg 'The Control Bar')
+![The Control Bar](assets/img/controlbar.gif 'The Control Bar')
 
 The controls, from left to right
 
@@ -167,6 +200,7 @@ The tempo number input, to set the tempo in Beats Per Minute (BPM)
 - Library
 - Preferences
 - Assignments
+- Snapshots
 - Connections
 - Settings Editor
 - About

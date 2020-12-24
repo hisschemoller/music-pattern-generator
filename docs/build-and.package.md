@@ -1,5 +1,18 @@
 # Build and package
 
+## Create an updated version
+
+* Update version number in:
+  * package.json
+  * assets/linux/control
+* Windows
+  * Copy and adjust the Inno Setup script.
+    * assets/windows/inno_setup_script_mpg_2_1.iss
+  * Inno Setup
+    * In 'Welcome' panel select 'Open an existing script file'.
+    * Select 'More files...' to browse to the new script file.
+    * Click the Compile button or select menu Build > Compile.
+
 ## Run locally in browser
 
 A script in package.json starts Node.js and runs a simple Express app to serve the app in the browser on http://localhost:3008
@@ -36,7 +49,6 @@ NW can be installed as a development dependency. A script in package.json can ru
 3. Put `app.nw` inside the downloaded Mac release, in `nwjs.app/Contents/Resources/`. (right click on `nwjs.app` and choose 'Show Package Contents' to open it)
 4. To add the app icons, copy `/assets/icons/mac/icons.icns` and paste it into `nwjs.app/Contents/Resources/` as well. Rename the file to `app.icns` so it will replace the existing default icons.
 5. Also overwrite `nwjs.app/Contents/Resources/documents.icns` with the `icons.icns` file.
-6. https://stackoverflow.com/questions/49143875/how-to-rename-an-nwjs-app
 
 The file `nwjs.app` is now an executable that runs the app. Copy and rename it to `MusicPatternGenerator.app`. Doubleclick the app to run it.
 
