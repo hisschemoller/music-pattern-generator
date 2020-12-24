@@ -1,5 +1,12 @@
 # Build and package
 
+## Create an updated version
+
+* Update version number in:
+  * package.json
+  * assets/linux/control
+  * assets/windows/inno_setup_script_mpg_2_1.iss
+
 ## Run locally in browser
 
 A script in package.json starts Node.js and runs a simple Express app to serve the app in the browser on http://localhost:3008
