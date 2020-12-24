@@ -1,5 +1,5 @@
 Package: music-pattern-generator
-Version: 2.1
+Version: 2.2
 Architecture: all
 Maintainer: Wouter Hisschemöller <email@hisschemoller.com>
-Description: A music program to generate MIDI rhythms patterns.
+Description: A music program to generate MIDI rhythm patterns.

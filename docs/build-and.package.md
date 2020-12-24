@@ -1,5 +1,18 @@
 # Build and package
 
+## Create an updated version
+
+* Update version number in:
+  * package.json
+  * assets/linux/control
+* Windows
+  * Copy and adjust the Inno Setup script.
+    * assets/windows/inno_setup_script_mpg_2_1.iss
+  * Inno Setup
+    * In 'Welcome' panel select 'Open an existing script file'.
+    * Select 'More files...' to browse to the new script file.
+    * Click the Compile button or select menu Build > Compile.
+
 ## Run locally in browser
 
 A script in package.json starts Node.js and runs a simple Express app to serve the app in the browser on http://localhost:3008

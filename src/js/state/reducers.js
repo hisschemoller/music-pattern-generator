@@ -73,7 +73,7 @@ const initialState = {
 	showSettingsPanel: false,
 	theme: 'light', // 'light|dark|dev' 
 	transport: 'stop', // 'play|pause|stop'
-	version: '2.2.0-beta',
+	version: '2.2.0',
 };
 
 /**
@@ -264,11 +264,11 @@ export default function reduce(state = initialState, action, actions = {}) {
 				...state,
 				processors: {
 					allIds: state.processors.allIds.filter(id => id !== processorId),
-					byId: { ...state.processors.byId },
 					byId: state.processors.allIds.reduce((accumulator, id) => {
 						if (id !== processorId) {
 							return { ...accumulator, [id]: state.processors.byId[id] };
 						}
+						return accumulator;
 					}, {}),
 				},
 			};
@@ -404,9 +404,7 @@ export default function reduce(state = initialState, action, actions = {}) {
 			const { index, } = action;
 			const { snapshots, processors, } = state;
 			const snapshot = snapshots[index];
-			if (!snapshot) {
-				return state;
-			}
+
 			return {
 				...state,
 				snapshotIndex: index,

@@ -1,5 +1,13 @@
 # Version history
 
+### 2.2
+
+- Snapshots.
+- Euclid FX bypass parameter.
+- Euclidean processor's Channel, Pitch and Velocity parameters can be remote controlled by MIDI.
+- MIDI Note events can be used for remote control (besides MIDI CCs).
+- Bug fix: Creating infinite loops is not possible anymore.
+
 ### 2.1
 
 - Graphics rendered with WebGL using the three.js library.
