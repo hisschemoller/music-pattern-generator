@@ -160,6 +160,8 @@ To actually use the remote control, exit MIDI Learn mode by clicking the 'MIDI L
 
 ![Snapshots](assets/img/snapshots.gif 'Snapshots')
 
+[Snapshots explained in a YouTube video](https://www.youtube.com/watch?v=nJGYka8OE30)
+
 Snapshots store and recall the settings of all processors in one go. Handy for immediate changes to many parameters at the same time. 16 snapshots can be stored. The feature was added in version 2.2.
 
 Open the Snapshots panel with the camera button in the Control Bar. The image above shows snapshot #2 assigned and #3 assigned and active. Click a snapshot to activate it. All processor settings will be set to their stored value.
