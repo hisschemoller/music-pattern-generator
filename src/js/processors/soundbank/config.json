@@ -19,16 +19,14 @@
     },
     "params": {
         "byId": {
-            "sample": {
-                "label": "Sample",
+            "bank": {
+                "label": "Bank",
                 "type": "itemized",
-                "default": "475901__mattiagiovanetti__metronome.wav",
-                "value": "475901__mattiagiovanetti__metronome.wav",
+                "default": "A",
+                "value": "a",
                 "model": [
-                    { "label": "Metronome", "value": "475901__mattiagiovanetti__metronome.wav"},
-                    { "label": "Kick drum", "value": "367059__electronicmotion__kick-long-tr-8.wav" },
-                    { "label": "Snare drum", "value": "252734__crispydinner__crdn-upgrsn-004.wav" },
-                    { "label": "Closed Hi-hat", "value": "802__bdu__closehatac.wav" }
+                    { "label": "A", "value": "a" },
+                    { "label": "B", "value": "b" }
                 ]
             },
             "name": {
@@ -38,6 +36,44 @@
                 "value": "Unnamed"
             }
         },
-        "allIds": ["sample", "name"]
+        "allIds": ["bank", "name"]
+    },
+    "banks": {
+        "a": [
+            { "label": "Metronome", "value": "475901__mattiagiovanetti__metronome.wav"},
+            { "label": "Kick drum", "value": "367059__electronicmotion__kick-long-tr-8.wav" },
+            { "label": "Snare drum", "value": "252734__crispydinner__crdn-upgrsn-004.wav" },
+            { "label": "Closed Hi-hat", "value": "802__bdu__closehatac.wav" },
+            { "label": "-", "value": "" },
+            { "label": "-", "value": "" },
+            { "label": "-", "value": "" },
+            { "label": "-", "value": "" },
+            { "label": "-", "value": "" },
+            { "label": "-", "value": "" },
+            { "label": "-", "value": "" },
+            { "label": "-", "value": "" },
+            { "label": "-", "value": "" },
+            { "label": "-", "value": "" },
+            { "label": "-", "value": "" },
+            { "label": "-", "value": "" }
+        ],
+        "b": [
+            { "label": "-", "value": "" },
+            { "label": "-", "value": "" },
+            { "label": "-", "value": "" },
+            { "label": "-", "value": "" },
+            { "label": "-", "value": "" },
+            { "label": "-", "value": "" },
+            { "label": "-", "value": "" },
+            { "label": "-", "value": "" },
+            { "label": "-", "value": "" },
+            { "label": "-", "value": "" },
+            { "label": "-", "value": "" },
+            { "label": "-", "value": "" },
+            { "label": "-", "value": "" },
+            { "label": "-", "value": "" },
+            { "label": "-", "value": "" },
+            { "label": "-", "value": "" }
+        ]
     }
 }

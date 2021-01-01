@@ -10,11 +10,12 @@ export function createProcessor(data, my = {}) {
 			params = {};
 	
 	const initialize = function() {
-			const { processors } = getState();
+			const state = getState();
+			const { processors } = state;
 			document.addEventListener(STATE_CHANGE, handleStateChange);
 			updateAllParams(processors.byId[my.id].params.byId);
-			updateSampleParameter(getState());
-			initAudioFiles(processors.byId[my.id].params.byId.sample.model);
+			updateBankParameter(state);
+			initAudioFiles(processors.byId[my.id].banks);
 		},
 
 		terminate = function() {
@@ -32,8 +33,8 @@ export function createProcessor(data, my = {}) {
 					if (action.processorId === my.id) {
 						updateAllParams(state.processors.byId[my.id].params.byId);
 						switch (action.paramKey) {
-							case 'sample':
-								updateSampleParameter(state);
+							case 'bank':
+								updateBankParameter(state);
 								break;
 						}
 					}
@@ -60,7 +61,8 @@ export function createProcessor(data, my = {}) {
 				// timestampTicks: Timespan from timeline start to note start
 				const { channel, durationTicks, pitch, timestampTicks, type, velocity, } = data;
 				const nowToEventInSecs = (timestampTicks - scanStart + nowToScanStart) * ticksToMsMultiplier * 0.001;
-				playSound(nowToEventInSecs, params.sample, pitch, velocity);
+				
+				playSound(nowToEventInSecs, params.bank, channel, pitch, velocity);
 			});
 		},
 
@@ -69,17 +71,21 @@ export function createProcessor(data, my = {}) {
 		 * @param {Object} parameters Processor's paramer data in state.
 		 */
 		updateAllParams = function(parameters) {
-			params.sample = parameters.sample.value;
+			params.bank = parameters.bank.value;
 		},
 		
 		/**
-		 * If the sample changes update the processor's name as well.
+		 * Change the bank of samples.
 		 * @param {Object} state Application state.
 		 */
-		updateSampleParameter = state => {
-			const param = state.processors.byId[my.id].params.byId.sample;
+		updateBankParameter = state => {
+			const { banks, params, } = state.processors.byId[my.id]
+			const param = params.byId.bank;
+			const bank = banks[param.value];
+
+			// if the bank changes update the processor's name as well
 			const label = param.model.find(item => item.value === param.value).label;
-			dispatch(getActions().changeParameter(my.id, 'name', label));
+			dispatch(getActions().changeParameter(my.id, 'name', `Soundbank ${label}`));
 		};
 
 	that = createMIDIProcessorBase(data, that, my);
