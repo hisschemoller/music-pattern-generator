@@ -11,6 +11,7 @@
     "object3d.js",
     "object3dController.js",
     "processor.js",
+    "settingsController.js",
     "utils.js"
   ]
 }

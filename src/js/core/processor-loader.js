@@ -57,7 +57,8 @@ export function preloadProcessors() {
             object3d: results[2],
             object3dController: results[3],
             processor: results[4],
-            utils: results[5],
+            settingsController: results[5],
+            utils: results[6],
           };
         });
         console.log('Processor data preloaded.');
@@ -67,6 +68,10 @@ export function preloadProcessors() {
   });
 }
 
+/**
+ * Provide a list of all processor types.
+ * @returns {Array} Processor type strings.
+ */
 export function getProcessorTypes() {
   return data.ids;
 }

@@ -4,6 +4,7 @@ import addWindowResizeCallback from '../view/windowresize.js';
 import { getProcessorData } from '../core/processor-loader.js';
 
 let settingsViews = [];
+let settingsControllers = [];
 const panelsEl = document.querySelector('.panels');
 const libraryEl = document.querySelector('.library');
 const helpEl = document.querySelector('.help');
@@ -37,15 +38,23 @@ function createSettingsViews(state) {
   const { processors, selectedId, } = state;
   processors.allIds.forEach((id, i) => {
     const processorData = processors.byId[id];
-    let exists = settingsViews.some(view => view.getID() === id);
+    let exists = settingsViews.some(view => view.getId() === id);
     if (!exists) {
+
+      // create the settings view
       const settingsHTML = getProcessorData(processorData.type, 'settings');
-      settingsViews.splice(i, 0, createSettingsPanel({
+      const settingsView = createSettingsPanel({
         data: processorData,
         parentEl: editContentEl,
         template: settingsHTML,
         isSelected: selectedId === processorData.id
-      }));
+      });
+      settingsViews.splice(i, 0, settingsView);
+
+      // create the settings controller
+      const controllerModule = getProcessorData(processorData.type, 'settingsController');
+      const settingsController = controllerModule.createSettingsController(settingsView.getDOMElement(), processorData);
+      settingsControllers.splice(i, 0, settingsController);
     }
   });
 }
@@ -55,12 +64,23 @@ function createSettingsViews(state) {
  * @param  {String} id MIDI processor ID.
  */
 function deleteSettingsView(id) {
+
+  // delete the settings view
   settingsViews = settingsViews.reduce((accumulator, view) => {
-    if (view.getID() === id) {
+    if (view.getId() === id) {
       view.terminate();
       return accumulator;
     }
     return [...accumulator, view];
+  }, []);
+
+  // delete the settings controller
+  settingsControllers = settingsControllers.reduce((accumulator, controller) => {
+    if (controller.getId() === id) {
+      controller.terminate();
+      return accumulator;
+    }
+    return [...accumulator, controller];
   }, []);
 }
 
@@ -200,7 +220,7 @@ function selectSettingsView(id) {
 function setProject(state) {
   let i = settingsViews.length;
   while (--i >= 0) {
-    deleteSettingsView(settingsViews[i].getID());
+    deleteSettingsView(settingsViews[i].getId());
   }
   createSettingsViews(state);
 }

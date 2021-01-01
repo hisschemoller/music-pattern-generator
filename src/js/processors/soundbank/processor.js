@@ -79,7 +79,7 @@ export function createProcessor(data, my = {}) {
 		 * @param {Object} state Application state.
 		 */
 		updateBankParameter = state => {
-			const { banks, params, } = state.processors.byId[my.id]
+			const { banks, params, } = state.processors.byId[my.id];
 			const param = params.byId.bank;
 			const bank = banks[param.value];
 
