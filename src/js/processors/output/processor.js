@@ -1,6 +1,6 @@
 import { dispatch, getActions, getState, STATE_CHANGE, } from '../../state/store.js';
 import createMIDIProcessorBase from '../../midi/processorbase.js';
-import { getMIDIPortByID } from '../../midi/midi.js';
+import { getMIDIAccessible, getMIDIPortByID } from '../../midi/midi.js';
 
 /**
  * MIDI output port processor.
@@ -86,6 +86,10 @@ export function createProcessor(data, my = {}) {
 		 * After a port parameter change.
 		 */
 		updateMIDIPort = function() {
+			if (!getMIDIAccessible()) {
+				return;
+			}
+
 			midiOutput = getMIDIPortByID(params.port);
 
 			// update the processor's name parameter

@@ -1,7 +1,7 @@
 import convertLegacyFile from '../core/convert_xml.js';
 import { createUUID, getProcessorDefaultName, midiControlToParameterValue, midiNoteToParameterValue, } from '../core/util.js';
 import { getConfig, } from '../core/config.js';
-import { getAllMIDIPorts, CONTROL_CHANGE, NOTE_ON,  } from '../midi/midi.js';
+import { getAllMIDIPorts, getMIDIAccessible, CONTROL_CHANGE, NOTE_ON,  } from '../midi/midi.js';
 import { showDialog } from '../view/dialog.js';
 import { getProcessorData, } from '../core/processor-loader.js';
 import { testForInfiniteLoop, } from '../midi/network_ordering.js';
@@ -291,10 +291,12 @@ export default {
 			dispatch(getActions().createProject());
 
 			// add the existing MIDI ports
-			const existingMIDIPorts = getAllMIDIPorts();
-			existingMIDIPorts.forEach(port => {
+			if (getMIDIAccessible()) {
+				const existingMIDIPorts = getAllMIDIPorts();
+				existingMIDIPorts.forEach(port => {
 					dispatch(getActions().midiAccessChange(port));
-			});
+				});
+			}
 
 			// recreate the state with the existing ports
 			// dispatch(getActions().createProject(getState()));
@@ -379,6 +381,11 @@ export default {
 
 			// create an empty initial state
 			dispatch(getActions().createProject());
+
+			// stop here if there's no MIDI accees
+			if (!getMIDIAccessible()) {
+				return;
+			}
 
 			// add the existing MIDI ports
 			const existingMIDIPorts = getAllMIDIPorts();
