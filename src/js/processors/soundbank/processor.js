@@ -21,11 +21,15 @@ export function createProcessor(data, my = {}) {
 			document.removeEventListener(STATE_CHANGE, handleStateChange);
 		},
 
+		/**
+		 * Handle state changes.
+		 * @param {Object} e Custom event.
+		 */
 		handleStateChange = function(e) {
 			const { state, action, actions, } = e.detail;
 			switch (action.type) {
 				case actions.CHANGE_PARAMETER:
-					if (action.processorID === my.id) {
+					if (action.processorId === my.id) {
 						updateAllParams(state.processors.byId[my.id].params.byId);
 						switch (action.paramKey) {
 							case 'sample':
@@ -60,6 +64,10 @@ export function createProcessor(data, my = {}) {
 			});
 		},
 
+		/**
+		 * Store parameter values locally for quick access by the process function.
+		 * @param {Object} parameters Processor's paramer data in state.
+		 */
 		updateAllParams = function(parameters) {
 			params.sample = parameters.sample.value;
 		},

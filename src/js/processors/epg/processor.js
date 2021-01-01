@@ -24,7 +24,7 @@ export function createProcessor(data, my = {}) {
 
 		/**
 		 * Handle state changes.
-		 * @param {Object} e 
+		 * @param {Object} e Custom event.
 		 */
 		handleStateChanges = e => {
 			const { state, action, actions, } = e.detail;

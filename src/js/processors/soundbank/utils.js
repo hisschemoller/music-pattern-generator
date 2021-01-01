@@ -10,20 +10,25 @@ let voiceIndex = 0;
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
+/**
+ * Load all samples and store them in buffers.
+ * @param {Array} samplesData
+ */
 export function initAudioFiles(samplesData) {
   if (buffers.allIds.length === 0) {
     createVoices();
     samplesData.forEach(data => {
-      buffers.allIds.push(data.value);
-      buffers.byId[data.value] = {
+      const { value } = data;
+      buffers.allIds.push(value);
+      buffers.byId[value] = {
         buffer: null,
       };
 
-      fetch(`audio/${data.value}`).then(response => {
+      fetch(`audio/${value}`).then(response => {
         if (response.status === 200) {
           response.arrayBuffer().then(arrayBuffer => {
             audioCtx.decodeAudioData(arrayBuffer).then((audioBuffer) => {
-              buffers.byId[data.value].buffer = audioBuffer;
+              buffers.byId[value].buffer = audioBuffer;
             });
           })
         }
@@ -32,8 +37,18 @@ export function initAudioFiles(samplesData) {
   }
 }
 
+/**
+ * Play a sound.
+ * @param {Number} nowToStartInSecs Playback start time.
+ * @param {String} bufferId ID of sample in audiobuffer to play.
+ * @param {Number} pitch MIDI pitch.
+ * @param {Number} velocity MIDI velocity.
+ */
 export function playSound(nowToStartInSecs, bufferId, pitch, velocity) {
-  const startTime = audioCtx.currentTime + nowToStartInSecs;
+  if (nowToStartInSecs < 0) {
+    console.log('TODO: nowToStartInSecs should not be below 0: ', nowToStartInSecs);
+  }
+  const startTime = audioCtx.currentTime + Math.max(0, nowToStartInSecs);
   const voice = voices[voiceIndex];
   voiceIndex = ++voiceIndex % numVoices;
 
@@ -54,6 +69,9 @@ export function playSound(nowToStartInSecs, bufferId, pitch, velocity) {
   }
 }
 
+/**
+ * Create reusable voices that can play sounds.
+ */
 function createVoices() {
   for (let i = 0; i < numVoices; i++) {
     const gain = audioCtx.createGain();
