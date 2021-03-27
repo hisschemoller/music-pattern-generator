@@ -11,7 +11,7 @@ Music Pattern Generator is an app to create musical rhythms. It sends MIDI data,
 
 ![App window](assets/img/mpg-2_1-animation.gif 'App window')
 
-Watch a [Music Pattern Generator 2.1 overview video on YouTube](https://youtu.be/Pz5x5eEtuTM).
+Watch a [Music Pattern Generator 2.1 overview video on YouTube](https://www.youtube.com/watch?v=y4JAhvl5FaA).
 
 ## Processors
 
