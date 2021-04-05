@@ -273,11 +273,13 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     });
 
     // center dot
-    centerDot3d.scale.set(centerScale, centerScale, 1);
-    centerScale -= 0.06;
-    if (centerScale <= 0.05) {
-      centerDot3d.visible = false;
-      centerScale = 0;
+    if (centerScale > 0) {
+      centerDot3d.scale.set(centerScale, centerScale, 1);
+      centerScale -= 0.06;
+      if (centerScale <= 0.05) {
+        centerDot3d.visible = false;
+        centerScale = 0;
+      }
     }
   };
             

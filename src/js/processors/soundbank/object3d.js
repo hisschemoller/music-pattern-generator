@@ -1,14 +1,13 @@
 import {
   createCircleFilled,
   createCircleOutline,
+  createCircleOutlineFilled,
   drawConnectors,
-  createShape,
 } from '../../webgl/draw3dHelper.js';
 import { getTheme } from '../../state/selectors.js';
 
 const {
   Group,
-  Vector2,
 } = THREE;
 
 export function createObject3d(id, inputs, outputs) {
@@ -39,25 +38,23 @@ export function createObject3d(id, inputs, outputs) {
       const selectCircle = createCircleOutline(2, colorHigh);
       selectCircle.name = 'select';
       selectCircle.visible = false;
-
-      const points = [
-        new Vector2(-radius, -radius),
-        new Vector2(radius, -radius),
-        new Vector2(radius, radius),
-        new Vector2(-radius, radius),
-        new Vector2(-radius, -radius),
-        new Vector2(0, -radius * 1.8),
-        new Vector2(radius, -radius),
-      ];
-      const graphic = createShape(points, colorHigh);
+      
+      const centerDot = createCircleOutlineFilled(1.5, colorHigh);
+      centerDot.name = 'centerDot';
+      centerDot.renderOrder = 6;
+      centerDot.visible = false;
+      
+      const outerCircle = createCircleOutline(4, colorHigh);
+      outerCircle.name = 'outerCircle';
 
       const group = new Group();
       group.name = 'output';
       group.userData.id = id;
       group.add(hitarea);
-      group.add(graphic);
       group.add(centerCircle);
       group.add(selectCircle);
+      group.add(centerDot);
+      group.add(outerCircle);
       group.add(label);
 
       // add inputs and outputs 

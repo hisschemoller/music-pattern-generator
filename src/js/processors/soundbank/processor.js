@@ -49,8 +49,9 @@ export function createProcessor(data, my = {}) {
 		 * @param {Number} nowToScanStart Timespan from current timeline position to scanStart, in ticks.
 		 * @param {Number} ticksToMsMultiplier Duration of one tick in milliseconds.
 		 * @param {Number} offset Time from doc start to timeline start in ticks.
+		 * @param {Array} processorEvents Array to collect processor generated events to display in the view.
 		 */
-		process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset) {
+		process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset, processorEvents) {
 
 			// retrieve events waiting at the processor's input
 			const inputData = my.getInputData();
@@ -63,6 +64,17 @@ export function createProcessor(data, my = {}) {
 				const nowToEventInSecs = (timestampTicks - scanStart + nowToScanStart) * ticksToMsMultiplier * 0.001;
 				
 				playSound(nowToEventInSecs, params.bank, channel, pitch, velocity);
+
+				// add events to processorEvents for the canvas to show them
+				if (!processorEvents[my.id]) {
+					processorEvents[my.id] = [];
+				}
+				
+				const delayFromNowToNoteStart = (timestampTicks - scanStart) * ticksToMsMultiplier;
+				processorEvents[my.id].push({
+					delayFromNowToNoteStart,
+					delayFromNowToNoteEnd: delayFromNowToNoteStart + (durationTicks * ticksToMsMultiplier)
+				});
 			});
 		},
 

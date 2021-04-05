@@ -71,7 +71,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
 
     // update center dot animation
     if (centerScale !== 0) {
-      updateNoteAnimation();
+      updateNoteAnimations();
     }
   };
 
@@ -234,14 +234,16 @@ export function createObject3dController(obj3d, data, isConnectMode) {
   /**
    * Update the current nacklace dot animations.
    */
-  const updateNoteAnimation = () => {
+  const updateNoteAnimations = () => {
 
     // center dot
-    centerDot3d.scale.set(centerScale, centerScale, 1);
-    centerScale -= 0.06;
-    if (centerScale <= 0.05) {
-      centerDot3d.visible = false;
-      centerScale = 0;
+    if (centerScale > 0) {
+      centerDot3d.scale.set(centerScale, centerScale, 1);
+      centerScale -= 0.06;
+      if (centerScale <= 0.05) {
+        centerDot3d.visible = false;
+        centerScale = 0;
+      }
     }
   };
           

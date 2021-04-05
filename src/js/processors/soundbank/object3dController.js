@@ -19,15 +19,27 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     updateSelectCircle,
   } = createObject3dControllerBase(obj3d, data, isConnectMode);
 
+  const centerDot3d = object3d.getObjectByName('centerDot');
+
   let colorLow,
-    colorHigh;
+    colorHigh,
+    centerScale = 0;
 
   /**
    * Redraw the pattern if needed.
    * @param {Number} position Transport playback position in ticks.
    * @param {Array} processorEvents Array of processor generated events to display.
    */
-  const draw = (position, processorEvents) => {};
+  const draw = (position, processorEvents) => {
+    updateNoteAnimations();
+
+    if (processorEvents[id] && processorEvents[id].length) {
+      for (let i = 0, n = processorEvents[id].length; i < n; i++) {
+        const { delayFromNowToNoteStart, } = processorEvents[id][i];
+        startNoteAnimation(delayFromNowToNoteStart);
+      }
+    }
+  };
 
   /**
    * @returns {String} The processor's id.
@@ -42,7 +54,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     const { action, actions, state, } = e.detail;
     switch (action.type) {
 
-      case actions.SET_THEME:
+      case actions.TOGGLE_THEME:
         updateTheme();
         break;
     }
@@ -57,6 +69,37 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     document.addEventListener(STATE_CHANGE, handleStateChanges);
 
     ({ colorLow, colorHigh, } = getTheme());
+  };
+ 
+  /**
+   * Start the center dot animation.
+   * @param {Number} stepIndex Index of the step to play.
+   * @param {Number} noteStartDelay Delay from now until note start in ms.
+   * @param {Number} noteStopDelay Delay from now until note end in ms.
+   */
+  const startNoteAnimation = (noteStartDelay) => {
+
+    // delay start of animation
+    setTimeout(() => {
+
+      // center dot
+      centerDot3d.visible = true;
+      centerScale = 1;
+    }, noteStartDelay);
+  };
+
+  /**
+   * Update the center dot animation.
+   */
+  const updateNoteAnimations = () => {
+    if (centerScale > 0) {
+      centerDot3d.scale.set(centerScale, centerScale, 1);
+      centerScale -= 0.06;
+      if (centerScale <= 0.05) {
+        centerDot3d.visible = false;
+        centerScale = 0;
+      }
+    }
   };
 
   /** 
