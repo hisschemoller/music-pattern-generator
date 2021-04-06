@@ -41,7 +41,6 @@ export function createObject3d(id, inputs, outputs) {
       
       const centerDot = createCircleOutlineFilled(1.5, colorHigh);
       centerDot.name = 'centerDot';
-      centerDot.renderOrder = 6;
       centerDot.visible = false;
       
       const outerCircle = createCircleOutline(4, colorHigh);
