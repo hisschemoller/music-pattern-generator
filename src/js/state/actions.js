@@ -396,7 +396,7 @@ export default {
 	
 				// copy the port settings defined in the project
 				const projectPorts = { ...data.ports };
-	
+
 				// clear the loaded project's port settings
 				data.ports = { allIds: [], byId: {}, };
 	

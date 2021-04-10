@@ -69,17 +69,6 @@ export function createObject3d(id, inputs, outputs) {
       midiPin4Circle.translateX(Math.sin(Math.PI * 0.75) * midiPinDistance);
       midiPin4Circle.translateY(Math.cos(Math.PI * 0.75) * midiPinDistance);
 
-      // const points = [
-      //   new Vector2(-radius, -radius),
-      //   new Vector2(radius, -radius),
-      //   new Vector2(radius, radius),
-      //   new Vector2(-radius, radius),
-      //   new Vector2(-radius, -radius),
-      //   new Vector2(0, -radius * 1.8),
-      //   new Vector2(radius, -radius),
-      // ];
-      // const graphic = createShape(points, colorHigh);
-
       const points = [
         new Vector2(-0.6, radius),
         new Vector2(-0.6, radius - 1.2),

@@ -1,5 +1,3 @@
-
-
 const numVoices = 32;
 const banks = {
   allIds: [],
@@ -72,17 +70,12 @@ export function initAudioFiles(banksData) {
  * @param {Number} velocity MIDI velocity.
  */
 export function playSound(nowToStartInSecs, bankId, channel, pitch, velocity) {
-  
-  if (nowToStartInSecs < 0) {
-    console.log('TODO: nowToStartInSecs should not be below 0: ', nowToStartInSecs);
-  }
   const soundId = banks.byId[bankId].allIds[(channel - 1)];
   const startTime = audioCtx.currentTime + Math.max(0, nowToStartInSecs);
   const voice = voices[voiceIndex];
   voiceIndex = ++voiceIndex % numVoices;
 
   if (voice.isPlaying) {
-    console.log('isPlaying');
     voice.source.stop();
   }
 
