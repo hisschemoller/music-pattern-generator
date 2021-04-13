@@ -129,8 +129,8 @@ export function createProcessor(data, my = {}) {
 			inputData.forEach(event => {
 				let isDelayed = false;
 
-				// handle only MIDI Note events
-				if (event.type === 'note') {
+				// handle only MIDI Note or CC events
+				if (event.type === 'note' || event.type === 'cc') {
 
 					// calculate the state of the effect at the event's time within the pattern
 					const stepIndex = Math.floor((event.timestampTicks % duration) / stepDuration),
@@ -171,6 +171,14 @@ export function createProcessor(data, my = {}) {
 									event.timestampTicks = event.timestampTicks + delayInTicks;
 								}
 							}
+							break;
+						case 'cc':
+							event.cc = params.isRelative ? event.cc + effectValue : effectValue;
+							event.cc = Math.max(0, Math.min(event.cc, 127));
+							break;
+						case 'cc_value':
+							event.cc_value = params.isRelative ? event.cc_value + effectValue : effectValue;
+							event.cc_value = Math.max(0, Math.min(event.cc_value, 127));
 							break;
 						case 'output':
 							// v2.3 or some further future version
@@ -304,6 +312,18 @@ export function createProcessor(data, my = {}) {
 					max = 32;
 					lowValue = params.isRelative ? 0 : 0;
 					highValue = params.isRelative ? 0 : 2;
+					break;
+				case 'cc':
+					min = params.isRelative ? -127 : 0;
+					max = 127;
+					lowValue = params.isRelative ? 0 : 0;
+					highValue = params.isRelative ? 0 : 63;
+					break;
+				case 'cc_value':
+					min = params.isRelative ? -127 : 0;
+					max = 127;
+					lowValue = params.isRelative ? 0 : 0;
+					highValue = params.isRelative ? 0 : 63;
 					break;
 				case 'output':
 					min = 1;

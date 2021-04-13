@@ -1,23 +1,17 @@
 {
-    "name": "Euclid FX",
+    "name": "EuclideanCC",
     "positionX": 0,
     "positionY": 0,
     "positionZ": 0,
     "inputs": {
-        "byId": {
-            "in": {
-                "x": 0,
-                "y": 9.5,
-                "z": 0
-            }
-        },
-        "allIds": ["in"]
+        "byId": {},
+        "allIds": []
     },
     "outputs": {
         "byId": {
             "out": {
                 "x": 0,
-                "y": -11,
+                "y": -13,
                 "z": 0
             }
         },
@@ -52,6 +46,33 @@
                 "max": 15,
                 "isMidiControllable": true
             },
+            "channel_out": {
+                "label": "Channel",
+                "type": "integer",
+                "default": 1,
+                "value": 1,
+                "min": 1,
+                "max": 16,
+                "isMidiControllable": true
+            },
+            "cc_out": {
+                "label": "CC",
+                "type": "integer",
+                "default": 1,
+                "value": 1,
+                "min": 1,
+                "max": 127,
+                "isMidiControllable": true
+            },
+            "cc_value_out": {
+                "label": "Value",
+                "type": "integer",
+                "default": 60,
+                "value": 60,
+                "min": 0,
+                "max": 127,
+                "isMidiControllable": true
+            },
             "rate": {
                 "label": "Rate",
                 "type": "itemized",
@@ -69,60 +90,18 @@
                     {"label": "1/32", "value": 0.125}
                 ]
             },
-            "is_bypass": {
-                "label": "Bypass",
-                "type": "boolean",
-                "default": false,
-                "value": false
-            },
             "is_triplets": {
                 "label": "Triplets",
                 "type": "boolean",
                 "default": false,
                 "value": false
             },
-            "target": {
-                "label": "Target",
-                "type": "itemized",
-                "default": "velocity",
-                "value": "velocity",
-                "model": [
-                    { "label": "Velocity", "value": "velocity" },
-                    { "label": "Pitch", "value": "pitch" },
-                    { "label": "Channel", "value": "channel" },
-                    { "label": "Note length", "value": "length" },
-                    { "label": "Note delay", "value": "delay" },
-                    { "label": "CC", "value": "cc" },
-                    { "label": "CC Value", "value": "cc_value" }
-                ]
-            },
-            "low": {
-                "label": "Low value",
-                "type": "integer",
-                "default": 50,
-                "value": 50,
-                "min": 0,
-                "max": 127,
+            "is_mute": {
+                "label": "Mute",
+                "type": "boolean",
+                "default": false,
+                "value": false,
                 "isMidiControllable": true
-            },
-            "high": {
-                "label": "High value",
-                "type": "integer",
-                "default": 100,
-                "value": 100,
-                "min": 0,
-                "max": 127,
-                "isMidiControllable": true
-            },
-            "mode": {
-                "label": "Mode",
-                "type": "itemized",
-                "default": "absolute",
-                "value": "absolute",
-                "model": [
-                    { "label": "Absolute", "value": "absolute" },
-                    { "label": "Relative", "value": "relative" }
-                ]
             },
             "name": {
                 "label": "Name",
@@ -131,6 +110,6 @@
                 "value": "Unnamed"
             }
         },
-        "allIds": ["steps", "pulses", "rotation", "rate", "is_bypass", "is_triplets", "target", "low", "high", "mode", "name"]
+        "allIds": ["steps", "pulses", "rotation", "channel_out", "cc_out", "cc_value_out", "rate", "is_triplets", "is_mute", "name"]
     }
 }

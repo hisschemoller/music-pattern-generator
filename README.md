@@ -22,6 +22,7 @@ Music Pattern Generator has a modular setup. Modules are called processors and a
 Three types of processors are available at the moment:
 
 - ‘Euclidean’ generates euclidean rhythms
+- ‘Euclidean CC’ generates euclidean CC ("continuous control") change events
 - 'Euclid FX’ transforms incoming MIDI notes
 - ‘Output’ sends notes to MIDI output ports
 
@@ -57,13 +58,27 @@ Note Length uses the same timing as rate. It's generally best to not set it high
 
 The other settings are self explanatory.
 
+## The Euclidean CC processor
+
+![The Euclidean CC processor](assets/img/processor-euclidean.jpg 'The Euclidean CC processor')
+
+The Euclidean CC processor generates CC ("contiuous controller") events in a rhythmic pattern. See Euclidean processor above for details.
+
+![The Euclidean CC settings editor]
+
+See Euclidean processor settings above for details, except:
+
+CC sets the MIDI CC number this processor changes.
+
+Value sets the MIDI CC value that this processor emits. You need to use more then one processor or manipulate CC values by Euclid FX if you want to have changing CC values. Otherwise the same constant value would be set over and over again.
+
 ## The Euclid FX processor
 
 ![The Euclid FX processor](assets/img/processor-euclidfx.jpg 'The Euclid FX processor')
 
-The Euclid FX processor transforms incoming MIDI notes and sends them out of the output. 
+The Euclid FX processor transforms incoming MIDI events and sends them out of the output.
 
-It changes a MIDI note in one of two possible ways. A Euclidean pattern decides which of the two ways.
+It changes a MIDI event in one of two possible ways. A Euclidean pattern decides which of the two ways.
 
 ![The Euclid FX settings editor](assets/img/processor-euclidfx-editor.jpg 'The Euclid FX settings editor')
 
@@ -71,7 +86,7 @@ This editor panel shows the settings for the rightmost processor in the image ab
 
 Most settings are exactly the same as in the Euclidean processor editor. The only real difference here is the Effect section.
 
-- The Target sets which property of the MIDI notes will be changed.
+- The Target sets which property of the MIDI event will be changed.
 - Low value sets the value when the pattern is between pulses.
 - High value sets the value when the pattern on a pulse.
 - Mode sets the way the new values are applied:
