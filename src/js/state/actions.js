@@ -1,7 +1,7 @@
 import convertLegacyFile from '../core/convert_xml.js';
 import { createUUID, getProcessorDefaultName, midiControlToParameterValue, midiNoteToParameterValue, } from '../core/util.js';
 import { getConfig, } from '../core/config.js';
-import { getAllMIDIPorts, CONTROL_CHANGE, NOTE_ON,  } from '../midi/midi.js';
+import { getAllMIDIPorts, getMIDIAccessible, CONTROL_CHANGE, NOTE_ON,  } from '../midi/midi.js';
 import { showDialog } from '../view/dialog.js';
 import { getProcessorData, } from '../core/processor-loader.js';
 import { testForInfiniteLoop, } from '../midi/network_ordering.js';
@@ -291,10 +291,12 @@ export default {
 			dispatch(getActions().createProject());
 
 			// add the existing MIDI ports
-			const existingMIDIPorts = getAllMIDIPorts();
-			existingMIDIPorts.forEach(port => {
+			if (getMIDIAccessible()) {
+				const existingMIDIPorts = getAllMIDIPorts();
+				existingMIDIPorts.forEach(port => {
 					dispatch(getActions().midiAccessChange(port));
-			});
+				});
+			}
 
 			// recreate the state with the existing ports
 			// dispatch(getActions().createProject(getState()));
@@ -380,59 +382,63 @@ export default {
 			// create an empty initial state
 			dispatch(getActions().createProject());
 
-			// add the existing MIDI ports
-			const existingMIDIPorts = getAllMIDIPorts();
-			existingMIDIPorts.forEach(port => {
-				dispatch(getActions().midiAccessChange(port));
-			});
+			// if there's MIDI accees add all the MIDI port data.
+			if (getMIDIAccessible()) {
 
-			// copy the port settings of existing ports
-			const existingPorts = { ...getState().ports };
+				// add the existing MIDI ports
+				const existingMIDIPorts = getAllMIDIPorts();
+				existingMIDIPorts.forEach(port => {
+					dispatch(getActions().midiAccessChange(port));
+				});
+	
+				// copy the port settings of existing ports
+				const existingPorts = { ...getState().ports };
+	
+				// copy the port settings defined in the project
+				const projectPorts = { ...data.ports };
 
-			// copy the port settings defined in the project
-			const projectPorts = { ...data.ports };
-
-			// clear the loaded project's port settings
-			data.ports = { allIds: [], byId: {}, };
-
-			// add all existing ports to the project data
-			existingPorts.allIds.forEach(existingPortId => {
-				data.ports.allIds.push(existingPortId);
-				data.ports.byId[existingPortId] = existingPorts.byId[existingPortId];
-			});
-
-			// set the existing ports to the project's settings,
-			// and create ports that do not exist
-			projectPorts.allIds.forEach(projectPortId => {
-				const projectPort = projectPorts.byId[projectPortId];
-				let portExists = false;
+				// clear the loaded project's port settings
+				data.ports = { allIds: [], byId: {}, };
+	
+				// add all existing ports to the project data
 				existingPorts.allIds.forEach(existingPortId => {
-					if (existingPortId === projectPortId) {
-						portExists = true;
-
-						// project port's settings exists, update the settings
-						const existingPort = existingPorts.byId[existingPortId];
-						existingPort.syncEnabled = projectPort.syncEnabled;
-						existingPort.remoteEnabled = projectPort.remoteEnabled;
-						existingPort.networkEnabled = projectPort.networkEnabled;
+					data.ports.allIds.push(existingPortId);
+					data.ports.byId[existingPortId] = existingPorts.byId[existingPortId];
+				});
+	
+				// set the existing ports to the project's settings,
+				// and create ports that do not exist
+				projectPorts.allIds.forEach(projectPortId => {
+					const projectPort = projectPorts.byId[projectPortId];
+					let portExists = false;
+					existingPorts.allIds.forEach(existingPortId => {
+						if (existingPortId === projectPortId) {
+							portExists = true;
+	
+							// project port's settings exists, update the settings
+							const existingPort = existingPorts.byId[existingPortId];
+							existingPort.syncEnabled = projectPort.syncEnabled;
+							existingPort.remoteEnabled = projectPort.remoteEnabled;
+							existingPort.networkEnabled = projectPort.networkEnabled;
+						}
+					});
+	
+					// port settings object doesn't exist, so create it, but disabled
+					if (!portExists) {
+						data.ports.allIds.push(projectPortId);
+						data.ports.byId[projectPortId] = {
+							id: projectPortId,
+							type: projectPort.type,
+							name: projectPort.name,
+							connection: 'closed', // closed | open | pending
+							state: 'disconnected', // disconnected | connected
+							syncEnabled: projectPort.syncEnabled,
+							remoteEnabled: projectPort.remoteEnabled,
+							networkEnabled: projectPort.networkEnabled
+						}
 					}
 				});
-
-				// port settings object doesn't exist, so create it, but disabled
-				if (!portExists) {
-					data.ports.allIds.push(projectPortId);
-					data.ports.byId[projectPortId] = {
-						id: projectPortId,
-						type: projectPort.type,
-						name: projectPort.name,
-						connection: 'closed', // closed | open | pending
-						state: 'disconnected', // disconnected | connected
-						syncEnabled: projectPort.syncEnabled,
-						remoteEnabled: projectPort.remoteEnabled,
-						networkEnabled: projectPort.networkEnabled
-					}
-				}
-			});
+			}
 
 			// create the project with the merged ports
 			dispatch(getActions().createProject(data));

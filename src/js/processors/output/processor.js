@@ -1,6 +1,6 @@
 import { dispatch, getActions, getState, STATE_CHANGE, } from '../../state/store.js';
 import createMIDIProcessorBase from '../../midi/processorbase.js';
-import { getMIDIPortByID } from '../../midi/midi.js';
+import { getMIDIAccessible, getMIDIPortByID } from '../../midi/midi.js';
 
 /**
  * MIDI output port processor.
@@ -47,20 +47,21 @@ export function createProcessor(data, my = {}) {
 		 * Process events to happen in a time slice.
 		 * @param {Number} scanStart Timespan start in ticks from timeline start.
 		 * @param {Number} scanEnd   Timespan end in ticks from timeline start.
-		 * @param {Number} nowToScanStart Timespan from current timeline position to scanStart.
+		 * @param {Number} nowToScanStart Timespan from current timeline position to scanStart, in ticks.
 		 * @param {Number} ticksToMsMultiplier Duration of one tick in milliseconds.
 		 * @param {Number} offset Time from doc start to timeline start in ticks.
+		 * @param {Array} processorEvents Array to collect processor generated events to display in the view.
 		 */
-		process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset) {
-
-			// retrieve events waiting at the processor's input
-			const inputData = my.getInputData(),
-				origin = performance.now() - (offset * ticksToMsMultiplier),
-				n = inputData.length;
-			
+		process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset, processorEvents) {
 			if (midiOutput && midiOutput.state === 'connected') {
+
+				// retrieve events waiting at the processor's input
+				const inputData = my.getInputData();
+				const origin = performance.now() - (offset * ticksToMsMultiplier);
+				const n = inputData.length;
+
 				for (var i = 0; i < n; i++) {
-					const {  channel, durationTicks, pitch, timestampTicks, type, velocity, } = inputData[i];
+					const { channel, durationTicks, pitch, timestampTicks, type, velocity, } = inputData[i];
 
 					// item.timestampTicks is time since transport play started
 					const timestamp = origin + (timestampTicks * ticksToMsMultiplier);
@@ -72,6 +73,18 @@ export function createProcessor(data, my = {}) {
 							midiOutput.send([0x80 + (channel - 1), pitch, 0], timestamp + duration);
 							break;
 					}
+
+					// add events to processorEvents for the canvas to show them
+					if (!processorEvents[my.id]) {
+						processorEvents[my.id] = [];
+					}
+
+					const delayFromNowToNoteStart = (timestampTicks - scanStart) * ticksToMsMultiplier;
+					
+					processorEvents[my.id].push({
+						delayFromNowToNoteStart,
+						delayFromNowToNoteEnd: delayFromNowToNoteStart + (durationTicks * ticksToMsMultiplier)
+					});
 				}
 			}
 		},
@@ -86,6 +99,10 @@ export function createProcessor(data, my = {}) {
 		 * After a port parameter change.
 		 */
 		updateMIDIPort = function() {
+			if (!getMIDIAccessible()) {
+				return;
+			}
+
 			midiOutput = getMIDIPortByID(params.port);
 
 			// update the processor's name parameter

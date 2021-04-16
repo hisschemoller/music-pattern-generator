@@ -2,7 +2,8 @@
   "ids": [
     "epg",
     "euclidfx",
-    "output"
+    "output",
+    "soundbank"
   ],
   "files": [
     "config.json",
@@ -10,6 +11,7 @@
     "object3d.js",
     "object3dController.js",
     "processor.js",
+    "settingsController.js",
     "utils.js"
   ]
 }

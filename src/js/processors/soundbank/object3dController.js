@@ -78,7 +78,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
    * @param {Number} noteStopDelay Delay from now until note end in ms.
    */
   const startNoteAnimation = (noteStartDelay) => {
-    
+
     // delay start of animation
     setTimeout(() => {
 

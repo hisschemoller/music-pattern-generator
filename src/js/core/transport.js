@@ -15,8 +15,8 @@ import { scanEvents, updateView, } from './sequencer.js';
  *                                     |-------------------------------> AudioContext.currentTime
  */
 
-const timeWindow = 16.7;
-const lookAhead = 200;
+const TIME_WINDOW = 16.7;
+const LOOK_AHEAD = 200;
  
 let position = 0,
 	origin = 0,
@@ -126,7 +126,7 @@ function run() {
 		if (isLooping && position < loopEnd && scanStart < loopEnd && scanEnd > loopEnd) {
 			setOrigin(origin + (loopEnd - loopStart));
 		}
-		if (scanEnd - position < timeWindow) {
+		if (scanEnd - position < TIME_WINDOW) {
 			setScanRange(scanEnd);
 		}
 		if (needsScan) {
@@ -200,7 +200,7 @@ function setOrigin(newOrigin) {
  */
 function setScanRange(start) {
 	scanStart = start;
-	scanEnd =  scanStart + lookAhead;
+	scanEnd =  scanStart + LOOK_AHEAD;
 	needsScan = true;
 }
         

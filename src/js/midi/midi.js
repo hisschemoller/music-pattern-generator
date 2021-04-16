@@ -27,11 +27,11 @@ export function accessMidi() {
             resolve();
           },
           () => {
-            reject(`MIDI access failed`);
+            reject(`MIDI access failed.`);
           }
         );
     } else {
-      reject(`No MIDI access in this browser`);
+      reject(`No MIDI access in this browser.`);
     }
   });
 }
@@ -41,15 +41,15 @@ export function accessMidi() {
  * @param {Object} midiAccessObj MidiAccess object.
  */
 export function listenToMIDIPorts() {
-		const inputs = midiAccess.inputs.values();
-		
-		for (let port = inputs.next(); port && !port.done; port = inputs.next()) {
-				port.value.onmidimessage = onMIDIMessage;
-		}
+	const inputs = midiAccess.inputs.values();
+	
+	for (let port = inputs.next(); port && !port.done; port = inputs.next()) {
+			port.value.onmidimessage = onMIDIMessage;
+	}
 
-		midiAccess.onstatechange = onAccessStateChange;
+	midiAccess.onstatechange = onAccessStateChange;
 
-		addEventListeners();
+	addEventListeners();
 }
 
 /**
@@ -70,6 +70,14 @@ export function getAllMIDIPorts() {
 	}
 
 	return allPorts;
+}
+
+/**
+ * Check MIDI access.
+ * @returns {Boolean} True if MIDI access exists.
+ */
+export function getMIDIAccessible() {
+	return midiAccess !== null;
 }
 
 /**

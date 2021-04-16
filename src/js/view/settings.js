@@ -7,23 +7,23 @@ import createStringSettingView from './setting/string.js';
 /**
  * Processor settings view.
  */
-export default function createSettingsPanel(specs, my) {
-  const { data, parentEl, } = specs;
+export default function createSettingsPanel(specs) {
+  const { data, parentEl, template, } = specs;
   const { id, params, } = data;
 
   let el,
       
-    initialize = function() {
+    initialize = () => {
       let settingView;
       
-      // const htmlString = require(`html-loader!../processors/${data.type}/settings.html`);
       el = document.createElement('div');
-      el.innerHTML = specs.template;
+      el.innerHTML = template;
       
       // loop through all processor parameters and add setting view if required
       params.allIds.forEach(paramId => {
+
         // only create setting if there's a container el for it in the settings panel
-        var settingContainerEl = el.querySelector(`.${paramId}`);
+        const settingContainerEl = el.querySelector(`.${paramId}`);
         if (settingContainerEl) {
           let paramData = params.byId[paramId],
             settingViewSpecs = {
@@ -65,7 +65,7 @@ export default function createSettingsPanel(specs, my) {
     /**
      * Called before this view is deleted.
      */
-    terminate = function() {
+    terminate = () => {
       if (el && parentEl) {
         show(false);
       }
@@ -75,7 +75,7 @@ export default function createSettingsPanel(specs, my) {
      * Show settings if the processor is selected, else remove.
      * @param {Boolean} isSelected True if selected.
      */
-    show = function(isSelected)  {
+    show = isSelected =>  {
       if (isSelected) {
         parentEl.appendChild(el);
       } else if (parentEl.contains(el)) {
@@ -87,18 +87,23 @@ export default function createSettingsPanel(specs, my) {
      * Show or hide settings depending on ID.
      * @param {String} id ID of the selected processor.
      */
-    select = function(_id) {
+    select = (_id) => {
       show(_id === id);
     },
+
+    getDOMElement = () => {
+      return el;
+    },
         
-    getID = function() {
+    getId = () => {
       return id;
     };
 
   initialize();
   
   return Object.freeze({
-    getID,
+    getDOMElement,
+    getId,
     select,
     terminate,
   });

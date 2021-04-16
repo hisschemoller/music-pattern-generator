@@ -17,7 +17,7 @@
  */
 
 import { dispatch, getActions, getState, persist, } from './state/store.js';
-import { accessMidi, listenToMIDIPorts } from './midi/midi.js';
+import { accessMidi, getMIDIAccessible, listenToMIDIPorts } from './midi/midi.js';
 import { preloadProcessors } from './core/processor-loader.js';
 import { setup as setupCanvas3d } from './webgl/canvas3d.js';
 import { setup as setupConnections3d } from './webgl/connections3d.js';
@@ -33,8 +33,8 @@ import { setup as setupTransport } from './core/transport.js';
 import { setup as setupSequencer } from './core/sequencer.js';
 
 async function main() {
-  await accessMidi();
-  await preloadProcessors();
+  await accessMidi().catch(console.log.bind(console));
+  await preloadProcessors().catch(console.log.bind(console));
 
   setupControls();
   setupPanels();
@@ -50,7 +50,9 @@ async function main() {
   setupSequencer();
 
   persist();
-  listenToMIDIPorts();
+  if (getMIDIAccessible()) {
+    listenToMIDIPorts();
+  }
   dispatch(getActions().setProject(getState()));
 }
 

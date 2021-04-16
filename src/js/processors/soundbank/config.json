@@ -1,0 +1,79 @@
+{
+    "name": "Soundbank",
+    "positionX": 0,
+    "positionY": 0,
+    "positionZ": 0,
+    "inputs": {
+        "byId": {
+            "in": {
+                "x": 0,
+                "y": 5,
+                "z": 0
+            }
+        },
+        "allIds": ["in"]
+    },
+    "outputs": {
+        "byId": {},
+        "allIds": []
+    },
+    "params": {
+        "byId": {
+            "bank": {
+                "label": "Bank",
+                "type": "itemized",
+                "default": "A",
+                "value": "a",
+                "model": [
+                    { "label": "A", "value": "a" },
+                    { "label": "B", "value": "b" }
+                ]
+            },
+            "name": {
+                "label": "Name",
+                "type": "string",
+                "default": "Unnamed",
+                "value": "Unnamed"
+            }
+        },
+        "allIds": ["bank", "name"]
+    },
+    "banks": {
+        "a": [
+            { "label": "Metronome", "value": "475901__mattiagiovanetti__metronome.wav"},
+            { "label": "Kick Drum TR-8", "value": "367059__electronicmotion__kick-long-tr-8.wav" },
+            { "label": "Snare Drum", "value": "252734__crispydinner__crdn-upgrsn-004.wav" },
+            { "label": "Closed Hi-hat", "value": "802__bdu__closehatac.wav" },
+            { "label": "Tom TR-606", "value": "805__bdu__hightom.wav" },
+            { "label": "Conga", "value": "99737__menegass__conga-4.wav" },
+            { "label": "Short Conga", "value": "99735__menegass__conga-2.wav" },
+            { "label": "Shaker", "value": "99848__menegass__shk8.wav" },
+            { "label": "Acoustic Bass", "value": "383569__pjcohen__standup-bass-normal-c2.wav" },
+            { "label": "Kalimba", "value": "331047__foochie-foochie__kalimba-c-note.wav" },
+            { "label": "Piano", "value": "533717__emma-morelli1__technology-assignment-2.wav" },
+            { "label": "FM Brass", "value": "S50_H2_C3.wav" },
+            { "label": "Marimba", "value": "S50_MARIMC1.wav" },
+            { "label": "Square Bass", "value": "371060__planetronik__c-square-bass.wav" },
+            { "label": "Korg Mono-Poly", "value": "293230__modularsamples__korg-mono-poly-finally-c2-50-finally-36-127.wav" },
+            { "label": "Korg Mono-Poly Tri", "value": "295401__modularsamples__korg-mono-poly-tri-force-c3-triforce-48-127.wav" }
+        ],
+        "b": [
+            { "label": "Metronome", "value": "548518__ludwigmueller__perc-metronomequartz-hi.wav" },
+            { "label": "Kick Drum", "value": "509983__blakengouda__kick-10.wav" },
+            { "label": "Clap", "value": "561088__sorinious-genious__clap-2.wav" },
+            { "label": "Closed Hi-hat", "value": "439772__twentytwentymusic__electronic-closed-hat-6.wav" },
+            { "label": "Snare Tom", "value": "459528__singlecoil__great-snare-tom.wav" },
+            { "label": "Finger Snap", "value": "148093__jcchilds__jordan-s-snaps-02.wav" },
+            { "label": "Gamelan Ceng-Ceng", "value": "24611__anamorphosis__gmb-ceng-ceng.wav" },
+            { "label": "Tambourine", "value": "51318__marvman__tambourine.wav" },
+            { "label": "Fender Polaris Bass", "value": "288274__modularsamples__fender-chroma-polaris-pw-bass-c2-pwbass3636.wav" },
+            { "label": "Fender Stratocaster", "value": "56111__guitarmaster__c-note.wav" },
+            { "label": "Wine Glass", "value": "255654__spectral9__wine-glass-hit-c6.wav" },
+            { "label": "Kydex Rimba", "value": "S50_H2_C3.wav" },
+            { "label": "Female Vocal", "value": "508348__owstu__female-vocal-single-note-c-3.wav" },
+            { "label": "Moog Minitaur", "value": "324007__menegass__moog-bass-c.wav" },
+            { "label": "Korg Mono-Poly", "value": "295018__modularsamples__korg-mono-poly-silly-sausage-c2-52-silly-sausage-36-127.wav" },
+            { "label": "Arturia Microbrute", "value": "281791__modularsamples__arturia-microbrute-short-and-sensetive-c4-60c3-8n63.wav" }
+        ]
+    }
+}

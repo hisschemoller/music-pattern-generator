@@ -60,8 +60,6 @@ export function setup() {
   addWindowResizeCallback(onWindowResize);
   createWorld();
   addEventListeners();
-  onWindowResize();
-  draw();
 }
 
 function addEventListeners() {
