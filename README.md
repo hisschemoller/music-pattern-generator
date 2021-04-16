@@ -11,7 +11,7 @@ Music Pattern Generator is an app to create musical rhythms. It sends MIDI data,
 
 ![App window](assets/img/mpg-2_1-animation.gif 'App window')
 
-Watch a [Music Pattern Generator 2.1 overview video on YouTube](https://youtu.be/Pz5x5eEtuTM).
+Watch a [Music Pattern Generator 2.1 overview video on YouTube](https://www.youtube.com/watch?v=y4JAhvl5FaA).
 
 ## Processors
 
@@ -159,6 +159,8 @@ To actually use the remote control, exit MIDI Learn mode by clicking the 'MIDI L
 ## Snapshots
 
 ![Snapshots](assets/img/snapshots.gif 'Snapshots')
+
+[Snapshots explained in a YouTube video](https://www.youtube.com/watch?v=nJGYka8OE30)
 
 Snapshots store and recall the settings of all processors in one go. Handy for immediate changes to many parameters at the same time. 16 snapshots can be stored. The feature was added in version 2.2.
 
