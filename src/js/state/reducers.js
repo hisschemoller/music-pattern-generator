@@ -73,7 +73,7 @@ const initialState = {
 	showSettingsPanel: false,
 	theme: 'light', // 'light|dark|dev' 
 	transport: 'stop', // 'play|pause|stop'
-	version: '2.2.0',
+	version: '2.3.0-alpha',
 };
 
 /**

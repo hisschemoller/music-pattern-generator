@@ -1,6 +1,6 @@
 {
     "name": "music-pattern-generator",
-    "version": "2.2.0",
+    "version": "2.3.0-alpha",
     "description": "MIDI rhythm and music pattern generator",
     "keywords": [
         "MIDI",
