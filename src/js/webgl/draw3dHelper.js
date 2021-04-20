@@ -162,7 +162,7 @@ export function createCircleFilled(radius, color, alpha = 1) {
  * @return {object} Group 3D object.
  */
 export function createCircleOutlineFilled(radius, color) {
-  var circle = new Group();
+  const circle = new Group();
   circle.add(createCircleFilled(radius, color));
   circle.add(createCircleOutline(radius, color));
   circle.name = 'circle_outline_and_fill';

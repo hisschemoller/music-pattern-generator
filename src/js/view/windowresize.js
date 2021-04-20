@@ -30,14 +30,14 @@ export default function addWindowResizeCallback(callback) {
  * @param  {Boolean} immediate True to not wait.
  */
 function debounce(func, wait, immediate) {
-	var timeout;
+	let timeout;
 	return function() {
-		var context = this, args = arguments;
-		var later = function() {
+		const context = this, args = arguments;
+		const later = function() {
 			timeout = null;
 			if (!immediate) func.apply(context, args);
 		};
-		var callNow = immediate && !timeout;
+		const callNow = immediate && !timeout;
 		clearTimeout(timeout);
 		timeout = setTimeout(later, wait);
 		if (callNow) func.apply(context, args);

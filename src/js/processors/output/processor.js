@@ -58,9 +58,8 @@ export function createProcessor(data, my = {}) {
 				// retrieve events waiting at the processor's input
 				const inputData = my.getInputData();
 				const origin = performance.now() - (offset * ticksToMsMultiplier);
-				const n = inputData.length;
 
-				for (var i = 0; i < n; i++) {
+				for (let i = 0, n = inputData.length; i < n; i++) {
 					const { channel, durationTicks, pitch, timestampTicks, type, velocity, } = inputData[i];
 
 					// item.timestampTicks is time since transport play started

@@ -49,7 +49,7 @@ function createBjorklund(steps, pulses) {
 		}
 
 		// For the minimum array loop and concat
-		for (var x = 0; x < minLength; x++) {
+		for (let x = 0; x < minLength; x++) {
 			first[x] = Array.prototype.concat.call(first[x], second[x]);
 		}
 

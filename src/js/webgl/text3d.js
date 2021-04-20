@@ -120,18 +120,18 @@ function parsePathNode(pathString) {
 }
 
 function parseFloats( string ) {
-  var array = string.split( /[\s,]+|(?=\s?[+\-])/ );
-  for ( var i = 0; i < array.length; i ++ ) {
-    var number = array[ i ];
+  const array = string.split( /[\s,]+|(?=\s?[+\-])/ );
+  for (let i = 0; i < array.length; i ++) {
+    const number = array[i];
     // Handle values like 48.6037.7.8
     // TODO Find a regex for this
-    if ( number.indexOf( '.' ) !== number.lastIndexOf( '.' ) ) {
-      var split = number.split( '.' );
-      for ( var s = 2; s < split.length; s ++ ) {
-        array.splice( i + s - 1, 0, '0.' + split[ s ] );
+    if (number.indexOf('.') !== number.lastIndexOf('.')) {
+      const split = number.split('.');
+      for (let s = 2; s < split.length; s ++) {
+        array.splice(i + s - 1, 0, '0.' + split[s]);
       }
     }
-    array[ i ] = parseFloat( number );
+    array[i] = parseFloat(number);
   }
   return array;
 }

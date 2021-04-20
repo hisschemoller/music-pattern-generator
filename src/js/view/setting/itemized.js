@@ -6,12 +6,12 @@ import createBaseSettingView from './base.js';
  * which has a radio buttons for item selection.
  */
 export default function createItemizedSettingView(specs, my) {
-	var that,
+	let that,
 		valueEl,
 		radioInputs = [],
-		numInputs,
+		numInputs;
 		
-		init = function() {
+	const init = function() {
 			valueEl = my.el.querySelector('.setting__value');
 
 			initData();
@@ -30,7 +30,7 @@ export default function createItemizedSettingView(specs, my) {
 			let radioTemplate = document.querySelector('#template-setting-itemized-item'),
 				model = my.data.model;
 			numInputs = model.length;
-			for (var i = 0; i < numInputs; i++) {
+			for (let i = 0; i < numInputs; i++) {
 				let id = getTemporaryInputAndLabelId();
 				
 				// add a new cloned radio element

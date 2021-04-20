@@ -6,10 +6,10 @@ import createBaseSettingView from './base.js';
  * which has a checkbox input.
  */
 export default function createBooleanSettingView(specs, my) {
-	var that,
-		checkEl,
+	let that,
+		checkEl;
 		
-		init = function() {
+	const init = function() {
 			let id = getTemporaryInputAndLabelId();
 			
 			checkEl = my.el.querySelector('.setting__check');

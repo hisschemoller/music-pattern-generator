@@ -47,7 +47,7 @@ export default function createMIDIConnectorOut(data, that = {}, my = {}) {
 		 * @param  {Object} processor Processor to disconnect from, or undefined to remove all.
 		 */
 		disconnect = function(processor) {
-			var n = destinations.length;
+			let n = destinations.length;
 			while (--n >= 0) {
 				if (!processor || (processor && processor === destinations[n])) {
 					destinations[n].removeConnection(that);

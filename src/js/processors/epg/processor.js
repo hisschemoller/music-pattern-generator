@@ -197,7 +197,7 @@ export function createProcessor(data, my = {}) {
 			// create array of note start times in ticks
 			pulsesOnly.length = 0;
 
-			for (var i = 0, n = euclidPattern.length; i < n; i++) {
+			for (let i = 0, n = euclidPattern.length; i < n; i++) {
 				if (euclidPattern[i]) {
 					pulsesOnly.push({
 						startTime: i * stepDuration,
