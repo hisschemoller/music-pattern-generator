@@ -21,9 +21,9 @@ Music Pattern Generator has a modular setup. Modules are called processors and a
 
 Three types of processors are available at the moment:
 
-- ‘Euclidean’ generates euclidean rhythms
-- 'Euclid FX’ transforms incoming MIDI notes
-- ‘Output’ sends notes to MIDI output ports
+- 'Euclidean' generates euclidean rhythms
+- 'Euclid FX' transforms incoming MIDI notes
+- 'MIDI Out' sends notes to MIDI output ports
 
 Processors are created by dragging them out of the Library into the main area of the app.
 
@@ -88,19 +88,19 @@ This is the case in the image above. The target is Velocity and mode is Absolute
 
 The target here is Pitch and the mode is Relative. Depending on the state of the pattern at the moment a note arrives, a value of 2 is distracted from the pitch or 5 is added. Lets say incoming MIDI notes have a pitch of 60, then they will be changed to 58 (60 - 2) or 65 (60 + 5). Or in musical terms, notes arrive in C, and are turned into either Bb or F.
 
-## The Output processor
+## The MIDI Out processor
 
-![The Output processor](assets/img/processor-output.jpg 'The Output processor')
+![The MIDI Out processor](assets/img/processor-output.jpg 'The MIDI Out processor')
 
-The output processor sends incoming MIDI out of the app to a MIDI port.
+The MIDI Out processor sends incoming MIDI out of the app to a MIDI port.
 
 Only MIDI ports that are enabled in the Preferences panel can be used as an output. Click the 'Preferences' button in the Control Bar to open the Preferences panel. Then in the Network column enable all MIDI outputs you want to use. As shown in the image above.
 
-![The Output settings editor](assets/img/processor-output-editor.jpg 'The Output settings editor')
+![The MIDI Out settings editor](assets/img/processor-output-editor.jpg 'The MIDI Out settings editor')
 
 In the processor's editor panel select an output in the list of MIDI ports. Or No Output to stop the port from sending data.
 
-Multiple Output processors can be added in a single project to send MIDI to multiple ports.
+Multiple MIDI Out processors can be added in a single project to send MIDI to multiple ports.
 
 ## The Preferences panel
 

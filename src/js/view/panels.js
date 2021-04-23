@@ -54,7 +54,9 @@ function createSettingsViews(state) {
       // create the settings controller
       const controllerModule = getProcessorData(processorData.type, 'settingsController');
       const settingsController = controllerModule.createSettingsController(settingsView.getDOMElement(), processorData);
-      settingsControllers.splice(i, 0, settingsController);
+      if (typeof settingsController !== 'undefined') {
+        settingsControllers.splice(i, 0, settingsController);
+      }
     }
   });
 }

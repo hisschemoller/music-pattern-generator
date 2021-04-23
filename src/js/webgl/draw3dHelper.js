@@ -19,13 +19,13 @@ import {
   LineMaterial,
 } from '../lib/threejs/examples/jsm/lines/LineMaterial.js';
 
-const defaultSegments = 64;
-const defaultLineWidth = 2;
-const defaultLineColor = 0xdddddd;
+const NUM_SEGMENTS = 64;
+const LINE_WIDTH = 2;
+const LINE_COLOR = 0xdddddd;
 
 const lineMaterial = new LineMaterial({
-  color: new Color(defaultLineColor),
-  linewidth: defaultLineWidth,
+  color: new Color(LINE_COLOR),
+  linewidth: LINE_WIDTH,
   vertexColors: VertexColors,
   dashed: false,
   resolution: new Vector2(window.innerWidth, window.innerHeight),
@@ -57,7 +57,7 @@ export function setLineMaterialResolution() {
  * @param {Number} color Color of the line.
  * @returns {Object} Line2 three.js object.
  */
-export function createShape(points = [], color = defaultLineColor) {
+export function createShape(points = [], color = LINE_COLOR) {
   const geometry = new LineGeometry();
   const line2 = new Line2(geometry, lineMaterial);
   line2.name = 'shape';
@@ -74,7 +74,7 @@ export function createShape(points = [], color = defaultLineColor) {
  * @param {Number} color Color of the line.
  * @returns {Object} Line2 three.js object.
  */
-export function createText(points, character, color = defaultLineColor) {
+export function createText(points, character, color = LINE_COLOR) {
   const geometry = new LineGeometry();
   const line2 = new Line2(geometry, textLineMaterial);
   line2.name = `text_${character}`;
@@ -91,7 +91,7 @@ export function createText(points, character, color = defaultLineColor) {
  * @param {Number} color Color of the line.
  * @returns {Object} Line2 three.js object.
  */
-export function redrawShape(line2, points = [], color = defaultLineColor) {
+export function redrawShape(line2, points = [], color = LINE_COLOR) {
   if (points.length) {
     const col = new Color(color);
     const positions = points.reduce((acc, p) => [ ...acc, p.x, p.y, 0 ], []);
@@ -114,18 +114,19 @@ export function redrawShape(line2, points = [], color = defaultLineColor) {
  * @param {Number} color Circle color.
  * @return {Object} Line2 3D object.
  */
-export function createCircleOutline(radius, color = defaultLineColor) {
+export function createCircleOutline(radius, color = LINE_COLOR) {
 
   // check if the circle already exists in cache
   const cacheId = `c${radius}_${color}`;
   if (circleCache[cacheId]) {
     const clone = circleCache[cacheId].clone();
     clone.userData = { ...circleCache[cacheId].userData };
+    clone.position.set(0, 0, 0);
     return clone;
   }
   
   // create a circle, just for it's vertice points
-  const circle = new CircleGeometry(radius, defaultSegments);
+  const circle = new CircleGeometry(radius, NUM_SEGMENTS);
   const positionAttr = circle.attributes.position.array; // circle.vertices;
   const vertices = [];
   for (let i = 0, n = positionAttr.length; i < n; i += 3) {
