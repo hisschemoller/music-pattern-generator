@@ -4,11 +4,10 @@ import { PPQN, TWO_PI, } from '../../core/config.js';
 import { getEuclidPattern, rotateEuclidPattern } from './utils.js';
 import createObject3dControllerBase from '../../webgl/object3dControllerBase.js';
 import { redrawShape, } from '../../webgl/draw3dHelper.js';
-
-const {
+import {
   EllipseCurve,
   Vector2,
-} = THREE;
+} from '../../lib/threejs/build/three.module.js';
 
 /**
  * 

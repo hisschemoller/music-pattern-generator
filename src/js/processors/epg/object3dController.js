@@ -8,12 +8,11 @@ import {
   createCircleOutlineFilled,
   redrawShape,
 } from '../../webgl/draw3dHelper.js';
-
-const {
+import {
   Shape,
   ShapeGeometry,
   Vector2,
-} = THREE;
+} from '../../lib/threejs/build/three.module.js';
 
 /**
  * 

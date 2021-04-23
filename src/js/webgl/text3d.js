@@ -1,10 +1,9 @@
 import text3dFontData from './text3dFontData.js';
 import { createText } from './draw3dHelper.js';
-
-const {
+import {
   Group,
   Vector2,
-} = THREE;
+} from '../lib/threejs/build/three.module.js';
 
 /**
  * Create a single line text object.

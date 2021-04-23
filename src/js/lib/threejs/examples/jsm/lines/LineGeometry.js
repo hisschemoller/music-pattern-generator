@@ -1,19 +1,16 @@
-/**
- * @author WestLangley / http://github.com/WestLangley
- *
- */
+import { LineSegmentsGeometry } from '../lines/LineSegmentsGeometry.js';
 
-THREE.LineGeometry = function () {
+var LineGeometry = function () {
 
-	THREE.LineSegmentsGeometry.call( this );
+	LineSegmentsGeometry.call( this );
 
 	this.type = 'LineGeometry';
 
 };
 
-THREE.LineGeometry.prototype = Object.assign( Object.create( THREE.LineSegmentsGeometry.prototype ), {
+LineGeometry.prototype = Object.assign( Object.create( LineSegmentsGeometry.prototype ), {
 
-	constructor: THREE.LineGeometry,
+	constructor: LineGeometry,
 
 	isLineGeometry: true,
 
@@ -36,7 +33,7 @@ THREE.LineGeometry.prototype = Object.assign( Object.create( THREE.LineSegmentsG
 
 		}
 
-		THREE.LineSegmentsGeometry.prototype.setPositions.call( this, points );
+		LineSegmentsGeometry.prototype.setPositions.call( this, points );
 
 		return this;
 
@@ -61,7 +58,7 @@ THREE.LineGeometry.prototype = Object.assign( Object.create( THREE.LineSegmentsG
 
 		}
 
-		THREE.LineSegmentsGeometry.prototype.setColors.call( this, colors );
+		LineSegmentsGeometry.prototype.setColors.call( this, colors );
 
 		return this;
 
@@ -73,11 +70,12 @@ THREE.LineGeometry.prototype = Object.assign( Object.create( THREE.LineSegmentsG
 
 		if ( geometry.isGeometry ) {
 
-			this.setPositions( geometry.vertices );
+			console.error( 'THREE.LineGeometry no longer supports Geometry. Use THREE.BufferGeometry instead.' );
+			return;
 
 		} else if ( geometry.isBufferGeometry ) {
 
-			this.setPositions( geometry.position.array ); // assumes non-indexed
+			this.setPositions( geometry.attributes.position.array ); // assumes non-indexed
 
 		}
 
@@ -87,7 +85,7 @@ THREE.LineGeometry.prototype = Object.assign( Object.create( THREE.LineSegmentsG
 
 	},
 
-	copy: function ( source ) {
+	copy: function ( /* source */ ) {
 
 		// todo
 
@@ -96,3 +94,5 @@ THREE.LineGeometry.prototype = Object.assign( Object.create( THREE.LineSegmentsG
 	}
 
 } );
+
+export { LineGeometry };

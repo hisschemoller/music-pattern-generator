@@ -7,10 +7,10 @@ import {
 } from '../../webgl/draw3dHelper.js';
 import { getTheme } from '../../state/selectors.js';
 
-const {
+import {
   Group,
   Vector2,
-} = THREE;
+} from '../../lib/threejs/build/three.module.js';
 
 export function createObject3d(id, inputs, outputs) {
     

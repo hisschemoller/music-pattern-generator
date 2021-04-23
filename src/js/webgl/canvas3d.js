@@ -4,8 +4,7 @@ import { getCablesGroup, } from './connections3d.js';
 import { setLineMaterialResolution } from './draw3dHelper.js';
 import { getTheme } from '../state/selectors.js';
 import { getProcessorData } from '../core/processor-loader.js'
-
-const {
+import {
   Color,
   PerspectiveCamera,
   Plane,
@@ -14,7 +13,7 @@ const {
   Vector2,
   Vector3,
   WebGLRenderer 
-} = THREE;
+} from '../lib/threejs/build/three.module.js';
 
 const
   doubleClickDelay = 300,

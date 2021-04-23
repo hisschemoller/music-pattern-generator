@@ -1,14 +1,18 @@
 import { dispatch, getActions, STATE_CHANGE, } from '../state/store.js';
 import { getTheme } from '../state/selectors.js';
-import { createCircleFilled, createCircleOutline, createShape, redrawShape, } from './draw3dHelper.js';
+import {
+  createCircleFilled,
+  createCircleOutline,
+  createShape,
+  redrawShape,
+} from './draw3dHelper.js';
 import { getScene } from './canvas3d.js';
-
-const {
+import {
   CubicBezierCurve,
   Group,
   Vector2,
   Vector3,
-} = THREE;
+} from '../lib/threejs/build/three.module.js';
 
 const deleteButtonRadius = 2.0,
   deleteCrossRadius = 0.8,

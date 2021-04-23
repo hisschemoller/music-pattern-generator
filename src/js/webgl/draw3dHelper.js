@@ -1,16 +1,23 @@
-const {
+import {
   CircleBufferGeometry,
   CircleGeometry,
   Color,
   Group,
-  Line2,
-  LineGeometry,
-  LineMaterial,
   Mesh,
   MeshBasicMaterial,
   Vector2,
+  Vector3,
   VertexColors,
-} = THREE;
+} from '../lib/threejs/build/three.module.js';
+import {
+  Line2,
+} from '../lib/threejs/examples/jsm/lines/Line2.js';
+import {
+  LineGeometry,
+} from '../lib/threejs/examples/jsm/lines/LineGeometry.js';
+import {
+  LineMaterial,
+} from '../lib/threejs/examples/jsm/lines/LineMaterial.js';
 
 const defaultSegments = 64;
 const defaultLineWidth = 2;
@@ -119,7 +126,11 @@ export function createCircleOutline(radius, color = defaultLineColor) {
   
   // create a circle, just for it's vertice points
   const circle = new CircleGeometry(radius, defaultSegments);
-  const vertices = circle.vertices;
+  const positionAttr = circle.attributes.position.array; // circle.vertices;
+  const vertices = [];
+  for (let i = 0, n = positionAttr.length; i < n; i += 3) {
+    vertices.push(new Vector3(positionAttr[i], positionAttr[i + 1], positionAttr[i + 2]));
+  }
 
   // remove first point which is the center of the circle
   vertices.shift();
