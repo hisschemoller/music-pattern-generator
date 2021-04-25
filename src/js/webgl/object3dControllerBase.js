@@ -17,9 +17,7 @@ export default function createObject3dControllerBase(obj3d, data, isConnectMode)
   /**
    * @returns {String} The processor's ID.
    */
-  const getID = () => {
-    return id;
-  };
+   const getId = () => id;
 
   /**
    * The app's state has changed.
@@ -112,7 +110,7 @@ export default function createObject3dControllerBase(obj3d, data, isConnectMode)
   initialize();
 
   return {
-    getID,
+    getId,
     handleStateChangesOnBase,
     hitarea3d,
     id,

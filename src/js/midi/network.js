@@ -34,8 +34,8 @@ function addEventListeners() {
 function connectProcessors(state) {
 	state.connections.allIds.forEach(connectionId => {
 		const connection = state.connections.byId[connectionId];
-		const sourceProcessor = processors.find(processor => processor.getID() === connection.sourceProcessorId);
-		const destinationProcessor = processors.find(processor => processor.getID() === connection.destinationProcessorId);
+		const sourceProcessor = processors.find(processor => processor.getId() === connection.sourceProcessorId);
+		const destinationProcessor = processors.find(processor => processor.getId() === connection.destinationProcessorId);
 		if (!sourceProcessor.getDestinations().includes(destinationProcessor)) {
 			sourceProcessor.connect(destinationProcessor);
 		}
@@ -49,7 +49,7 @@ function connectProcessors(state) {
 function createProcessors(state) {
 	for (let id of state.processors.allIds) {
 		const processorData = state.processors.byId[id];
-		const isExists = processors.find(processor => processor.getID() === id);
+		const isExists = processors.find(processor => processor.getId() === id);
 		if (!isExists) {
 			const module = getProcessorData(processorData.type, 'processor');
 			const processor = module.createProcessor(processorData);
@@ -69,7 +69,7 @@ function deleteProcessors(state) {
 		const processor = processors[i];
 		
 		// search for the processor in the state
-		const processorData = state.processors.allIds.find(processorId => processorId === processor.getID());
+		const processorData = state.processors.allIds.find(processorId => processorId === processor.getId());
 
 		// remove processor if it doesn't exist in the state
 		if (!processorData) {
@@ -96,8 +96,8 @@ function disconnectProcessors(state) {
 				let exists = false;
 				state.connections.allIds.forEach(connectionId => {
 					const connection = state.connections.byId[connectionId];
-					if (connection.sourceProcessorId === sourceProcessor.getID() &&
-						connection.destinationProcessorId === destinationProcessor.getID()) {
+					if (connection.sourceProcessorId === sourceProcessor.getId() &&
+						connection.destinationProcessorId === destinationProcessor.getId()) {
 						exists = true;
 					}
 				});
@@ -150,6 +150,6 @@ function handleStateChanges(e) {
  */
 function reorderProcessors(state) {
 	processors = state.processors.allIds.map(processorId => {
-		return processors.find(processor => processor.getID() === processorId);
+		return processors.find(processor => processor.getId() === processorId);
 	});
 }

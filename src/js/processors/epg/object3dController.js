@@ -22,6 +22,7 @@ import {
  */
 export function createObject3dController(obj3d, data, isConnectMode) {
   const {
+    getId,
     handleStateChangesOnBase,
     hitarea3d,
     id,
@@ -62,11 +63,6 @@ export function createObject3dController(obj3d, data, isConnectMode) {
       }
     }
   };
-
-  /**
-   * @returns {String} The processor's id.
-   */
-  const getId = () => id;
 
   /**
    * The app's state has changed.

@@ -11,6 +11,7 @@ import { redrawShape, } from '../../webgl/draw3dHelper.js';
  */
 export function createObject3dController(obj3d, data, isConnectMode) {
   const {
+    getId,
     handleStateChangesOnBase,
     id,
     object3d,
@@ -44,11 +45,6 @@ export function createObject3dController(obj3d, data, isConnectMode) {
       updateNoteAnimations();
     }
   };
-
-  /**
-   * @returns {String} The processor's id.
-   */
-  const getId = () => id;
 
   /**
    * The app's state has changed.

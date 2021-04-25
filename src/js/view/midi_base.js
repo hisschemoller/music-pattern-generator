@@ -76,7 +76,7 @@ export default function createMIDIBaseView(data, that = {}, my = {}) {
 			}
 		},
 
-		getID = function() {
+		getId = function() {
 			return my.id;
 		};
 	
@@ -90,6 +90,6 @@ export default function createMIDIBaseView(data, that = {}, my = {}) {
 	initialize();
 	
 	that.terminate = terminate;
-	that.getID = getID;
+	that.getId = getId;
 	return that;
 }

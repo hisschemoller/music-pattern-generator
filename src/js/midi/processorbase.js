@@ -9,7 +9,7 @@ export default function createMIDIProcessorBase(data, that = {}, my = {}) {
 				return my.type;
 		},
 		
-		getID = () => {
+		getId = () => {
 				return my.id;
 		};
 	
@@ -23,7 +23,7 @@ export default function createMIDIProcessorBase(data, that = {}, my = {}) {
 		that = createMIDIConnectorOut(data, that, my);
 	}
 	that.getType = getType;
-	that.getID = getID;
+	that.getId = getId;
 	
 	return that;
 }

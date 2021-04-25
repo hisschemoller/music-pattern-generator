@@ -230,7 +230,7 @@ export function createProcessor(data, my = {}) {
 			dispatch(getActions().changeParameter(my.id, 'pulses', params.pulses));
 			dispatch(getActions().changeParameter(my.id, 'rotation', params.rotation));
 		},
-					
+
 		/**
 		 * Update all pattern properties.
 		 * @param {Boolean} isEuclidChange Steps, pulses or rotation change.

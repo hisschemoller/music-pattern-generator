@@ -60,12 +60,12 @@ function updateMIDIPortViews(state) {
 	const { ports } = state;
 	ports.allIds.forEach(portId => {
 		const { id, name, networkEnabled, remoteEnabled, state: portState, syncEnabled, type, } = ports.byId[portId];
-		let view = midiPortViews.find(view => view.getID() === id);
+		let view = midiPortViews.find(view => view.getId() === id);
 
 		// remove ports that don't exist anymore
 		if (view && portState === 'disconnected') {
 			view.terminate();
-			midiPortViews.splice(midiPortViews.findIndex(view => view.getID() === id), 1);
+			midiPortViews.splice(midiPortViews.findIndex(view => view.getId() === id), 1);
 		}
 
 		// add new ports
