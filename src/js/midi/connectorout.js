@@ -1,7 +1,7 @@
 /**
  * MIDI network processor out connector.
  */
-export default function createMIDIConnectorOut(data, that = {}, my = {}) {
+export default function createMIDIConnectorOut() {
 	const outputData = [],
 		destinations = [],
 
@@ -32,25 +32,25 @@ export default function createMIDIConnectorOut(data, that = {}, my = {}) {
 		
 		/**
 		 * Connect this processor's output to another processor's input.
-		 * @param  {Object} processor Processor to connect to.
+		 * @param {Object} processor Processor to connect to.
 		 */
 		connect = function(processor) {
 			const isConnected = destinations.find(destination => destination === processor);
 			if (!isConnected) {
-				processor.addConnection(that);
+				processor.addConnection(getOutputData);
 				destinations.push(processor);
 			}
 		},
 		
 		/**
 		 * Disconnect this processor's output from another processor's input.
-		 * @param  {Object} processor Processor to disconnect from, or undefined to remove all.
+		 * @param {Object} processor Processor to disconnect from, or undefined to remove all.
 		 */
 		disconnect = function(processor) {
 			let n = destinations.length;
 			while (--n >= 0) {
 				if (!processor || (processor && processor === destinations[n])) {
-					destinations[n].removeConnection(that);
+					destinations[n].removeConnection(getOutputData);
 					destinations.splice(n, 1);
 				}
 			}
@@ -65,12 +65,12 @@ export default function createMIDIConnectorOut(data, that = {}, my = {}) {
 			return destinations;
 		};
 	
-	my.clearOutputData = clearOutputData;
-	my.setOutputData = setOutputData;
-	
-	that.getDestinations = getDestinations;
-	that.getOutputData = getOutputData;
-	that.connect = connect;
-	that.disconnect = disconnect;
-	return that;
+	return {
+		clearOutputData,
+		connect,
+		disconnect,
+		getDestinations,
+		getOutputData,
+		setOutputData,
+	};
 }

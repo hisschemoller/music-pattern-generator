@@ -1,9 +1,25 @@
 import { dispatch, getActions, STATE_CHANGE, } from '../../state/store.js';
 import createMIDIProcessorBase from '../../midi/processorbase.js';
 
-export function createProcessor(data, my = {}) {
-	let that,
-		params = {};
+export function createProcessor(data) {
+	let params = {};
+	
+	const {
+		getId,
+		getType,
+		id,
+		// input connector
+		addConnection,
+		getInputData,
+		removeConnection,
+		// output connector
+		clearOutputData,
+		connect,
+		disconnect,
+		getDestinations,
+		getOutputData,
+		setOutputData,
+	} = createMIDIProcessorBase(data);
 
 	const initialize = function() {
 			document.addEventListener(STATE_CHANGE, handleStateChanges);
@@ -24,21 +40,21 @@ export function createProcessor(data, my = {}) {
 			switch (action.type) {
 
 				case actions.CHANGE_PARAMETER:
-					if (action.processorId === my.id) {
-						updateAllParams(state.processors.byId[my.id].params.byId);
+					if (action.processorId === id) {
+						updateAllParams(state.processors.byId[id].params.byId);
 						switch (action.paramKey) {
 						}
 					}
 					break;
 					
 				case actions.LOAD_SNAPSHOT:
-					updateAllParams(state.processors.byId[my.id].params.byId);
+					updateAllParams(state.processors.byId[id].params.byId);
 					updatePattern(true);
 					break;
 
 				case actions.RECREATE_PARAMETER:
-					if (action.processorId === my.id) {
-						updateAllParams(state.processors.byId[my.id].params.byId);
+					if (action.processorId === id) {
+						updateAllParams(state.processors.byId[id].params.byId);
 					}
 					break;
 			}
@@ -70,10 +86,10 @@ export function createProcessor(data, my = {}) {
 		process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset, processorEvents) {
 			
 			// clear the output event stack
-			my.clearOutputData();
+			clearOutputData();
 
 			// retrieve events waiting at the processor's input
-			const inputData = my.getInputData();
+			const inputData = getInputData();
 
 			// abort if there's nothing to process
 			if (inputData.length === 0) {
@@ -83,7 +99,7 @@ export function createProcessor(data, my = {}) {
 			// if bypass is enabled push all input data directly to the output
 			if (params.isBypass) {
 				inputData.forEach(event => {
-					my.setOutputData(event);
+					setOutputData(event);
 				});
 				return;
 			}
@@ -98,19 +114,19 @@ export function createProcessor(data, my = {}) {
 					const stepIndex = 0; // Math.floor((event.timestampTicks % duration) / stepDuration);
 
 					// add events to processorEvents for the canvas to show them
-					if (!processorEvents[my.id]) {
-						processorEvents[my.id] = [];
+					if (!processorEvents[id]) {
+						processorEvents[id] = [];
 					}
 
 					const delayFromNowToNoteStart = (event.timestampTicks - scanStart) * ticksToMsMultiplier;
-					processorEvents[my.id].push({
+					processorEvents[id].push({
 						stepIndex: stepIndex,
 						delayFromNowToNoteStart: delayFromNowToNoteStart,
 						delayFromNowToNoteEnd: delayFromNowToNoteStart + (event.durationTicks * ticksToMsMultiplier)
 					});
 
 					// push the event to the processor's output
-					my.setOutputData(event);
+					setOutputData(event);
 				}
 			});
 		},
@@ -128,11 +144,18 @@ export function createProcessor(data, my = {}) {
 		 */
 		updatePattern = function() {};
 
-	that = createMIDIProcessorBase(data, that, my);
-
 	initialize();
 
-	that.terminate = terminate;
-	that.process = process;
-	return that;
+	return {
+		addConnection,
+		connect,
+		disconnect,
+		getDestinations,
+		getId,
+		getOutputData,
+		getType,
+		process,
+		removeConnection,
+		terminate,
+	};
 }

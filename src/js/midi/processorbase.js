@@ -4,26 +4,30 @@ import createMIDIConnectorOut from './connectorout.js';
 /**
  * Base functionality for all MIDI processors.
  */
-export default function createMIDIProcessorBase(data, that = {}, my = {}) {
+export default function createMIDIProcessorBase(data) {
+	const { id, type } = data;
+	
 	const getType = () => {
-				return my.type;
+			return type;
 		},
 		
 		getId = () => {
-				return my.id;
+			return id;
 		};
 	
-	my.type = data.type;
-	my.id = data.id;
+	let api = {
+		getId,
+		getType,
+		id,
+		type,
+	};
 
 	if (data.inputs.allIds.length >= 1) {
-		that = createMIDIConnectorIn(data, that, my);
+		api = { ...api, ...createMIDIConnectorIn() };
 	}
 	if (data.outputs.allIds.length >= 1) {
-		that = createMIDIConnectorOut(data, that, my);
+		api = { ...api, ...createMIDIConnectorOut() };
 	}
-	that.getType = getType;
-	that.getId = getId;
 	
-	return that;
+	return api;
 }

@@ -3,13 +3,29 @@ import createMIDIProcessorBase from '../../midi/processorbase.js';
 import { PPQN } from '../../core/config.js';
 import { getEuclidPattern, rotateEuclidPattern } from './utils.js';
 
-export function createProcessor(data, my = {}) {
-	let that,
-		duration = 0,
+export function createProcessor(data) {
+	let duration = 0,
 		stepDuration = 0,
 		euclidPattern = [],
 		params = {},
 		delayedEvents = [];
+	
+	const {
+		getId,
+		getType,
+		id,
+		// input connector
+		addConnection,
+		getInputData,
+		removeConnection,
+		// output connector
+		clearOutputData,
+		connect,
+		disconnect,
+		getDestinations,
+		getOutputData,
+		setOutputData,
+	} = createMIDIProcessorBase(data);
 
 	const initialize = function() {
 		document.addEventListener(STATE_CHANGE, handleStateChanges);
@@ -30,8 +46,8 @@ export function createProcessor(data, my = {}) {
 			switch (action.type) {
 
 				case actions.CHANGE_PARAMETER:
-					if (action.processorId === my.id) {
-						updateAllParams(state.processors.byId[my.id].params.byId);
+					if (action.processorId === id) {
+						updateAllParams(state.processors.byId[id].params.byId);
 						switch (action.paramKey) {
 							case 'steps':
 								updatePulsesAndRotation();
@@ -54,7 +70,7 @@ export function createProcessor(data, my = {}) {
 					break;
 					
 				case actions.LOAD_SNAPSHOT:
-					updateAllParams(state.processors.byId[my.id].params.byId);
+					updateAllParams(state.processors.byId[id].params.byId);
 					updatePulsesAndRotation();
 					updatePattern(true);
 					updateEffectSettings(true);
@@ -62,8 +78,8 @@ export function createProcessor(data, my = {}) {
 					break;
 
 				case actions.RECREATE_PARAMETER:
-					if (action.processorId === my.id) {
-						updateAllParams(state.processors.byId[my.id].params.byId);
+					if (action.processorId === id) {
+						updateAllParams(state.processors.byId[id].params.byId);
 					}
 					break;
 			}
@@ -95,10 +111,10 @@ export function createProcessor(data, my = {}) {
 		process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset, processorEvents) {
 			
 			// clear the output event stack
-			my.clearOutputData();
+			clearOutputData();
 
 			// retrieve events waiting at the processor's input
-			const inputData = my.getInputData();
+			const inputData = getInputData();
 
 			// abort if there's nothing to process
 			if (inputData.length === 0) {
@@ -109,7 +125,7 @@ export function createProcessor(data, my = {}) {
 			// if bypass is enabled push all input data directly to the output
 			if (params.isBypass) {
 				inputData.forEach(event => {
-					my.setOutputData(event);
+					setOutputData(event);
 				});
 				return;
 			}
@@ -178,12 +194,12 @@ export function createProcessor(data, my = {}) {
 					}
 
 					// add events to processorEvents for the canvas to show them
-					if (!processorEvents[my.id]) {
-						processorEvents[my.id] = [];
+					if (!processorEvents[id]) {
+						processorEvents[id] = [];
 					}
 					
 					const delayFromNowToNoteStart = (event.timestampTicks - scanStart) * ticksToMsMultiplier;
-					processorEvents[my.id].push({
+					processorEvents[id].push({
 						stepIndex: stepIndex,
 						delayFromNowToNoteStart: delayFromNowToNoteStart,
 						delayFromNowToNoteEnd: delayFromNowToNoteStart + (event.durationTicks * ticksToMsMultiplier)
@@ -191,7 +207,7 @@ export function createProcessor(data, my = {}) {
 
 					// push the event to the processor's output
 					if (!isDelayed) {
-						my.setOutputData(event);
+						setOutputData(event);
 					}
 				}
 			});
@@ -209,7 +225,7 @@ export function createProcessor(data, my = {}) {
 			while (--i > -1) {
 				const timestampTicks = delayedEvents[i].timestampTicks;
 				if (scanStart <= timestampTicks && scanEnd > timestampTicks) {
-					my.setOutputData(delayedEvents.splice(i, 1)[0]);
+					setOutputData(delayedEvents.splice(i, 1)[0]);
 				}
 			}
 		},
@@ -218,17 +234,17 @@ export function createProcessor(data, my = {}) {
 		 * After a change of the steps parameter update the pulses and rotation parameters.
 		 */
 		updatePulsesAndRotation = function() {
-			dispatch(getActions().recreateParameter(my.id, 'pulses', { 
+			dispatch(getActions().recreateParameter(id, 'pulses', { 
 				max: params.steps,
 				value: Math.min(params.pulses, params.steps),
 			}));
-			dispatch(getActions().recreateParameter(my.id, 'rotation', {
+			dispatch(getActions().recreateParameter(id, 'rotation', {
 				max: params.steps - 1,
 				value: Math.min(params.rotation, params.steps - 1),
 			}));
 
-			dispatch(getActions().changeParameter(my.id, 'pulses', params.pulses));
-			dispatch(getActions().changeParameter(my.id, 'rotation', params.rotation));
+			dispatch(getActions().changeParameter(id, 'pulses', params.pulses));
+			dispatch(getActions().changeParameter(id, 'rotation', params.rotation));
 		},
 
 		/**
@@ -324,15 +340,22 @@ export function createProcessor(data, my = {}) {
 			}
 
 			// apply all new settings to the effect parameters 
-			dispatch(getActions().recreateParameter(my.id, 'low', { min: min, max: max, value: lowValue }));
-			dispatch(getActions().recreateParameter(my.id, 'high', { min: min, max: max, value: highValue }));
+			dispatch(getActions().recreateParameter(id, 'low', { min: min, max: max, value: lowValue }));
+			dispatch(getActions().recreateParameter(id, 'high', { min: min, max: max, value: highValue }));
 		};
-
-	that = createMIDIProcessorBase(data, that, my);
 
 	initialize();
 
-	that.terminate = terminate;
-	that.process = process;
-	return that;
+	return {
+		addConnection,
+		connect,
+		disconnect,
+		getDestinations,
+		getId,
+		getOutputData,
+		getType,
+		process,
+		removeConnection,
+		terminate,
+	};
 }

@@ -1,7 +1,7 @@
 /**
  * MIDI network processor in connector.
  */
-export default function createMIDIConnectorIn(data, that = {}, my = {}) {
+export default function createMIDIConnectorIn() {
 	const sources = [],
 		outputData = [],
 		
@@ -12,8 +12,8 @@ export default function createMIDIConnectorIn(data, that = {}, my = {}) {
 		getInputData = function() {
 			outputData.length = 0;
 
-			sources.forEach(source => {
-				source.getOutputData().forEach(data => {
+			sources.forEach(outputDataFunction => {
+				outputDataFunction().forEach(data => {
 					outputData.push({ ...data });
 				});
 			});
@@ -22,40 +22,30 @@ export default function createMIDIConnectorIn(data, that = {}, my = {}) {
 		},
 		
 		/**
-		 * Connect a processor as source for this processor.
-		 * @param  {Object} processor Network MIDI processor.
+		 * Connect another processor as source for this processor.
+		 * @param {Function} outputDataFunction Data provider on another processor's output connector.
 		 */
-		addConnection = function(processor) {
-			sources.push(processor);
+		addConnection = function(outputDataFunction) {
+			sources.push(outputDataFunction);
 		},
 		
 		/**
-		 * Remove a processor as source for this processor.
-		 * @param  {Object} processor Network MIDI processor.
+		 * Remove another processor that is a source for this processor.
+		 * @param {Function} outputDataFunction Data provider on another processor's output connector.
 		 */
-		removeConnection = function(processor) {
+		removeConnection = function(outputDataFunction) {
 			let i = sources.length;
 			while (--i >= 0) {
-				if (processor === sources[i]) {
+				if (outputDataFunction === sources[i]) {
 					sources.splice(i, 1);
 					break;
 				}
 			}
-		},
-		
-		/**
-		 * Get number of connections.
-		 * Used by the output port module to determine if 
-		 * @return {Number} Number of connections to this output processor.
-		 */
-		hasInputConnections = function() {
-			return sources.length > 0;
 		};
-	
-	my.getInputData = getInputData;
 
-	that.addConnection = addConnection;
-	that.removeConnection = removeConnection;
-	that.hasInputConnections = hasInputConnections;
-	return that;
+	return {
+		addConnection,
+		getInputData,
+		removeConnection,
+	};
 }

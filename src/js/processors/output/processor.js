@@ -5,15 +5,24 @@ import { getMIDIAccessible, getMIDIPortByID } from '../../midi/midi.js';
 /**
  * MIDI output port processor.
  */
-export function createProcessor(data, my = {}) {
-	let that,
-			midiOutput,
-			params = {};
+export function createProcessor(data) {
+	let midiOutput,
+		params = {};
+	
+	const {
+		getId,
+		getType,
+		id,
+		// input connector
+		addConnection,
+		getInputData,
+		removeConnection,
+	} = createMIDIProcessorBase(data);
 	
 	const initialize = function() {
 			document.addEventListener(STATE_CHANGE, handleStateChange);
 			updatePortsParameter(getState());
-			updateAllParams(getState().processors.byId[my.id].params.byId);
+			updateAllParams(getState().processors.byId[id].params.byId);
 			updateMIDIPort();
 		},
 
@@ -25,8 +34,8 @@ export function createProcessor(data, my = {}) {
 			const { state, action, actions, } = e.detail;
 			switch (action.type) {
 				case actions.CHANGE_PARAMETER:
-					if (action.processorId === my.id) {
-						updateAllParams(state.processors.byId[my.id].params.byId);
+					if (action.processorId === id) {
+						updateAllParams(state.processors.byId[id].params.byId);
 						switch (action.paramKey) {
 							case 'port':
 								updateMIDIPort();
@@ -56,7 +65,7 @@ export function createProcessor(data, my = {}) {
 			if (midiOutput && midiOutput.state === 'connected') {
 
 				// retrieve events waiting at the processor's input
-				const inputData = my.getInputData();
+				const inputData = getInputData();
 				const origin = performance.now() - (offset * ticksToMsMultiplier);
 
 				for (let i = 0, n = inputData.length; i < n; i++) {
@@ -74,13 +83,13 @@ export function createProcessor(data, my = {}) {
 					}
 
 					// add events to processorEvents for the canvas to show them
-					if (!processorEvents[my.id]) {
-						processorEvents[my.id] = [];
+					if (!processorEvents[id]) {
+						processorEvents[id] = [];
 					}
 
 					const delayFromNowToNoteStart = (timestampTicks - scanStart) * ticksToMsMultiplier;
 					
-					processorEvents[my.id].push({
+					processorEvents[id].push({
 						delayFromNowToNoteStart,
 						delayFromNowToNoteEnd: delayFromNowToNoteStart + (durationTicks * ticksToMsMultiplier)
 					});
@@ -105,7 +114,7 @@ export function createProcessor(data, my = {}) {
 			midiOutput = getMIDIPortByID(params.port);
 
 			// update the processor's name parameter
-			dispatch(getActions().changeParameter(my.id, 'name', params.portName));
+			dispatch(getActions().changeParameter(id, 'name', params.portName));
 		},
 
 		/**
@@ -123,37 +132,33 @@ export function createProcessor(data, my = {}) {
 					portsModel.push({ label: port.name, value: port.id });
 				}
 			});
-			dispatch(getActions().recreateParameter(my.id, 'port', { model: portsModel }));
+			dispatch(getActions().recreateParameter(id, 'port', { model: portsModel }));
 
 			// set the parameter's value
 			const recreatedState = getState(),
-				portParam = recreatedState.processors.byId[my.id].params.byId.port,
+				portParam = recreatedState.processors.byId[id].params.byId.port,
 				value = portParam.value,
 				model = portParam.model;
 			let item = model.find(element => element.value === value);
 			item = item || model.find(element => element.value === 'none');
 			
-			dispatch(getActions().changeParameter(my.id, 'port', item.value));
-			dispatch(getActions().changeParameter(my.id, 'name', item.label));
-		},
-		
-		setEnabled = function(isEnabled) {
-			my.isEnabled = isEnabled;
+			dispatch(getActions().changeParameter(id, 'port', item.value));
+			dispatch(getActions().changeParameter(id, 'name', item.label));
 		},
 
 		getMIDIPortID = function() {
 			return portId;
 		};
 
-	my.isEnabled = true;
-
-	that = createMIDIProcessorBase(data, that, my);
-
 	initialize();
 	
-	that.terminate = terminate;
-	that.process = process;
-	that.setEnabled = setEnabled;
-	that.getMIDIPortID = getMIDIPortID;
-	return that;
+	return {
+		addConnection,
+		getId,
+		getMIDIPortID,
+		getType,
+		process,
+		removeConnection,
+		terminate,
+	};
 }

@@ -5,17 +5,26 @@ import { initAudioFiles, playSound } from './utils.js';
 /**
  * Sample player processor.
  */
-export function createProcessor(data, my = {}) {
-	let that,
-			params = {};
+export function createProcessor(data) {
+	let params = {};
+	
+	const {
+		getId,
+		getType,
+		id,
+		// input connector
+		addConnection,
+		getInputData,
+		removeConnection,
+	} = createMIDIProcessorBase(data);
 	
 	const initialize = function() {
 			const state = getState();
 			const { processors } = state;
 			document.addEventListener(STATE_CHANGE, handleStateChange);
-			updateAllParams(processors.byId[my.id].params.byId);
+			updateAllParams(processors.byId[id].params.byId);
 			updateBankParameter(state);
-			initAudioFiles(processors.byId[my.id].banks);
+			initAudioFiles(processors.byId[id].banks);
 		},
 
 		terminate = function() {
@@ -30,8 +39,8 @@ export function createProcessor(data, my = {}) {
 			const { state, action, actions, } = e.detail;
 			switch (action.type) {
 				case actions.CHANGE_PARAMETER:
-					if (action.processorId === my.id) {
-						updateAllParams(state.processors.byId[my.id].params.byId);
+					if (action.processorId === id) {
+						updateAllParams(state.processors.byId[id].params.byId);
 						switch (action.paramKey) {
 							case 'bank':
 								updateBankParameter(state);
@@ -54,7 +63,7 @@ export function createProcessor(data, my = {}) {
 		process = function(scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset, processorEvents) {
 
 			// retrieve events waiting at the processor's input
-			const inputData = my.getInputData();
+			const inputData = getInputData();
 			const origin = performance.now() - (offset * ticksToMsMultiplier);
 			
 			inputData.forEach(data => {
@@ -65,12 +74,12 @@ export function createProcessor(data, my = {}) {
 				playSound(nowToEventInSecs, params.bank, channel, pitch, velocity);
 
 				// add events to processorEvents for the canvas to show them
-				if (!processorEvents[my.id]) {
-					processorEvents[my.id] = [];
+				if (!processorEvents[id]) {
+					processorEvents[id] = [];
 				}
 				
 				const delayFromNowToNoteStart = (timestampTicks - scanStart) * ticksToMsMultiplier;
-				processorEvents[my.id].push({
+				processorEvents[id].push({
 					delayFromNowToNoteStart,
 					delayFromNowToNoteEnd: delayFromNowToNoteStart + (durationTicks * ticksToMsMultiplier)
 				});
@@ -90,20 +99,23 @@ export function createProcessor(data, my = {}) {
 		 * @param {Object} state Application state.
 		 */
 		updateBankParameter = state => {
-			const { banks, params, } = state.processors.byId[my.id];
+			const { banks, params, } = state.processors.byId[id];
 			const param = params.byId.bank;
 			const bank = banks[param.value];
 
 			// if the bank changes update the processor's name as well
 			const label = param.model.find(item => item.value === param.value).label;
-			dispatch(getActions().changeParameter(my.id, 'name', `Soundbank ${label}`));
+			dispatch(getActions().changeParameter(id, 'name', `Soundbank ${label}`));
 		};
-
-	that = createMIDIProcessorBase(data, that, my);
 
 	initialize();
 	
-	that.terminate = terminate;
-	that.process = process;
-	return that;
+	return {
+		addConnection,
+		getId,
+		getType,
+		process,
+		removeConnection,
+		terminate,
+	};
 }

@@ -3,16 +3,32 @@ import createMIDIProcessorBase from '../../midi/processorbase.js';
 import { PPQN } from '../../core/config.js';
 import { getEuclidPattern, rotateEuclidPattern } from './utils.js';
 
-export function createProcessor(data, my = {}) {
-	let that,
-		position = 0,
+export function createProcessor(data) {
+	let position = 0,
 		duration = 0,
 		noteDuration,
 		params = {},
 		euclidPattern = [],
 		pulsesOnly = [];
+	
+	const {
+		getId,
+		getType,
+		id,
+		// input connector
+		addConnection,
+		getInputData,
+		removeConnection,
+		// output connector
+		clearOutputData,
+		connect,
+		disconnect,
+		getDestinations,
+		getOutputData,
+		setOutputData,
+	} = createMIDIProcessorBase(data);
 
-	const initialize = data => {
+	const initialize = () => {
 			document.addEventListener(STATE_CHANGE, handleStateChanges);
 			updateAllParams(data.params.byId);
 			updatePattern(true);
@@ -30,8 +46,8 @@ export function createProcessor(data, my = {}) {
 			const { state, action, actions, } = e.detail;
 			switch (action.type) {
 				case actions.CHANGE_PARAMETER:
-					if (action.processorId === my.id) {
-						updateAllParams(state.processors.byId[my.id].params.byId);
+					if (action.processorId === id) {
+						updateAllParams(state.processors.byId[id].params.byId);
 						switch (action.paramKey) {
 							case 'steps':
 								updatePulsesAndRotation();
@@ -53,7 +69,7 @@ export function createProcessor(data, my = {}) {
 						break;
 					
 					case actions.LOAD_SNAPSHOT:
-						updateAllParams(state.processors.byId[my.id].params.byId);
+						updateAllParams(state.processors.byId[id].params.byId);
 						updatePulsesAndRotation();
 						updatePattern(true);
 						break;
@@ -76,7 +92,7 @@ export function createProcessor(data, my = {}) {
 		process = (scanStart, scanEnd, nowToScanStart, ticksToMsMultiplier, offset, processorEvents) => {
 
 			// clear the output event stack
-			my.clearOutputData();
+			clearOutputData();
 			
 			// abort if the processor is muted
 			if (params.is_mute) {
@@ -113,7 +129,7 @@ export function createProcessor(data, my = {}) {
 					
 					// send the Note On message
 					// subtract 1 from duration to avoid overlaps
-					my.setOutputData({
+					setOutputData({
 						timestampTicks: pulseStartTimestamp,
 						durationTicks: noteDuration - 1,
 						channel: channel_out,
@@ -123,12 +139,12 @@ export function createProcessor(data, my = {}) {
 					});
 					
 					// add events to processorEvents for the canvas to show them
-					if (!processorEvents[my.id]) {
-						processorEvents[my.id] = [];
+					if (!processorEvents[id]) {
+						processorEvents[id] = [];
 					}
 					
 					const delayFromNowToNoteStart = (nowToScanStart + scanStartToNoteStart) * ticksToMsMultiplier;
-					processorEvents[my.id].push({
+					processorEvents[id].push({
 						stepIndex,
 						delayFromNowToNoteStart: delayFromNowToNoteStart,
 						delayFromNowToNoteEnd: delayFromNowToNoteStart + (noteDuration * ticksToMsMultiplier)
@@ -162,17 +178,17 @@ export function createProcessor(data, my = {}) {
 		 * After a change of the steps parameter update the pulses and rotation parameters.
 		 */
 		updatePulsesAndRotation = () => {
-			dispatch(getActions().recreateParameter(my.id, 'pulses', { 
+			dispatch(getActions().recreateParameter(id, 'pulses', { 
 				max: params.steps,
 				value: Math.min(params.pulses, params.steps),
 			}));
-			dispatch(getActions().recreateParameter(my.id, 'rotation', {
+			dispatch(getActions().recreateParameter(id, 'rotation', {
 				max: params.steps - 1,
 				value: Math.min(params.rotation, params.steps - 1),
 			}));
 			
-			dispatch(getActions().changeParameter(my.id, 'pulses', params.pulses));
-			dispatch(getActions().changeParameter(my.id, 'rotation', params.rotation));
+			dispatch(getActions().changeParameter(id, 'pulses', params.pulses));
+			dispatch(getActions().changeParameter(id, 'rotation', params.rotation));
 		},
 				
 		/**
@@ -206,12 +222,19 @@ export function createProcessor(data, my = {}) {
 				}
 			}
 		};
-	
-	that = createMIDIProcessorBase(data, that, my);
 
-	initialize(data);
+	initialize();
 
-	that.terminate = terminate;
-	that.process = process;
-	return that;
+	return {
+		addConnection,
+		connect,
+		disconnect,
+		getDestinations,
+		getId,
+		getOutputData,
+		getType,
+		process,
+		removeConnection,
+		terminate,
+	};
 }
