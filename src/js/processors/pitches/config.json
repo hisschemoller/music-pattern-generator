@@ -1,0 +1,43 @@
+{
+  "name": "Pitches",
+  "positionX": 0,
+  "positionY": 0,
+  "positionZ": 0,
+  "inputs": {
+		"byId": {
+			"in": {
+				"x": 0,
+				"y": 6,
+				"z": 0
+			}
+		},
+		"allIds": ["in"]
+  },
+  "outputs": {
+		"byId": {
+			"out": {
+				"x": 0,
+				"y": -9,
+				"z": 0
+			}
+		},
+		"allIds": ["out"]
+  },
+	"params": {
+		"byId": {
+			"is_bypass": {
+				"label": "Bypass",
+				"type": "boolean",
+				"default": false,
+				"value": false
+			},
+			"name": {
+				"label": "Name",
+				"type": "string",
+				"default": "Unnamed",
+				"value": "Unnamed"
+			}
+		},
+		"allIds": ["is_bypass", "name"]
+	}
+}
