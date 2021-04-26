@@ -3,47 +3,48 @@ import { dispatch, getActions, STATE_CHANGE, } from '../state/store.js';
 /**
  * MIDI input or output port processor view.
  */
-export default function createMIDIBaseView(data, that = {}, my = {}) {
-  const { id, isInput, name, networkEnabled, parentEl, port, remoteEnabled, syncEnabled, } = data;
+export default function createMIDIBaseView(data) {
+  const { id, name, networkEnabled, parentEl, remoteEnabled, syncEnabled, } = data;
+	let el, networkEl, remoteEl, syncEl;
         
 	const initialize = function() {
 
 		// find template, add clone to midi ports list
 		const template = document.querySelector('#template-midi-port');
 		const clone = template.content.cloneNode(true);
-		my.el = clone.firstElementChild;
-		parentEl.appendChild(my.el);
+		el = clone.firstElementChild;
+		parentEl.appendChild(el);
 		
 		// set data-connected="true" to make the element visible
-		my.el.dataset.connected = true;
+		el.dataset.connected = true;
 		
 		// show label
-		my.el.querySelector('.midi-port__label').innerHTML = name;
+		el.querySelector('.midi-port__label').innerHTML = name;
 		
 		// find checkboxes
-		my.networkEl = my.el.querySelector('.midi-port__network');
-		my.syncEl = my.el.querySelector('.midi-port__sync');
-		my.remoteEl = my.el.querySelector('.midi-port__remote');
+		networkEl = el.querySelector('.midi-port__network');
+		syncEl = el.querySelector('.midi-port__sync');
+		remoteEl = el.querySelector('.midi-port__remote');
 		
 		// set checkboxes
-		my.networkEl.querySelector('[type=checkbox]').checked = networkEnabled;
-		my.syncEl.querySelector('[type=checkbox]').checked = syncEnabled;
-		my.remoteEl.querySelector('[type=checkbox]').checked = remoteEnabled;
+		networkEl.querySelector('[type=checkbox]').checked = networkEnabled;
+		syncEl.querySelector('[type=checkbox]').checked = syncEnabled;
+		remoteEl.querySelector('[type=checkbox]').checked = remoteEnabled;
 		
 		// add DOM event listeners
-		my.networkEl.addEventListener('change', function(e) {
+		networkEl.addEventListener('change', function(e) {
 			if (!e.currentTarget.dataset.disabled) {
-				dispatch(getActions().toggleMIDIPreference(my.id, 'networkEnabled'));
+				dispatch(getActions().toggleMIDIPreference(id, 'networkEnabled'));
 			}
 		});
-		my.syncEl.addEventListener('change', function(e) {
+		syncEl.addEventListener('change', function(e) {
 			if (!e.currentTarget.dataset.disabled) {
-				dispatch(getActions().toggleMIDIPreference(my.id, 'syncEnabled'));
+				dispatch(getActions().toggleMIDIPreference(id, 'syncEnabled'));
 			}
 		});
-		my.remoteEl.addEventListener('change', function(e) {
+		remoteEl.addEventListener('change', function(e) {
 			if (!e.currentTarget.dataset.disabled) {
-				dispatch(getActions().toggleMIDIPreference(my.id, 'remoteEnabled'));
+				dispatch(getActions().toggleMIDIPreference(id, 'remoteEnabled'));
 			}
 		});
 
@@ -54,13 +55,13 @@ export default function createMIDIBaseView(data, that = {}, my = {}) {
 
 				case actions.TOGGLE_MIDI_PREFERENCE:
 				case actions.CREATE_PROJECT:
-					const port = state.ports.byId[my.id];  
+					const port = state.ports.byId[id];  
 					if (port) {
-						my.networkEl.querySelector('[type=checkbox]').checked = port.networkEnabled;
-						my.syncEl.querySelector('[type=checkbox]').checked = port.syncEnabled;
-						my.remoteEl.querySelector('[type=checkbox]').checked = port.remoteEnabled;
+						networkEl.querySelector('[type=checkbox]').checked = port.networkEnabled;
+						syncEl.querySelector('[type=checkbox]').checked = port.syncEnabled;
+						remoteEl.querySelector('[type=checkbox]').checked = port.remoteEnabled;
 					} else {
-						console.log(`MIDI port with id ${my.id} not found.`);
+						console.log(`MIDI port with id ${id} not found.`);
 					}
 					break;
 				}
@@ -71,25 +72,22 @@ export default function createMIDIBaseView(data, that = {}, my = {}) {
 		 * Called before this view is deleted.
 		 */
 		terminate = function() {
-			if (my.el && parentEl) {
-				parentEl.removeChild(my.el);
+			if (el && parentEl) {
+				parentEl.removeChild(el);
 			}
 		},
 
 		getId = function() {
-			return my.id;
+			return id;
 		};
-	
-	my.isInput = isInput;
-	my.id = id;
-	my.el;
-	my.networkEl;
-	my.syncEl;
-	my.remoteEl;
 	
 	initialize();
 	
-	that.terminate = terminate;
-	that.getId = getId;
-	return that;
+	return {
+		getId,
+		networkEl,
+		remoteEl,
+		syncEl,
+		terminate,
+	};
 }

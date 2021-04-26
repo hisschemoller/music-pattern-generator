@@ -3,22 +3,25 @@ import createMIDIBaseView from './midi_base.js';
 /**
  * MIDI Output processor view.
  */
-export default function createMIDIOutputView(data, that = {}, my = {}) {
-        
-	/**
-	 * This init function is called after the base view's initialise function,
-	 * so properties of on 'my' are available.
-	 */
-	const init = function() {
-		my.syncEl.dataset.disabled = 'true';
-		my.syncEl.querySelector('input').setAttribute('disabled', 'disabled');
-		my.remoteEl.dataset.disabled = 'true';
-		my.remoteEl.querySelector('input').setAttribute('disabled', 'disabled');
-	};
-    
-	that = createMIDIBaseView(data, that, my);
-	
-	init();
+export default function createMIDIOutputView(data) {
 
-	return that;
+	const { getId, remoteEl, syncEl, terminate } = createMIDIBaseView(data);
+
+	/**
+	 * This initialise function is called after the base view's initialise function,
+	 * so properties of the base view are available.
+	 */
+	const initialise = function() {
+		syncEl.dataset.disabled = 'true';
+		syncEl.querySelector('input').setAttribute('disabled', 'disabled');
+		remoteEl.dataset.disabled = 'true';
+		remoteEl.querySelector('input').setAttribute('disabled', 'disabled');
+	};
+	
+	initialise();
+
+	return {
+		getId,
+		terminate,
+	};
 }
