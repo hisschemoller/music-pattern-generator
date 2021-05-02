@@ -1,31 +1,29 @@
 import { dispatch, getActions, STATE_CHANGE, } from '../../state/store.js';
-import createBaseSettingView from './base.js';
+import createBaseSettingView from './baseSetting.js';
 
 /**
  * Processor setting view for a Boolean type parameter,
  * which has a checkbox input.
  */
-export default function createBooleanSettingView(specs, my) {
-	let that,
-		checkEl;
+export default function createBooleanSettingView(parentEl, processorId, key, paramData) {
+	let checkEl;
 		
 	const init = function() {
-			let id = getTemporaryInputAndLabelId();
+			const id = getTemporaryInputAndLabelId();
 			
-			checkEl = my.el.querySelector('.setting__check');
-			checkEl.value = my.data.default;
+			checkEl = el.querySelector('.setting__check');
+			checkEl.value = paramData.defaultValue;
 			checkEl.setAttribute('id', id);
 			checkEl.addEventListener('change', onChange);
 			
-			let labelEl = my.el.querySelector('.toggle__label');
+			const labelEl = el.querySelector('.toggle__label');
 			labelEl.setAttribute('for', id);
 			
 			initData();
-			setValue(my.data.value);
+			setValue(paramData.value);
 		},
 
-		initData = function() {
-		},
+		initData = function() {},
 		
 		/**
 		 * A quick ID to tie label to input elements.
@@ -37,8 +35,8 @@ export default function createBooleanSettingView(specs, my) {
 		
 		onChange = function(e) {
 			dispatch(getActions().changeParameter(
-				my.processorId, 
-				my.key, 
+				processorId, 
+				key, 
 				e.target.checked));
 		},
 		
@@ -46,12 +44,9 @@ export default function createBooleanSettingView(specs, my) {
 			checkEl.checked = value;
 		};
 	
-	my = my || {};
-	my.setValue = setValue;
-	
-	that = createBaseSettingView(specs, my);
+	const { el, terminate } = createBaseSettingView(parentEl, processorId, key, paramData, initData, setValue);
 	
 	init();
 	
-	return that;
+	return { terminate };
 }

@@ -3,15 +3,15 @@ import { dispatch, getActions, getState, STATE_CHANGE, } from '../../state/store
 /**
  * Processor setting overlay for assinging MIDI control to the parameter.
  */
-export default function createRemoteSettingView(specs, my) {
-	let that,
-		learnClickLayer,
+export default function createRemoteSettingView(el, processorId, key, isMidiControllable) {
+	let learnClickLayer,
 		
 		init = function() {
-			if (my.data.isMidiControllable) {
+			if (isMidiControllable) {
 				const template = document.querySelector('#template-setting-learnmode');
 				const clone = template.content.cloneNode(true);
 				learnClickLayer = clone.firstElementChild;
+				changeRemoteState();
 			}
 		},
 		
@@ -22,7 +22,7 @@ export default function createRemoteSettingView(specs, my) {
 		 */
 		changeRemoteState = function() {
 			const { assignments, learnModeActive, learnTargetParameterKey, learnTargetProcessorId, } = getState();
-			if (my.data.isMidiControllable) {
+			if (isMidiControllable) {
 				if (learnModeActive) {
 					showRemoteState('enter');
 
@@ -30,7 +30,7 @@ export default function createRemoteSettingView(specs, my) {
 					let assignment;
 					assignments.allIds.forEach(assignId => {
 						const assign = assignments.byId[assignId];
-						if (assign.processorId === my.processorId && assign.paramKey === my.key) {
+						if (assign.processorId === processorId && assign.paramKey === key) {
 							assignment = assign;
 						}
 					});
@@ -40,7 +40,7 @@ export default function createRemoteSettingView(specs, my) {
 					} else {
 						showRemoteState('unassigned');
 					}
-					if (learnTargetProcessorId === my.processorId && learnTargetParameterKey === my.key) {
+					if (learnTargetProcessorId === processorId && learnTargetParameterKey === key) {
 						showRemoteState('selected');
 					} else {
 						showRemoteState('deselected');
@@ -59,12 +59,12 @@ export default function createRemoteSettingView(specs, my) {
 		showRemoteState = function(status) {
 			switch (status) {
 				case 'enter':
-					my.el.appendChild(learnClickLayer);
+					el.appendChild(learnClickLayer);
 					learnClickLayer.addEventListener('click', onLearnLayerClick);
 					break;
 				case 'exit':
-					if (my.el.contains(learnClickLayer)) {
-						my.el.removeChild(learnClickLayer);
+					if (el.contains(learnClickLayer)) {
+						el.removeChild(learnClickLayer);
 						learnClickLayer.removeEventListener('click', onLearnLayerClick);
 					}
 					break;
@@ -87,15 +87,10 @@ export default function createRemoteSettingView(specs, my) {
 		},
 		
 		onLearnLayerClick = function(e) {
-			dispatch(getActions().toggleMIDILearnTarget(my.processorId, my.key));
+			dispatch(getActions().toggleMIDILearnTarget(processorId, key));
 		};
-	
-	my = my || {};
-	my.changeRemoteState = changeRemoteState;
-	
-	that = that || {};
 	
 	init();
 	
-	return that;
+	return changeRemoteState;
 }

@@ -25,29 +25,25 @@ export default function createSettingsPanel(specs) {
         // only create setting if there's a container el for it in the settings panel
         const settingContainerEl = el.querySelector(`.${paramId}`);
         if (settingContainerEl) {
-          let paramData = params.byId[paramId],
-            settingViewSpecs = {
-              key: paramId,
-              data: paramData,
-              parentEl: settingContainerEl,
-              processorId: id,
-            };
+          const paramData = params.byId[paramId];
+          let createFunction;
+          // console.log(paramData);
+            // settingViewSpecs = {
+            //   key: paramId,
+            //   data: paramData,
+            //   parentEl: settingContainerEl,
+            //   processorId: id,
+            // };
 
           // create the setting view based on the parameter type
           switch (paramData.type) {
-            case 'integer':
-              settingView = createIntegerSettingView(settingViewSpecs);
-              break;
-            case 'boolean':
-              settingView = createBooleanSettingView(settingViewSpecs);
-              break;
-            case 'itemized':
-              settingView = createItemizedSettingView(settingViewSpecs);
-              break;
-            case 'string':
-              settingView = createStringSettingView(settingViewSpecs);
-              break;
-            }
+            case 'integer': createFunction = createIntegerSettingView; break;
+            case 'boolean': createFunction = createBooleanSettingView; break;
+            case 'itemized': createFunction = createItemizedSettingView; break;
+            case 'string': createFunction = createStringSettingView; break;
+          }
+          
+          settingView = createFunction(settingContainerEl, id, paramId, paramData);
         }
       });
       

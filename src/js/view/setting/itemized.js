@@ -1,21 +1,20 @@
 import { dispatch, getActions, STATE_CHANGE, } from '../../state/store.js';
-import createBaseSettingView from './base.js';
+import createBaseSettingView from './baseSetting.js';
 
 /**
  * Processor setting view for a itemized type parameter,
  * which has a radio buttons for item selection.
  */
-export default function createItemizedSettingView(specs, my) {
-	let that,
-		valueEl,
+export default function createItemizedSettingView(parentEl, processorId, key, paramData) {
+	let valueEl,
 		radioInputs = [],
 		numInputs;
 		
 	const init = function() {
-			valueEl = my.el.querySelector('.setting__value');
+			valueEl = el.querySelector('.setting__value');
 
 			initData();
-			setValue(my.data.value);
+			setValue(paramData.value);
 		},
 
 		initData = function() {
@@ -28,7 +27,7 @@ export default function createItemizedSettingView(specs, my) {
 			
 			// add the radio buttons
 			let radioTemplate = document.querySelector('#template-setting-itemized-item'),
-				model = my.data.model;
+				model = paramData.model;
 			numInputs = model.length;
 			for (let i = 0; i < numInputs; i++) {
 				let id = getTemporaryInputAndLabelId();
@@ -36,7 +35,7 @@ export default function createItemizedSettingView(specs, my) {
 				// add a new cloned radio element
 				let radioInputEl = radioTemplate.content.children[0].cloneNode(true);
 				valueEl.appendChild(radioInputEl);
-				radioInputEl.setAttribute('name', specs.key);
+				radioInputEl.setAttribute('name', key);
 				radioInputEl.setAttribute('id', id);
 				radioInputEl.value = model[i].value;
 				radioInputEl.addEventListener('change', onChange);
@@ -60,8 +59,8 @@ export default function createItemizedSettingView(specs, my) {
 		
 		onChange = function(e) {
 			dispatch(getActions().changeParameter(
-				my.processorId, 
-				my.key, 
+				processorId, 
+				key, 
 				e.target.value));
 		},
 
@@ -70,14 +69,10 @@ export default function createItemizedSettingView(specs, my) {
 				radioInput.checked = (radioInput.value == value);
 			});
 		};
-			
-	my = my || {};
-	my.initData = initData;
-	my.setValue = setValue;
 	
-	that = createBaseSettingView(specs, my);
+	const { el, terminate } = createBaseSettingView(parentEl, processorId, key, paramData, initData, setValue);
 	
 	init();
 	
-	return that;
+	return { terminate };
 }

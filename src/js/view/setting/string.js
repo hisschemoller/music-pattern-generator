@@ -1,20 +1,19 @@
 import { dispatch, getActions, STATE_CHANGE, } from '../../state/store.js';
-import createBaseSettingView from './base.js';
+import createBaseSettingView from './baseSetting.js';
 
 /**
  * Processor setting view for a Boolean type parameter,
  * which has a checkbox input.
  */
-export default function createStringSettingView(specs, my) {
-	let that,
-		textEl,
+export default function createStringSettingView(parentEl, processorId, key, paramData) {
+	let textEl;
 		
-		init = function() {
-			textEl = my.el.getElementsByClassName('setting__text')[0];
+	const init = function() {
+			textEl = el.getElementsByClassName('setting__text')[0];
 			textEl.addEventListener('input', onChange);
 			
 			initData();
-			setValue(my.data.value);
+			setValue(paramData.value);
 		},
 
 		initData = function() {},
@@ -22,8 +21,8 @@ export default function createStringSettingView(specs, my) {
 		onChange = function(e) {
 			e.preventDefault();
 			dispatch(getActions().changeParameter(
-				my.processorId, 
-				my.key, 
+				processorId, 
+				key, 
 				e.target.value));
 		},
 		
@@ -35,12 +34,9 @@ export default function createStringSettingView(specs, my) {
 			}
 		};
 	
-	my = my || {};
-	my.setValue = setValue;
-	
-	that = createBaseSettingView(specs, my);
+	const { el, terminate } = createBaseSettingView(parentEl, processorId, key, paramData, initData, setValue);
 	
 	init();
 	
-	return that;
+	return { terminate };
 }

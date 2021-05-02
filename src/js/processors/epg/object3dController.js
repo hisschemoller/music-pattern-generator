@@ -169,7 +169,6 @@ export function createObject3dController(obj3d, data, isConnectMode) {
    * Calculate the pattern's duration in milliseconds.
    */
   const updateDuration = (steps, rate) => {
-    // const rate = my.params.is_triplets.value ? my.params.rate.value * (2 / 3) : my.params.rate.value;
     const stepDuration = rate * PPQN;
     duration = steps * stepDuration;
   };
