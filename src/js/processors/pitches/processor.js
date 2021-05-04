@@ -2,7 +2,8 @@ import { dispatch, getActions, STATE_CHANGE, } from '../../state/store.js';
 import createMIDIProcessorBase from '../../midi/processorbase.js';
 
 export function createProcessor(data) {
-	let params = {};
+	let params = {},
+		stepIndex = 0;
 	
 	const {
 		getId,
@@ -110,9 +111,6 @@ export function createProcessor(data) {
 				// handle only MIDI Note events
 				if (event.type === 'note') {
 
-					// calculate the state of the effect at the event's time within the pattern
-					const stepIndex = 0; // Math.floor((event.timestampTicks % duration) / stepDuration);
-
 					// add events to processorEvents for the canvas to show them
 					if (!processorEvents[id]) {
 						processorEvents[id] = [];
@@ -120,10 +118,13 @@ export function createProcessor(data) {
 
 					const delayFromNowToNoteStart = (event.timestampTicks - scanStart) * ticksToMsMultiplier;
 					processorEvents[id].push({
-						stepIndex: stepIndex,
-						delayFromNowToNoteStart: delayFromNowToNoteStart,
+						stepIndex,
+						delayFromNowToNoteStart,
 						delayFromNowToNoteEnd: delayFromNowToNoteStart + (event.durationTicks * ticksToMsMultiplier)
 					});
+
+					// calculate the state of the effect at the event's time within the pattern
+					stepIndex = (stepIndex + 1) % params.steps;
 
 					// push the event to the processor's output
 					setOutputData(event);
@@ -137,6 +138,7 @@ export function createProcessor(data) {
 		 */
 		updateAllParams = function(parameters) {
 			params.isBypass = parameters.is_bypass.value;
+			params.steps = parameters.steps.value;
 		},
 
 		/**

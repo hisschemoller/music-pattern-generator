@@ -2,6 +2,9 @@ import { dispatch, getActions, STATE_CHANGE, } from '../../state/store.js';
 import { getTheme } from '../../state/selectors.js';
 import createObject3dControllerBase from '../../webgl/object3dControllerBase.js';
 import { redrawShape, } from '../../webgl/draw3dHelper.js';
+import {
+  Vector2,
+} from '../../lib/threejs/build/three.module.js';
 
 /**
  * 
@@ -19,11 +22,16 @@ export function createObject3dController(obj3d, data, isConnectMode) {
   } = createObject3dControllerBase(obj3d, data, isConnectMode);
 
   const centerDot3d = object3d.getObjectByName('centerDot');
+  const stick3d = object3d.getObjectByName('stick');
+  const pointer3d = object3d.getObjectByName('pointer');
+  const stickX = stick3d.position.x;
 
-  let colorLow,
+  let centerScale = 0,
+    colorLow,
     colorHigh,
     isBypass = false,
-    centerScale = 0;
+    stepIndex = 0,
+    stepWidth = 0;
 
   /**
    * Redraw the pattern if needed.
@@ -36,8 +44,9 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     // start center dot animation
     if (processorEvents[id] && processorEvents[id].length) {
       const event = processorEvents[id][processorEvents[id].length - 1];
-      const { delayFromNowToNoteEnd, delayFromNowToNoteStart, stepIndex, } = event;
-      startNoteAnimation(stepIndex, delayFromNowToNoteStart, delayFromNowToNoteEnd);
+      const { delayFromNowToNoteEnd, delayFromNowToNoteStart, stepIndex: index, } = event;
+      stepIndex = index;
+      startNoteAnimation(delayFromNowToNoteStart, delayFromNowToNoteEnd);
     }
 
     // update center dot animation
@@ -57,10 +66,13 @@ export function createObject3dController(obj3d, data, isConnectMode) {
       case actions.CHANGE_PARAMETER: {
           const { activeProcessorId, processors, } = state;
           if (activeProcessorId === id) {
-            const { is_bypass, pulses, rate, rotation, steps, } = processors.byId[id].params.byId;
+            const { is_bypass, steps } = processors.byId[id].params.byId;
             switch (action.paramKey) {
               case 'is_bypass':
                 updateBypass(is_bypass.value);
+                break;
+              case 'steps':
+                updateStick(steps.value);
                 break;
               default:
             }
@@ -70,7 +82,9 @@ export function createObject3dController(obj3d, data, isConnectMode) {
       
       case actions.LOAD_SNAPSHOT: {
           const { processors, } = state;
-          const { } = processors.byId[id].params.byId;
+          const { is_bypass, steps } = processors.byId[id].params.byId;
+          updateBypass(is_bypass.value);
+          updateStick(steps.value);
         }
         break;
 
@@ -90,8 +104,9 @@ export function createObject3dController(obj3d, data, isConnectMode) {
 
     ({ colorLow, colorHigh, } = getTheme());
 
-    const { is_bypass, } = data.params.byId;
+    const { is_bypass, steps } = data.params.byId;
     updateBypass(is_bypass.value);
+    updateStick(steps.value);
   };
 
   /**
@@ -99,18 +114,19 @@ export function createObject3dController(obj3d, data, isConnectMode) {
    * Indicated by the pointer's rotation.
    * @param  {Number} position Position within pattern in ticks.
    */
-  const showPlaybackPosition = position => {
-  };
+  const showPlaybackPosition = position => {};
 
   /**
    * Show animation of the pattern dot that is about to play.
    */
-  const startNoteAnimation = (stepIndex, noteStartDelay, noteStopDelay) => {
+  const startNoteAnimation = (noteStartDelay, noteStopDelay) => {
+    console.log('stepIndex', stepIndex);
 
     // delay start of animation
     setTimeout(() => {
       centerDot3d.visible = true;
       centerScale = 1;
+      pointer3d.position.x = stickX + (stepWidth * (stepIndex + 0.5));
     }, noteStartDelay);
   };
 
@@ -134,6 +150,22 @@ export function createObject3dController(obj3d, data, isConnectMode) {
         centerScale = 0;
       }
     }
+  };
+
+  /** 
+   * Update the steps stick.
+   * @param {Number} steps Number of steps in the pattern./
+   */
+  const updateStick = (steps) => {
+    const stickLength = Math.min(steps * 4, 30);
+    stepWidth = stickLength / steps;
+    const points = [
+      new Vector2(0, 0),
+      new Vector2(stickLength, 0),
+    ];
+    redrawShape(stick3d, points, colorHigh);
+
+    pointer3d.position.x = stickX + (stepWidth * (stepIndex + 0.5));
   };
 
   /** 

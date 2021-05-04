@@ -36,8 +36,17 @@
 				"type": "string",
 				"default": "Unnamed",
 				"value": "Unnamed"
+			},
+			"steps": {
+					"label": "Steps",
+					"type": "integer",
+					"default": 16,
+					"value": 16,
+					"min": 1,
+					"max": 64,
+					"isMidiControllable": true
 			}
 		},
-		"allIds": ["is_bypass", "name"]
+		"allIds": ["is_bypass", "name", "steps"]
 	}
 }
