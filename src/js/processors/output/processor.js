@@ -60,16 +60,20 @@ export function createProcessor(data, my = {}) {
 			
 			if (midiOutput && midiOutput.state === 'connected') {
 				for (var i = 0; i < n; i++) {
-					const {  channel, durationTicks, pitch, timestampTicks, type, velocity, } = inputData[i];
+					const {  channel, durationTicks, pitch, timestampTicks, type, velocity, cc, cc_value} = inputData[i];
 
 					// item.timestampTicks is time since transport play started
 					const timestamp = origin + (timestampTicks * ticksToMsMultiplier);
 					const duration = durationTicks * ticksToMsMultiplier;
-							
+					console.log(inputData[i]);
 					switch (type) {
 						case 'note':
 							midiOutput.send([0x90 + (channel - 1), pitch, velocity], timestamp);
 							midiOutput.send([0x80 + (channel - 1), pitch, 0], timestamp + duration);
+
+							if(cc)
+								midiOutput.send([0xB0 + (channel - 1), cc, cc_value], timestamp);
+
 							break;
 					}
 				}
