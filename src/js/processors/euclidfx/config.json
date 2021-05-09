@@ -91,7 +91,9 @@
                     { "label": "Pitch", "value": "pitch" },
                     { "label": "Channel", "value": "channel" },
                     { "label": "Note length", "value": "length" },
-                    { "label": "Note delay", "value": "delay" }
+                    { "label": "Note delay", "value": "delay" },
+                    { "label": "CC", "value": "cc" },
+                    { "label": "CC Value", "value": "cc_value" }
                 ]
             },
             "low": {
