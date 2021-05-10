@@ -111,6 +111,8 @@ export function createProcessor(data) {
 				// handle only MIDI Note events
 				if (event.type === 'note') {
 
+					event.pitch = event.pitch + params.sequence[stepIndex].pitch;
+
 					// add events to processorEvents for the canvas to show them
 					if (!processorEvents[id]) {
 						processorEvents[id] = [];
@@ -138,6 +140,7 @@ export function createProcessor(data) {
 		 */
 		updateAllParams = function(parameters) {
 			params.isBypass = parameters.is_bypass.value;
+			params.sequence = parameters.sequence.value;
 			params.steps = parameters.steps.value;
 		},
 

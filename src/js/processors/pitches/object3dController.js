@@ -120,7 +120,6 @@ export function createObject3dController(obj3d, data, isConnectMode) {
    * Show animation of the pattern dot that is about to play.
    */
   const startNoteAnimation = (noteStartDelay, noteStopDelay) => {
-    console.log('stepIndex', stepIndex);
 
     // delay start of animation
     setTimeout(() => {

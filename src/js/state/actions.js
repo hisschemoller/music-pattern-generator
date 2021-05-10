@@ -72,8 +72,7 @@ export default {
 					paramValue = !!paramValueRaw;
 					break;
 				case 'itemized':
-					paramValue = paramValueRaw;
-					break;
+				case 'object':
 				case 'string':
 					paramValue = paramValueRaw;
 					break;

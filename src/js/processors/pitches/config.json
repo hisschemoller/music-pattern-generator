@@ -37,16 +37,32 @@
 				"default": "Unnamed",
 				"value": "Unnamed"
 			},
+			"sequence": {
+				"label": "Sequence",
+				"type": "object",
+				"default": [
+					{"pitch": 0},
+					{"pitch": 0},
+					{"pitch": 0},
+					{"pitch": 0}
+				],
+				"value": [
+					{"pitch": 0},
+					{"pitch": 7},
+					{"pitch": 9},
+					{"pitch": 3}
+				]
+			},
 			"steps": {
 					"label": "Steps",
 					"type": "integer",
-					"default": 16,
-					"value": 16,
+					"default": 4,
+					"value": 4,
 					"min": 1,
 					"max": 64,
 					"isMidiControllable": true
 			}
 		},
-		"allIds": ["is_bypass", "name", "steps"]
+		"allIds": ["is_bypass", "name", "sequence", "steps"]
 	}
 }
