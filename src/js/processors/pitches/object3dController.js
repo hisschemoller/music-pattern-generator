@@ -31,7 +31,8 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     colorHigh,
     isBypass = false,
     stepIndex = 0,
-    stepWidth = 0;
+    stepWidth = 0,
+    stepsX = 0.5;
 
   /**
    * Redraw the pattern if needed.
@@ -107,6 +108,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     const { is_bypass, steps } = data.params.byId;
     updateBypass(is_bypass.value);
     updateStick(steps.value);
+    updatePointer();
   };
 
   /**
@@ -125,7 +127,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     setTimeout(() => {
       centerDot3d.visible = true;
       centerScale = 1;
-      pointer3d.position.x = stickX + (stepWidth * (stepIndex + 0.5));
+      updatePointer();
     }, noteStartDelay);
   };
 
@@ -157,7 +159,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
    */
   const updateStick = (steps) => {
     const stickLength = Math.min(steps * 4, 30);
-    stepWidth = stickLength / steps;
+    stepWidth = (stickLength - stepsX) / steps;
     const points = [
       new Vector2(0, 0),
       new Vector2(stickLength, 0),
@@ -165,6 +167,13 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     redrawShape(stick3d, points, colorHigh);
 
     pointer3d.position.x = stickX + (stepWidth * (stepIndex + 0.5));
+  };
+
+  /** 
+   * Set pointer position to current step.
+   */
+  const updatePointer = () => {
+    pointer3d.position.x = stepsX + stickX + (stepWidth * (stepIndex + 0.5));
   };
 
   /** 
