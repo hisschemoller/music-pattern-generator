@@ -135,7 +135,8 @@ export function createProcessor(data) {
 						channel: channel_out,
 						type: 'note',
 						pitch: pitch_out,
-						velocity: velocity_out
+						velocity: velocity_out,
+						ccs: {}
 					});
 					
 					// add events to processorEvents for the canvas to show them

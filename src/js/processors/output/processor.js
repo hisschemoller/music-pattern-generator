@@ -69,19 +69,19 @@ export function createProcessor(data) {
 				const origin = performance.now() - (offset * ticksToMsMultiplier);
 
 				for (let i = 0, n = inputData.length; i < n; i++) {
-					const { channel, durationTicks, pitch, timestampTicks, type, velocity, cc, cc_value, } = inputData[i];
+					const { channel, durationTicks, pitch, timestampTicks, type, velocity, ccs, } = inputData[i];
 
 					// item.timestampTicks is time since transport play started
 					const timestamp = origin + (timestampTicks * ticksToMsMultiplier);
 					const duration = durationTicks * ticksToMsMultiplier;
-					console.log(inputData[i]);
+
 					switch (type) {
 						case 'note':
 							midiOutput.send([0x90 + (channel - 1), pitch, velocity], timestamp);
 							midiOutput.send([0x80 + (channel - 1), pitch, 0], timestamp + duration);
 
-							if(cc)
-								midiOutput.send([0xB0 + (channel - 1), cc, cc_value], timestamp);
+							for(let cc in ccs)
+								midiOutput.send([0xB0 + (channel - 1), cc, ccs[cc]], timestamp);
 
 							break;
 					}

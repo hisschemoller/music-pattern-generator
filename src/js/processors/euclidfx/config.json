@@ -92,9 +92,17 @@
                     { "label": "Channel", "value": "channel" },
                     { "label": "Note length", "value": "length" },
                     { "label": "Note delay", "value": "delay" },
-                    { "label": "CC", "value": "cc" },
                     { "label": "CC Value", "value": "cc_value" }
                 ]
+            },
+            "target_cc": {
+                "label": "CC",
+                "type": "integer",
+                "default": 1,
+                "value": 1,
+                "min": 1,
+                "max": 127,
+                "isMidiControllable": false
             },
             "low": {
                 "label": "Low value",
@@ -131,6 +139,6 @@
                 "value": "Unnamed"
             }
         },
-        "allIds": ["steps", "pulses", "rotation", "rate", "is_bypass", "is_triplets", "target", "low", "high", "mode", "name"]
+        "allIds": ["steps", "pulses", "rotation", "rate", "is_bypass", "is_triplets", "target", "target_cc", "low", "high", "mode", "name"]
     }
 }

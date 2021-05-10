@@ -188,19 +188,11 @@ export function createProcessor(data) {
 								}
 							}
 							break;
-						case 'cc':
-							// ensure cc and cc_value are defined first
-							if (!event.cc) event.cc=1;
-							if (!event.cc_value) event.cc_value = 63;
-							event.cc = params.isRelative ? event.cc + effectValue : effectValue;
-							event.cc = Math.max(0, Math.min(event.cc, 127));
-							break;
 						case 'cc_value':
 							// ensure cc and cc_value are defined first
-							if (!event.cc) event.cc=1;
-							if (!event.cc_value) event.cc_value = 63;
-							event.cc_value = params.isRelative ? event.cc_value + effectValue : effectValue;
-							event.cc_value = Math.max(0, Math.min(event.cc_value, 127));
+							if (!event.ccs[params.target_cc]) event.ccs[params.target_cc] = 63;
+							event.ccs[params.target_cc] = params.isRelative ? event.ccs[params.target_cc] + effectValue : effectValue;
+							event.ccs[params.target_cc] = Math.max(0, Math.min(event.ccs[params.target_cc], 127));
 							break;
 						case 'output':
 							// v2.3 or some further future version
@@ -292,6 +284,7 @@ export function createProcessor(data) {
 			params.high = parameters.high.value;
 			params.low = parameters.low.value;
 			params.target = parameters.target.value;
+			params.target_cc = parameters.target_cc ? parameters.target_cc.value : 1;
 			params.isBypass = parameters.is_bypass.value;
 			params.isRelative = parameters.mode.value !== parameters.mode.default;
 		},
@@ -334,12 +327,6 @@ export function createProcessor(data) {
 					max = 32;
 					lowValue = params.isRelative ? 0 : 0;
 					highValue = params.isRelative ? 0 : 2;
-					break;
-				case 'cc':
-					min = params.isRelative ? -127 : 0;
-					max = 127;
-					lowValue = params.isRelative ? 0 : 0;
-					highValue = params.isRelative ? 0 : 63;
 					break;
 				case 'cc_value':
 					min = params.isRelative ? -127 : 0;
