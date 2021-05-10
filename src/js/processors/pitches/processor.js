@@ -44,6 +44,11 @@ export function createProcessor(data) {
 					if (action.processorId === id) {
 						updateAllParams(state.processors.byId[id].params.byId);
 						switch (action.paramKey) {
+							case 'steps':
+								updateSequence();
+								break;
+							case 'sequence':
+								break;
 						}
 					}
 					break;
@@ -147,7 +152,24 @@ export function createProcessor(data) {
 		/**
 		 * Update all pattern properties.
 		 */
-		updatePattern = function() {};
+		updatePattern = function() {},
+		
+		/**
+		 * Update the sequence.
+		 */
+		updateSequence= () => {
+			const { sequence, steps } = params;
+			if (steps > sequence.length) {
+				for (let i = sequence.length; i < steps; i++) {
+					sequence.push({
+						pitch: 0,
+					});
+				}
+			} else if (steps < sequence.length) {
+				stepIndex = stepIndex % steps;
+			}
+			dispatch(getActions().recreateParameter(id, 'sequence', { value: sequence }));
+		};
 
 	initialize();
 
