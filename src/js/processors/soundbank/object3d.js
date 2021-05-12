@@ -2,7 +2,7 @@ import {
   createCircleFilled,
   createCircleOutline,
   createCircleOutlineFilled,
-  drawConnectors,
+  createConnectors,
 } from '../../webgl/draw3dHelper.js';
 import { getTheme } from '../../state/selectors.js';
 import {
@@ -56,7 +56,7 @@ export function createObject3d(id, inputs, outputs) {
       group.add(label);
 
       // add inputs and outputs 
-      drawConnectors(group, inputs, outputs, colorLow);
+      createConnectors(group, inputs, outputs, colorLow);
 
       return group;
     };

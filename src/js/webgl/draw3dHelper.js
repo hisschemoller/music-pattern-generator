@@ -40,13 +40,122 @@ textLineMaterial.linewidth = 1;
  */
 const circleCache = {};
 
-/**
- * Recalculate material so the line thickness remains the same for vertical 
- * and horizontal lines.
+/** 
+ * Draw a circle fill.
+ * @param {Number} radius Circle radius.
+ * @param {Number} color Circle color.
+ * @return {Object} Mesh 3D object.
  */
-export function setLineMaterialResolution() {
-  lineMaterial.resolution.set(window.innerWidth, window.innerHeight);
-  textLineMaterial.resolution.set(window.innerWidth, window.innerHeight);
+export function createCircleFilled(radius, color, alpha = 1) {
+  const numSegments = 8;
+  const material = new MeshBasicMaterial({ color, transparent: true, });
+  const geometry = new CircleBufferGeometry(radius, numSegments);              
+  material.opacity = alpha;
+  const fill = new Mesh(geometry, material);
+  fill.name = 'circle_fill';
+  return fill;
+}
+
+/** 
+ * Draw a circle outline.
+ * @param {Number} radius Circle radius.
+ * @param {Number} color Circle color.
+ * @return {Object} Line2 3D object.
+ */
+export function createCircleOutline(radius, color = LINE_COLOR) {
+
+  // check if the circle already exists in cache
+  const cacheId = `c${radius}_${color}`;
+  if (circleCache[cacheId]) {
+    const clone = circleCache[cacheId].clone();
+    clone.userData = { ...circleCache[cacheId].userData };
+    clone.position.set(0, 0, 0);
+    return clone;
+  }
+  
+  // create a circle, just for it's vertice points
+  const circle = new CircleGeometry(radius, NUM_SEGMENTS);
+  const positionAttr = circle.attributes.position.array; // circle.vertices;
+  const vertices = [];
+  for (let i = 0, n = positionAttr.length; i < n; i += 3) {
+    vertices.push(new Vector3(positionAttr[i], positionAttr[i + 1], positionAttr[i + 2]));
+  }
+
+  // remove first point which is the center of the circle
+  vertices.shift();
+
+  // copy the first to the end so the cirle is closed
+  vertices.push(vertices[0].clone());
+
+  // create the geometry and line
+  const geometry = new LineGeometry();
+  const line2 = new Line2(geometry, lineMaterial);
+  line2.name = 'circle_outline';
+  redrawShape(line2, vertices, color);
+
+  // add the circle to the cache
+  circleCache[cacheId] = line2;
+
+  return line2;
+}
+
+/**
+ * Create circle with outline and fill.
+ * @param {Number} radius Circle radius.
+ * @param {Number} color Circle color.
+ * @return {object} Group 3D object.
+ */
+export function createCircleOutlineFilled(radius, color) {
+  const circle = new Group();
+  circle.add(createCircleFilled(radius, color));
+  circle.add(createCircleOutline(radius, color));
+  circle.name = 'circle_outline_and_fill';
+  return circle;
+}
+
+/**
+ * Add input and/or output connector to a processor.
+ * @param {Object} data Input or output data.
+ * @param {String} id Connector ID.
+ * @param {String} name Connector name.
+ * @param {Object} rootObj Outer object3D.
+ */
+function createConnector(data, id, name, rootObj, color) {
+
+  const hitarea = createCircleFilled(2, color, 0);
+  hitarea.name = `${name}_hitarea`;
+  hitarea.userData.id = id;
+  hitarea.translateX(data.x);
+  hitarea.translateY(data.y);
+  rootObj.add(hitarea);
+
+  const connector = createCircleOutline(0.6, color);
+  connector.name = `${name}_connector`;
+  hitarea.add(connector);
+
+  const active = createCircleOutline(1.2, color);
+  active.name = `${name}_active`;
+  active.visible = false;
+  hitarea.add(active);
+}
+
+/**
+ * Add input and/or output connectors to a processor.
+ * @param {Object} rootObj Outer object3D.
+ * @param {Array} inputs Inputs to draw a connector for.
+ * @param {Array} outputs Outputs to draw a connector for.
+ */
+export function createConnectors(rootObj, inputs, outputs, color) {
+
+  // inputs
+  inputs.allIds.forEach(id => {
+    createConnector(inputs.byId[id], id, 'input', rootObj, color);
+  });
+
+  // outputs
+  outputs.allIds.forEach(id => {
+    createConnector(outputs.byId[id], id, 'output', rootObj, color);
+  });
 }
 
 /** 
@@ -108,120 +217,11 @@ export function redrawShape(line2, points = [], color = LINE_COLOR) {
   return line2;
 }
 
-/** 
- * Draw a circle outline.
- * @param {Number} radius Circle radius.
- * @param {Number} color Circle color.
- * @return {Object} Line2 3D object.
- */
-export function createCircleOutline(radius, color = LINE_COLOR) {
-
-  // check if the circle already exists in cache
-  const cacheId = `c${radius}_${color}`;
-  if (circleCache[cacheId]) {
-    const clone = circleCache[cacheId].clone();
-    clone.userData = { ...circleCache[cacheId].userData };
-    clone.position.set(0, 0, 0);
-    return clone;
-  }
-  
-  // create a circle, just for it's vertice points
-  const circle = new CircleGeometry(radius, NUM_SEGMENTS);
-  const positionAttr = circle.attributes.position.array; // circle.vertices;
-  const vertices = [];
-  for (let i = 0, n = positionAttr.length; i < n; i += 3) {
-    vertices.push(new Vector3(positionAttr[i], positionAttr[i + 1], positionAttr[i + 2]));
-  }
-
-  // remove first point which is the center of the circle
-  vertices.shift();
-
-  // copy the first to the end so the cirle is closed
-  vertices.push(vertices[0].clone());
-
-  // create the geometry and line
-  const geometry = new LineGeometry();
-  const line2 = new Line2(geometry, lineMaterial);
-  line2.name = 'circle_outline';
-  redrawShape(line2, vertices, color);
-
-  // add the circle to the cache
-  circleCache[cacheId] = line2;
-
-  return line2;
-}
-
-/** 
- * Draw a circle fill.
- * @param {Number} radius Circle radius.
- * @param {Number} color Circle color.
- * @return {Object} Mesh 3D object.
- */
-export function createCircleFilled(radius, color, alpha = 1) {
-  const numSegments = 8;
-  const material = new MeshBasicMaterial({ color, transparent: true, });
-  const geometry = new CircleBufferGeometry(radius, numSegments);              
-  material.opacity = alpha;
-  const fill = new Mesh(geometry, material);
-  fill.name = 'circle_fill';
-  return fill;
-}
-
 /**
- * Create circle with outline and fill.
- * @param {Number} radius Circle radius.
- * @param {Number} color Circle color.
- * @return {object} Group 3D object.
+ * Recalculate material so the line thickness remains the same for vertical 
+ * and horizontal lines.
  */
-export function createCircleOutlineFilled(radius, color) {
-  const circle = new Group();
-  circle.add(createCircleFilled(radius, color));
-  circle.add(createCircleOutline(radius, color));
-  circle.name = 'circle_outline_and_fill';
-  return circle;
-}
-
-/**
- * Add input and/or output connectors to a processor.
- * @param {Object} rootObj Outer object3D.
- * @param {Array} inputs Inputs to draw a connector for.
- * @param {Array} outputs Outputs to draw a connector for.
- */
-export function drawConnectors(rootObj, inputs, outputs, color) {
-
-  // inputs
-  inputs.allIds.forEach(id => {
-    drawConnector(inputs.byId[id], id, 'input', rootObj, color);
-  });
-
-  // outputs
-  outputs.allIds.forEach(id => {
-    drawConnector(outputs.byId[id], id, 'output', rootObj, color);
-  });
-}
-
-/**
- * Add input and/or output connector to a processor.
- * @param {Object} data Input or output data.
- * @param {String} id Connector ID.
- * @param {String} name Connector name.
- * @param {Object} rootObj Outer object3D.
- */
-function drawConnector(data, id, name, rootObj, color) {
-
-  const hitarea = createCircleFilled(2, color, 0);
-  hitarea.name = `${name}_hitarea`;
-  hitarea.userData.id = id;
-  hitarea.translateX(data.x);
-  hitarea.translateY(data.y);
-  rootObj.add(hitarea);
-
-  const connector = createCircleOutline(0.6, color);
-  connector.name = `${name}_connector`;
-  hitarea.add(connector);
-
-  const active = createCircleOutline(1.2, color);
-  active.name = `${name}_active`;
-  active.visible = false;
-  hitarea.add(active);
+export function setLineMaterialResolution() {
+  lineMaterial.resolution.set(window.innerWidth, window.innerHeight);
+  textLineMaterial.resolution.set(window.innerWidth, window.innerHeight);
 }
