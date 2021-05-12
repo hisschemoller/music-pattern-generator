@@ -32,7 +32,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     isBypass = false,
     stepIndex = 0,
     stepWidth = 0,
-    stepsX = 0.5;
+    stepsX = 2;
 
   /**
    * Redraw the pattern if needed.
@@ -75,6 +75,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
               case 'steps':
                 updateStick(steps.value);
                 updateSequence(sequence.value, steps.value);
+                updatePointer();
                 break;
               default:
             }
@@ -88,6 +89,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
           updateBypass(is_bypass.value);
           updateStick(steps.value);
           updateSequence(sequence.value, steps.value);
+          updatePointer();
         }
         break;
 
@@ -171,8 +173,8 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     for (let i = 0; i < steps; i++) {
       const step3d = createRect(stepWidth, 1, colorHigh);
       step3d.name = `step${i}`;
-      step3d.translateX(stickX + (i * stepWidth));
-      step3d.translateY(-2);
+      step3d.translateX(stepsX + (i * stepWidth));
+      step3d.translateY(0);
       stick3d.add(step3d);
     }
   };
@@ -189,15 +191,12 @@ export function createObject3dController(obj3d, data, isConnectMode) {
       new Vector2(stickLength, 0),
     ];
     redrawShape(stick3d, points, colorHigh);
-
-    pointer3d.position.x = stickX + stepsX + (stepWidth * (stepIndex + 0.5));
   };
 
   /** 
    * Set pointer position to current step.
    */
   const updatePointer = () => {
-    console.log(stepsX, stickX);
     pointer3d.position.x = stickX + stepsX + (stepWidth * (stepIndex + 0.5));
   };
 
