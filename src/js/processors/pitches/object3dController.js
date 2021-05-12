@@ -1,7 +1,7 @@
 import { dispatch, getActions, STATE_CHANGE, } from '../../state/store.js';
 import { getTheme } from '../../state/selectors.js';
 import createObject3dControllerBase from '../../webgl/object3dControllerBase.js';
-import { redrawShape, } from '../../webgl/draw3dHelper.js';
+import { createRect, redrawShape, } from '../../webgl/draw3dHelper.js';
 import {
   Vector2,
 } from '../../lib/threejs/build/three.module.js';
@@ -67,13 +67,14 @@ export function createObject3dController(obj3d, data, isConnectMode) {
       case actions.CHANGE_PARAMETER: {
           const { activeProcessorId, processors, } = state;
           if (activeProcessorId === id) {
-            const { is_bypass, steps } = processors.byId[id].params.byId;
+            const { is_bypass, sequence, steps } = processors.byId[id].params.byId;
             switch (action.paramKey) {
               case 'is_bypass':
                 updateBypass(is_bypass.value);
                 break;
               case 'steps':
                 updateStick(steps.value);
+                updateSequence(sequence.value, steps.value);
                 break;
               default:
             }
@@ -83,9 +84,10 @@ export function createObject3dController(obj3d, data, isConnectMode) {
       
       case actions.LOAD_SNAPSHOT: {
           const { processors, } = state;
-          const { is_bypass, steps } = processors.byId[id].params.byId;
+          const { is_bypass, sequence, steps } = processors.byId[id].params.byId;
           updateBypass(is_bypass.value);
           updateStick(steps.value);
+          updateSequence(sequence.value, steps.value);
         }
         break;
 
@@ -105,9 +107,10 @@ export function createObject3dController(obj3d, data, isConnectMode) {
 
     ({ colorLow, colorHigh, } = getTheme());
 
-    const { is_bypass, steps } = data.params.byId;
+    const { is_bypass, sequence, steps } = data.params.byId;
     updateBypass(is_bypass.value);
     updateStick(steps.value);
+    updateSequence(sequence.value, steps.value);
     updatePointer();
   };
 
@@ -154,8 +157,29 @@ export function createObject3dController(obj3d, data, isConnectMode) {
   };
 
   /** 
+   * Update the sequence step rectangles.
+   * @param {Array} sequence Sequence of pitch values.
+   * @param {Number} steps Number of steps in the pattern.
+   */
+  const updateSequence = (sequence, steps) => {
+  
+    // remove all existing sequence steps
+    for (let i = 0, n = stick3d.children.length; i < n; i++) {
+      stick3d.remove(stick3d.children[0]);
+    }
+
+    for (let i = 0; i < steps; i++) {
+      const step3d = createRect(stepWidth, 1, colorHigh);
+      step3d.name = `step${i}`;
+      step3d.translateX(stickX + (i * stepWidth));
+      step3d.translateY(-2);
+      stick3d.add(step3d);
+    }
+  };
+
+  /** 
    * Update the steps stick.
-   * @param {Number} steps Number of steps in the pattern./
+   * @param {Number} steps Number of steps in the pattern.
    */
   const updateStick = (steps) => {
     const stickLength = Math.min(steps * 4, 30);
@@ -166,14 +190,15 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     ];
     redrawShape(stick3d, points, colorHigh);
 
-    pointer3d.position.x = stickX + (stepWidth * (stepIndex + 0.5));
+    pointer3d.position.x = stickX + stepsX + (stepWidth * (stepIndex + 0.5));
   };
 
   /** 
    * Set pointer position to current step.
    */
   const updatePointer = () => {
-    pointer3d.position.x = stepsX + stickX + (stepWidth * (stepIndex + 0.5));
+    console.log(stepsX, stickX);
+    pointer3d.position.x = stickX + stepsX + (stepWidth * (stepIndex + 0.5));
   };
 
   /** 

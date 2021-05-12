@@ -35,10 +35,11 @@ const textLineMaterial = lineMaterial.clone();
 textLineMaterial.linewidth = 1;
 
 /** 
- * Cache of circle outlines, so they can be cloned once created.
- * They are identified by a string made out of the radius and color.
+ * Cache of circle and rectangle outlines, so they can be cloned once created.
+ * They are identified by a string made out of the radius resp. width, height and color.
  */
 const circleCache = {};
+const rectCache = {};
 
 /** 
  * Draw a circle fill.
@@ -156,6 +157,40 @@ export function createConnectors(rootObj, inputs, outputs, color) {
   outputs.allIds.forEach(id => {
     createConnector(outputs.byId[id], id, 'output', rootObj, color);
   });
+}
+
+/** 
+ * Draw a rectangle outline.
+ * @param {Number} width Rectangle width.
+ * @param {Number} height Rectangle height.
+ * @param {Number} color Circle color.
+ * @return {Object} Line2 3D object.
+ */
+export function createRect(width, height, color = LINE_COLOR) {
+
+  // check if the circle already exists in cache
+  const cacheId = `r${width}_${height}_${color}`;
+  if (rectCache[cacheId]) {
+    const clone = rectCache[cacheId].clone();
+    clone.userData = { ...rectCache[cacheId].userData };
+    clone.position.set(0, 0, 0);
+    return clone;
+  }
+
+  // create the geometry and line
+  const points = [
+    new Vector2(0, 0),
+    new Vector2(width, 0),
+    new Vector2(width, height),
+    new Vector2(0, height),
+    new Vector2(0, 0),
+  ];
+  const line2 = createShape(points, color);
+
+  // add the circle to the cache
+  rectCache[cacheId] = line2;
+
+  return line2;
 }
 
 /** 
