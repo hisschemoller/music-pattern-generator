@@ -21,6 +21,7 @@ import { accessMidi, getMIDIAccessible, listenToMIDIPorts } from './midi/midi.js
 import { preloadProcessors } from './core/processor-loader.js';
 import { setup as setupCanvas3d } from './webgl/canvas3d.js';
 import { setup as setupConnections3d } from './webgl/connections3d.js';
+import { setup as setupInteraction3d } from './webgl/interaction3d.js';
 import { setup as setupControls } from './view/controls.js';
 import { setup as setupDialog } from './view/dialog.js';
 import { setup as setupLibrary } from './view/library.js';
@@ -40,6 +41,7 @@ async function main() {
   setupPanels();
   setupCanvas3d();
   setupConnections3d();
+  setupInteraction3d();
   setupDialog();
   setupLibrary();
   setupNetwork();
