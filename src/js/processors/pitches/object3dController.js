@@ -1,7 +1,7 @@
 import { dispatch, getActions, STATE_CHANGE, } from '../../state/store.js';
 import { getTheme } from '../../state/selectors.js';
 import createObject3dControllerBase from '../../webgl/object3dControllerBase.js';
-import { createRect, redrawShape, } from '../../webgl/draw3dHelper.js';
+import { createRectFilled, createRectOutline, redrawShape, } from '../../webgl/draw3dHelper.js';
 import {
   Vector2,
 } from '../../lib/threejs/build/three.module.js';
@@ -171,11 +171,20 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     }
 
     for (let i = 0; i < steps; i++) {
-      const step3d = createRect(stepWidth, 1, colorHigh);
+      const stepHeight = 1;
+
+      const step3d = createRectOutline(stepWidth, stepHeight, colorHigh);
       step3d.name = `step${i}`;
       step3d.translateX(stepsX + (i * stepWidth));
       step3d.translateY(0);
       stick3d.add(step3d);
+
+      const stepHitArea3d = createRectFilled(stepWidth, stepHeight + 4, colorHigh, 0.2);
+      stepHitArea3d.name = `${id}:step_hitarea`;
+      stepHitArea3d.userData.stepIndex = i;
+      stepHitArea3d.translateX(stepsX + ((i + 0.5) * stepWidth));
+      stepHitArea3d.translateY(stepHeight * 0.5);
+      stick3d.add(stepHitArea3d);
     }
   };
 

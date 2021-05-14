@@ -5,6 +5,7 @@ import {
   Group,
   Mesh,
   MeshBasicMaterial,
+  PlaneGeometry,
   Vector2,
   Vector3,
   VertexColors,
@@ -160,13 +161,31 @@ export function createConnectors(rootObj, inputs, outputs, color) {
 }
 
 /** 
+ * Draw a circle fill.
+ * @param {Number} width Rectangle width.
+ * @param {Number} height Rectangle height.
+ * @param {Number} color Fill color.
+ * @param {Number} alpha Transparency.
+ * @return {Object} Mesh 3D object.
+ */
+export function createRectFilled(width, height, color, alpha = 1) {
+  const numSegments = 1;
+  const material = new MeshBasicMaterial({ color, transparent: true, });
+  const geometry = new PlaneGeometry(width, height, numSegments, numSegments);              
+  material.opacity = alpha;
+  const fill = new Mesh(geometry, material);
+  fill.name = 'rect_fill';
+  return fill;
+}
+
+/** 
  * Draw a rectangle outline.
  * @param {Number} width Rectangle width.
  * @param {Number} height Rectangle height.
  * @param {Number} color Circle color.
  * @return {Object} Line2 3D object.
  */
-export function createRect(width, height, color = LINE_COLOR) {
+export function createRectOutline(width, height, color = LINE_COLOR) {
 
   // check if the circle already exists in cache
   const cacheId = `r${width}_${height}_${color}`;
