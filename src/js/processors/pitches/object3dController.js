@@ -92,6 +92,10 @@ export function createObject3dController(obj3d, data, isConnectMode) {
           updatePointer();
         }
         break;
+      
+      case actions.START_PROCESSOR_INTERACTION:
+        startStepPitchInteraction(state);
+        break;
 
       case actions.TOGGLE_THEME:
         updateTheme();
@@ -137,6 +141,17 @@ export function createObject3dController(obj3d, data, isConnectMode) {
   };
 
   /**
+   * Start dragging a pitch slider.
+   * @param {String} state Application state.
+   */
+  const startStepPitchInteraction = (state) => {
+    const data = state.processorInteractiveObjectName.split(':');
+    if (data[1] === id) {
+      console.log(data[3]);
+    }
+  }
+
+  /**
    * Store the bypass parameter value locally.
    * @param {Boolean} isBypassValue Bypass parameter value.
    */
@@ -180,7 +195,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
       stick3d.add(step3d);
 
       const stepHitArea3d = createRectFilled(stepWidth, stepHeight + 4, colorHigh, 0.2);
-      stepHitArea3d.name = `${id}:step_hitarea`;
+      stepHitArea3d.name = `processor:${id}:step:${i}`;
       stepHitArea3d.userData.stepIndex = i;
       stepHitArea3d.translateX(stepsX + ((i + 0.5) * stepWidth));
       stepHitArea3d.translateY(stepHeight * 0.5);

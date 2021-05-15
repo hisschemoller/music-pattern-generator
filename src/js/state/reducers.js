@@ -29,6 +29,7 @@ const userInterfaceInitialState = {
 		y: 0,
 	},
 	activeProcessorId: null,
+	processorInteractiveObjectName: null,
 };
 
 /**
@@ -506,6 +507,9 @@ export default function reduce(state = initialState, action, actions = {}) {
 			return Object.assign({}, state, { 
 				transport: value,
 			});
+
+		case actions.START_PROCESSOR_INTERACTION:
+			return { ...state, processorInteractiveObjectName: action.name };
 		
 		case actions.STORE_SNAPSHOT: {
 			const { index, snapshot, } = action;

@@ -251,6 +251,7 @@ function onTouchStart(e) {
   const intersects = raycaster.intersectObjects(getAllObjects(), true);
   let outerObject = null;
   dragObjectType = 'background';
+
   if (intersects.length) {
 
     // test for processors
@@ -264,8 +265,6 @@ function onTouchStart(e) {
     // test for output connectors
     intersect = intersects.find(intersect => intersect.object.name === 'output_hitarea');
     if (intersect && isConnectMode) {
-
-      // get outer parent of closest object
       outerObject = getOuterParentObject(intersect.object);
       const { x, y, z, } = outerObject.clone().position.add(intersect.object.position);
       dispatch(getActions().cableDragStart(
@@ -275,13 +274,22 @@ function onTouchStart(e) {
       ));
       dragObjectType = 'connection';
     }
+
+    // test for processor interactive objects
+    intersect = intersects.find(intersect => intersect.object.name.startsWith('processor'));
+    if (intersect) {
+      dragObjectType = '';
+      dispatch(getActions().startProcessorInteraction(intersect.object.name));
+    }
   }
 
   if (dragObjectType === 'background') {
     outerObject = camera;
   }
 
-  dragStart(outerObject, mousePoint);
+  if (dragObjectType !== '') {
+    dragStart(outerObject, mousePoint);
+  }
 }
 
 export function setup() {
