@@ -100,6 +100,14 @@ function dragMove(e) {
         dispatch(getActions().cableDragMove(x, y, z));
       }
       break;
+      
+    case 'parameter': {
+      if (raycaster.ray.intersectPlane(plane, intersection)) {
+        const { x, y, z, } = intersection;
+        dispatch(getActions().parameterDragMove(x, y, z));
+      }
+      break;
+    }
 
     // when not dragging
     default:
@@ -140,6 +148,11 @@ function dragStart(object3d, mousePoint) {
 
       case 'background':
         dragOffset.copy(intersection).sub(dragObject.position);
+        break;
+      
+      case 'parameter':
+        const { x, y, z, } = intersection;
+        dispatch(getActions().parameterDragStart(x, y, z));
         break;
     }
     canvas.style.cursor = 'move';
@@ -278,8 +291,9 @@ function onTouchStart(e) {
     // test for processor interactive objects
     intersect = intersects.find(intersect => intersect.object.name.startsWith('processor'));
     if (intersect) {
-      dragObjectType = '';
-      dispatch(getActions().startProcessorInteraction(intersect.object.name));
+      dragObjectType = 'parameter';
+      outerObject = intersect.object;
+      dispatch(getActions().parameterTouchStart(intersect.object.name));
     }
   }
 
@@ -287,9 +301,7 @@ function onTouchStart(e) {
     outerObject = camera;
   }
 
-  if (dragObjectType !== '') {
-    dragStart(outerObject, mousePoint);
-  }
+  dragStart(outerObject, mousePoint);
 }
 
 export function setup() {

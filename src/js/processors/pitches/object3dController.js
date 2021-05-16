@@ -30,6 +30,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     colorLow,
     colorHigh,
     isBypass = false,
+    pitchAtDragStart,
     stepIndex = 0,
     stepWidth = 0,
     stepsX = 2;
@@ -72,11 +73,17 @@ export function createObject3dController(obj3d, data, isConnectMode) {
               case 'is_bypass':
                 updateBypass(is_bypass.value);
                 break;
+
+              case 'sequence':
+                updateSequence(sequence.value, steps.value);
+                break;
+
               case 'steps':
                 updateStick(steps.value);
                 updateSequence(sequence.value, steps.value);
                 updatePointer();
                 break;
+
               default:
             }
           }
@@ -93,8 +100,12 @@ export function createObject3dController(obj3d, data, isConnectMode) {
         }
         break;
       
-      case actions.START_PROCESSOR_INTERACTION:
-        startStepPitchInteraction(state);
+      case actions.PARAMETER_DRAG_MOVE:
+        pitchParameterDragMove(state);
+        break;
+      
+      case actions.PARAMETER_DRAG_START:
+        pitchParameterDragStart(state);
         break;
 
       case actions.TOGGLE_THEME:
@@ -121,6 +132,38 @@ export function createObject3dController(obj3d, data, isConnectMode) {
   };
 
   /**
+   * Start dragging a pitch slider.
+   * @param {String} state Application state.
+   */
+  const pitchParameterDragMove = (state) => {
+    const { parameterDrag, processors } = state;
+    const { current, objectName, start } = parameterDrag;
+    const data = objectName.split(':');
+    if (data[1] === id) {
+      const stepIndex = data[3];
+      const sequence = [ ...processors.byId[id].params.byId['sequence'].value ];
+      const dragDistance = Math.round(current.y - start.y);
+      const newPitch = Math.max(-24, Math.min(pitchAtDragStart + dragDistance, 24));
+      sequence[stepIndex] = { ...sequence[stepIndex], pitch: newPitch };
+      dispatch(getActions().changeParameter(id, 'sequence', sequence));
+    }
+  }
+
+  /**
+   * Start dragging a pitch slider.
+   * @param {String} state Application state.
+   */
+  const pitchParameterDragStart = (state) => {
+    const { parameterDrag, processors } = state;
+    const { objectName } = parameterDrag;
+    const data = objectName.split(':');
+    if (data[1] === id) {
+      const stepIndex = data[3];
+      pitchAtDragStart = processors.byId[id].params.byId['sequence'].value[stepIndex].pitch;
+    }
+  }
+
+  /**
    * Show the playback position within the pattern.
    * Indicated by the pointer's rotation.
    * @param  {Number} position Position within pattern in ticks.
@@ -139,17 +182,6 @@ export function createObject3dController(obj3d, data, isConnectMode) {
       updatePointer();
     }, noteStartDelay);
   };
-
-  /**
-   * Start dragging a pitch slider.
-   * @param {String} state Application state.
-   */
-  const startStepPitchInteraction = (state) => {
-    const data = state.processorInteractiveObjectName.split(':');
-    if (data[1] === id) {
-      console.log(data[3]);
-    }
-  }
 
   /**
    * Store the bypass parameter value locally.
@@ -186,7 +218,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     }
 
     for (let i = 0; i < steps; i++) {
-      const stepHeight = 1;
+      const stepHeight = sequence[i].pitch * 0.5;
 
       const step3d = createRectOutline(stepWidth, stepHeight, colorHigh);
       step3d.name = `step${i}`;
@@ -194,7 +226,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
       step3d.translateY(0);
       stick3d.add(step3d);
 
-      const stepHitArea3d = createRectFilled(stepWidth, stepHeight + 4, colorHigh, 0.2);
+      const stepHitArea3d = createRectFilled(stepWidth, Math.abs(stepHeight) + 4, colorHigh, 0);
       stepHitArea3d.name = `processor:${id}:step:${i}`;
       stepHitArea3d.userData.stepIndex = i;
       stepHitArea3d.translateX(stepsX + ((i + 0.5) * stepWidth));
