@@ -63,6 +63,12 @@ export function createProcessor(data) {
 						updateAllParams(state.processors.byId[id].params.byId);
 					}
 					break;
+
+				case actions.SET_TRANSPORT:
+					if (state.transport === 'play') {
+						stepIndex = 0;
+					}
+					break;
 			}
 		},
 				
