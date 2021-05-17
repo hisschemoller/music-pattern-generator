@@ -31,7 +31,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     colorHigh,
     isBypass = false,
     pitchAtDragStart,
-    currentSequence = [],
+    sequence = [],
     stepIndex = 0,
     stepWidth = 0,
     stepsX = 2;
@@ -205,23 +205,23 @@ export function createObject3dController(obj3d, data, isConnectMode) {
 
   /** 
    * Update the sequence step rectangles.
-   * @param {Array} sequence Sequence of pitch values.
+   * @param {Array} newSequence Sequence of pitch values.
    * @param {Number} steps Number of steps in the pattern.
    */
-  const updateSequence = (sequence, steps) => {
+  const updateSequence = (newSequence, steps) => {
 
     // remove all existing sequence steps
-    if (sequence.length !== currentSequence) {
+    if (newSequence.length !== sequence) {
       for (let i = 0, n = stick3d.children.length; i < n; i++) {
         stick3d.remove(stick3d.children[0]);
       }
-      currentSequence = [];
+      sequence = [];
     }
 
     // update only the visible steps, not the possibly longer sequence.length
     for (let i = 0; i < steps; i++) {
-      if (!currentSequence[i] || currentSequence[i].pitch !== sequence[i].pitch) {
-        const stepHeight = sequence[i].pitch * 0.5;
+      if (!sequence[i] || sequence[i].pitch !== newSequence[i].pitch) {
+        const stepHeight = newSequence[i].pitch * 0.5;
 
         const step3d = createRectOutline(stepWidth, stepHeight, colorHigh);
         step3d.name = `step${i}`;
@@ -238,37 +238,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
       }
     }
 
-    currentSequence = sequence.map((step) => ({ ...step }));
-  };
-
-  /** 
-   * Update the changed sequence step rectangles.
-   * @param {Array} sequence Sequence of pitch values.
-   * @param {Number} steps Number of steps in the pattern.
-   */
-  const updateSequenceSteps = (sequence, steps) => {
-
-    // update only the visible steps, not the possibly longer sequence.length
-    for (let i = 0; i < steps; i++) {
-      if (!currentSequence[i] || currentSequence[i].pitch !== sequence[i].pitch) {
-        const stepHeight = sequence[i] ? sequence[i].pitch * 0.5 : 0;
-
-        const step3d = createRectOutline(stepWidth, stepHeight, colorHigh);
-        step3d.name = `step${i}`;
-        step3d.translateX(stepsX + (i * stepWidth));
-        step3d.translateY(0);
-        stick3d.add(step3d);
-
-        const stepHitArea3d = createRectFilled(stepWidth, Math.abs(stepHeight) + 4, colorHigh, 0);
-        stepHitArea3d.name = `processor:${id}:step:${i}`;
-        stepHitArea3d.userData.stepIndex = i;
-        stepHitArea3d.translateX(stepsX + ((i + 0.5) * stepWidth));
-        stepHitArea3d.translateY(stepHeight * 0.5);
-        stick3d.add(stepHitArea3d);
-      }
-    }
-
-    currentSequence = sequence.map((step) => ({ ...step }));
+    sequence = newSequence.map((step) => ({ ...step }));
   };
 
   /** 
@@ -289,7 +259,13 @@ export function createObject3dController(obj3d, data, isConnectMode) {
    * Set pointer position to current step.
    */
   const updatePointer = () => {
-    pointer3d.position.x = stickX + stepsX + (stepWidth * (stepIndex + 0.5));
+    const { pitch } = sequence[stepIndex];
+    pointer3d.rotation.set(0, 0, pitch >= 0 ? 0 : Math.PI);
+    pointer3d.position.set(
+      stickX + stepsX + (stepWidth * (stepIndex + 0.5)),
+      pitch >= 0 ? (pitch * 0.5) + 1 : (pitch * 0.5) - 1,
+      0,
+    );
   };
 
   /** 
