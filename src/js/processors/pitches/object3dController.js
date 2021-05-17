@@ -31,6 +31,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     colorHigh,
     isBypass = false,
     pitchAtDragStart,
+    currentSequence = [],
     stepIndex = 0,
     stepWidth = 0,
     stepsX = 2;
@@ -65,7 +66,8 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     const { action, actions, state, } = e.detail;
     switch (action.type) {
 
-      case actions.CHANGE_PARAMETER: {
+      case actions.CHANGE_PARAMETER:
+      case actions.RECREATE_PARAMETER: {
           const { activeProcessorId, processors, } = state;
           if (activeProcessorId === id) {
             const { is_bypass, sequence, steps } = processors.byId[id].params.byId;
@@ -75,10 +77,6 @@ export function createObject3dController(obj3d, data, isConnectMode) {
                 break;
 
               case 'sequence':
-                updateSequence(sequence.value, steps.value);
-                break;
-
-              case 'steps':
                 updateStick(steps.value);
                 updateSequence(sequence.value, steps.value);
                 updatePointer();
@@ -211,28 +209,66 @@ export function createObject3dController(obj3d, data, isConnectMode) {
    * @param {Number} steps Number of steps in the pattern.
    */
   const updateSequence = (sequence, steps) => {
-  
+
     // remove all existing sequence steps
-    for (let i = 0, n = stick3d.children.length; i < n; i++) {
-      stick3d.remove(stick3d.children[0]);
+    if (sequence.length !== currentSequence) {
+      for (let i = 0, n = stick3d.children.length; i < n; i++) {
+        stick3d.remove(stick3d.children[0]);
+      }
+      currentSequence = [];
     }
 
+    // update only the visible steps, not the possibly longer sequence.length
     for (let i = 0; i < steps; i++) {
-      const stepHeight = sequence[i].pitch * 0.5;
+      if (!currentSequence[i] || currentSequence[i].pitch !== sequence[i].pitch) {
+        const stepHeight = sequence[i].pitch * 0.5;
 
-      const step3d = createRectOutline(stepWidth, stepHeight, colorHigh);
-      step3d.name = `step${i}`;
-      step3d.translateX(stepsX + (i * stepWidth));
-      step3d.translateY(0);
-      stick3d.add(step3d);
+        const step3d = createRectOutline(stepWidth, stepHeight, colorHigh);
+        step3d.name = `step${i}`;
+        step3d.translateX(stepsX + (i * stepWidth));
+        step3d.translateY(0);
+        stick3d.add(step3d);
 
-      const stepHitArea3d = createRectFilled(stepWidth, Math.abs(stepHeight) + 4, colorHigh, 0);
-      stepHitArea3d.name = `processor:${id}:step:${i}`;
-      stepHitArea3d.userData.stepIndex = i;
-      stepHitArea3d.translateX(stepsX + ((i + 0.5) * stepWidth));
-      stepHitArea3d.translateY(stepHeight * 0.5);
-      stick3d.add(stepHitArea3d);
+        const stepHitArea3d = createRectFilled(stepWidth, Math.abs(stepHeight) + 4, colorHigh, 0);
+        stepHitArea3d.name = `processor:${id}:step:${i}`;
+        stepHitArea3d.userData.stepIndex = i;
+        stepHitArea3d.translateX(stepsX + ((i + 0.5) * stepWidth));
+        stepHitArea3d.translateY(stepHeight * 0.5);
+        stick3d.add(stepHitArea3d);
+      }
     }
+
+    currentSequence = sequence.map((step) => ({ ...step }));
+  };
+
+  /** 
+   * Update the changed sequence step rectangles.
+   * @param {Array} sequence Sequence of pitch values.
+   * @param {Number} steps Number of steps in the pattern.
+   */
+  const updateSequenceSteps = (sequence, steps) => {
+
+    // update only the visible steps, not the possibly longer sequence.length
+    for (let i = 0; i < steps; i++) {
+      if (!currentSequence[i] || currentSequence[i].pitch !== sequence[i].pitch) {
+        const stepHeight = sequence[i] ? sequence[i].pitch * 0.5 : 0;
+
+        const step3d = createRectOutline(stepWidth, stepHeight, colorHigh);
+        step3d.name = `step${i}`;
+        step3d.translateX(stepsX + (i * stepWidth));
+        step3d.translateY(0);
+        stick3d.add(step3d);
+
+        const stepHitArea3d = createRectFilled(stepWidth, Math.abs(stepHeight) + 4, colorHigh, 0);
+        stepHitArea3d.name = `processor:${id}:step:${i}`;
+        stepHitArea3d.userData.stepIndex = i;
+        stepHitArea3d.translateX(stepsX + ((i + 0.5) * stepWidth));
+        stepHitArea3d.translateY(stepHeight * 0.5);
+        stick3d.add(stepHitArea3d);
+      }
+    }
+
+    currentSequence = sequence.map((step) => ({ ...step }));
   };
 
   /** 

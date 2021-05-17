@@ -157,7 +157,7 @@ export function createProcessor(data) {
 		/**
 		 * Update the sequence.
 		 */
-		updateSequence= () => {
+		updateSequence = () => {
 			const { sequence, steps } = params;
 			if (steps > sequence.length) {
 				for (let i = sequence.length; i < steps; i++) {
@@ -168,6 +168,7 @@ export function createProcessor(data) {
 			} else if (steps < sequence.length) {
 				stepIndex = stepIndex % steps;
 			}
+			
 			dispatch(getActions().recreateParameter(id, 'sequence', { value: sequence }));
 		};
 
