@@ -25,6 +25,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
   const stick3d = object3d.getObjectByName('stick');
   const pointer3d = object3d.getObjectByName('pointer');
   const stickX = stick3d.position.x;
+  const animatingSteps = {};
 
   let centerScale = 0,
     colorLow,
@@ -173,10 +174,24 @@ export function createObject3dController(obj3d, data, isConnectMode) {
    */
   const startNoteAnimation = (noteStartDelay, noteStopDelay) => {
 
+    // retain necklace dot state in object
+    animatingSteps[stepIndex] = {
+      stepFill3d: stick3d.getObjectByName(`step_fill${stepIndex}`),
+      isActive: false,
+    }
+
     // delay start of animation
     setTimeout(() => {
+
+      // step fill
+      animatingSteps[stepIndex].stepFill3d.material.opacity = 1;
+      animatingSteps[stepIndex].isActive = true;
+
+      // center dot
       centerDot3d.visible = true;
       centerScale = 1;
+
+      // pointer
       updatePointer();
     }, noteStartDelay);
   };
@@ -193,6 +208,18 @@ export function createObject3dController(obj3d, data, isConnectMode) {
    * Update the current nacklace dot animations.
    */
   const updateNoteAnimations = () => {
+
+    // sequence steps
+    Object.keys(animatingSteps).forEach(key => {
+      const obj = animatingSteps[key];
+      obj.stepFill3d.material.opacity -= 0.05;
+      if (obj.isActive && obj.stepFill3d.material.opacity < 0.1) {
+        obj.stepFill3d.material.opacity = 0;
+        delete animatingSteps[key];
+      }
+    });
+
+    // center dot
     if (centerScale > 0) {
       centerDot3d.scale.set(centerScale, centerScale, 1);
       centerScale -= 0.06;
@@ -222,6 +249,13 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     for (let i = 0; i < steps; i++) {
       if (!sequence[i] || sequence[i].pitch !== newSequence[i].pitch) {
         const stepHeight = newSequence[i].pitch * 0.5;
+
+        const stepFill3d = createRectFilled(stepWidth, Math.abs(stepHeight), colorHigh, 0);
+        stepFill3d.name = `step_fill${i}`;
+        stepFill3d.translateX(stepsX + ((i + 0.5) * stepWidth));
+        stepFill3d.translateY(stepHeight * 0.5);
+        // stepFill3d.material.opacity = 0.5;
+        stick3d.add(stepFill3d);
 
         const step3d = createRectOutline(stepWidth, stepHeight, colorHigh);
         step3d.name = `step${i}`;
