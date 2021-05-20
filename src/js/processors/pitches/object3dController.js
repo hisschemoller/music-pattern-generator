@@ -47,10 +47,10 @@ export function createObject3dController(obj3d, data, isConnectMode) {
 
     // start center dot animation
     if (processorEvents[id] && processorEvents[id].length) {
-      const event = processorEvents[id][processorEvents[id].length - 1];
-      const { delayFromNowToNoteEnd, delayFromNowToNoteStart, stepIndex: index, } = event;
-      stepIndex = index;
-      startNoteAnimation(delayFromNowToNoteStart, delayFromNowToNoteEnd);
+      for (let i = 0, n = processorEvents[id].length; i < n; i++) {
+        const { delayFromNowToNoteEnd, delayFromNowToNoteStart, stepIndex: index, } = processorEvents[id][i];
+        startNoteAnimation(delayFromNowToNoteStart, delayFromNowToNoteEnd, index);
+      }
     }
 
     // update center dot animation
@@ -172,20 +172,27 @@ export function createObject3dController(obj3d, data, isConnectMode) {
   /**
    * Show animation of the pattern dot that is about to play.
    */
-  const startNoteAnimation = (noteStartDelay, noteStopDelay) => {
+  const startNoteAnimation = (noteStartDelay, noteStopDelay, index) => {
+    stepIndex = index;
 
-    // retain necklace dot state in object
-    animatingSteps[stepIndex] = {
-      stepFill3d: stick3d.getObjectByName(`step_fill${stepIndex}`),
-      isActive: false,
+    // retain sequence step fill in object  
+    if (animatingSteps[index]) {
+      animatingSteps[index].stepFill3d.scale.y = 0;
+      animatingSteps[index].isActive = false;
+    } else {
+      animatingSteps[index] = {
+        stepFill3d: stick3d.getObjectByName(`step_fill${stepIndex}`),
+        isActive: false,
+      }
     }
 
     // delay start of animation
     setTimeout(() => {
 
       // step fill
-      animatingSteps[stepIndex].stepFill3d.material.opacity = 1;
-      animatingSteps[stepIndex].isActive = true;
+      animatingSteps[index].stepFill3d.scale.y = 1;
+      animatingSteps[index].isActive = true;
+      animatingSteps[index].isFirstRun = true;
 
       // center dot
       centerDot3d.visible = true;
@@ -212,10 +219,14 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     // sequence steps
     Object.keys(animatingSteps).forEach(key => {
       const obj = animatingSteps[key];
-      obj.stepFill3d.material.opacity -= 0.05;
-      if (obj.isActive && obj.stepFill3d.material.opacity < 0.1) {
-        obj.stepFill3d.material.opacity = 0;
-        delete animatingSteps[key];
+      if (obj.isActive ) {
+        if (obj.stepFill3d.scale.y < 0.1) {
+          obj.stepFill3d.scale.y = 0;
+          delete animatingSteps[key];
+        } else if (!obj.isFirstRun) {
+          obj.stepFill3d.scale.y -= 0.1;
+        }
+        obj.isFirstRun = false;
       }
     });
 
@@ -250,11 +261,11 @@ export function createObject3dController(obj3d, data, isConnectMode) {
       if (!sequence[i] || sequence[i].pitch !== newSequence[i].pitch) {
         const stepHeight = newSequence[i].pitch * 0.5;
 
-        const stepFill3d = createRectFilled(stepWidth, Math.abs(stepHeight), colorHigh, 0);
+        const stepFill3d = createRectFilled(stepWidth, Math.abs(stepHeight), colorHigh, 1);
+        stepFill3d.geometry = stepFill3d.geometry.translate(0, stepHeight * 0.5, 0);
         stepFill3d.name = `step_fill${i}`;
         stepFill3d.translateX(stepsX + ((i + 0.5) * stepWidth));
-        stepFill3d.translateY(stepHeight * 0.5);
-        // stepFill3d.material.opacity = 0.5;
+        stepFill3d.scale.set(1, 0, 1);
         stick3d.add(stepFill3d);
 
         const step3d = createRectOutline(stepWidth, stepHeight, colorHigh);
@@ -297,7 +308,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     pointer3d.rotation.set(0, 0, pitch >= 0 ? 0 : Math.PI);
     pointer3d.position.set(
       stickX + stepsX + (stepWidth * (stepIndex + 0.5)),
-      pitch >= 0 ? (pitch * 0.5) + 1 : (pitch * 0.5) - 1,
+      pitch >= 0 ? (pitch * 0.5) + 2 : (pitch * 0.5) - 2,
       0,
     );
   };
