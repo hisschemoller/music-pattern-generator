@@ -50,7 +50,7 @@ NW can be installed as a development dependency. A script in package.json can ru
 4. To add the app icons, copy `/assets/icons/mac/icons.icns` and paste it into `nwjs.app/Contents/Resources/` as well. Rename the file to `app.icns` so it will replace the existing default icons.
 5. Also overwrite `nwjs.app/Contents/Resources/documents.icns` with the `icons.icns` file.
 
-The file `nwjs.app` is now an executable that runs the app. Copy and rename it to `MusicPatternGenerator.app`. Doubleclick the app to run it.
+The file `nwjs.app` is now an executable that runs the app. Copy and rename it to `MusicPatternGenerator.app`. Double click the app to run it.
 
 ## Create an installer dmg file for Mac
 
@@ -72,7 +72,7 @@ The file `nwjs.app` is now an executable that runs the app. Copy and rename it t
 6. Select a size that's enough for the size of the app, 320MB.
 7. Lease the other fields as they are.
 8. Click 'Save' to create the dmg file.
-9. Doubleclick `InstallerTemplate.dmg` to open it. It will show up in finder as a device.
+9. Double click `InstallerTemplate.dmg` to open it. It will show up in finder as a device.
 10. In the Finder menu choose View > Show View Options.
 11. Customize the look of the folder. Set it to Icon View, larger icons etc.
 12. Drag the `music-pattern-generator.app` file into the folder.
