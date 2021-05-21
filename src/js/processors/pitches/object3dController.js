@@ -31,6 +31,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     colorLow,
     colorHigh,
     isBypass = false,
+    offset = 0,
     pitchAtDragStart,
     sequence = [],
     stepIndex = 0,
@@ -71,13 +72,19 @@ export function createObject3dController(obj3d, data, isConnectMode) {
       case actions.RECREATE_PARAMETER: {
           const { activeProcessorId, processors, } = state;
           if (activeProcessorId === id) {
-            const { is_bypass, sequence, steps } = processors.byId[id].params.byId;
+            const { is_bypass, offset, sequence, steps } = processors.byId[id].params.byId;
             switch (action.paramKey) {
               case 'is_bypass':
                 updateBypass(is_bypass.value);
                 break;
+              
+              case 'offset':
+                updateOffset(offset.value);
+                updatePointer();
+                break;
 
               case 'sequence':
+                updateOffset(offset.value);
                 updateStick(steps.value);
                 updateSequence(sequence.value, steps.value);
                 updatePointer();
@@ -91,7 +98,8 @@ export function createObject3dController(obj3d, data, isConnectMode) {
       
       case actions.LOAD_SNAPSHOT: {
           const { processors, } = state;
-          const { is_bypass, sequence, steps } = processors.byId[id].params.byId;
+          const { is_bypass, offset, sequence, steps } = processors.byId[id].params.byId;
+          updateOffset(offset.value);
           updateBypass(is_bypass.value);
           updateStick(steps.value);
           updateSequence(sequence.value, steps.value);
@@ -123,7 +131,8 @@ export function createObject3dController(obj3d, data, isConnectMode) {
 
     ({ colorLow, colorHigh, } = getTheme());
 
-    const { is_bypass, sequence, steps } = data.params.byId;
+    const { is_bypass, offset, sequence, steps } = data.params.byId;
+    updateOffset(offset.value);
     updateBypass(is_bypass.value);
     updateStick(steps.value);
     updateSequence(sequence.value, steps.value);
@@ -190,16 +199,20 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     setTimeout(() => {
 
       // step fill
-      animatingSteps[index].stepFill3d.scale.y = 1;
-      animatingSteps[index].isActive = true;
-      animatingSteps[index].isFirstRun = true;
+      if (animatingSteps[index].stepFill3d) {
+        animatingSteps[index].stepFill3d.scale.y = 1;
+        animatingSteps[index].isActive = true;
+        animatingSteps[index].isFirstRun = true;
+      } else {
+        delete animatingSteps[index];
+      }
 
       // center dot
       centerDot3d.visible = true;
       centerScale = 1;
 
       // pointer
-      updatePointer();
+      // updatePointer();
     }, noteStartDelay);
   };
 
@@ -239,6 +252,13 @@ export function createObject3dController(obj3d, data, isConnectMode) {
         centerScale = 0;
       }
     }
+  };
+
+  /**
+   * Store the changed offset to set the pointer position.
+   */
+  const updateOffset = (offs) => {
+    offset = offs;
   };
 
   /** 
@@ -304,10 +324,10 @@ export function createObject3dController(obj3d, data, isConnectMode) {
    * Set pointer position to current step.
    */
   const updatePointer = () => {
-    const { pitch } = sequence[stepIndex];
+    const { pitch } = sequence[offset];
     pointer3d.rotation.set(0, 0, pitch >= 0 ? 0 : Math.PI);
     pointer3d.position.set(
-      stickX + stepsX + (stepWidth * (stepIndex + 0.5)),
+      stickX + stepsX + (stepWidth * (offset + 0.5)),
       pitch >= 0 ? (pitch * 0.5) + 2 : (pitch * 0.5) - 2,
       0,
     );

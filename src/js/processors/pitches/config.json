@@ -37,6 +37,15 @@
 				"default": "Unnamed",
 				"value": "Unnamed"
 			},
+			"offset": {
+					"label": "Offset",
+					"type": "integer",
+					"default": 0,
+					"value": 0,
+					"min": 0,
+					"max": 3,
+					"isMidiControllable": true
+			},
 			"sequence": {
 				"label": "Sequence",
 				"type": "object",
@@ -63,6 +72,6 @@
 					"isMidiControllable": true
 			}
 		},
-		"allIds": ["is_bypass", "name", "sequence", "steps"]
+		"allIds": ["is_bypass", "name", "offset", "sequence", "steps"]
 	}
 }

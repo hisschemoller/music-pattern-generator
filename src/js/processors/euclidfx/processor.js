@@ -74,7 +74,6 @@ export function createProcessor(data) {
 					updatePulsesAndRotation();
 					updatePattern(true);
 					updateEffectSettings(true);
-
 					break;
 
 				case actions.RECREATE_PARAMETER:

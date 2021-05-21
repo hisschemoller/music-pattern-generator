@@ -3,7 +3,8 @@ import createMIDIProcessorBase from '../../midi/processorbase.js';
 
 export function createProcessor(data) {
 	let params = {},
-		stepIndex = 0;
+		stepIndex = 0,
+		offsetCurrent = 0;
 	
 	const {
 		getId,
@@ -44,10 +45,13 @@ export function createProcessor(data) {
 					if (action.processorId === id) {
 						updateAllParams(state.processors.byId[id].params.byId);
 						switch (action.paramKey) {
-							case 'steps':
-								updateSequence();
+							case 'offset':
+								updateOffset();
 								break;
 							case 'sequence':
+								break;
+							case 'steps':
+								updateSequence();
 								break;
 						}
 					}
@@ -56,6 +60,7 @@ export function createProcessor(data) {
 				case actions.LOAD_SNAPSHOT:
 					updateAllParams(state.processors.byId[id].params.byId);
 					updatePattern(true);
+					updateOffset();
 					break;
 
 				case actions.RECREATE_PARAMETER:
@@ -66,7 +71,7 @@ export function createProcessor(data) {
 
 				case actions.SET_TRANSPORT:
 					if (state.transport === 'play') {
-						stepIndex = 0;
+						stepIndex = params.offset;
 					}
 					break;
 			}
@@ -151,8 +156,17 @@ export function createProcessor(data) {
 		 */
 		updateAllParams = function(parameters) {
 			params.isBypass = parameters.is_bypass.value;
+			params.offset = parameters.offset.value;
 			params.sequence = parameters.sequence.value;
 			params.steps = parameters.steps.value;
+		},
+
+		/**
+		 * Adjust stepIndex for changed offset.
+		 */
+		updateOffset = function() {
+			stepIndex = params.steps + ((stepIndex + (params.offset - offsetCurrent)) % params.steps);
+			offsetCurrent = params.offset;
 		},
 
 		/**
@@ -164,7 +178,7 @@ export function createProcessor(data) {
 		 * Update the sequence.
 		 */
 		updateSequence = () => {
-			const { sequence, steps } = params;
+			const { offset, sequence, steps } = params;
 			if (steps > sequence.length) {
 				for (let i = sequence.length; i < steps; i++) {
 					sequence.push({
@@ -174,6 +188,11 @@ export function createProcessor(data) {
 			} else if (steps < sequence.length) {
 				stepIndex = stepIndex % steps;
 			}
+
+			dispatch(getActions().recreateParameter(id, 'offset', { 
+				max: steps - 1,
+				value: Math.min(offset, steps),
+			}));
 			
 			dispatch(getActions().recreateParameter(id, 'sequence', { value: sequence }));
 		};
