@@ -6,6 +6,7 @@ import createRemoteSettingView from './remoteSetting.js';
  * which has a slider and a number field.
  */
 export default function createBaseSettingView(parentEl, processorId, key, paramData, initData, setValue) {
+	
 	let el;
 	let changeRemoteState;
 		
@@ -48,7 +49,7 @@ export default function createBaseSettingView(parentEl, processorId, key, paramD
 				case actions.RECREATE_PARAMETER:
 					if (action.processorId === processorId && action.paramKey === key) {
 						paramData = state.processors.byId[processorId].params.byId[key];
-						initData();
+						initData(paramData);
 						setValue(state.processors.byId[processorId].params.byId[key].value);
 					}
 					break;

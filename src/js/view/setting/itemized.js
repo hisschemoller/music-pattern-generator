@@ -13,11 +13,11 @@ export default function createItemizedSettingView(parentEl, processorId, key, pa
 	const init = function() {
 			valueEl = el.querySelector('.setting__value');
 
-			initData();
+			initData(paramData);
 			setValue(paramData.value);
 		},
 
-		initData = function() {
+		initData = function(paramData) {
 
 			// remove previous radio buttons, if any
 			while (valueEl.firstChild) {

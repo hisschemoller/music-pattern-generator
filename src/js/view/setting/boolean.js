@@ -19,11 +19,11 @@ export default function createBooleanSettingView(parentEl, processorId, key, par
 			const labelEl = el.querySelector('.toggle__label');
 			labelEl.setAttribute('for', id);
 			
-			initData();
+			initData(paramData);
 			setValue(paramData.value);
 		},
 
-		initData = function() {},
+		initData = function(paramData) {},
 		
 		/**
 		 * A quick ID to tie label to input elements.
