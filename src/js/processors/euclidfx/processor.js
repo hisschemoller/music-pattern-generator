@@ -145,8 +145,8 @@ export function createProcessor(data) {
 			inputData.forEach(event => {
 				let isDelayed = false;
 
-				// handle only MIDI Note events
-				if (event.type === 'note') {
+				// handle only MIDI Note and MIDI CC events
+				if (event.type === 'note' || event.type === 'cc') {
 
 					// calculate the state of the effect at the event's time within the pattern
 					const stepIndex = Math.floor((event.timestampTicks % duration) / stepDuration),
@@ -188,11 +188,13 @@ export function createProcessor(data) {
 								}
 							}
 							break;
+						case 'cc':
+							event.cc = params.isRelative ? event.cc + effectValue : effectValue;
+							event.cc = Math.max(0, Math.min(event.cc, 127));
+							break;
 						case 'cc_value':
-							// ensure cc and cc_value are defined first
-							if (!event.ccs[params.target_cc]) event.ccs[params.target_cc] = 63;
-							event.ccs[params.target_cc] = params.isRelative ? event.ccs[params.target_cc] + effectValue : effectValue;
-							event.ccs[params.target_cc] = Math.max(0, Math.min(event.ccs[params.target_cc], 127));
+							event.cc_value = params.isRelative ? event.cc_value + effectValue : effectValue;
+							event.cc_value = Math.max(0, Math.min(event.cc_value, 127));
 							break;
 						case 'output':
 							// v2.3 or some further future version
@@ -284,7 +286,6 @@ export function createProcessor(data) {
 			params.high = parameters.high.value;
 			params.low = parameters.low.value;
 			params.target = parameters.target.value;
-			params.target_cc = parameters.target_cc ? parameters.target_cc.value : 1;
 			params.isBypass = parameters.is_bypass.value;
 			params.isRelative = parameters.mode.value !== parameters.mode.default;
 		},
@@ -328,11 +329,17 @@ export function createProcessor(data) {
 					lowValue = params.isRelative ? 0 : 0;
 					highValue = params.isRelative ? 0 : 2;
 					break;
+				case 'cc':
+					min = params.isRelative ? -127 : 0;
+					max = 127;
+					lowValue = params.isRelative ? 0 : 0;
+					highValue = params.isRelative ? 0 : 1;
+					break;
 				case 'cc_value':
 					min = params.isRelative ? -127 : 0;
 					max = 127;
 					lowValue = params.isRelative ? 0 : 0;
-					highValue = params.isRelative ? 0 : 63;
+					highValue = params.isRelative ? 0 : 127;
 					break;
 				case 'output':
 					min = 1;

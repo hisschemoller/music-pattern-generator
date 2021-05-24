@@ -122,23 +122,34 @@ export function createProcessor(data) {
 					isOn = isOn || (localScanStart2 <= startTime) && (startTime < localScanEnd2);
 				}
 				
-				// if a note should play
+				// if an event should be emitted
 				if (isOn) { 
-					const { channel_out, pitch_out, velocity_out, } = params;
 					const pulseStartTimestamp = scanStart + scanStartToNoteStart;
-					
-					// send the Note On message
-					// subtract 1 from duration to avoid overlaps
-					setOutputData({
-						timestampTicks: pulseStartTimestamp,
-						durationTicks: noteDuration - 1,
-						channel: channel_out,
-						type: 'note',
-						pitch: pitch_out,
-						velocity: velocity_out,
-						ccs: {}
-					});
-					
+
+					const { mode, channel_out, pitch_out, velocity_out, cc_out, cc_value_out } = params;
+
+					if (mode == 'note' ) {
+						// send the Note On message
+						// subtract 1 from duration to avoid overlaps
+						setOutputData({
+							timestampTicks: pulseStartTimestamp,
+							durationTicks: noteDuration - 1,
+							channel: channel_out,
+							type: 'note',
+							pitch: pitch_out,
+							velocity: velocity_out,
+						});
+					} else if (mode == 'cc' ) {
+						// send MIDI CC message
+						setOutputData({
+							timestampTicks: pulseStartTimestamp,
+							channel: channel_out,
+							type: 'cc',
+							cc: cc_out,
+							cc_value: cc_value_out,
+						});
+					}
+
 					// add events to processorEvents for the canvas to show them
 					if (!processorEvents[id]) {
 						processorEvents[id] = [];
@@ -170,9 +181,12 @@ export function createProcessor(data) {
 			params.rate = parameters.rate.value;
 			params.note_length = parameters.note_length.value;
 			params.is_mute = parameters.is_mute.value;
+			params.mode = parameters.mode ? parameters.mode.value : 'note';
 			params.channel_out = parameters.channel_out.value;
 			params.pitch_out = parameters.pitch_out.value;
 			params.velocity_out = parameters.velocity_out.value;
+			params.cc_out = parameters.cc_out ? parameters.cc_out.value : 1;
+			params.cc_value_out = parameters.cc_value_out ? parameters.cc_value_out.value : 63;
 		},
 
 		/**
