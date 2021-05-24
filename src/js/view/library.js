@@ -63,9 +63,9 @@ function populateLibrary() {
     const el = clone.firstElementChild;
     listEl.appendChild(el);
 
-    const config = getProcessorData(type, 'config');
+    const { name } = getProcessorData(type, 'config');
 
-    el.querySelector('.library__item-label').innerHTML = config.name;
+    el.querySelector('.library__item-label').innerHTML = name;
     el.dataset.type = type;
     el.addEventListener('touchstart', onTouchStart);
     el.addEventListener('mousedown', onTouchStart);

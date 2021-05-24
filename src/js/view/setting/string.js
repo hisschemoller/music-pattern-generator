@@ -12,11 +12,11 @@ export default function createStringSettingView(parentEl, processorId, key, para
 			textEl = el.getElementsByClassName('setting__text')[0];
 			textEl.addEventListener('input', onChange);
 			
-			initData();
+			initData(paramData);
 			setValue(paramData.value);
 		},
 
-		initData = function() {},
+		initData = function(paramData) {},
 		
 		onChange = function(e) {
 			e.preventDefault();

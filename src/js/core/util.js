@@ -68,8 +68,9 @@ export function midiControlToParameterValue(param, controllerValue) {
 				return param.model[param.model.length - 1].value;
 			}
 			return param.model[Math.floor(normalizedValue * param.model.length)].value;
-		case 'string':
+		case 'object':
 		case 'position':
+		case 'string':
 		default:
 			return param.value;
 	}

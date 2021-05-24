@@ -22,6 +22,9 @@ const ADD_PROCESSOR = 'ADD_PROCESSOR',
   DRAG_SELECTED_PROCESSOR = 'DRAG_SELECTED_PROCESSOR',
 	LIBRARY_DROP = 'LIBRARY_DROP',
 	LOAD_SNAPSHOT = 'LOAD_SNAPSHOT',
+	PARAMETER_DRAG_MOVE = 'PARAMETER_DRAG_MOVE',
+	PARAMETER_DRAG_START = 'PARAMETER_DRAG_START',
+	PARAMETER_TOUCH_START = 'PARAMETER_TOUCH_START',
 	RECEIVE_MIDI_CC = 'RECEIVE_MIDI_CC',
 	RECEIVE_MIDI_NOTE = 'RECEIVE_MIDI_NOTE',
   RECREATE_PARAMETER = 'RECREATE_PARAMETER',
@@ -72,8 +75,7 @@ export default {
 					paramValue = !!paramValueRaw;
 					break;
 				case 'itemized':
-					paramValue = paramValueRaw;
-					break;
+				case 'object':
 				case 'string':
 					paramValue = paramValueRaw;
 					break;
@@ -450,6 +452,15 @@ export default {
 
 	SET_TRANSPORT,
 	setTransport: command => ({ type: SET_TRANSPORT, command }),
+
+	PARAMETER_DRAG_MOVE,
+	parameterDragMove: (x, y, z) => ({ type: PARAMETER_DRAG_MOVE, x, y, z }),
+
+	PARAMETER_DRAG_START,
+	parameterDragStart: (x, y, z) => ({ type: PARAMETER_DRAG_START, x, y, z }),
+
+	PARAMETER_TOUCH_START,
+	parameterTouchStart: (name) => ({ type: PARAMETER_TOUCH_START, name }),
 
 	STORE_SNAPSHOT,
 	storeSnapshot: index => {

@@ -155,7 +155,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     setTimeout(() => {
 
       // necklace dot
-      let tweeningDot = dotAnimations[stepIndex];
+      const tweeningDot = dotAnimations[stepIndex];
       tweeningDot.scale = 2;
       tweeningDot.isActive = true;
 
@@ -250,16 +250,12 @@ export function createObject3dController(obj3d, data, isConnectMode) {
    * Update the current nacklace dot animations.
    */
   const updateNoteAnimations = () => {
-    let largestScale = 0;
-    let isNoteActive = false;
 
+    // dot animations
     Object.keys(dotAnimations).forEach(key => {
       const obj = dotAnimations[key];
       obj.scale -= 0.1;
       obj.dot.scale.set(obj.scale, obj.scale, 1);
-      // TODO: find out reason for largestScale
-      largestScale = Math.max(largestScale, obj.scale);
-      isNoteActive = true;
       if (obj.isActive && obj.scale <= 1) {
         obj.dot.scale.set(1, 1, 1);
         delete dotAnimations[key];

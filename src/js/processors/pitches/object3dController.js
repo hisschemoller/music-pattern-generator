@@ -1,7 +1,7 @@
 import { dispatch, getActions, STATE_CHANGE, } from '../../state/store.js';
 import { getTheme } from '../../state/selectors.js';
 import createObject3dControllerBase from '../../webgl/object3dControllerBase.js';
-import { redrawShape, } from '../../webgl/draw3dHelper.js';
+import { createRectFilled, createRectOutline, redrawShape, } from '../../webgl/draw3dHelper.js';
 import {
   Vector2,
 } from '../../lib/threejs/build/three.module.js';
@@ -25,13 +25,18 @@ export function createObject3dController(obj3d, data, isConnectMode) {
   const stick3d = object3d.getObjectByName('stick');
   const pointer3d = object3d.getObjectByName('pointer');
   const stickX = stick3d.position.x;
+  const animatingSteps = {};
 
   let centerScale = 0,
     colorLow,
     colorHigh,
     isBypass = false,
+    offset = 0,
+    pitchAtDragStart,
+    sequence = [],
     stepIndex = 0,
-    stepWidth = 0;
+    stepWidth = 0,
+    stepsX = 2;
 
   /**
    * Redraw the pattern if needed.
@@ -43,10 +48,10 @@ export function createObject3dController(obj3d, data, isConnectMode) {
 
     // start center dot animation
     if (processorEvents[id] && processorEvents[id].length) {
-      const event = processorEvents[id][processorEvents[id].length - 1];
-      const { delayFromNowToNoteEnd, delayFromNowToNoteStart, stepIndex: index, } = event;
-      stepIndex = index;
-      startNoteAnimation(delayFromNowToNoteStart, delayFromNowToNoteEnd);
+      for (let i = 0, n = processorEvents[id].length; i < n; i++) {
+        const { delayFromNowToNoteEnd, delayFromNowToNoteStart, stepIndex: index, } = processorEvents[id][i];
+        startNoteAnimation(delayFromNowToNoteStart, delayFromNowToNoteEnd, index);
+      }
     }
 
     // update center dot animation
@@ -63,17 +68,28 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     const { action, actions, state, } = e.detail;
     switch (action.type) {
 
-      case actions.CHANGE_PARAMETER: {
+      case actions.CHANGE_PARAMETER:
+      case actions.RECREATE_PARAMETER: {
           const { activeProcessorId, processors, } = state;
           if (activeProcessorId === id) {
-            const { is_bypass, steps } = processors.byId[id].params.byId;
+            const { is_bypass, offset, sequence, steps } = processors.byId[id].params.byId;
             switch (action.paramKey) {
               case 'is_bypass':
                 updateBypass(is_bypass.value);
                 break;
-              case 'steps':
-                updateStick(steps.value);
+              
+              case 'offset':
+                updateOffset(offset.value);
+                updatePointer();
                 break;
+
+              case 'sequence':
+                updateOffset(offset.value);
+                updateStick(steps.value);
+                updateSequence(sequence.value, steps.value);
+                updatePointer();
+                break;
+
               default:
             }
           }
@@ -82,10 +98,21 @@ export function createObject3dController(obj3d, data, isConnectMode) {
       
       case actions.LOAD_SNAPSHOT: {
           const { processors, } = state;
-          const { is_bypass, steps } = processors.byId[id].params.byId;
+          const { is_bypass, offset, sequence, steps } = processors.byId[id].params.byId;
+          updateOffset(offset.value);
           updateBypass(is_bypass.value);
           updateStick(steps.value);
+          updateSequence(sequence.value, steps.value);
+          updatePointer();
         }
+        break;
+      
+      case actions.PARAMETER_DRAG_MOVE:
+        pitchParameterDragMove(state);
+        break;
+      
+      case actions.PARAMETER_DRAG_START:
+        pitchParameterDragStart(state);
         break;
 
       case actions.TOGGLE_THEME:
@@ -104,10 +131,45 @@ export function createObject3dController(obj3d, data, isConnectMode) {
 
     ({ colorLow, colorHigh, } = getTheme());
 
-    const { is_bypass, steps } = data.params.byId;
+    const { is_bypass, offset, sequence, steps } = data.params.byId;
+    updateOffset(offset.value);
     updateBypass(is_bypass.value);
     updateStick(steps.value);
+    updateSequence(sequence.value, steps.value);
+    updatePointer();
   };
+
+  /**
+   * Start dragging a pitch slider.
+   * @param {String} state Application state.
+   */
+  const pitchParameterDragMove = (state) => {
+    const { parameterDrag, processors } = state;
+    const { current, objectName, start } = parameterDrag;
+    const data = objectName.split(':');
+    if (data[1] === id) {
+      const stepIndex = data[3];
+      const sequence = [ ...processors.byId[id].params.byId['sequence'].value ];
+      const dragDistance = Math.round(current.y - start.y);
+      const newPitch = Math.max(-24, Math.min(pitchAtDragStart + dragDistance, 24));
+      sequence[stepIndex] = { ...sequence[stepIndex], pitch: newPitch };
+      dispatch(getActions().changeParameter(id, 'sequence', sequence));
+    }
+  }
+
+  /**
+   * Start dragging a pitch slider.
+   * @param {String} state Application state.
+   */
+  const pitchParameterDragStart = (state) => {
+    const { parameterDrag, processors } = state;
+    const { objectName } = parameterDrag;
+    const data = objectName.split(':');
+    if (data[1] === id) {
+      const stepIndex = data[3];
+      pitchAtDragStart = processors.byId[id].params.byId['sequence'].value[stepIndex].pitch;
+    }
+  }
 
   /**
    * Show the playback position within the pattern.
@@ -119,14 +181,38 @@ export function createObject3dController(obj3d, data, isConnectMode) {
   /**
    * Show animation of the pattern dot that is about to play.
    */
-  const startNoteAnimation = (noteStartDelay, noteStopDelay) => {
-    console.log('stepIndex', stepIndex);
+  const startNoteAnimation = (noteStartDelay, noteStopDelay, index) => {
+    stepIndex = index;
+
+    // retain sequence step fill in object  
+    if (animatingSteps[index]) {
+      animatingSteps[index].stepFill3d.scale.y = 0;
+      animatingSteps[index].isActive = false;
+    } else {
+      animatingSteps[index] = {
+        stepFill3d: stick3d.getObjectByName(`step_fill${stepIndex}`),
+        isActive: false,
+      }
+    }
 
     // delay start of animation
     setTimeout(() => {
+
+      // step fill
+      if (animatingSteps[index].stepFill3d) {
+        animatingSteps[index].stepFill3d.scale.y = 1;
+        animatingSteps[index].isActive = true;
+        animatingSteps[index].isFirstRun = true;
+      } else {
+        delete animatingSteps[index];
+      }
+
+      // center dot
       centerDot3d.visible = true;
       centerScale = 1;
-      pointer3d.position.x = stickX + (stepWidth * (stepIndex + 0.5));
+
+      // pointer
+      // updatePointer();
     }, noteStartDelay);
   };
 
@@ -142,6 +228,22 @@ export function createObject3dController(obj3d, data, isConnectMode) {
    * Update the current nacklace dot animations.
    */
   const updateNoteAnimations = () => {
+
+    // sequence steps
+    Object.keys(animatingSteps).forEach(key => {
+      const obj = animatingSteps[key];
+      if (obj.isActive ) {
+        if (obj.stepFill3d.scale.y < 0.1) {
+          obj.stepFill3d.scale.y = 0;
+          delete animatingSteps[key];
+        } else if (!obj.isFirstRun) {
+          obj.stepFill3d.scale.y -= 0.1;
+        }
+        obj.isFirstRun = false;
+      }
+    });
+
+    // center dot
     if (centerScale > 0) {
       centerDot3d.scale.set(centerScale, centerScale, 1);
       centerScale -= 0.06;
@@ -152,20 +254,83 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     }
   };
 
+  /**
+   * Store the changed offset to set the pointer position.
+   */
+  const updateOffset = (offs) => {
+    offset = offs;
+  };
+
+  /** 
+   * Update the sequence step rectangles.
+   * @param {Array} newSequence Sequence of pitch values.
+   * @param {Number} steps Number of steps in the pattern.
+   */
+  const updateSequence = (newSequence, steps) => {
+
+    // remove all existing sequence steps
+    if (newSequence.length !== sequence) {
+      for (let i = 0, n = stick3d.children.length; i < n; i++) {
+        stick3d.remove(stick3d.children[0]);
+      }
+      sequence = [];
+    }
+
+    // update only the visible steps, not the possibly longer sequence.length
+    for (let i = 0; i < steps; i++) {
+      if (!sequence[i] || sequence[i].pitch !== newSequence[i].pitch) {
+        const stepHeight = newSequence[i].pitch * 0.5;
+
+        const stepFill3d = createRectFilled(stepWidth, Math.abs(stepHeight), colorHigh, 1);
+        stepFill3d.geometry = stepFill3d.geometry.translate(0, stepHeight * 0.5, 0);
+        stepFill3d.name = `step_fill${i}`;
+        stepFill3d.translateX(stepsX + ((i + 0.5) * stepWidth));
+        stepFill3d.scale.set(1, 0, 1);
+        stick3d.add(stepFill3d);
+
+        const step3d = createRectOutline(stepWidth, stepHeight, colorHigh);
+        step3d.name = `step${i}`;
+        step3d.translateX(stepsX + (i * stepWidth));
+        step3d.translateY(0);
+        stick3d.add(step3d);
+
+        const stepHitArea3d = createRectFilled(stepWidth, Math.abs(stepHeight) + 4, colorHigh, 0);
+        stepHitArea3d.name = `processor:${id}:step:${i}`;
+        stepHitArea3d.userData.stepIndex = i;
+        stepHitArea3d.translateX(stepsX + ((i + 0.5) * stepWidth));
+        stepHitArea3d.translateY(stepHeight * 0.5);
+        stick3d.add(stepHitArea3d);
+      }
+    }
+
+    sequence = newSequence.map((step) => ({ ...step }));
+  };
+
   /** 
    * Update the steps stick.
-   * @param {Number} steps Number of steps in the pattern./
+   * @param {Number} steps Number of steps in the pattern.
    */
   const updateStick = (steps) => {
     const stickLength = Math.min(steps * 4, 30);
-    stepWidth = stickLength / steps;
+    stepWidth = (stickLength - stepsX) / steps;
     const points = [
       new Vector2(0, 0),
       new Vector2(stickLength, 0),
     ];
     redrawShape(stick3d, points, colorHigh);
+  };
 
-    pointer3d.position.x = stickX + (stepWidth * (stepIndex + 0.5));
+  /** 
+   * Set pointer position to current step.
+   */
+  const updatePointer = () => {
+    const { pitch } = sequence[offset];
+    pointer3d.rotation.set(0, 0, pitch >= 0 ? 0 : Math.PI);
+    pointer3d.position.set(
+      stickX + stepsX + (stepWidth * (offset + 0.5)),
+      pitch >= 0 ? (pitch * 0.5) + 2 : (pitch * 0.5) - 2,
+      0,
+    );
   };
 
   /** 

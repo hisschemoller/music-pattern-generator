@@ -3,7 +3,8 @@ import createMIDIProcessorBase from '../../midi/processorbase.js';
 
 export function createProcessor(data) {
 	let params = {},
-		stepIndex = 0;
+		stepIndex = 0,
+		offsetCurrent = 0;
 	
 	const {
 		getId,
@@ -44,6 +45,14 @@ export function createProcessor(data) {
 					if (action.processorId === id) {
 						updateAllParams(state.processors.byId[id].params.byId);
 						switch (action.paramKey) {
+							case 'offset':
+								updateOffset();
+								break;
+							case 'sequence':
+								break;
+							case 'steps':
+								updateSequence();
+								break;
 						}
 					}
 					break;
@@ -51,11 +60,18 @@ export function createProcessor(data) {
 				case actions.LOAD_SNAPSHOT:
 					updateAllParams(state.processors.byId[id].params.byId);
 					updatePattern(true);
+					updateOffset();
 					break;
 
 				case actions.RECREATE_PARAMETER:
 					if (action.processorId === id) {
 						updateAllParams(state.processors.byId[id].params.byId);
+					}
+					break;
+
+				case actions.SET_TRANSPORT:
+					if (state.transport === 'play') {
+						stepIndex = params.offset;
 					}
 					break;
 			}
@@ -111,6 +127,8 @@ export function createProcessor(data) {
 				// handle only MIDI Note events
 				if (event.type === 'note') {
 
+					event.pitch = event.pitch + params.sequence[stepIndex].pitch;
+
 					// add events to processorEvents for the canvas to show them
 					if (!processorEvents[id]) {
 						processorEvents[id] = [];
@@ -138,13 +156,46 @@ export function createProcessor(data) {
 		 */
 		updateAllParams = function(parameters) {
 			params.isBypass = parameters.is_bypass.value;
+			params.offset = parameters.offset.value;
+			params.sequence = parameters.sequence.value;
 			params.steps = parameters.steps.value;
+		},
+
+		/**
+		 * Adjust stepIndex for changed offset.
+		 */
+		updateOffset = function() {
+			stepIndex = params.steps + ((stepIndex + (params.offset - offsetCurrent)) % params.steps);
+			offsetCurrent = params.offset;
 		},
 
 		/**
 		 * Update all pattern properties.
 		 */
-		updatePattern = function() {};
+		updatePattern = function() {},
+		
+		/**
+		 * Update the sequence.
+		 */
+		updateSequence = () => {
+			const { offset, sequence, steps } = params;
+			if (steps > sequence.length) {
+				for (let i = sequence.length; i < steps; i++) {
+					sequence.push({
+						pitch: 0,
+					});
+				}
+			} else if (steps < sequence.length) {
+				stepIndex = stepIndex % steps;
+			}
+
+			dispatch(getActions().recreateParameter(id, 'offset', { 
+				max: steps - 1,
+				value: Math.min(offset, steps),
+			}));
+			
+			dispatch(getActions().recreateParameter(id, 'sequence', { value: sequence }));
+		};
 
 	initialize();
 

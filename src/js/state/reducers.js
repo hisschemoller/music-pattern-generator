@@ -6,6 +6,7 @@ import orderProcessors from '../midi/network_ordering.js';
  * I keep it separate here to have a cleaner view op the app state below.
  */
 const userInterfaceInitialState = {
+	activeProcessorId: null,
 	cableDrag: {
 		active: false,
 		source: {
@@ -28,7 +29,19 @@ const userInterfaceInitialState = {
 		x: 0,
 		y: 0,
 	},
-	activeProcessorId: null,
+	parameterDrag: {
+		objectName: null,
+		start: {
+			x: 0,
+			y: 0,
+			z: 0,
+		},
+		current: {
+			x: 0,
+			y: 0,
+			z: 0,
+		},
+	},
 };
 
 /**
@@ -440,6 +453,19 @@ export default function reduce(state = initialState, action, actions = {}) {
 				},
 			};
 		}
+
+		case actions.PARAMETER_DRAG_MOVE: {
+			const { x, y, z } = action;
+			return { ...state, parameterDrag: { ...state.parameterDrag, current: { x, y, z }}};
+		}
+
+		case actions.PARAMETER_DRAG_START: {
+			const { x, y, z } = action;
+			return { ...state, parameterDrag: { ...state.parameterDrag, start: { x, y, z }, current: { x, y, z }}};
+		}
+
+		case actions.PARAMETER_TOUCH_START:
+			return { ...state, parameterDrag: { ...state.parameterDrag, objectName: action.name } };
 		
 		case actions.RECREATE_PARAMETER: {
 			const { paramKey, paramObj, processorId } = action;

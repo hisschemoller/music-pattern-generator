@@ -17,11 +17,11 @@ export default function createIntegerSettingView(parentEl, processorId, key, par
 				numberEl = el.getElementsByClassName('setting__number')[0];
 				numberEl.addEventListener('change', onChange);
 
-				initData();
+				initData(paramData);
 				setValue(paramData.value);
 			},
 
-			initData = function() {
+			initData = function(paramData) {
 				rangeEl.setAttribute('min', paramData.min);
 				rangeEl.setAttribute('max', paramData.max);
 
