@@ -39,7 +39,7 @@ const ADD_PROCESSOR = 'ADD_PROCESSOR',
   TOGGLE_MIDI_PREFERENCE = 'TOGGLE_MIDI_PREFERENCE',
   TOGGLE_SNAPSHOTS_MODE = 'TOGGLE_SNAPSHOTS_MODE',
   TOGGLE_PANEL = 'TOGGLE_PANEL',
-  TOGGLE_THEME = 'TOGGLE_THEME',
+  SET_THEME = 'SET_THEME',
   UNASSIGN_EXTERNAL_CONTROL = 'UNASSIGN_EXTERNAL_CONTROL',
   UPDATE_MIDI_PORT = 'UPDATE_MIDI_PORT';
 
@@ -510,8 +510,8 @@ export default {
 	TOGGLE_PANEL,
 	togglePanel: panelName => ({type: TOGGLE_PANEL, panelName}),
 
-	TOGGLE_THEME,
-	toggleTheme: () => ({ type: TOGGLE_THEME }),
+	SET_THEME,
+	setTheme: (themeSetting, theme) => ({ type: SET_THEME, themeSetting, theme }),
 
 	UNASSIGN_EXTERNAL_CONTROL,
 	unassignExternalControl: (processorId, paramKey) => ({type: UNASSIGN_EXTERNAL_CONTROL, processorId, paramKey}),

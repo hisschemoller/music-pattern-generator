@@ -104,7 +104,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
         updatePointer(is_mute.value);
         break;
 
-      case actions.TOGGLE_THEME:
+      case actions.SET_THEME:
         updateTheme();
         break;
     }

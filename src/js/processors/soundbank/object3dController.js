@@ -48,7 +48,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     const { action, actions, state, } = e.detail;
     switch (action.type) {
 
-      case actions.TOGGLE_THEME:
+      case actions.SET_THEME:
         updateTheme();
         break;
     }

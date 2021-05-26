@@ -26,7 +26,7 @@ export default function memoize(state, action = {}, actions) {
       toggleTheme(state);
       break;
     
-    case actions.TOGGLE_THEME:
+    case actions.SET_THEME:
       setConfig(state);
       toggleTheme(state);
       break;

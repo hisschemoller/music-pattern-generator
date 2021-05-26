@@ -4,18 +4,36 @@ import createMIDIOutputView from './midi_output.js';
 
 const midiInputsEl = document.querySelector('.prefs__inputs');
 const midiOutputsEl = document.querySelector('.prefs__outputs');
-const themeCheckEl = document.querySelector('.prefs__dark-theme');
+const radioEls = document.querySelectorAll('.prefs__theme');
 const midiPortViews = [];
 
+let OSTheme = 'light';
+let isOSTheme = false;
+
 export function setup() {
+	if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    OSTheme = 'dark';
+	};
   addEventListeners();
 }
 
 function addEventListeners() {
   document.addEventListener(STATE_CHANGE, handleStateChanges);
-  themeCheckEl.addEventListener('change',() => {
-    dispatch(getActions().toggleTheme());
+
+	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    OSTheme = e.matches ? 'dark' : 'light';
+		if (isOSTheme) {
+			dispatch(getActions().setTheme('os', OSTheme));
+		}
 	});
+
+	for (let i = 0, n = radioEls.length; i < n; i++) {
+		radioEls[i].onclick = (e) => {
+			const theme = e.target.value === 'os' ? OSTheme : e.target.value;
+			dispatch(getActions().setTheme(e.target.value, theme));
+			setTheme(e.target.value, theme);
+		}
+	}
 }
 
 /**
@@ -26,8 +44,8 @@ function handleStateChanges(e) {
   const { state, action, actions, } = e.detail;
   switch (action.type) {
     case actions.CREATE_PROJECT:
-    case actions.TOGGLE_THEME:
-        updateControl('dark-theme', state.theme === 'dark');
+    case actions.SET_THEME:
+        updateControl('theme', state);
         break;
     
     case actions.CREATE_MIDI_PORT:
@@ -38,16 +56,21 @@ function handleStateChanges(e) {
   }
 }
 
+function setTheme(themeSetting, theme) {
+	dispatch(getActions().setTheme(themeSetting, theme));
+}
+
 /**
  * Callback function to update one of the controls after if the
  * preference's state changed.
  * @param {String} key Key that indicates the control.
- * @param {Boolean} value Value of the control.
+ * @param {Object} state Application state.
  */
-function updateControl(key, value) {
+function updateControl(key, state) {
 	switch (key) {
-		case 'dark-theme':
-			themeCheckEl.checked = value;
+		case 'theme':
+			isOSTheme = state.themeSetting === 'os';
+			document.querySelector(`[name=theme][value=${state.themeSetting}]`).checked = true;
 			break;
 	}
 }

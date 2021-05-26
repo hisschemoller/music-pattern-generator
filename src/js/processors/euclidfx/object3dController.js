@@ -118,7 +118,7 @@ export function createObject3dController(obj3d, data, isConnectMode) {
         }
         break;
 
-      case actions.TOGGLE_THEME:
+      case actions.SET_THEME:
         updateTheme();
         break;
     }

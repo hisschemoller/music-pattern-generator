@@ -84,7 +84,8 @@ const initialState = {
 	showPreferencesPanel: false,
 	showSnapshotsPanel: false,
 	showSettingsPanel: false,
-	theme: 'light', // 'light|dark|dev' 
+	theme: 'light', // 'light|dark|dev'
+	themeSetting: 'light', // 'light|dark|os'
 	transport: 'stop', // 'play|pause|stop'
 	version: '2.3.0-alpha',
 };
@@ -518,11 +519,10 @@ export default function reduce(state = initialState, action, actions = {}) {
 		case actions.SET_TEMPO:
 			return { ...state, bpm: action.value };
 
-		case actions.TOGGLE_THEME:
-			return { 
-				...state, 
-				theme: state.theme === 'light' ? 'dark' : 'light',
-			};
+		case actions.SET_THEME: {
+			const { theme, themeSetting } = action;
+			return { ...state, theme, themeSetting };
+		}
 		
 		case actions.SET_TRANSPORT:
 			let value = action.command;

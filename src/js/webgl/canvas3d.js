@@ -182,7 +182,7 @@ function handleStateChanges(e) {
       // toggleConnectMode(state);
       break;
     
-    case actions.TOGGLE_THEME:
+    case actions.SET_THEME:
       setThemeOnWorld();
       break;
     
