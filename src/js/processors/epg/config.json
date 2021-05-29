@@ -73,6 +73,34 @@
                 "max": 127,
                 "isMidiControllable": true
             },
+            "cc_out": {
+                "label": "CC",
+                "type": "integer",
+                "default": 1,
+                "value": 1,
+                "min": 1,
+                "max": 127,
+                "isMidiControllable": true
+            },
+            "cc_value_out": {
+                "label": "CC Value",
+                "type": "integer",
+                "default": 63,
+                "value": 63,
+                "min": 1,
+                "max": 127,
+                "isMidiControllable": true
+            },
+            "mode": {
+                "label": "Mode",
+                "type": "itemized",
+                "default": "note",
+                "value": "note",
+                "model": [
+                    {"label": "Note", "value": "note"},
+                    {"label": "CC", "value": "cc"}
+                ]
+            },
             "rate": {
                 "label": "Rate",
                 "type": "itemized",
@@ -127,6 +155,6 @@
                 "value": "Unnamed"
             }
         },
-        "allIds": ["steps", "pulses", "rotation", "channel_out", "pitch_out", "velocity_out", "rate", "note_length", "is_triplets", "is_mute", "name"]
+        "allIds": ["steps", "pulses", "rotation","mode", "channel_out", "pitch_out", "velocity_out", "cc_out", "cc_value_out", "rate", "note_length", "is_triplets", "is_mute", "name"]
     }
 }

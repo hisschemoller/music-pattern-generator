@@ -91,8 +91,19 @@
                     { "label": "Pitch", "value": "pitch" },
                     { "label": "Channel", "value": "channel" },
                     { "label": "Note length", "value": "length" },
-                    { "label": "Note delay", "value": "delay" }
+                    { "label": "Note delay", "value": "delay" },
+                    { "label": "CC", "value": "cc" },
+                    { "label": "CC Value", "value": "cc_value" }
                 ]
+            },
+            "target_cc": {
+                "label": "CC",
+                "type": "integer",
+                "default": 1,
+                "value": 1,
+                "min": 1,
+                "max": 127,
+                "isMidiControllable": false
             },
             "low": {
                 "label": "Low value",
