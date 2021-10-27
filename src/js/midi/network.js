@@ -1,5 +1,6 @@
 import { dispatch, getActions, STATE_CHANGE, } from '../state/store.js';
 import { getProcessorData } from '../core/processor-loader.js';
+import { process as processMIDIClock } from './midiclock.js';
 
 let processors = [];
 
@@ -16,6 +17,7 @@ export function process(start, end, nowToScanStart, ticksToMsMultiplier, offset,
 	processors.forEach(processor => {
 		processor.process(start, end, nowToScanStart, ticksToMsMultiplier, offset, processorEvents);
 	});
+	processMIDIClock(start, end, nowToScanStart, ticksToMsMultiplier, offset, processorEvents);
 }
 
 export function setup() {
