@@ -113,7 +113,7 @@ function disconnectProcessors(state) {
 
 /**
  * Handle state changes.
- * @param {Object} e Custom event.
+ * @param {Object} e Custom store event.
  */
 function handleStateChanges(e) {
   const { state, action, actions, } = e.detail;

@@ -84,7 +84,7 @@ export function getMIDIAccessible() {
  * Get a specific MIDI port by its ID.
  * @param {String} id MIDI port ID.
  */
-export function getMIDIPortByID(id) {
+export function getMIDIPortById(id) {
 	const inputs = midiAccess.inputs.values();
 	const outputs = midiAccess.outputs.values();
 
@@ -102,8 +102,7 @@ export function getMIDIPortByID(id) {
 }
 
 /**
- * Listen to MIDI events.
- * @param {Object} midiAccessObj MidiAccess object.
+ * Listen to events.
  */
 function addEventListeners() {
   document.addEventListener(STATE_CHANGE, handleStateChanges);
@@ -215,6 +214,7 @@ function onSystemRealtimeMessage(e) {
 
 /**
  * Listen to enabled MIDI input ports.
+ * @param {Object} ports MIDI ports data from state.
  */
 function updateMIDISyncListeners(ports) {
 	syncListeners = [];
@@ -228,6 +228,7 @@ function updateMIDISyncListeners(ports) {
 
 /**
  * Listen to enabled MIDI input ports.
+ * @param {Object} ports MIDI ports data from state.
  */
 function updateMIDIRemoteListeners(ports) {
 	remoteListeners = [];

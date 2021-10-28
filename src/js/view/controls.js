@@ -100,7 +100,7 @@ function addEventListeners() {
 
 /**
  * Handle state changes.
- * @param {Object} e 
+ * @param {Object} e Custom store event.
  */
 function handleStateChanges(e) {
   const { state, action, } = e.detail;
@@ -117,12 +117,12 @@ function handleStateChanges(e) {
       break;
 
     case actions.SET_TEMPO:
-        bpmEl.value = state.bpm;
+      bpmEl.value = state.bpm;
       break;
   
     case actions.SET_TRANSPORT:
-        playEl.checked = state.transport === 'play';
-        break;
+      playEl.checked = state.transport === 'play';
+      break;
   }
 }
 

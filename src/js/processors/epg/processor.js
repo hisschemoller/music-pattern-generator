@@ -75,7 +75,7 @@ export function createProcessor(data) {
 						break;
 				}
 		},
-				
+
 		/**
 		 * Process events to happen in a time slice.
 		 * timeline start        now      scanStart     scanEnd

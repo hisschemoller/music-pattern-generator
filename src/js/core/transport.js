@@ -86,7 +86,7 @@ function handleStateChanges(e) {
 
 /**
  * Stop playback if the page is hidden, continue when visible.
- * @param {Object} e Event.
+ * @param {Object} e Custom store event.
  */
 function handleVisbilityChange(e) {
 	if (document.visibilityState === 'visible') {

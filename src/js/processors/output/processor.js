@@ -1,6 +1,6 @@
 import { dispatch, getActions, getState, STATE_CHANGE, } from '../../state/store.js';
 import createMIDIProcessorBase from '../../midi/processorbase.js';
-import { getMIDIAccessible, getMIDIPortByID } from '../../midi/midi.js';
+import { getMIDIAccessible, getMIDIPortById } from '../../midi/midi.js';
 
 /**
  * MIDI output port processor.
@@ -100,6 +100,10 @@ export function createProcessor(data) {
 			}
 		},
 
+		/**
+		 * Store parameter values locally for quick access by the process function.
+		 * @param {Object} parameters Processor's paramer data in state.
+		 */
 		updateAllParams = function(parameters) {
 			params.port = parameters.port.value;
 			params.portName = parameters.port.model.find(element => element.value === params.port).label;
@@ -114,14 +118,16 @@ export function createProcessor(data) {
 				return;
 			}
 
-			midiOutput = getMIDIPortByID(params.port);
+			midiOutput = getMIDIPortById(params.port);
 
 			// update the processor's name parameter
 			dispatch(getActions().changeParameter(id, 'name', params.portName));
 		},
 
 		/**
-		 * Update the ports parameter with the current available ports.
+		 * Update the 'ports' parameter with the current available ports.
+		 * It's an itemized parameter so it uses a model as data.
+		 * @param {Object} state App state.
 		 */
 		updatePortsParameter = function(state) {
 
@@ -149,7 +155,11 @@ export function createProcessor(data) {
 			dispatch(getActions().changeParameter(id, 'name', item.label));
 		},
 
-		getMIDIPortID = function() {
+		/**
+		 * Provide MIDI port's ID.
+		 * @returns {String} MIDI Port ID.
+		 */
+		getMIDIPortId = function() {
 			return portId;
 		};
 
@@ -158,7 +168,7 @@ export function createProcessor(data) {
 	return {
 		addConnection,
 		getId,
-		getMIDIPortID,
+		getMIDIPortId,
 		getType,
 		process,
 		removeConnection,
