@@ -5,7 +5,20 @@ An application to create musical rhythms in MIDI.
 Try the app online: [www.hisschemoller.com/mpg](https://www.hisschemoller.com/mpg)<br />
 Desktop installers: [github.com/hisschemoller/music-pattern-generator/releases](https://github.com/hisschemoller/music-pattern-generator/releases)
 
-## Overview
+## Table of contents
+
+* [Overview](#overview)
+* [Processors](#processors)
+* [Connections](#connections)
+* [Euclidean processor](#euclidean-processor)
+* [Euclid FX processor](#euclid-fx-processor)
+* [MIDI Out processor](#midi-out-processor)
+* [Preferences panel](#preferences-panel)
+* [MIDI Remote Control](#midi-remote-control)
+* [Snapshots](#snapshots)
+* [The Control Bar](#control-bar)
+
+## Overview <a name="overview"></a>
 
 Music Pattern Generator is an app to create musical rhythms. It sends MIDI data, so it won’t make any sounds by itself. For that you need to connect it to MIDI soft- or hardware that can handle MIDI data to produce sound.
 
@@ -13,7 +26,7 @@ Music Pattern Generator is an app to create musical rhythms. It sends MIDI data,
 
 Watch a [Music Pattern Generator 2.1 overview video on YouTube](https://www.youtube.com/watch?v=y4JAhvl5FaA).
 
-## Processors
+## Processors <a name="processors"></a>
 
 Music Pattern Generator has a modular setup. Modules are called processors and are connected to form a network. Processors can produce MIDI notes, transform incoming data or send notes to MIDI output ports.
 
@@ -27,7 +40,7 @@ Three types of processors are available at the moment:
 
 Processors are created by dragging them out of the Library into the main area of the app.
 
-## Connections
+## Connections <a name="connections"></a>
 
 ![Connecting processors](assets/img/processor-connecting.jpg 'Connecting processors')
 
@@ -37,7 +50,7 @@ A single output can connect to multiple other processors' inputs. Just drag as m
 
 Connection cables can be deleted by clicking the Delete button that shows halfway each cable when in 'Connection mode'.
 
-## The Euclidean processor
+## The Euclidean processor <a name="euclidean-processor"></a>
 
 ![The Euclidean processor](assets/img/processor-euclidean.jpg 'The Euclidean processor')
 
@@ -57,7 +70,7 @@ Note Length uses the same timing as rate. It's generally best to not set it high
 
 The other settings are self explanatory.
 
-## The Euclid FX processor
+## The Euclid FX processor <a name="euclid-fx-processor"></a>
 
 ![The Euclid FX processor](assets/img/processor-euclidfx.jpg 'The Euclid FX processor')
 
@@ -88,7 +101,7 @@ This is the case in the image above. The target is Velocity and mode is Absolute
 
 The target here is Pitch and the mode is Relative. Depending on the state of the pattern at the moment a note arrives, a value of 2 is distracted from the pitch or 5 is added. Lets say incoming MIDI notes have a pitch of 60, then they will be changed to 58 (60 - 2) or 65 (60 + 5). Or in musical terms, notes arrive in C, and are turned into either Bb or F.
 
-## The MIDI Out processor
+## The MIDI Out processor <a name="midi-out-processor"></a>
 
 ![The MIDI Out processor](assets/img/processor-output.jpg 'The MIDI Out processor')
 
@@ -102,7 +115,7 @@ In the processor's editor panel select an output in the list of MIDI ports. Or N
 
 Multiple MIDI Out processors can be added in a single project to send MIDI to multiple ports.
 
-## The Preferences panel
+## The Preferences panel <a name="preferences-panel"></a>
 
 ![The Preferences panel](assets/img/preferences.jpg 'The Preferences panel')
 
@@ -120,7 +133,7 @@ Only the Network column is active for the MIDI outputs. The outputs that have Ne
 
 The dark theme might be easier on the eye in low light environments.
 
-## MIDI Remote Control
+## MIDI Remote Control <a name="midi-remote-control"></a>
 
 Several processor settings can be remote-controlled with an external MIDI controller that sends Continuous Control (CC) messages.
 
@@ -156,7 +169,7 @@ To remove an assignment click the delete (x) button at the right of the assignme
 
 To actually use the remote control, exit MIDI Learn mode by clicking the 'MIDI Learn' button again. Now the assigned controller will control the processor setting. You'll see and the processor graphic and editor setting follow the incoming MIDI data.
 
-## Snapshots
+## Snapshots <a name="snapshots"></a>
 
 ![Snapshots](assets/img/snapshots.gif 'Snapshots')
 
@@ -186,7 +199,7 @@ Snapshot slots can be assigned to MIDI controllers. Just like processor settings
 
 For general information about MIDI controller setup or making and removing assignments, please see the chapter 'MIDI Remote Control' above.
 
-## The Control Bar
+## The Control Bar <a name="control-bar"></a>
 
 ![The Control Bar](assets/img/controlbar.gif 'The Control Bar')
 
