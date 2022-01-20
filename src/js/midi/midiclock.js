@@ -100,7 +100,10 @@ function updateMIDIPorts(state) {
     ports.allIds.forEach((portId) => {
       const { id, syncEnabled, type } = ports.byId[portId];
       if (syncEnabled && type === 'output') {
-        midiOutputs.push(getMIDIPortById(id));
+        const midiOutput = getMIDIPortById(id);
+        if (midiOutput) {
+          midiOutputs.push(getMIDIPortById(id));
+        }
       }
     });
   }
