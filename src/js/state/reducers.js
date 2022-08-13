@@ -87,7 +87,7 @@ const initialState = {
 	theme: 'light', // 'light|dark|dev'
 	themeSetting: 'light', // 'light|dark|os'
 	transport: 'stop', // 'play|pause|stop'
-	version: '2.3.0-alpha',
+	version: '2.3.0-beta',
 };
 
 /**
