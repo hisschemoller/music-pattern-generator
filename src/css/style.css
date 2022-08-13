@@ -252,6 +252,11 @@ div[data-theme] {
     right: 0;
     top: 0;
 }
+.panels__left-edge {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
 .panels__left {
     display: flex;
     flex-basis: 340px;

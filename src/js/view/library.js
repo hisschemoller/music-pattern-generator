@@ -1,6 +1,7 @@
 import { dispatch, getActions, STATE_CHANGE, } from '../state/store.js';
 import { getProcessorData, getProcessorTypes, } from '../core/processor-loader.js';
 
+const libraryEl = document.querySelector('.library');
 const listEl = document.querySelector('.library__list');
 
 let dragEl, dragType;
@@ -21,7 +22,13 @@ function onTouchEnd(e) {
   document.body.removeChild(dragEl);
   const x = e.type === 'mouseup' ? e.clientX : e.changedTouches[0].clientX;
   const y = e.type === 'mouseup' ? e.clientY : e.changedTouches[0].clientY;
-  dispatch(getActions().libraryDrop(dragType, x, y));
+
+  // test to prevent dropping inside library panel
+  const rect = libraryEl.getBoundingClientRect();
+  const isInRect = x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+  if (!isInRect) {
+    dispatch(getActions().libraryDrop(dragType, x, y));
+  }
   dragType = null;
 }
 
