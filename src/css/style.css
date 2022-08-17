@@ -175,6 +175,16 @@ input[type='text'] {
     font-family: var(--default-font-family);
     outline: none;
 }
+input[type='number'] {
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+    appearance: textfield;
+    padding-left: 6px;
+}
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
 input[type='file'] {
 	height: 0.1px;
 	opacity: 0;
@@ -382,6 +392,7 @@ div[data-theme] {
     font-size: 18px;
     height: 30px;
     margin: 5px;
+    padding-right: 6px;
     text-align: right;
     width: 65px;
 }

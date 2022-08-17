@@ -61,7 +61,7 @@ input[type='number'].setting__number {
     display: inline-block;
     font-size: var(--font-size);
     line-height: var(--input-height);
-    padding: 0 8px;
+    padding: 0 10px 0 8px;
     text-align: right;
     flex: 0 0 50px;
 }
