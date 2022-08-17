@@ -163,9 +163,10 @@ export function createProcessor(data) {
 
 		/**
 		 * Adjust stepIndex for changed offset.
+		 * StepIndex follows change in offset bound by step amount.
 		 */
 		updateOffset = function() {
-			stepIndex = params.steps + ((stepIndex + (params.offset - offsetCurrent)) % params.steps);
+			stepIndex = (params.steps + (stepIndex + (params.offset - offsetCurrent))) % params.steps;
 			offsetCurrent = params.offset;
 		},
 
