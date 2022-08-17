@@ -51,7 +51,14 @@ export function getBPM () {
  * @param {Number} offset Position of transport playhead in ms.
  */
 export function scanEvents(scanStart, scanEnd, nowToScanStart, offset) {
-  process(msec2tick(scanStart), msec2tick(scanEnd), msec2tick(nowToScanStart), tickInMilliseconds, msec2tick(offset), processorEvents);
+  process(
+    msec2tick(scanStart),
+    msec2tick(scanEnd),
+    msec2tick(nowToScanStart),
+    tickInMilliseconds,
+    msec2tick(offset),
+    processorEvents
+  );
 }
 
 /**

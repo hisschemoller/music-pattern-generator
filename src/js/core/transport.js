@@ -44,10 +44,10 @@ export function setup() {
 
 function addEventListeners() {
 	document.addEventListener(STATE_CHANGE, handleStateChanges);
-	
+
 	// not in NW.js because in that case rAF doesn't stop (--disable-raf-throttling)
 	// @see https://stackoverflow.com/questions/31968355/detect-if-web-app-is-running-in-nwjs
-	if (!typeof require === 'function') {
+	if (!(typeof require === 'function')) {
 
 		// stop playback if the page is hidden, continue when visible
 		document.addEventListener('visibilitychange', handleVisbilityChange);
