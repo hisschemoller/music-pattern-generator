@@ -53,7 +53,7 @@
 }
 input[type=range].setting__range {
     display: inline-block;
-    flex: 0 1 100%;
+    flex: 1;
 }
 input[type='number'].setting__number {
     background-color: var(--panel-bg-color);
@@ -63,7 +63,7 @@ input[type='number'].setting__number {
     line-height: var(--input-height);
     padding: 0 10px 0 8px;
     text-align: right;
-    flex: 0 0 50px;
+    width: 50px;
 }
 .setting__radio {
     position: absolute;
