@@ -19,7 +19,7 @@ A script in package.json starts Node.js and runs a simple Express app to serve t
 
 ```json
 "scripts": {
-  "start": "node server.js",
+  "start": "node server.mjs",
 }
 ```
 

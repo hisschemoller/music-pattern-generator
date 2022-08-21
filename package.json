@@ -13,7 +13,7 @@
   "private": true,
   "main": "src/index.html",
   "scripts": {
-    "start": "node server.js",
+    "dev": "node server.mjs",
     "start-nw": "nw --disable-raf-throttling"
   },
   "repository": {
