@@ -20,6 +20,7 @@ export default function createMIDIOutputView(data) {
 
 	return {
 		getId,
+		getIsInput: () => false,
 		terminate,
 	};
 }

@@ -16,6 +16,7 @@ export default function createMIDIInputView(data) {
 
 	return {
 		getId,
+		getIsInput: () => true,
 		terminate,
 	};
 }

@@ -4,6 +4,8 @@ import createMIDIOutputView from './midi_output.js';
 
 const midiInputsEl = document.querySelector('.prefs__inputs');
 const midiOutputsEl = document.querySelector('.prefs__outputs');
+const midiNoInputsEl = document.getElementById('prefs__no-inputs');
+const midiNoOutputsEl = document.getElementById('prefs__no-outputs');
 const radioEls = document.querySelectorAll('.prefs__theme');
 const midiPortViews = [];
 
@@ -112,4 +114,16 @@ function updateMIDIPortViews(state) {
 			}));
 		}
 	});
+
+	// show No Inputs message if there are no views
+	if (midiNoInputsEl) {
+		const hasInputViews = midiPortViews.some((view) => view.getIsInput());
+		midiNoInputsEl.style.display = hasInputViews ? 'none' : 'inline';
+	}
+
+	// show No Outputs message if there are no views
+	if (midiNoOutputsEl) {
+		const hasOutputViews = midiPortViews.some((view) => !view.getIsInput());
+		midiNoOutputsEl.style.display = hasOutputViews ? 'none' : 'inline';
+	}
 }
