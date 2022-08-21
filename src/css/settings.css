@@ -87,6 +87,7 @@ input[type='number'].setting__number {
 .setting__learnmode {
     border: 3px dashed var(--assign-border-color);
     bottom: 0;
+    cursor: pointer;
     left: 0;
     margin: 1px;
     position: absolute;
