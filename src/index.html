@@ -309,7 +309,13 @@
 	<template id="template-snapshots-learnmode">
 			<div class="snapshots__learnmode"></div>
 	</template><!-- /template-snapshots-learnmode -->
-
-	<script src="js/main.js" type="module"></script>
+	<script type="importmap">
+    {
+			"imports": {
+					"three": "./js/lib/threejs/build/three.module.js"	
+			}
+    }
+	</script>
+	<script defer src="js/main.js" type="module"></script>
 </body>
 </html>

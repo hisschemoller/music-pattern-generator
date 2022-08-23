@@ -8,7 +8,6 @@ import {
   PlaneGeometry,
   Vector2,
   Vector3,
-  VertexColors,
 } from '../lib/threejs/build/three.module.js';
 import {
   Line2,
@@ -27,7 +26,7 @@ const LINE_COLOR = 0xdddddd;
 const lineMaterial = new LineMaterial({
   color: new Color(LINE_COLOR),
   linewidth: LINE_WIDTH,
-  vertexColors: VertexColors,
+  vertexColors: false,
   dashed: false,
   resolution: new Vector2(window.innerWidth, window.innerHeight),
 });
