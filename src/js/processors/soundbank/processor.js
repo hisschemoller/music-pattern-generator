@@ -1,6 +1,6 @@
 import { dispatch, getActions, getState, STATE_CHANGE, } from '../../state/store.js';
 import createMIDIProcessorBase from '../../midi/processorbase.js';
-import { initAudioFiles, playSound } from './utils.js';
+import { loadSoundBankFiles, playSound, setupAudio } from './utils.js';
 
 /**
  * Sample player processor.
@@ -22,9 +22,9 @@ export function createProcessor(data) {
 			const state = getState();
 			const { processors } = state;
 			document.addEventListener(STATE_CHANGE, handleStateChange);
+			setupAudio(processors.byId[id].banks);
 			updateAllParams(processors.byId[id].params.byId);
 			updateBankParameter(state);
-			initAudioFiles(processors.byId[id].banks);
 		},
 
 		terminate = function() {
@@ -102,6 +102,7 @@ export function createProcessor(data) {
 			const { banks, params, } = state.processors.byId[id];
 			const param = params.byId.bank;
 			const bank = banks[param.value];
+			loadSoundBankFiles(param.value, bank);
 
 			// if the bank changes update the processor's name as well
 			const label = param.model.find(item => item.value === param.value).label;

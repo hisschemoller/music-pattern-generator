@@ -9,6 +9,22 @@ let voiceIndex = 0;
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 /**
+ * Create empty banks in which to load audio files.
+ * Voices are shared between all Soundbank processors.
+ */
+function createBanks(banksData) {
+  if (banks.allIds.length === 0) {
+    for (const [bankId, bankSoundData] of Object.entries(banksData)) {
+      banks.allIds.push(bankId);
+      banks.byId[bankId] = {
+        allIds: [],
+        byId: {},
+      };
+    }
+  }
+}
+
+/**
  * Create reusable voices that can play sounds. 
  * Voices are shared between all Soundbank processors.
  */
@@ -26,38 +42,43 @@ function createVoices() {
 }
 
 /**
- * Load all samples and store them in buffers.
- * @param {Array} samplesData
+ * Set up the voices and banks.
+ * @param {Array} banksData The processor's banks parameter.
  */
-export function initAudioFiles(banksData) {
-  if (banks.allIds.length === 0) {
+export function setupAudio(banksData) {
+  if (voices.length === 0) {
     createVoices();
-    for (const [bankId, bankSoundData] of Object.entries(banksData)) {
-      banks.allIds.push(bankId);
-      banks.byId[bankId] = {
-        allIds: [],
-        byId: {},
+  }
+  if (banks.allIds.length === 0) {
+    createBanks(banksData);
+  }
+}
+
+/**
+ * Load all samples of a bank and store them in buffers.
+ * @param {Array} banksData The processor's banks parameter.
+ */
+export function loadSoundBankFiles(bankId, bankSoundData) {
+  const bank = banks.byId[bankId];
+  if (bank.allIds.length === 0) {
+    bankSoundData.forEach(soundData => {
+      const { value } = soundData;
+      bank.allIds.push(value);
+      bank.byId[value] = {
+        buffer: null,
       };
-      bankSoundData.forEach(soundData => {
-        const { value } = soundData;
-        banks.byId[bankId].allIds.push(value);
-        banks.byId[bankId].byId[value] = {
-          buffer: null,
-        };
-        
-        if (value.length > 0) {
-          fetch(`audio/${value}`).then(response => {
-            if (response.status === 200) {
-              response.arrayBuffer().then(arrayBuffer => {
-                audioCtx.decodeAudioData(arrayBuffer).then((audioBuffer) => {
-                  banks.byId[bankId].byId[value].buffer = audioBuffer;
-                });
-              })
-            }
-          });
-        }
-      });
-    }
+      if (value.length > 0) {
+        fetch(`audio/${value}`).then(response => {
+          if (response.status === 200) {
+            response.arrayBuffer().then(arrayBuffer => {
+              audioCtx.decodeAudioData(arrayBuffer).then((audioBuffer) => {
+                bank.byId[value].buffer = audioBuffer;
+              });
+            })
+          }
+        });
+      }
+    });
   }
 }
 
