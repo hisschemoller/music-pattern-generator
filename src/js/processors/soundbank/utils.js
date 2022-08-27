@@ -111,3 +111,13 @@ export function playSound(nowToStartInSecs, bankId, channel, pitch, velocity) {
     voice.isPlaying = false;
   }
 }
+
+/**
+ * When the transport playback is toggled, check if the audiocontext is running.
+ * On Safari it needs to be rresumed after a userr gesture.
+ */
+export function resumeAudio() {
+  if (audioCtx.state !== 'running') {
+    audioCtx.resume();
+  }
+}

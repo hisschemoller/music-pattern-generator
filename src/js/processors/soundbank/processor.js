@@ -1,6 +1,6 @@
 import { dispatch, getActions, getState, STATE_CHANGE, } from '../../state/store.js';
 import createMIDIProcessorBase from '../../midi/processorbase.js';
-import { loadSoundBankFiles, playSound, setupAudio } from './utils.js';
+import { loadSoundBankFiles, playSound, resumeAudio, setupAudio } from './utils.js';
 
 /**
  * Sample player processor.
@@ -47,6 +47,9 @@ export function createProcessor(data) {
 								break;
 						}
 					}
+					break;
+				case actions.SET_TRANSPORT:
+					resumeAudio();
 					break;
 			}
 		},
