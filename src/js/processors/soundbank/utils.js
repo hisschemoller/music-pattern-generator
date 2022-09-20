@@ -61,22 +61,20 @@ export function setupAudio(banksData) {
 export function loadSoundBankFiles(bankId, bankSoundData) {
   const bank = banks.byId[bankId];
   if (bank.allIds.length === 0) {
-    bankSoundData.forEach(soundData => {
+    bankSoundData.forEach(async (soundData) => {
       const { value } = soundData;
       bank.allIds.push(value);
       bank.byId[value] = {
         buffer: null,
       };
       if (value.length > 0) {
-        fetch(`audio/${value}`).then(response => {
-          if (response.status === 200) {
-            response.arrayBuffer().then((arrayBuffer) => {
-              audioCtx.decodeAudioData(arrayBuffer, (audioBuffer) => {
-                bank.byId[value].buffer = audioBuffer;
-              });
-            })
-          }
-        });
+        const response = await fetch(`audio/${value}`);
+        if (response.status === 200) {
+          const arrayBuffer = await response.arrayBuffer();
+          audioCtx.decodeAudioData(arrayBuffer, (audioBuffer) => {
+            bank.byId[value].buffer = audioBuffer;
+          });
+        }
       }
     });
   }
@@ -114,7 +112,7 @@ export function playSound(nowToStartInSecs, bankId, channel, pitch, velocity) {
 
 /**
  * When the transport playback is toggled, check if the audiocontext is running.
- * On Safari it needs to be rresumed after a userr gesture.
+ * On Safari it needs to be resumed after a user gesture.
  */
 export function resumeAudio() {
   if (audioCtx.state !== 'running') {
