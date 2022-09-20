@@ -70,8 +70,8 @@ export function loadSoundBankFiles(bankId, bankSoundData) {
       if (value.length > 0) {
         fetch(`audio/${value}`).then(response => {
           if (response.status === 200) {
-            response.arrayBuffer().then(arrayBuffer => {
-              audioCtx.decodeAudioData(arrayBuffer).then((audioBuffer) => {
+            response.arrayBuffer().then((arrayBuffer) => {
+              audioCtx.decodeAudioData(arrayBuffer, (audioBuffer) => {
                 bank.byId[value].buffer = audioBuffer;
               });
             })
