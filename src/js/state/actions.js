@@ -153,7 +153,10 @@ export default {
 	CREATE_PROJECT,
 	createProject: data => {
 		return (dispatch, getState, getActions) => {
-			const { theme } = getConfig();
+			const { themeSetting } = getConfig();
+			const osTheme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)
+				? 'dark' : 'light';
+			const theme = themeSetting === 'os' ? osTheme : themeSetting;
 			return { type: CREATE_PROJECT, data: { ...data, theme, }, };
 		}
 	},
