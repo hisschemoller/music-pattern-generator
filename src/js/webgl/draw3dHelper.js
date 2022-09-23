@@ -24,9 +24,9 @@ const LINE_WIDTH = 2;
 const LINE_COLOR = 0xdddddd;
 
 const lineMaterial = new LineMaterial({
-  color: new Color(LINE_COLOR),
+  // color: set by the geometry because 'vertexColors: true'
   linewidth: LINE_WIDTH,
-  vertexColors: false,
+  vertexColors: true,
   dashed: false,
   resolution: new Vector2(window.innerWidth, window.innerHeight),
 });
