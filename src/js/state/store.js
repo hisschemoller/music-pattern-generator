@@ -33,7 +33,7 @@ export function getState() {
 
 export function persist() {
   const name = 'persist';
-  window.addEventListener('beforeunload', e => {
+  window.addEventListener('beforeunload', (e) => {
     localStorage.setItem(name, JSON.stringify(currentState));
   });
   let data = localStorage.getItem(name);

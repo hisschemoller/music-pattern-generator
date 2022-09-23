@@ -31,6 +31,7 @@ const ADD_PROCESSOR = 'ADD_PROCESSOR',
   SELECT_PROCESSOR = 'SELECT_PROCESSOR',
   SET_CAMERA_POSITION = 'SET_CAMERA_POSITION',
   SET_TEMPO = 'SET_TEMPO',
+  SET_THEME = 'SET_THEME',
   SET_TRANSPORT = 'SET_TRANSPORT',
   STORE_SNAPSHOT = 'STORE_SNAPSHOT',
   TOGGLE_CONNECT_MODE = 'TOGGLE_CONNECT_MODE',
@@ -39,7 +40,6 @@ const ADD_PROCESSOR = 'ADD_PROCESSOR',
   TOGGLE_MIDI_PREFERENCE = 'TOGGLE_MIDI_PREFERENCE',
   TOGGLE_SNAPSHOTS_MODE = 'TOGGLE_SNAPSHOTS_MODE',
   TOGGLE_PANEL = 'TOGGLE_PANEL',
-  SET_THEME = 'SET_THEME',
   UNASSIGN_EXTERNAL_CONTROL = 'UNASSIGN_EXTERNAL_CONTROL',
   UPDATE_MIDI_PORT = 'UPDATE_MIDI_PORT';
 
@@ -240,7 +240,7 @@ export default {
 		}
 	},
 
-	midiAccessChange: midiPort => {
+	midiAccessChange: (midiPort) => {
 		return (dispatch, getState, getActions) => {
 
 			// check if the port already exists
@@ -283,9 +283,6 @@ export default {
 					remoteEnabled: configPort ? configPort.remoteEnabled : false
 				}));
 			}
-
-			// store the changes in configuration
-			// setConfig(getState());
 		};
 	},
 
@@ -453,17 +450,11 @@ export default {
 	SET_TEMPO,
 	setTempo: value => ({ type: SET_TEMPO, value: Math.round((value * 100)) / 100 }),
 
+	SET_THEME,
+	setTheme: (themeSetting, theme) => ({ type: SET_THEME, themeSetting, theme }),
+
 	SET_TRANSPORT,
 	setTransport: command => ({ type: SET_TRANSPORT, command }),
-
-	PARAMETER_DRAG_MOVE,
-	parameterDragMove: (x, y, z) => ({ type: PARAMETER_DRAG_MOVE, x, y, z }),
-
-	PARAMETER_DRAG_START,
-	parameterDragStart: (x, y, z) => ({ type: PARAMETER_DRAG_START, x, y, z }),
-
-	PARAMETER_TOUCH_START,
-	parameterTouchStart: (name) => ({ type: PARAMETER_TOUCH_START, name }),
 
 	STORE_SNAPSHOT,
 	storeSnapshot: index => {
@@ -486,6 +477,15 @@ export default {
 			return { type: STORE_SNAPSHOT, index, snapshot };
 		}
 	},
+
+	PARAMETER_DRAG_MOVE,
+	parameterDragMove: (x, y, z) => ({ type: PARAMETER_DRAG_MOVE, x, y, z }),
+
+	PARAMETER_DRAG_START,
+	parameterDragStart: (x, y, z) => ({ type: PARAMETER_DRAG_START, x, y, z }),
+
+	PARAMETER_TOUCH_START,
+	parameterTouchStart: (name) => ({ type: PARAMETER_TOUCH_START, name }),
 
 	TOGGLE_CONNECT_MODE,
 	toggleConnectMode: () => ({ type: TOGGLE_CONNECT_MODE }),
@@ -512,9 +512,6 @@ export default {
 	
 	TOGGLE_PANEL,
 	togglePanel: panelName => ({type: TOGGLE_PANEL, panelName}),
-
-	SET_THEME,
-	setTheme: (themeSetting, theme) => ({ type: SET_THEME, themeSetting, theme }),
 
 	UNASSIGN_EXTERNAL_CONTROL,
 	unassignExternalControl: (processorId, paramKey) => ({type: UNASSIGN_EXTERNAL_CONTROL, processorId, paramKey}),

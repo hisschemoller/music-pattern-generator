@@ -12,6 +12,9 @@ const midiPortViews = [];
 let OSTheme = 'light';
 let isOSTheme = false;
 
+/**
+ * General module setup.
+ */
 export function setup() {
 	if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
     OSTheme = 'dark';
@@ -19,6 +22,9 @@ export function setup() {
   addEventListeners();
 }
 
+/**
+ * Listen to events.
+ */
 function addEventListeners() {
   document.addEventListener(STATE_CHANGE, handleStateChanges);
 
@@ -58,6 +64,11 @@ function handleStateChanges(e) {
   }
 }
 
+/**
+ * Dispatch an action to update the themeSetting and theme.
+ * @param {String} themeSetting Radio buttons setting.
+ * @param {String} theme The theme to use.
+ */
 function setTheme(themeSetting, theme) {
 	dispatch(getActions().setTheme(themeSetting, theme));
 }
