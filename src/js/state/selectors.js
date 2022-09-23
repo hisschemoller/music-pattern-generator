@@ -19,7 +19,7 @@ export default function memoize(state, action = {}, actions) {
   switch (action.type) {
 
     case actions.CREATE_MIDI_PORT:
-      setConfig(state);
+      setConfig(state.ports, null);
       break;
 
     case actions.CREATE_PROJECT:
@@ -27,7 +27,7 @@ export default function memoize(state, action = {}, actions) {
       break;
     
     case actions.SET_THEME:
-      setConfig(state);
+      setConfig(null, state.themeSetting);
       toggleTheme(state);
       break;
   }

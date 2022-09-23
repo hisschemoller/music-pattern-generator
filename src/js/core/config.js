@@ -8,47 +8,55 @@ export const PPQN = 480;
 
 export const TWO_PI = Math.PI * 2;
 
-const name = 'config';
+const NAME = 'config';
 
 export function getConfig() {
-  const data = localStorage.getItem(name)
+  const data = localStorage.getItem(NAME)
   return data ? JSON.parse(data) : {};
 }
 
-export function setConfig(state) {
-  const { ports: statePorts, theme } = state;
+/**
+ * Store configuration in localStorage.
+ * @param {statePorts} Object 
+ * @param {stateThemeSetting} String  
+ */
+export function setConfig(statePorts, stateThemeSetting) {
   const config = getConfig();
-  const data = { theme };
+  const newConfig = { themeSetting: stateThemeSetting ? stateThemeSetting : config.themeSetting };
 
-  if (config && config.ports) {
+  if (statePorts) {
+    if (config && config.ports) {
       
-    // update the existing config with new data from the current state
-    const { ports: configPorts } = config;
-    statePorts.allIds.forEach(statePortId => {
-      let portExistsInConfig = false;
-      configPorts.allIds.forEach(configPortId => {
-        if (configPortId === statePortId) {
-          portExistsInConfig = true;
-
-          // update port if it exists
-          const configPort = configPorts.byId[configPortId];
-          const statePort = statePorts.byId[statePortId];
-          configPort.syncEnabled = statePort.syncEnabled;
-          configPort.remoteEnabled = statePort.remoteEnabled;
-          configPort.networkEnabled = statePort.networkEnabled;
+      // update the existing config with new data from the current state
+      const { ports: configPorts } = config;
+      statePorts.allIds.forEach(statePortId => {
+        let portExistsInConfig = false;
+        configPorts.allIds.forEach(configPortId => {
+          if (configPortId === statePortId) {
+            portExistsInConfig = true;
+  
+            // update port if it exists
+            const configPort = configPorts.byId[configPortId];
+            const statePort = statePorts.byId[statePortId];
+            configPort.syncEnabled = statePort.syncEnabled;
+            configPort.remoteEnabled = statePort.remoteEnabled;
+            configPort.networkEnabled = statePort.networkEnabled;
+          }
+        });
+  
+        // add port if it doesn't exist yet
+        if (!portExistsInConfig) {
+          configPorts.allIds.push(statePortId);
+          configPorts.byId[statePortId] = statePorts.byId[statePortId]
         }
       });
-
-      // add port if it doesn't exist yet
-      if (!portExistsInConfig) {
-        configPorts.allIds.push(statePortId);
-        configPorts.byId[statePortId] = statePorts.byId[statePortId]
-      }
-    });
-    data.ports = configPorts;
+      newConfig.ports = configPorts;
+    } else {
+      newConfig.ports = statePorts;
+    }
   } else {
-    data.ports = statePorts;
+    newConfig.ports = config.ports;
   }
 
-  localStorage.setItem(name, JSON.stringify(data));
+  localStorage.setItem(NAME, JSON.stringify(newConfig));
 }
