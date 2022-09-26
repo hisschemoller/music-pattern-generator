@@ -284,9 +284,12 @@ export function createObject3dController(obj3d, data, isConnectMode) {
     redrawShape(pointer3d, points, colorHigh);
   };
 
-  const updateRotation = numRotation => {
+  /** 
+   * Rotate the pointer to indicate pattern rotation.
+   */
+  const updateRotation = (numRotation) => {
     rotation = numRotation;
-    pointer3d.rotation.z = (rotation / steps) * TWO_PI;
+    pointer3d.rotation.z = (rotation / steps) * -TWO_PI;
   }
 
   /** 
