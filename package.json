@@ -24,6 +24,6 @@
   "dependencies": {},
   "devDependencies": {
     "express": "^4.17.1",
-    "nw": "0.50.1-sdk"
+    "nw": "0.68.1-sdk"
   }
 }
